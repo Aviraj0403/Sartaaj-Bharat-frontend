@@ -7,7 +7,7 @@ export default function Orders() {
 
   const orders = [
     {
-      id: "#12345",
+      id: "12345",
       date: "05 Nov 2025",
       status: "Shipped",
       total: 1098,

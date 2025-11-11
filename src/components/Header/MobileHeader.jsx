@@ -9,28 +9,58 @@ import {
   Menu,
   X,
   Search,
+  ChevronDown,
+  ChevronUp,
   LogOut,
 } from "lucide-react";
 import logo from "../../image/logo-cosmetic2.jpg";
+import { useNavigate } from "react-router-dom";
 
 export default function MobileHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openSubMenu, setOpenSubMenu] = useState(null);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/auth");
+  };
 
   const menuItems = [
-    "Face Makeup",
-    "Lip Care & Makeup",
-    "Skin Care",
-    "Hair Care",
-    "Nails",
-    "Makeup Tools & Accessories",
-    "Fragrances",
+    {
+      name: "Face Makeup",
+      subItems: ["Foundation", "Primer", "Compact", "Blush"],
+    },
+    {
+      name: "Lip Care & Makeup",
+      subItems: ["Lipstick", "Lip Gloss", "Lip Balm"],
+    },
+    {
+      name: "Skin Care",
+      subItems: ["Moisturizer", "Serum", "Sunscreen"],
+    },
+    {
+      name: "Hair Care",
+      subItems: ["Shampoo", "Conditioner", "Hair Oil"],
+    },
+    {
+      name: "Nails",
+      subItems: ["Nail Polish", "Remover", "Tools"],
+    },
+    {
+      name: "Fragrances",
+      subItems: ["Perfume", "Body Mist"],
+    },
   ];
+
+  const toggleSubMenu = (index) => {
+    setOpenSubMenu(openSubMenu === index ? null : index);
+  };
 
   return (
     <div className="w-full bg-white flex flex-col md:hidden relative">
-      {/* Top Header with Menu & Logo */}
+      {/* Top Header */}
       <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
-        {/* Hamburger Menu */}
         <button
           className="text-pink-500 hover:text-pink-600 transition"
           onClick={() => setIsMenuOpen(true)}
@@ -38,10 +68,8 @@ export default function MobileHeader() {
           <Menu size={28} />
         </button>
 
-        {/* Center Logo */}
         <img src={logo} alt="Logo" className="h-12 w-auto mx-auto" />
 
-        {/* Right side icons: Profile | Cart */}
         <div className="flex items-center gap-4 text-gray-700">
           <button className="flex flex-col items-center text-xs hover:text-pink-500 transition">
             <User size={22} />
@@ -90,9 +118,9 @@ export default function MobileHeader() {
         </div>
       </div>
 
-      {/* Slide-in Sidebar */}
+      {/* Sidebar Menu */}
       <div
-        className={`fixed top-0 left-0 h-full w-72 bg-white shadow-xl transform transition-transform duration-300 z-50 rounded-r-2xl overflow-hidden ${
+        className={`fixed top-0 left-0 h-full w-72 bg-white shadow-xl transform transition-transform duration-300 z-50 rounded-r-2xl overflow-y-auto ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -104,7 +132,7 @@ export default function MobileHeader() {
           </button>
         </div>
 
-        {/* Profile Section */}
+        {/* Profile */}
         <div className="flex items-center justify-end px-6 py-4 border-b border-pink-200">
           <div className="flex items-center gap-2">
             <User size={24} className="text-pink-500" />
@@ -112,24 +140,45 @@ export default function MobileHeader() {
           </div>
         </div>
 
-        {/* Menu Links with enhanced pink divider lines */}
+        {/* Menu with Submenu */}
         <ul className="flex flex-col mt-2 text-gray-800 font-semibold">
           {menuItems.map((item, index) => (
-            <React.Fragment key={item}>
-              <li className="cursor-pointer hover:text-white hover:bg-pink-500 px-4 py-3 transition-all duration-200 relative">
-                {item}
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-pink-300"></span>
-              </li>
-              {index !== menuItems.length - 1 && (
-                <hr className="border-pink-300 mx-4" />
+            <li key={item.name} className="border-b border-pink-100">
+              <div
+                className="flex justify-between items-center px-5 py-3 hover:bg-pink-500 hover:text-white transition-all duration-200 cursor-pointer"
+                onClick={() => toggleSubMenu(index)}
+              >
+                {item.name}
+                {openSubMenu === index ? (
+                  <ChevronUp size={18} />
+                ) : (
+                  <ChevronDown size={18} />
+                )}
+              </div>
+
+              {/* Submenu items */}
+              {openSubMenu === index && (
+                <ul className="bg-pink-50 text-sm text-gray-700 font-normal">
+                  {item.subItems.map((sub, subIndex) => (
+                    <li
+                      key={subIndex}
+                      className="px-8 py-2 hover:bg-pink-100 hover:text-pink-600 cursor-pointer transition-all duration-150"
+                    >
+                      {sub}
+                    </li>
+                  ))}
+                </ul>
               )}
-            </React.Fragment>
+            </li>
           ))}
         </ul>
 
         {/* Logout */}
         <div className="absolute bottom-6 left-0 w-full px-6">
-          <button className="flex items-center gap-3 w-full justify-center bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 rounded-xl transition">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full justify-center bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 rounded-xl transition"
+          >
             <LogOut size={20} /> Logout
           </button>
         </div>

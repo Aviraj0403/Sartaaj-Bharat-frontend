@@ -8,6 +8,12 @@ import OrderDetails from "./profile/OrderDetails";
 
 import CartPage from "./cart/CartPage.jsx";
 import CheckoutPage from "./checkout/CheckoutPage.jsx";
+import AuthPage from "./authentication/AuthPage.jsx";
+import NewProductsPage from "./pages/NewProductsPage.jsx";
+import ProductDetails from "./pages/home/ProductDetails.jsx";
+
+// import Login from "./authentication/Login.jsx";
+// import Signup from "./authentication/Signup.jsx";
 
 const router = createBrowserRouter([
   {
@@ -20,9 +26,17 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "/profile", element: <ProfilePage /> },
-      { path: "/order/:orderId", element: <OrderDetails /> },
+      { path: "/order/12345", element: <OrderDetails /> },
+      
       { path: "/cart", element: <CartPage /> },
       { path: "/checkout", element: <CheckoutPage/> },
+      { path: "/new-product", element: <NewProductsPage/> },
+      { path: "/product/:id", element: <ProductDetails /> },
+      
+
+
+      // {path: "/auth", element: < Login/>},
+      {path: "/auth", element: < AuthPage/>},
     ],
   },
   {

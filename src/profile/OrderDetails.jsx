@@ -3,13 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Download } from "lucide-react";
 
 export default function OrderDetails() {
-  const { orderId } = useParams();
+  const { orderId} = useParams();
   const navigate = useNavigate();
-
+ const selectedOrderId = orderId || "12345";
   // Orders data (same as in Orders.js)
   const orders = [
     {
-      id: "#12345",
+      id: "12345",
       date: "05 Nov 2025",
       status: "Shipped",
       total: 1098,
@@ -83,7 +83,8 @@ export default function OrderDetails() {
     },
   ];
 
-  const order = orders.find((o) => o.id === orderId);
+  const order = orders.find((o) => o.id === selectedOrderId);
+  console.log("Selected order:", selectedOrderId, order);
 
   if (!order) {
     return (
