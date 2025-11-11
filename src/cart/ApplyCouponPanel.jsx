@@ -19,11 +19,12 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply }) {
   };
 
   return (
-    <div
-      className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-xl z-50 transform transition-transform duration-300 ${
-        isOpen ? "translate-x-0" : "translate-x-full"
-      }`}
-    >
+   <div
+  className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-xl z-[200] transform transition-transform duration-300 ${
+    isOpen ? "translate-x-0" : "translate-x-full"
+  }`}
+>
+
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b border-gray-200">
         <h2 className="text-lg font-semibold text-gray-800">Apply Coupon</h2>
