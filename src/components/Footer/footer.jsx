@@ -148,6 +148,7 @@ export default function Footer() {
           <FaHeart className="inline text-pink-500" /> for beauty lovers.
         </p>
 
+
         {/* Payment Icons */}
         <div className="flex flex-wrap justify-center items-center gap-3 mt-2 md:mt-0">
           <span className="text-gray-500 text-sm">We Accept:</span>
