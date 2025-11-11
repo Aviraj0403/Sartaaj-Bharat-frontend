@@ -49,48 +49,7 @@ const bestsellers = [
     description: "Moisturizes and nourishes your skin deeply.",
     price: 850,
     originalPrice: 1099,
-    image:
-      "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
-    rating: 4.4,
-  },
-  {
-    id: 2,
-    name: "Velvet Matte Lipstick",
-    description: "Smooth matte finish with long-lasting color.",
-    price: 499,
-    originalPrice: 699,
-    image:
-      "https://www.gurmeetkaurstore.in/uploads/57161Nice_&_Naughty_Bombshell_Lipistick_Mix_Color_D.png",
-    rating: 4.7,
-  },
-  {
-    id: 3,
-    name: "Hydrating Serum",
-    description: "Deeply hydrates and revitalizes your skin.",
-    price: 999,
-    originalPrice: 1299,
-    image:
-      "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
-    rating: 4.8,
-  },
-  {
-    id: 4,
-    name: "Luxury Nail Paint Set",
-    description: "Long-lasting vibrant nail colors in one set.",
-    price: 699,
-    originalPrice: 899,
-    image:
-      "https://www.gurmeetkaurstore.in/uploads/93366HR_Foundation_Nude_04.jpg",
-    rating: 4.6,
-  },
-  {
-    id: 5,
-    name: "Luxury Body Lotion",
-    description: "Moisturizes and nourishes your skin deeply.",
-    price: 850,
-    originalPrice: 1099,
-    image:
-      "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
+    image: "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
     rating: 4.4,
   },
 ];
@@ -115,7 +74,7 @@ export default function RelatedProduct() {
             return (
               <div
                 key={product.id}
-                className="flex-shrink-0 w-60 bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 relative group p-3 flex flex-col justify-between"
+                className="flex-shrink-0 w-1/2 sm:w-1/3 md:w-60 bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 relative group p-3 flex flex-col justify-between"
               >
                 {/* Heart Icon */}
                 <div className="absolute top-3 right-3 z-20 text-pink-500 cursor-pointer opacity-80 hover:opacity-100 transition text-lg">
@@ -151,7 +110,9 @@ export default function RelatedProduct() {
                 <div className="flex justify-between items-center mb-2 px-1 text-sm">
                   <div className="flex items-center gap-1">
                     <p className="text-pink-500 font-medium text-sm">₹{product.price}</p>
-                    <p className="text-gray-400 line-through text-xs">₹{product.originalPrice}</p>
+                    <p className="text-gray-400 line-through text-xs">
+                      ₹{product.originalPrice}
+                    </p>
                   </div>
                   <div className="flex items-center">
                     <FaStar className="text-yellow-400 text-xs" />

@@ -17,7 +17,7 @@ export default function ProductDetails() {
   ];
 
   return (
-    <div className="bg-white min-h-screen py-10 px-4 sm:px-8">
+    <div className="bg-white min-h-screen py-5 px-4 sm:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-10">
           {/* LEFT — IMAGE GALLERY */}
