@@ -57,11 +57,12 @@ export default function ProfilePage() {
       </div>
 
       {/* Sidebar */}
-      <div
-        className={`fixed top-0 left-0 h-full w-64 bg-pink-50 border-r border-pink-100 p-6 space-y-4 z-50 transform transition-transform duration-300 md:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:relative md:block overflow-y-auto`}
-      >
+    <div
+  className={`fixed top-0 left-0 h-full w-64 bg-pink-50 border-r border-pink-100 p-6 space-y-4 z-[120] transform transition-transform duration-300 md:translate-x-0 ${
+    sidebarOpen ? "translate-x-0" : "-translate-x-full"
+  } md:relative md:block overflow-y-auto`}
+>
+
         {/* Profile Info */}
         <div className="flex flex-col items-center mb-6 md:hidden">
           <div className="rounded-full bg-pink-100 p-4 mb-3">
