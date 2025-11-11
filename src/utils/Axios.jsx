@@ -1,9 +1,4 @@
 import axios from "axios";
-
-// const baseURL = "https://restro-back-jgry.onrender.com/v1/api"; // Production
-// const baseURL = "http://localhost:5005/v1/api"; // Local development
-
-// const baseURL = import.meta.env.VITE_NODE_ENV === "development" ? "http://localhost:5005/v1/api" : "https://restro-back-jgry.onrender.com/v1/api";/
 const baseURL = 'http://168.231.122.13:6005/v1/api';
 const Axios = axios.create({
   baseURL,
