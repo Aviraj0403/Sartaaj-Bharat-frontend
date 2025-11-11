@@ -201,18 +201,26 @@ export default function MobileHeader() {
         <ul className="flex flex-col mt-2 text-gray-800 font-semibold">
           {menuItems.map((item, index) => (
             <li key={item.name} className="border-b border-pink-100">
-              <div
-                className="flex justify-between items-center px-5 py-3 hover:bg-pink-500 hover:text-white transition-all duration-200 cursor-pointer"
-                onClick={() => toggleSubMenu(index)}
-              >
-                {item.name}
-                {item.subItems.length > 0 &&
-                  (openSubMenu === index ? (
-                    <ChevronUp size={18} />
-                  ) : (
-                    <ChevronDown size={18} />
-                  ))}
-              </div>
+       <div
+  className="flex justify-between items-center px-5 py-3 hover:bg-pink-500 hover:text-white transition-all duration-200 cursor-pointer"
+  onClick={() => {
+    if (item.subItems.length > 0) {
+      toggleSubMenu(index);
+    } else {
+      navigate(item.path);
+      setIsMenuOpen(false);
+    }
+  }}
+>
+  {item.name}
+  {item.subItems.length > 0 &&
+    (openSubMenu === index ? (
+      <ChevronUp size={18} />
+    ) : (
+      <ChevronDown size={18} />
+    ))}
+</div>
+
 
               {/* Submenu */}
               {openSubMenu === index && item.subItems.length > 0 && (
