@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -52,75 +52,170 @@ const bestsellers = [
     image: "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
     rating: 4.4,
   },
+   {
+    id: 1,
+    name: "Glow Radiance Face Cream",
+    description: "Brightens and hydrates your skin naturally.",
+    price: 799,
+    originalPrice: 999,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/67814ADS_Pro_sensual_Pro_Skin_Primer.png",
+    rating: 4.5,
+  },
+  {
+    id: 2,
+    name: "Velvet Matte Lipstick",
+    description: "Smooth matte finish with long-lasting color.",
+    price: 499,
+    originalPrice: 699,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/57161Nice_&_Naughty_Bombshell_Lipistick_Mix_Color_D.png",
+    rating: 4.7,
+  },
+  {
+    id: 3,
+    name: "Hydrating Serum",
+    description: "Deeply hydrates and revitalizes your skin.",
+    price: 999,
+    originalPrice: 1299,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
+    rating: 4.8,
+  },
+  {
+    id: 4,
+    name: "Luxury Nail Paint Set",
+    description: "Long-lasting vibrant nail colors in one set.",
+    price: 699,
+    originalPrice: 899,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/93366HR_Foundation_Nude_04.jpg",
+    rating: 4.6,
+  },
+  {
+    id: 5,
+    name: "Luxury Body Lotion",
+    description: "Moisturizes and nourishes your skin deeply.",
+    price: 850,
+    originalPrice: 1099,
+    image: "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
+    rating: 4.4,
+  },
 ];
 
 export default function RelatedProduct() {
   const navigate = useNavigate();
+  const scrollRef = useRef(null);
+
+  // 👇 Enables click + drag horizontal scrolling on desktop
+  const handleMouseDown = (e) => {
+    const slider = scrollRef.current;
+    slider.isDown = true;
+    slider.startX = e.pageX - slider.offsetLeft;
+    slider.scrollLeftStart = slider.scrollLeft;
+  };
+
+  const handleMouseLeave = () => {
+    const slider = scrollRef.current;
+    slider.isDown = false;
+  };
+
+  const handleMouseUp = () => {
+    const slider = scrollRef.current;
+    slider.isDown = false;
+  };
+
+  const handleMouseMove = (e) => {
+    const slider = scrollRef.current;
+    if (!slider.isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - slider.startX) * 1.5; // scroll speed
+    slider.scrollLeft = slider.scrollLeftStart - walk;
+  };
 
   return (
-    <section className="py-10 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="py-10 bg-white w-full overflow-hidden">
+      <div className="w-screen max-w-[100vw] px-4 md:px-8">
         <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-6 text-center">
           Related Products
         </h2>
 
-        {/* Horizontal Scroll Container */}
-        <div className="flex gap-4 overflow-x-auto scrollbar-hide py-2">
+        {/* ✅ Smooth + drag scroll container */}
+        <div
+          ref={scrollRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+          className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 scroll-smooth cursor-grab active:cursor-grabbing select-none"
+        >
           {bestsellers.map((product) => {
             const discount = Math.round(
-              ((product.originalPrice - product.price) / product.originalPrice) * 100
+              ((product.originalPrice - product.price) / product.originalPrice) *
+                100
             );
 
             return (
               <div
                 key={product.id}
-                className="flex-shrink-0 w-1/2 sm:w-1/3 md:w-60 bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 relative group p-3 flex flex-col justify-between"
+                className="snap-start flex-shrink-0 bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 relative group p-4 flex flex-col justify-between"
+                style={{
+                  width: "45vw", // 2 per view on mobile
+                  minWidth: "45vw",
+                }}
               >
-                {/* Heart Icon */}
+                {/* ❤️ Heart Icon */}
                 <div className="absolute top-3 right-3 z-20 text-pink-500 cursor-pointer opacity-80 hover:opacity-100 transition text-lg">
                   <FaHeart />
                 </div>
 
-                {/* Discount Badge */}
+                {/* 🔖 Discount Badge */}
                 {discount > 0 && (
                   <div className="absolute top-3 left-3 z-20 bg-pink-500 text-white text-xs font-semibold px-2 py-1 rounded-md shadow">
                     {discount}% OFF
                   </div>
                 )}
 
-                {/* Product Image */}
+                {/* 🖼 Product Image */}
                 <div
-                  className="w-full h-36 flex justify-center items-center mb-2 cursor-pointer relative z-10"
+                  className="w-full h-40 flex justify-center items-center mb-3 cursor-pointer"
                   onClick={() => navigate(`/product/${product.id}`)}
                 >
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="h-full object-contain transition-transform duration-300 group-hover:scale-105 relative z-10"
+                    className="h-full object-contain transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
 
-                {/* Product Info */}
+                {/* 📝 Product Info */}
                 <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-1">
                   {product.name}
                 </h3>
-                <p className="text-gray-600 text-xs md:text-sm mb-2">{product.description}</p>
+                <p className="text-gray-600 text-xs md:text-sm mb-2">
+                  {product.description}
+                </p>
 
-                {/* Price and Rating */}
+                {/* 💰 Price & ⭐ Rating */}
                 <div className="flex justify-between items-center mb-2 px-1 text-sm">
                   <div className="flex items-center gap-1">
-                    <p className="text-pink-500 font-medium text-sm">₹{product.price}</p>
+                    <p className="text-pink-500 font-medium text-sm">
+                      ₹{product.price}
+                    </p>
                     <p className="text-gray-400 line-through text-xs">
                       ₹{product.originalPrice}
                     </p>
                   </div>
                   <div className="flex items-center">
                     <FaStar className="text-yellow-400 text-xs" />
-                    <span className="ml-1 text-gray-600 text-xs">{product.rating}</span>
+                    <span className="ml-1 text-gray-600 text-xs">
+                      {product.rating}
+                    </span>
                   </div>
                 </div>
 
-                {/* Buttons */}
+                {/* 🛒 Buttons */}
                 <div className="flex flex-col md:flex-row gap-2">
                   <button className="flex-1 bg-pink-500 text-white font-semibold py-1 rounded-lg hover:bg-pink-600 transition text-sm">
                     Add to Cart
@@ -137,6 +232,28 @@ export default function RelatedProduct() {
           })}
         </div>
       </div>
+
+      <style>{`
+        @media (min-width: 768px) {
+          .snap-start {
+            width: 20vw !important;
+            min-width: 20vw !important;
+          }
+        }
+
+        /* Hide scrollbar */
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+        .scroll-smooth {
+          scroll-behavior: smooth;
+        }
+      `}</style>
     </section>
   );
 }
