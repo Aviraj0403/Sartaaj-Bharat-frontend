@@ -138,7 +138,7 @@ export default function BestsellerSection() {
   }, []);
 
   return (
-    <section className="py-10 bg-white relative">
+    <section className=" bg-white relative">
       <div className="max-w-7xl mx-auto px-4 relative">
         <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-6 text-center">
           Bestseller Products
