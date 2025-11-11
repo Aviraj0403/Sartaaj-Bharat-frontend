@@ -11,6 +11,7 @@ import CheckoutPage from "./checkout/CheckoutPage.jsx";
 import AuthPage from "./authentication/AuthPage.jsx";
 import NewProductsPage from "./pages/NewProductsPage.jsx";
 import ProductDetails from "./pages/home/ProductDetails.jsx";
+import CategoryDetails from "./pages/home/CategoryDetails.jsx";
 
 // import Login from "./authentication/Login.jsx";
 // import Signup from "./authentication/Signup.jsx";
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
       { path: "/checkout", element: <CheckoutPage/> },
       { path: "/new-product", element: <NewProductsPage/> },
       { path: "/product/:id", element: <ProductDetails /> },
-      
+      {path: "/category/:id", element: <CategoryDetails/>},
 
 
       // {path: "/auth", element: < Login/>},
