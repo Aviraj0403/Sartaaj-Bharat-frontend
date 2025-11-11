@@ -144,7 +144,7 @@ export default function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-gray-200 py-5 px-6 md:px-20 flex flex-col md:flex-row justify-between items-center text-gray-600 text-sm gap-3">
         <p className="text-center md:text-left">
-          © 2024 BeautyGlow. All rights reserved. Made with{" "}
+          © 2025 GurpreetKaurStore. All rights reserved. Made with{" "}
           <FaHeart className="inline text-pink-500" /> for beauty lovers.
         </p>
 
