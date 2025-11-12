@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Header from "./components/Header/header.jsx";
 import Footer from "./components/Footer/footer.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
-import  ProgressBar  from "./components/progressbar/ProgressBar.jsx";
+import ProgressBar from "./components/progressbar/ProgressBar.jsx";
 import { useWindowContext } from "./context/windowContext.jsx";
 
 const Layout = () => {
