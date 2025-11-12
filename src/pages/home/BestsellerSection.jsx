@@ -173,10 +173,17 @@ export default function BestsellerSection() {
           );
 
           return (
-           <div
+         <div
   key={product.id}
   className="flex-shrink-0 w-1/2 sm:w-60 md:w-52 lg:w-60 bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition p-3 flex flex-col justify-between relative group snap-start"
 >
+  {/* Bestseller Badge */}
+{/* Bestseller Badge */}
+<div className="absolute -top-3 right-0 bg-pink-500 z-20 text-white px-3 py-1 rounded-tl-xl rounded-bl-xl text-xs font-bold">
+  Bestseller
+</div>
+
+
   {/* Heart Icon */}
   <div className="absolute top-3 right-3 z-20 text-pink-500 cursor-pointer opacity-80 hover:opacity-100 transition text-lg">
     <FaHeart />
@@ -232,6 +239,7 @@ export default function BestsellerSection() {
     </button>
   </div>
 </div>
+
 
           );
         })}

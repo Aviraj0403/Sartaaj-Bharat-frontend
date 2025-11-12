@@ -1,9 +1,9 @@
-  import React from "react";
-  import { FaStar, FaHeart } from "react-icons/fa";
-  import { useNavigate } from "react-router-dom";
+import React from "react";
+import { FaStar, FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-  const newArrivals = [
-    {
+const newArrivals = [
+      {
       id: 1,
       name: "Rose Glow Toner",
       description: "Refreshes and tones your skin with a natural rose scent.",
@@ -153,27 +153,25 @@
         "https://www.gurmeetkaurstore.in/uploads/57161Nice_&_Naughty_Bombshell_Lipistick_Mix_Color_D.png",
       rating: 4.9,
     },
-  ];
+];
 
-
-
-export default function NewProductsPage() {
+export default function HomeNewArrivals() {
   const navigate = useNavigate();
+
+  const topNewArrivals = newArrivals.slice(0, 10); // 10 products for 2 rows × 5 cols
 
   return (
     <section className="py-10 bg-white">
       <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-8 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-6 text-center">
           New Arrivals
         </h2>
 
-        {/* Full grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {newArrivals.map((product) => {
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-5 gap-4">
+          {topNewArrivals.map((product) => {
             const discount = Math.round(
               ((product.originalPrice - product.price) / product.originalPrice) * 100
             );
-
             return (
               <div
                 key={product.id}
@@ -232,6 +230,15 @@ export default function NewProductsPage() {
               </div>
             );
           })}
+        </div>
+
+        <div className="text-center mt-6">
+          <button
+            onClick={() => navigate("/new-products")}
+            className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-lg hover:bg-pink-600 transition"
+          >
+            Explore New Arrivals
+          </button>
         </div>
       </div>
     </section>

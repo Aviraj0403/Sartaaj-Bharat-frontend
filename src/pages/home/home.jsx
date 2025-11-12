@@ -3,6 +3,9 @@ import BannerSlider from "./BannerSlider";
 import CategorySlider from "./CategorySlider";
 import BestsellerSection from "./BestsellerSection";
 import PromoSection from "./PromoSection";
+import HomeNewArrivals from "../HomeNewArrivals";
+
+
 
 function Home() {
   return (
@@ -11,6 +14,7 @@ function Home() {
       <CategorySlider />
       <BestsellerSection />
       <PromoSection />
+      <HomeNewArrivals />
       {/* other homepage sections */}
     </div>
   );
