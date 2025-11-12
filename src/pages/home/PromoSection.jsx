@@ -1,0 +1,59 @@
+import React from "react";
+import img1 from "../../image/Dr Rashel Cart1.png";
+import img2 from "../../image/Hilary Rhoda Cart 4.png";
+import img3 from "../../image/Maliuo Cart 3.png";
+import img4 from "../../image/Mars Cart 2.png";
+
+const products = [
+  {
+    brand: "mamaearth",
+    image: img1,
+    offer: "GET 2 MINIS ON ₹349",
+    extra: "Extra 5% off on ₹399 + Upto 50% off",
+  },
+  {
+    brand: "DERMDOC",
+    image: img2,
+    offer: "GET A FREE GIFT ON ₹499",
+    extra: "Extra 5% off on ₹399",
+  },
+  {
+    brand: "ALPS",
+    image: img3,
+    offer: "GET A FREE GIFT ON ₹499",
+    extra: "Extra 5% off on ₹299",
+  },
+  {
+    brand: "LAKMÉ",
+    image: img4,
+    offer: "MINIMUM 30% OFF",
+    extra: "on Body Lotion & Moisturizer",
+  },
+];
+
+export default function PromoSection() {
+  return (
+    <section className="bg-white py-12">
+      <div className="max-w-7xl mx-auto px-0"> {/* Removed padding */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-0">
+          {products.map((product, idx) => (
+            <div
+              key={idx}
+              className="flex flex-col items-center text-center" // Removed padding and bg-white
+            >
+              <img
+                src={product.image}
+                alt={product.brand}
+                className="w-full h-60 object-cover" // Increased size and cover
+              />
+              <div className="bg-white w-full py-2"> {/* Text container */}
+                <h3 className="font-bold text-lg text-gray-900">{product.offer}</h3>
+                <p className="text-gray-600 text-sm">{product.extra}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

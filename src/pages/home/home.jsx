@@ -2,6 +2,7 @@ import React from "react";
 import BannerSlider from "./BannerSlider";
 import CategorySlider from "./CategorySlider";
 import BestsellerSection from "./BestsellerSection";
+import PromoSection from "./PromoSection";
 
 function Home() {
   return (
@@ -9,6 +10,7 @@ function Home() {
       <BannerSlider />
       <CategorySlider />
       <BestsellerSection />
+      <PromoSection />
       {/* other homepage sections */}
     </div>
   );
