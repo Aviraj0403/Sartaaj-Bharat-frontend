@@ -161,7 +161,7 @@ export default function HomeNewArrivals() {
   const topNewArrivals = newArrivals.slice(0, 10); // 10 products for 2 rows × 5 cols
 
   return (
-    <section className="py-10 bg-white">
+    <section className="py-5 bg-white">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-6 text-center">
           New Arrivals
