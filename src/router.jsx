@@ -28,17 +28,17 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "/profile", element: <ProfilePage /> },
       { path: "/order/12345", element: <OrderDetails /> },
-      
+
       { path: "/cart", element: <CartPage /> },
-      { path: "/checkout", element: <CheckoutPage/> },
-      { path: "/new-product", element: <NewProductsPage/> },
+      { path: "/checkout", element: <CheckoutPage /> },
+      { path: "/new-product", element: <NewProductsPage /> },
       { path: "/product/:id", element: <ProductDetails /> },
-      {path: "/category/:id", element: <CategoryDetails/>},
-      
+      { path: "/category/:id", element: <CategoryDetails /> },
+
 
 
       // {path: "/auth", element: < Login/>},
-      {path: "/auth", element: < AuthPage/>},
+      { path: "/auth", element: < AuthPage /> },
     ],
   },
   {
