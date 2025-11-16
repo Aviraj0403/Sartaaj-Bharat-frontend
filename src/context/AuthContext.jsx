@@ -1,5 +1,5 @@
 // src/context/AuthContext.jsx
-import { createContext, useContext, useState, useEffect } from "react";
+import React , { createContext, useContext, useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 // import { clearCart } from "../features/cart/cartSlice";
@@ -23,7 +23,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [cartSyncing, setCartSyncing] = useState(false);
+  // const [cartSyncing, setCartSyncing] = useState(false);
   const [verificationId, setVerificationId] = useState(null);
 
   const dispatch = useDispatch();
@@ -101,7 +101,7 @@ export const AuthProvider = ({ children }) => {
   };
   const logout = async () => {
     await Axios.post("/auth/user/logout", {}, { withCredentials: true });
-    dispatch(clearCart());
+    // dispatch(clearCart());
     setUser(null);
     queryClient.clear();
   };
@@ -111,7 +111,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         loading,
-        cartSyncing,
+        // cartSyncing,
         login,
         googleLogin,
         sendOtp,

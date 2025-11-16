@@ -12,7 +12,7 @@ import AuthPage from "./authentication/AuthPage.jsx";
 import NewProductsPage from "./pages/NewProductsPage.jsx";
 import ProductDetails from "./pages/home/ProductDetails.jsx";
 import CategoryDetails from "./pages/home/CategoryDetails.jsx";
-
+import SignInPage from "./pages/auth/SignInPage.jsx";
 // import Login from "./authentication/Login.jsx";
 // import Signup from "./authentication/Signup.jsx";
 
@@ -26,6 +26,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Home /> },
+      { path: "/signin", element: <SignInPage /> },
       { path: "/profile", element: <ProfilePage /> },
       { path: "/order/12345", element: <OrderDetails /> },
 

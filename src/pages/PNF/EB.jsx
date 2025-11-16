@@ -8,10 +8,12 @@ class EB extends Component {
   }
 
   static getDerivedStateFromError(error) {
+    // Update state to indicate that an error has occurred
     return { hasError: true };
   }
 
   componentDidCatch(error, info) {
+    // Log the error to the console for debugging
     this.setState({ error, info });
     console.error("Error caught by Error Boundary: ", error, info);
   }
@@ -20,67 +22,94 @@ class EB extends Component {
     if (this.state.hasError) {
       return (
         <div style={styles.container}>
-          <img
-            src="/rest1.png"
-            alt="Error Illustration"
-            style={styles.image}
-          />
-          <h2 style={styles.title}>Oops! Something went wrong.</h2>
-          <p style={styles.message}>
-            Looks like our kitchen had a little fire 🔥. Don’t worry, we’re fixing it!  
-          </p>
-          <Link to="/" style={styles.button}>
-            Go Back Home
-          </Link>
+          <div style={styles.overlay}>
+            <img
+              src="/beauty.gif" // Background GIF
+              alt="Beauty Shop Error"
+              style={styles.backgroundImage}
+            />
+          </div>
+          <div style={styles.content}>
+            <h2 style={styles.title}>Oops! Something Went Wrong!</h2>
+            <p style={styles.message}>
+              Looks like our beauty magic got interrupted. 🔥 We're fixing it as fast as we can!
+            </p>
+            <p style={styles.message}>
+              Meanwhile, why not take a look at our other fabulous services? 💅
+            </p>
+            {/* Fallback: Use a standard <a> tag if Link is causing issues */}
+            <a href="/" style={styles.button}>Return to Beauty Home</a>
+          </div>
         </div>
       );
     }
+
+    // Render the children when there's no error
     return this.props.children;
   }
 }
 
 const styles = {
   container: {
-    minHeight: "100vh",
+    position: "relative",
+    minHeight: "100vh", // Ensures full screen height
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
-    background: "linear-gradient(135deg, #fff3e6, #ffe0cc)",
-    padding: "20px",
+    overflow: "hidden", // Prevents overflow if background image is too large
   },
-  image: {
-    maxWidth: "280px",
-    marginBottom: "20px",
+  overlay: {
+    position: "absolute", // Positions the overlay behind the content
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    zIndex: -1, // Ensures the image stays behind the text
+  },
+  backgroundImage: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%", // Full width of the container
+    height: "100%", // Full height of the container
+    objectFit: "cover", // Ensures the image covers the entire container while maintaining aspect ratio
+  },
+  content: {
+    zIndex: 1, // Makes sure the content stays on top of the background image
+    position: "relative",
+    padding: "20px",
+    maxWidth: "600px", // Prevents text from getting too wide on larger screens
   },
   title: {
-    fontSize: "1.8rem",
+    fontSize: "2rem", // Larger font size for emphasis
     fontWeight: "700",
-    color: "#d84315",
-    marginBottom: "10px",
+    color: "#006a6a", // Marine blue-green for the title
+    marginBottom: "15px",
     fontFamily: "Segoe UI, sans-serif",
   },
   message: {
-    fontSize: "1rem",
-    color: "#444",
-    maxWidth: "400px",
-    marginBottom: "20px",
+    fontSize: "1.2rem", // Slightly larger text for better readability
+    color: "#880e4f", // Marine blue-green for the text
+    maxWidth: "750px",
+    marginBottom: "25px",
   },
   button: {
     display: "inline-block",
-    padding: "10px 20px",
-    background: "#ff7043",
+    padding: "12px 24px",
+    background: "#c2185b", // Beauty pink button color
     color: "#fff",
     textDecoration: "none",
-    borderRadius: "6px",
+    borderRadius: "8px",
     fontWeight: "600",
     transition: "background 0.3s ease",
   },
 };
 
-styles.button[":hover"] = {
-  background: "#d84315",
+// Add hover effect manually to the button
+styles.button["&:hover"] = {
+  background: "#880e4f", // Darker pink on hover
 };
 
 export default EB;
