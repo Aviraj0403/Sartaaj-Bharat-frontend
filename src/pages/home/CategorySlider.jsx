@@ -1,43 +1,40 @@
 import React, { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import makeupCat from "../../image/9.png";
-import lipcareCat from "../../image/8 (1).png";
-import skincareCat from "../../image/9 (1).png";
-import haircareCat from "../../image/7.png";
-import nailpaintCat from "../../image/9.png";
-import fragranceCat from "../../image/10.png";
-import bodylotionCat from "../../image/11.png";
-import accessoriesCat from "../../image/12.png";
 import { useNavigate } from "react-router-dom";
-
-const categories = [
-  { id: 1, title: "Makeup", image: makeupCat },
-  { id: 2, title: "Lip Care", image: lipcareCat },
-  { id: 3, title: "Skin Care", image: skincareCat },
-  { id: 4, title: "Hair Care", image: haircareCat },
-  { id: 5, title: "Nail Paint", image: nailpaintCat },
-  { id: 6, title: "Fragrance", image: fragranceCat },
-  { id: 7, title: "Body Lotion", image: bodylotionCat },
-  { id: 8, title: "Accessories", image: accessoriesCat },
-];
+import { useQuery } from "@tanstack/react-query";  // Import React Query hook
+import { getMenuCategories } from "../../services/categoryApi";  // API function for fetching categories
 
 export default function CategorySlider() {
   const scrollRef = useRef(null);
   const navigate = useNavigate();
+
   let isDown = false;
   let startX;
   let scrollLeft;
-const handleCategoryClick = (categoryId) => {
-    navigate(`/category/${categoryId}`); // navigate to dynamic route
+
+  // Fetch categories using React Query
+  const { data: menuItems, isLoading, isError, error } = useQuery({
+    queryKey: ["categories"],  // Query key
+    queryFn: getMenuCategories,  // Fetch function
+    onError: (err) => {
+      console.error("Error fetching categories:", err);
+    },
+  });
+  console.log(menuItems);  // Ensure the categories data is correct
+
+  // Handle category click (navigate to category page)
+  const handleCategoryClick = (slug) => {
+    navigate(`/${slug}`); // Navigate to dynamic category page using slug
   };
-  // ✅ Scroll with arrows
+
+  // Scroll function
   const scroll = (direction) => {
     const { current } = scrollRef;
     if (direction === "left") current.scrollBy({ left: -250, behavior: "smooth" });
     else current.scrollBy({ left: 250, behavior: "smooth" });
   };
 
-  // ✅ Mouse drag scroll
+  // Mouse drag scroll
   const handleMouseDown = (e) => {
     isDown = true;
     scrollRef.current.classList.add("cursor-grabbing");
@@ -68,10 +65,16 @@ const handleCategoryClick = (categoryId) => {
           Shop by Categories
         </h2>
         <div className="flex items-center gap-3">
-          <button onClick={() => scroll("left")} className="p-2 bg-pink-100 text-pink-600 rounded-full shadow hover:bg-pink-500 hover:text-white transition-all duration-300">
+          <button
+            onClick={() => scroll("left")}
+            className="p-2 bg-pink-100 text-pink-600 rounded-full shadow hover:bg-pink-500 hover:text-white transition-all duration-300"
+          >
             <ChevronLeft size={22} />
           </button>
-          <button onClick={() => scroll("right")} className="p-2 bg-pink-100 text-pink-600 rounded-full shadow hover:bg-pink-500 hover:text-white transition-all duration-300">
+          <button
+            onClick={() => scroll("right")}
+            className="p-2 bg-pink-100 text-pink-600 rounded-full shadow hover:bg-pink-500 hover:text-white transition-all duration-300"
+          >
             <ChevronRight size={22} />
           </button>
         </div>
@@ -82,23 +85,41 @@ const handleCategoryClick = (categoryId) => {
         <div
           ref={scrollRef}
           className="flex overflow-x-auto scrollbar-hide cursor-grab select-none scroll-smooth space-x-4 px-2"
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
         >
-          {categories.map((cat) => (
+          {/* Loading State */}
+          {isLoading && (
+            <div className="w-full text-center text-pink-600">Loading...</div>
+          )}
+
+          {/* Error State */}
+          {isError && (
+            <div className="w-full text-center text-red-600">
+              Error fetching categories. Please try again later.
+            </div>
+          )}
+
+          {/* Display Categories if available */}
+          {!isLoading && !isError && menuItems?.map((cat) => (
             <div
-              key={cat.id}
-              onClick={() => handleCategoryClick(cat.id)} // ✅ added click
+              key={cat._id}
+              onClick={() => handleCategoryClick(cat.slug)} // Handle category click
               className="flex-shrink-0 w-[48%] sm:w-[200px] cursor-pointer group relative"
             >
               <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105">
+                {/* Display category image */}
                 <img
-                  src={cat.image}
-                  alt={cat.title}
+                  src={cat.image[0]}  // Display first image in the array
+                  alt={cat.name}
                   className="w-full h-[130px] sm:h-[150px] object-contain"
                 />
                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-all"></div>
               </div>
               <h3 className="text-center mt-3 font-semibold text-gray-700 group-hover:text-pink-600 text-sm sm:text-base">
-                {cat.title}
+                {cat.name}
               </h3>
             </div>
           ))}

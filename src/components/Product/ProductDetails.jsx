@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
-import RelatedProduct from "../home/RelatedProduct"; // adjust path if needed
+import RelatedProduct from "../../pages/home/RelatedProduct"; // adjust path if needed
 
 
 export default function ProductDetails() {

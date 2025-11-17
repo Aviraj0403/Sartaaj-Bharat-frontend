@@ -11,59 +11,47 @@ import {
 } from "lucide-react";
 import { FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 import logo from "../../image/logo-cosmetic2.jpg";
+import { useQuery } from "@tanstack/react-query";  // Import useQuery from React Query
+import { getMenuCategories } from "../../services/categoryApi";  // Import the API function
+import { useAuth } from "../../context/AuthContext";  // Import useAuth hook
 
 export default function DesktopHeader() {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState(null);
+  const { user, logout } = useAuth();  // Access user and logout from AuthContext
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/auth");
+  // Fetch categories using React Query's useQuery hook
+  const { data: menuItems, isLoading, isError, error } = useQuery({
+    queryKey: ["categories"],  // Query key
+    queryFn: getMenuCategories,  // Fetch function
+    onError: (err) => {
+      console.error("Error fetching categories:", err);
+    },
+  });
+
+  const handleLogout = async () => {
+    await logout();  // Call the logout function from AuthContext
+    navigate("/signin");  // Redirect to the sign-in page after logging out
   };
 
-  // ✅ Menu items with submenus
-  const menuItems = [
-    {
-      name: "Face Makeup",
-      path: "/face-makeup",
-      subItems: ["Foundation", "Primer", "Blush", "Concealer"],
-    },
-    {
-      name: "Lip Care & Makeup",
-      path: "/lip-care",
-      subItems: ["Lipstick", "Lip Gloss", "Lip Balm"],
-    },
-    {
-      name: "Skin Care",
-      path: "/skin-care",
-      subItems: ["Serum", "Moisturizer", "Sunscreen"],
-    },
-    {
-      name: "Hair Care",
-      path: "/hair-care",
-      subItems: ["Shampoo", "Conditioner", "Hair Oil"],
-    },
-    {
-      name: "Nails",
-      path: "/nails",
-      subItems: ["Nail Polish", "Remover", "Tools"],
-    },
-    {
-      name: "Fragrances",
-      path: "/fragrances",
-      subItems: ["Perfume", "Body Mist"],
-    },
-    {
-      name: "New Products",
-      path: "/new-product",
-      subItems: [],
-    },
-    {
-      name: "collections",
-      path: "/new-product",
-      subItems: [],
-    },
-  ];
+  // Loading and error handling
+  if (isLoading) {
+    return (
+      <header className="w-full border-b border-pink-100">
+        <div className="bg-gray-200 text-center py-4">Loading...</div>
+      </header>
+    );
+  }
+
+  if (isError) {
+    return (
+      <header className="w-full border-b border-pink-100">
+        <div className="bg-red-100 text-center py-4">
+          Failed to load categories. {error?.message}
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="w-full border-b border-pink-100">
@@ -141,64 +129,74 @@ export default function DesktopHeader() {
       <div className="flex justify-between items-center px-8 py-3 bg-white shadow-md relative z-50">
         {/* Logo */}
         <div className="flex items-center gap-3">
-  <Link to="/">
-    <img
-      src={logo}
-      alt="Logo"
-      className="h-12 w-auto object-contain cursor-pointer hover:scale-105 transition-transform duration-300"
-    />
-  </Link>
-</div>
+          <Link to="/">
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-12 w-auto object-contain cursor-pointer hover:scale-105 transition-transform duration-300"
+            />
+          </Link>
+        </div>
 
-        {/* 🛍️ Middle Menu Items with dropdown */}
-      {/* 🛍️ Middle Menu Items with dropdown + active underline animation */}
-<div className="flex-1 flex justify-center">
-  <ul className="flex items-center gap-5 text-gray-800 font-semibold relative">
-    {menuItems.map((item, index) => (
-      <li
-        key={index}
-        className="relative group"
-        onMouseEnter={() => setActiveMenu(index)}
-        onMouseLeave={() => setActiveMenu(null)}
-      >
-        <Link
-          to={item.path}
-          className="flex items-center gap-1 relative py-1
-                     after:content-[''] after:absolute after:left-0 after:bottom-0 
-                     after:w-0 after:h-[2px] after:bg-pink-500 after:transition-all after:duration-300
-                     group-hover:after:w-full hover:text-pink-600"
-        >
-          {item.name}
-          {item.subItems.length > 0 && (
-            <ChevronDown size={16} className="mt-0.5" />
-          )}
-        </Link>
-
-        {/* 🔽 Dropdown */}
-        {item.subItems.length > 0 && activeMenu === index && (
-          <ul className="absolute top-8 left-0 bg-white border border-pink-100 shadow-lg rounded-md w-44 py-2 z-50">
-            {item.subItems.map((sub, subIndex) => (
-              <li key={subIndex}>
+        {/* 🛍️ Middle Menu Items with dropdown + active underline animation */}
+        <div className="flex-1 flex justify-center">
+          <ul className="flex items-center gap-5 text-gray-800 font-semibold relative">
+            {menuItems.map((item, index) => (
+              <li
+                key={index}
+                className="relative group"
+                onMouseEnter={() => setActiveMenu(index)}
+                onMouseLeave={() => setActiveMenu(null)}
+              >
                 <Link
-                  to={`${item.path}/${sub
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")}`}
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition"
+                  to={`/category/${item.slug}`}
+                  className="flex items-center gap-1 relative py-1
+                            after:content-[''] after:absolute after:left-0 after:bottom-0 
+                            after:w-0 after:h-[2px] after:bg-pink-500 after:transition-all after:duration-300
+                            group-hover:after:w-full hover:text-pink-600"
                 >
-                  {sub}
+                  {item.name}
+                  {item.subcategories.length > 0 && (
+                    <ChevronDown size={16} className="mt-0.5" />
+                  )}
                 </Link>
+
+                {/* 🔽 Dropdown */}
+                {item.subcategories.length > 0 && activeMenu === index && (
+                  <ul className="absolute top-8 left-0 bg-white border border-pink-100 shadow-lg rounded-md w-44 py-2 z-50">
+                    {item.subcategories.map((sub, subIndex) => (
+                      <li key={subIndex}>
+                        <Link
+                          to={`/category/${item.slug}/${sub.slug}`}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition"
+                        >
+                          {sub.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
-        )}
-      </li>
-    ))}
-  </ul>
-</div>
-
+        </div>
 
         {/* 🛒 Right Icons */}
         <div className="flex items-center gap-6 text-gray-700">
+          {/* If user is logged in, display the user's name */}
+          {user ? (
+            <span className="text-gray-800 font-semibold">
+              {user.userName} {/* Adjust the field based on your response structure */}
+            </span>
+          ) : (
+            <Link
+              to="/signin"
+              className="cursor-pointer hover:text-pink-600 transition"
+            >
+              Sign In
+            </Link>
+          )}
+
           <Link
             to="/cart"
             className="cursor-pointer hover:text-pink-600 transition"
@@ -213,11 +211,13 @@ export default function DesktopHeader() {
             />
           </Link>
 
-          <LogOut
-            className="cursor-pointer hover:text-pink-600 transition"
-            size={22}
-            onClick={handleLogout}
-          />
+          {user && (
+            <LogOut
+              className="cursor-pointer hover:text-pink-600 transition"
+              size={22}
+              onClick={handleLogout} // Call logout on click
+            />
+          )}
         </div>
       </div>
     </header>

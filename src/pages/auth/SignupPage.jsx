@@ -1,12 +1,12 @@
 // src/pages/SignupPage.jsx
 import React, { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
 import { FaUser, FaEnvelope, FaLock, FaPhone } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Axios from "../utils/Axios"; // Your Axios instance
+import Axios from "../../utils/Axios"; // Your Axios instance
 
 const SignupPage = () => {
   const [form, setForm] = useState({
