@@ -1,20 +1,47 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import { FaStar, FaHeart } from "react-icons/fa";
-import RelatedProduct from "../../pages/home/RelatedProduct"; // adjust path if needed
-
+import { useQuery } from "@tanstack/react-query";
+import { getProductBySlug } from "../../services/productApi"; // Adjust the path if necessary
+import RelatedProduct from "../../pages/home/RelatedProduct"; // Adjust path if needed
 
 export default function ProductDetails() {
-  const [mainImage, setMainImage] = useState(
-    "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png"
-  );
-  const [activeTab, setActiveTab] = useState("description");
+  const { slug } = useParams(); // Get the product slug from the URL
+  const [mainImage, setMainImage] = useState(null);
+  const [activeTab, setActiveTab] = useState("description"); // State for active tab
+  const [selectedVariant, setSelectedVariant] = useState(null); // Manage the selected variant
 
-  const images = [
-    "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
-    "https://www.gurmeetkaurstore.in/uploads/67814ADS_Pro_sensual_Pro_Skin_Primer.png",
-    "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
-    "https://www.gurmeetkaurstore.in/uploads/93366HR_Foundation_Nude_04.jpg",
-  ];
+  // Fetch product details using React Query
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["product", slug],
+    queryFn: () => getProductBySlug(slug),
+    enabled: !!slug, // Ensure query is only triggered if slug is available
+  });
+
+  // Handle loading and error states
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading product details</div>;
+  }
+
+  const product = data?.product; // Get the product data from the response
+  if (!product) return <div>No product found</div>; // Handle case where no product is returned
+
+  const { name, category, description, variants, pimages, rating, reviewCount, productCode, tags, additionalInfo } = product;
+
+  // Set the main image to the first image from the product
+  if (!mainImage) {
+    setMainImage(pimages[0]);
+    setSelectedVariant(variants[0]); // Default to the first variant if no variant is selected
+  }
+
+  // Handle variant selection (size or volume)
+  const handleSizeSelect = (variant) => {
+    setSelectedVariant(variant);
+  };
 
   return (
     <div className="bg-white min-h-screen py-5 px-4 sm:px-8">
@@ -22,9 +49,8 @@ export default function ProductDetails() {
         <div className="flex flex-col lg:flex-row gap-10">
           {/* LEFT — IMAGE GALLERY */}
           <div className="flex-1 flex flex-col lg:flex-row items-center lg:items-start">
-            {/* Thumbnails (VERTICAL on desktop, horizontal on mobile) */}
             <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible scrollbar-hide py-2 w-full lg:w-auto lg:mr-4 order-2 lg:order-1">
-              {images.map((img, i) => (
+              {pimages.map((img, i) => (
                 <img
                   key={i}
                   src={img}
@@ -52,10 +78,8 @@ export default function ProductDetails() {
 
           {/* RIGHT — PRODUCT INFO */}
           <div className="flex-1">
-            <p className="text-sm text-gray-500 mb-1">Skin Care</p>
-            <h1 className="text-2xl font-semibold text-gray-800 mb-2">
-              Hydrating Serum
-            </h1>
+            <p className="text-sm text-gray-500 mb-1">{category.name}</p>
+            <h1 className="text-2xl font-semibold text-gray-800 mb-2">{name}</h1>
 
             {/* Rating */}
             <div className="flex items-center gap-2 mb-3">
@@ -64,40 +88,39 @@ export default function ProductDetails() {
                   <FaStar
                     key={i}
                     className={`${
-                      i < 4 ? "text-yellow-400" : "text-gray-300"
+                      i < Math.round(rating) ? "text-yellow-400" : "text-gray-300"
                     } text-sm`}
                   />
                 ))}
               </div>
-              <span className="text-gray-600 text-sm">(245 Reviews)</span>
+              <span className="text-gray-600 text-sm">({reviewCount || "332"} Reviews)</span>
             </div>
 
             {/* Price */}
             <div className="flex items-center gap-3 mb-4">
-              <p className="text-2xl font-bold text-pink-500">₹999</p>
-              <p className="text-gray-400 line-through">₹1,299</p>
+              <p className="text-2xl font-bold text-pink-500">₹{selectedVariant?.price}</p>
+              <p className="text-gray-400 line-through">₹{selectedVariant?.realPrice}</p>
               <span className="bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-md">
                 In Stock
               </span>
             </div>
 
             {/* Description */}
-            <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-              Deeply hydrates and revitalizes your skin. Perfect for normal,
-              dry, and sensitive skin types. Infused with Vitamin C for a
-              natural glow.
-            </p>
+            <p className="text-gray-600 text-sm mb-4 leading-relaxed">{description}</p>
 
-            {/* Size / Volume */}
+            {/* Variants (Size / Volume) */}
             <div className="mb-5">
               <p className="text-gray-700 font-medium mb-2">Variants</p>
               <div className="flex gap-2">
-                {["30ml", "60ml", "100ml"].map((size, i) => (
+                {variants.map((variant, i) => (
                   <button
                     key={i}
-                    className="border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition"
+                    onClick={() => handleSizeSelect(variant)}
+                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${
+                      selectedVariant?.size === variant.size ? "bg-pink-100" : ""
+                    }`}
                   >
-                    {size}
+                    {variant.size}
                   </button>
                 ))}
               </div>
@@ -124,12 +147,10 @@ export default function ProductDetails() {
             {/* SKU + Tags */}
             <div className="text-sm text-gray-500 space-y-1">
               <p>
-                <span className="font-medium text-gray-700">SKU:</span>{" "}
-                GRFR85648HGJ
+                <span className="font-medium text-gray-700">SKU:</span> {productCode}
               </p>
               <p>
-                <span className="font-medium text-gray-700">Tags:</span> Skincare,
-                Serums, Vitamin C
+                <span className="font-medium text-gray-700">Tags:</span> {tags.join(", ")}
               </p>
             </div>
           </div>
@@ -142,11 +163,7 @@ export default function ProductDetails() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-2 font-medium capitalize ${
-                  activeTab === tab
-                    ? "text-pink-500 border-b-2 border-pink-500"
-                    : "text-gray-500 hover:text-pink-500"
-                }`}
+                className={`pb-2 font-medium capitalize ${activeTab === tab ? "text-pink-500 border-b-2 border-pink-500" : "text-gray-500 hover:text-pink-500"}`}
               >
                 {tab === "additional" ? "Additional Information" : tab}
               </button>
@@ -154,47 +171,40 @@ export default function ProductDetails() {
           </div>
 
           {activeTab === "description" && (
-            <div className="text-gray-600 text-sm leading-relaxed">
-              This Hydrating Serum helps to boost skin hydration levels,
-              restoring a fresh and dewy appearance. Ideal for both morning and
-              evening routines.
-            </div>
+            <div className="text-gray-600 text-sm leading-relaxed">{description}</div>
           )}
           {activeTab === "additional" && (
             <table className="w-full text-sm text-gray-700 border">
               <tbody>
                 <tr className="border-b">
                   <td className="p-3 font-medium w-1/3">Skin Type</td>
-                  <td className="p-3">
-                    Normal, Oily, Dry, Combination, Sensitive skin
-                  </td>
+                  <td className="p-3">{additionalInfo.skinType}</td>
                 </tr>
                 <tr className="border-b">
                   <td className="p-3 font-medium">Shelf Life</td>
-                  <td className="p-3">24 months</td>
+                  <td className="p-3">{additionalInfo.shelfLife} months</td>
                 </tr>
                 <tr className="border-b">
                   <td className="p-3 font-medium">Application Time</td>
-                  <td className="p-3">Morning and Evening</td>
+                  <td className="p-3">{additionalInfo.applicationTime || "Morning to Evening"}</td>
                 </tr>
                 <tr>
-                  <td className="p-3 font-medium">Packaging</td>
-                  <td className="p-3">Recyclable Glass Bottle</td>
+                  <td className="p-3 font-medium">Concern</td>
+                  <td className="p-3">{additionalInfo?.usageInstructions || "NA"}</td>
                 </tr>
               </tbody>
             </table>
           )}
           {activeTab === "review" && (
             <div className="text-gray-600 text-sm">
-              <p>No reviews yet. Be the first to share your experience!</p>
+              <p>No reviews yet. Be the first to review this product!</p>
             </div>
           )}
         </div>
-        
       </div>
-    <RelatedProduct />
 
+      {/* Related Products */}
+      <RelatedProduct categorySlug={category.slug} />
     </div>
-    
   );
 }

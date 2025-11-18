@@ -12,7 +12,7 @@ export default function CategorySlider() {
   let startX;
   let scrollLeft;
 
-  // Fetch categories using React Query
+  // Fetch categories using React Query -- new tech mutation 
   const { data: menuItems, isLoading, isError, error } = useQuery({
     queryKey: ["categories"],  // Query key
     queryFn: getMenuCategories,  // Fetch function

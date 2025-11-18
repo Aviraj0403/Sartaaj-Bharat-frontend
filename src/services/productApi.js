@@ -21,3 +21,60 @@ export const getProductsByCategorySlug = async (slug, page = 1, limit = 20) => {
     return { success: false, products: [], pagination: {} };
   }
 };
+
+
+export const getMiniProducts = async (
+  page = 1, 
+  limit = 100, 
+  search = '', 
+  category = '', 
+  isHotProduct = '', 
+  isBestSeller = 'true', // Default isBestSeller to 'true'
+  isFeatured = ''
+) => {
+  try {
+    // Send GET request to fetch mini products with filters and pagination
+    const response = await Axios.get('/products/getminiversion', {
+      params: { 
+        page, 
+        limit, 
+        search, 
+        category, 
+        isHotProduct, 
+        isBestSeller, // Filter by Best Seller by default
+        isFeatured 
+      },
+    });
+
+    // Check if the response is successful
+    if (response.data && response.data.success) {
+      return response.data;
+    } else {
+      // If not successful, throw an error
+      throw new Error('Failed to fetch mini products');
+    }
+  } catch (error) {
+    // Log the error and provide fallback data
+    console.error('Error fetching mini products:', error);
+    return { success: false, products: [], pagination: {} };
+  }
+};
+
+
+export const getProductBySlug = async (slug) => {
+  try {
+    // Send GET request to fetch product by slug
+    const response = await Axios.get(`/products/getProduct/${slug}`);
+    
+    // Check if the response is successful
+    if (response.data && response.data.success) {
+      return response.data;  // Return the product data if successful
+    } else {
+      throw new Error('Failed to fetch product');
+    }
+  } catch (error) {
+    // Log the error and return fallback data
+    console.error('Error fetching product by slug:', error);
+    return { success: false, product: null };  // Returning null product in case of error
+  }
+};
