@@ -1,164 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
-const newArrivals = [
-      {
-      id: 1,
-      name: "Rose Glow Toner",
-      description: "Refreshes and tones your skin with a natural rose scent.",
-      price: 699,
-      originalPrice: 899,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/16495Mars_Magic_Shinw_Fix_Spray.jpg",
-      rating: 4.6,
-    },
-    {
-      id: 2,
-      name: "Matte Perfection Foundation",
-      description: "Gives flawless matte coverage for all-day wear.",
-      price: 999,
-      originalPrice: 1299,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/93366HR_Foundation_Nude_04.jpg",
-      rating: 4.8,
-    },
-    {
-      id: 3,
-      name: "Coconut Hair Serum",
-      description: "Repairs and nourishes dry, frizzy hair instantly.",
-      price: 599,
-      originalPrice: 799,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
-      rating: 4.7,
-    },
-    {
-      id: 4,
-      name: "Berry Bliss Lip Balm",
-      description: "Soft, tinted balm for smooth and hydrated lips.",
-      price: 349,
-      originalPrice: 499,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
-      rating: 4.5,
-    },
-    {
-      id: 5,
-      name: "Charcoal Detox Face Mask",
-      description: "Deep cleanses pores and gives a radiant glow.",
-      price: 849,
-      originalPrice: 1099,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/57161Nice_&_Naughty_Bombshell_Lipistick_Mix_Color_D.png",
-      rating: 4.9,
-    },
-    {
-      id: 1,
-      name: "Rose Glow Toner",
-      description: "Refreshes and tones your skin with a natural rose scent.",
-      price: 699,
-      originalPrice: 899,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/16495Mars_Magic_Shinw_Fix_Spray.jpg",
-      rating: 4.6,
-    },
-    {
-      id: 2,
-      name: "Matte Perfection Foundation",
-      description: "Gives flawless matte coverage for all-day wear.",
-      price: 999,
-      originalPrice: 1299,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/93366HR_Foundation_Nude_04.jpg",
-      rating: 4.8,
-    },
-    {
-      id: 3,
-      name: "Coconut Hair Serum",
-      description: "Repairs and nourishes dry, frizzy hair instantly.",
-      price: 599,
-      originalPrice: 799,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
-      rating: 4.7,
-    },
-    {
-      id: 4,
-      name: "Berry Bliss Lip Balm",
-      description: "Soft, tinted balm for smooth and hydrated lips.",
-      price: 349,
-      originalPrice: 499,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
-      rating: 4.5,
-    },
-    {
-      id: 5,
-      name: "Charcoal Detox Face Mask",
-      description: "Deep cleanses pores and gives a radiant glow.",
-      price: 849,
-      originalPrice: 1099,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/57161Nice_&_Naughty_Bombshell_Lipistick_Mix_Color_D.png",
-      rating: 4.9,
-    },
-    {
-      id: 1,
-      name: "Rose Glow Toner",
-      description: "Refreshes and tones your skin with a natural rose scent.",
-      price: 699,
-      originalPrice: 899,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/16495Mars_Magic_Shinw_Fix_Spray.jpg",
-      rating: 4.6,
-    },
-    {
-      id: 2,
-      name: "Matte Perfection Foundation",
-      description: "Gives flawless matte coverage for all-day wear.",
-      price: 999,
-      originalPrice: 1299,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/93366HR_Foundation_Nude_04.jpg",
-      rating: 4.8,
-    },
-    {
-      id: 3,
-      name: "Coconut Hair Serum",
-      description: "Repairs and nourishes dry, frizzy hair instantly.",
-      price: 599,
-      originalPrice: 799,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
-      rating: 4.7,
-    },
-    {
-      id: 4,
-      name: "Berry Bliss Lip Balm",
-      description: "Soft, tinted balm for smooth and hydrated lips.",
-      price: 349,
-      originalPrice: 499,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
-      rating: 4.5,
-    },
-    {
-      id: 5,
-      name: "Charcoal Detox Face Mask",
-      description: "Deep cleanses pores and gives a radiant glow.",
-      price: 849,
-      originalPrice: 1099,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/57161Nice_&_Naughty_Bombshell_Lipistick_Mix_Color_D.png",
-      rating: 4.9,
-    },
-];
+import { useQuery } from "@tanstack/react-query";  // Use React Query for fetching
+import { getMiniProducts } from "../services/productApi";  // Your dynamic API function
+import NewArrivalPC from "../components/Product/NewArrivalPC";  // Import the reusable product card
 
 export default function HomeNewArrivals() {
   const navigate = useNavigate();
 
-  const topNewArrivals = newArrivals.slice(0, 10); // 10 products for 2 rows × 5 cols
+const { data: productsData, isLoading, isError, error } = useQuery({
+  queryKey: ["miniProducts", { page: 1, limit: 10, isBestSeller: true }],
+  queryFn: getMiniProducts
+});
+
+
+  // Handle navigation to product details page
+  const handleProductClick = (slug) => {
+    navigate(`/product/${slug}`);
+  };
+
+  if (isLoading) {
+    return <div className="text-center text-pink-600">Loading...</div>;
+  }
+
+  if (isError) {
+    return <div className="text-center text-red-600">Error: {error.message}</div>;
+  }
+
+  const products = productsData?.products || [];
 
   return (
     <section className="py-5 bg-white">
@@ -168,68 +37,14 @@ export default function HomeNewArrivals() {
         </h2>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-5 gap-4">
-          {topNewArrivals.map((product) => {
-            const discount = Math.round(
-              ((product.originalPrice - product.price) / product.originalPrice) * 100
-            );
-            return (
-              <div
-                key={product.id}
-                className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 relative group p-3 flex flex-col justify-between"
-              >
-                <div className="absolute -top-3 right-3 z-30 bg-pink-500 text-white px-3 py-1 rounded-tl-xl rounded-bl-xl text-xs font-bold shadow">
-                  New
-                </div>
-
-                {discount > 0 && (
-                  <div className="absolute top-3 left-3 z-20 bg-pink-500 text-white text-xs font-semibold px-2 py-1 rounded-md shadow">
-                    {discount}% OFF
-                  </div>
-                )}
-
-                <div
-                  className="w-full h-24 md:h-36 flex justify-center items-center mb-2 cursor-pointer relative z-10"
-                  onClick={() => navigate(`/product/${product.id}`)}
-                >
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-full object-contain transition-transform duration-300 group-hover:scale-105 relative z-10"
-                  />
-                </div>
-
-                <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-1 text-left">
-                  {product.name}
-                </h3>
-                <p className="text-gray-600 text-xs md:text-sm mb-2 text-left">
-                  {product.description}
-                </p>
-
-                <div className="flex justify-between items-center mb-2 px-1 text-sm">
-                  <div className="flex items-center gap-1">
-                    <p className="text-pink-500 font-medium text-sm">₹{product.price}</p>
-                    <p className="text-gray-400 line-through text-xs">₹{product.originalPrice}</p>
-                  </div>
-                  <div className="flex items-center">
-                    <FaStar className="text-yellow-400 text-xs" />
-                    <span className="ml-1 text-gray-600 text-xs">{product.rating}</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row gap-2">
-                  <button className="flex-1 bg-pink-500 text-white font-semibold py-1 rounded-lg hover:bg-pink-600 transition text-sm">
-                    Add to Cart
-                  </button>
-                  <button
-                    onClick={() => navigate(`/product/${product.id}`)}
-                    className="flex-1 border border-pink-500 text-pink-500 font-semibold py-1 rounded-lg hover:bg-pink-50 transition text-sm"
-                  >
-                    Buy Now
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+          {/* Map through the fetched products and display them */}
+          {products.map((product) => (
+            <NewArrivalPC
+              key={product._id}
+              product={product}
+              onProductClick={handleProductClick}  // Pass custom click handler if needed
+            />
+          ))}
         </div>
 
         <div className="text-center mt-6">

@@ -228,7 +228,7 @@ export default function MobileHeader() {
               {item.subcategories.map((sub) => (
                 <li key={sub._id}>
                   <Link
-                    to={`/category/${item.slug}/${sub.slug}`}
+                    to={`/${item.slug}/${sub.slug}`}
                     onClick={() => setIsMenuOpen(false)}
                     className="block px-8 py-2 hover:bg-pink-100 hover:text-pink-600"
                   >

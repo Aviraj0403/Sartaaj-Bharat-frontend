@@ -25,7 +25,8 @@ export default function CategoryDetails() {
         setProducts(data.products);
         setPagination(data.pagination);
         setCurrentPage(page);
-        setCategoryName(data.categoryName || categorySlug);
+        // console.log("Fetched Products:", data.products);
+        setCategoryName(data.categoryName || categorySlug); // Assuming API returns categoryName
       } else {
         setError("Failed to load products");
       }
@@ -47,7 +48,6 @@ export default function CategoryDetails() {
   if (error) {
     return <div>{error}</div>;
   }
-
   // Navigate to product detail page
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);

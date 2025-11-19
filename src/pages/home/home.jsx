@@ -4,7 +4,7 @@ import CategorySlider from "./CategorySlider";
 import BestsellerSection from "./BestsellerSection";
 import PromoSection from "./PromoSection";
 import HomeNewArrivals from "../HomeNewArrivals";
-import MobileCategorySection from "./MobileCategorySection";
+import MobileCategorySection from "../category/MobileCategorySection";
 import BeautyBanner from "./BeautyDiscountBanner";
 import BeautyHighlightSection from "./BeautyHighlightSection";
 

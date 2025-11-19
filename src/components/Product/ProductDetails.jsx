@@ -56,9 +56,8 @@ export default function ProductDetails() {
                   src={img}
                   alt={`thumb-${i}`}
                   onClick={() => setMainImage(img)}
-                  className={`w-16 h-16 sm:w-20 sm:h-20 object-contain border-2 rounded-md cursor-pointer transition-transform duration-200 hover:scale-105 ${
-                    mainImage === img ? "border-pink-500" : "border-gray-200"
-                  }`}
+                  className={`w-16 h-16 sm:w-20 sm:h-20 object-contain border-2 rounded-md cursor-pointer transition-transform duration-200 hover:scale-105 ${mainImage === img ? "border-pink-500" : "border-gray-200"
+                    }`}
                 />
               ))}
             </div>
@@ -87,19 +86,20 @@ export default function ProductDetails() {
                 {Array.from({ length: 5 }, (_, i) => (
                   <FaStar
                     key={i}
-                    className={`${
-                      i < Math.round(rating) ? "text-yellow-400" : "text-gray-300"
-                    } text-sm`}
+                    className={`${i < Math.round(rating) ? "text-yellow-400" : "text-gray-300"
+                      } text-sm`}
                   />
                 ))}
               </div>
-              <span className="text-gray-600 text-sm">({reviewCount || "332"} Reviews)</span>
+              <span className="text-gray-600 text-sm">
+                ({reviewCount || Math.floor(Math.random() * 450)} Reviews)
+              </span>
             </div>
 
             {/* Price */}
             <div className="flex items-center gap-3 mb-4">
               <p className="text-2xl font-bold text-pink-500">₹{selectedVariant?.price}</p>
-              <p className="text-gray-400 line-through">₹{selectedVariant?.realPrice}</p>
+              <p className="text-gray-400 line-through">₹{selectedVariant?.realPrice.toFixed(2)}</p>
               <span className="bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-md">
                 In Stock
               </span>
@@ -116,9 +116,8 @@ export default function ProductDetails() {
                   <button
                     key={i}
                     onClick={() => handleSizeSelect(variant)}
-                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${
-                      selectedVariant?.size === variant.size ? "bg-pink-100" : ""
-                    }`}
+                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${selectedVariant?.size === variant.size ? "bg-pink-100" : ""
+                      }`}
                   >
                     {variant.size}
                   </button>

@@ -149,41 +149,42 @@ export default function DesktopHeader() {
 
         <ul className="flex items-center gap-4 text-gray-800 font-semibold whitespace-nowrap z-10">
           {menuItems.map((item, index) => (
-            <li
-              key={index}
-              className="relative group"
-              onMouseEnter={() => setActiveMenu(index)}
-              onMouseLeave={() => setActiveMenu(null)}
-            >
-              <Link
-                to={`/category/${item.slug}`}
-                className="flex items-center gap-1 relative py-1 
-                after:content-[''] after:absolute after:left-0 after:bottom-0 
-                after:w-0 after:h-[2px] after:bg-pink-500 after:transition-all after:duration-300
-                group-hover:after:w-full hover:text-pink-600"
-              >
-                {item.name}
-                {item.subcategories.length > 0 && (
-                  <ChevronDown size={16} className="mt-0.5" />
-                )}
-              </Link>
+  <li
+    key={index}
+    className="relative group"
+    onMouseEnter={() => setActiveMenu(index)}
+    onMouseLeave={() => setActiveMenu(null)}
+  >
+    <Link
+      to={`/category/${item.slug}`}
+      className="flex items-center gap-1 relative py-1 
+      after:content-[''] after:absolute after:left-0 after:bottom-0 
+      after:w-0 after:h-[2px] after:bg-pink-500 after:transition-all after:duration-300
+      group-hover:after:w-full hover:text-pink-600"
+    >
+      {item.name}
+      {item.subcategories.length > 0 && (
+        <ChevronDown size={16} className="mt-0.5" />
+      )}
+    </Link>
 
-              {item.subcategories.length > 0 && activeMenu === index && (
-                <ul className="absolute top-8 left-0 bg-white border border-pink-100 shadow-lg rounded-md w-44 py-2">
-                  {item.subcategories.map((sub, subIndex) => (
-                    <li key={subIndex}>
-                      <Link
-                        to={`/category/${item.slug}/${sub.slug}`}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600"
-                      >
-                        {sub.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
+    {item.subcategories.length > 0 && activeMenu === index && (
+      <ul className="absolute top-8 left-0 bg-white border border-pink-100 shadow-lg rounded-md w-44 py-2">
+        {item.subcategories.map((sub, subIndex) => (
+          <li key={subIndex}>
+            <Link
+              to={`/${item.slug}/${sub.slug}`}
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600"
+            >
+              {sub.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    )}
+  </li>
+))}
+
         </ul>
 
         {/* CART ICON */}

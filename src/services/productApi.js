@@ -22,6 +22,25 @@ export const getProductsByCategorySlug = async (slug, page = 1, limit = 20) => {
   }
 };
 
+export const getProductsByCategoryAndSubCategorySlug = async (categorySlug, subCategorySlug, page = 1, limit = 20) => {
+  try {
+    // Send GET request to the server to fetch products by category and sub-category slug
+    const response = await Axios.get(`/products/${categorySlug}/${subCategorySlug}`, {
+      params: { page, limit },
+    });
+    // Check if the response is successful
+    if (response.data && response.data.success) {
+      return response.data;
+    } else {
+      // If not successful, throw an error
+      throw new Error('Failed to fetch products');
+    }
+  } catch (error) {
+    // Log the error and provide fallback data
+    console.error('Error fetching products by category and sub-category slug:', error);
+    return { success: false, products: [], pagination: {} };
+  }
+};
 
 export const getMiniProducts = async (
   page = 1, 
@@ -78,3 +97,4 @@ export const getProductBySlug = async (slug) => {
     return { success: false, product: null };  // Returning null product in case of error
   }
 };
+

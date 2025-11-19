@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import ProductCard from "../../components/Product/ProductCard"; // Import the reusable ProductCard component
+import BestSellPC from "../../components/Product/ProductCard"; // Import the reusable ProductCard component
 import { getMiniProducts } from "../../services/productApi"; // Import your product API
 
 export default function BestsellerSection({ categorySlug }) {
@@ -71,7 +71,7 @@ export default function BestsellerSection({ categorySlug }) {
             {data.products.map((product) => {
               return (
                 <div key={product._id} className="flex-shrink-0 w-1/2 sm:w-60 md:w-52 lg:w-60">
-                  <ProductCard
+                  <BestSellPC
                     product={product}
                     onProductClick={(productId) => navigate(`/product/${productId}`)}
                   />

@@ -11,9 +11,10 @@ import CheckoutPage from "./checkout/CheckoutPage.jsx";
 import AuthPage from "./authentication/AuthPage.jsx";
 import NewProductsPage from "./pages/NewProductsPage.jsx";
 import ProductDetails from "./components/Product/ProductDetails.jsx";
-import CategoryDetails from "./pages/home/CategoryDetails.jsx";
+import CategoryDetails from "./pages/category/CategoryDetails.jsx";
 import SignInPage from "./pages/auth/SignInPage.jsx";
 import SignupPage from "./pages/auth/SignupPage.jsx";
+import CategorySubCategoryDetails from "./pages/category/CategorySubCategoryDetails.jsx";
 // import Login from "./authentication/Login.jsx";
 // import Signup from "./authentication/Signup.jsx";
 
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       { path: "/new-product", element: <NewProductsPage /> },
       { path: "/product/:slug", element: <ProductDetails /> },
       { path: "/:categorySlug", element: <CategoryDetails /> },
+      {
+        path: "/:categorySlug/:subCategorySlug",
+        element: <CategorySubCategoryDetails />,
+      },
 
 
 
