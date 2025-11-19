@@ -2,8 +2,8 @@
 import React , { createContext, useContext, useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
-// import { clearCart } from "../features/cart/cartSlice";
-// import { fetchBackendCart, syncCartOnLogin } from "../features/cart/cartThunks";
+import { clearCart } from "../features/cart/cartSlice";
+import { fetchBackendCart, syncCartOnLogin } from "../features/cart/cartThunk";
 import Axios from "../utils/Axios";
 
 // Firebase imports
@@ -23,7 +23,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  // const [cartSyncing, setCartSyncing] = useState(false);
+  const [cartSyncing, setCartSyncing] = useState(false);
   const [verificationId, setVerificationId] = useState(null);
 
   const dispatch = useDispatch();
@@ -35,13 +35,13 @@ export const AuthProvider = ({ children }) => {
         const res = await Axios.get("/auth/me");
         setUser(res.data.data);
 
-        // setCartSyncing(true);
-        // await dispatch(fetchBackendCart()).unwrap();
+        setCartSyncing(true);
+        await dispatch(fetchBackendCart()).unwrap();
       } catch {
         setUser(null);
       } finally {
         setLoading(false);
-        // setCartSyncing(false);
+        setCartSyncing(false);
       }
     };
     validateSession();
@@ -52,9 +52,9 @@ export const AuthProvider = ({ children }) => {
     await Axios.post("/auth/signIn", credentials, { withCredentials: true });
     const res = await Axios.get("/auth/me");
     setUser(res.data.data);
-    // setCartSyncing(true);
-    // await dispatch(syncCartOnLogin()).unwrap();
-    // setCartSyncing(false);
+    setCartSyncing(true);
+    await dispatch(syncCartOnLogin()).unwrap();
+    setCartSyncing(false);
     return res.data.data;
   };
 
@@ -67,9 +67,9 @@ export const AuthProvider = ({ children }) => {
     await Axios.post("/auth/googleSignIn", { idToken: idToken }, { withCredentials: true });
     const res = await Axios.get("/auth/me");
     setUser(res.data.data);
-    // setCartSyncing(true);
-    // await dispatch(syncCartOnLogin()).unwrap();
-    // setCartSyncing(false);
+    setCartSyncing(true);
+    await dispatch(syncCartOnLogin()).unwrap();
+    setCartSyncing(false);
     return res.data.data;
   };
   const sendOtp = async (phoneNumber) => {
@@ -94,14 +94,14 @@ export const AuthProvider = ({ children }) => {
     const res = await Axios.get("/auth/me");
     setUser(res.data.data);
 
-    // setCartSyncing(true);
-    // await dispatch(syncCartOnLogin()).unwrap();
-    // setCartSyncing(false);
+    setCartSyncing(true);
+    await dispatch(syncCartOnLogin()).unwrap();
+    setCartSyncing(false);
     return res.data.data;
   };
   const logout = async () => {
     await Axios.post("/auth/user/logout", {}, { withCredentials: true });
-    // dispatch(clearCart());
+    dispatch(clearCart());
     setUser(null);
     queryClient.clear();
   };
@@ -111,7 +111,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         loading,
-        // cartSyncing,
+        cartSyncing,
         login,
         googleLogin,
         sendOtp,
