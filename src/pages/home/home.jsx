@@ -6,6 +6,7 @@ import PromoSection from "./PromoSection";
 import HomeNewArrivals from "../HomeNewArrivals";
 import MobileCategorySection from "./MobileCategorySection";
 import BeautyBanner from "./BeautyDiscountBanner";
+import BeautyHighlightSection from "./BeautyHighlightSection";
 
 
 
@@ -19,6 +20,7 @@ function Home() {
       <PromoSection />
       <HomeNewArrivals />
       <BeautyBanner />
+      <BeautyHighlightSection />
       {/* other homepage sections */}
     </div>
   );

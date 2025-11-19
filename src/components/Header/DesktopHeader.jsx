@@ -11,30 +11,34 @@ import {
 } from "lucide-react";
 import { FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 import logo from "../../image/logo-cosmetic2.jpg";
-import { useQuery } from "@tanstack/react-query";  // Import useQuery from React Query
-import { getMenuCategories } from "../../services/categoryApi";  // Import the API function
-import { useAuth } from "../../context/AuthContext";  // Import useAuth hook
+import { useQuery } from "@tanstack/react-query";
+import { getMenuCategories } from "../../services/categoryApi";
+import { useAuth } from "../../context/AuthContext";
 
 export default function DesktopHeader() {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState(null);
-  const { user, logout } = useAuth();  // Access user and logout from AuthContext
+  const { user, logout } = useAuth();
 
-  // Fetch categories using React Query's useQuery hook
   const { data: menuItems, isLoading, isError, error } = useQuery({
-    queryKey: ["categories"],  // Query key
-    queryFn: getMenuCategories,  // Fetch function
-    onError: (err) => {
-      console.error("Error fetching categories:", err);
-    },
+    queryKey: ["categories"],
+    queryFn: getMenuCategories,
   });
 
   const handleLogout = async () => {
-    await logout();  // Call the logout function from AuthContext
-    navigate("/signin");  // Redirect to the sign-in page after logging out
+    await logout();
+    navigate("/signin");
   };
 
-  // Loading and error handling
+  // ⭐ NEW — Profile Icon Click Handler
+  const handleProfileClick = () => {
+    if (user) {
+      navigate("/profile"); // user logged in → go to profile
+    } else {
+      navigate("/signin?redirect=/profile"); // not logged in → go to signin
+    }
+  };
+
   if (isLoading) {
     return (
       <header className="w-full border-b border-pink-100">
@@ -54,12 +58,14 @@ export default function DesktopHeader() {
   }
 
   return (
-    <header className="w-full border-b border-pink-100">
-      {/* ✅ Top Info Bar */}
+    <header className="w-full border-b border-pink-100 sticky top-0 z-[999] bg-white shadow">
+
+      {/* 🟣 TOP BAR */}
       <div className="bg-[#ffe6ee] text-gray-800 text-sm flex justify-between items-center px-8 py-2">
         <span>
           Welcome to <strong>Gurmeet Kaur Store</strong>
         </span>
+
         <div className="flex items-center gap-6 text-gray-700">
           <span className="flex items-center gap-2">
             <FaPhone className="text-pink-500" /> +91 9999161803
@@ -71,8 +77,10 @@ export default function DesktopHeader() {
         </div>
       </div>
 
-      {/* ✅ Search Bar */}
+      {/* 🔴 SEARCH BAR + SIGN IN */}
       <div className="relative bg-pink-500 text-sm text-white flex justify-between items-center px-8 py-3 shadow-md">
+
+        {/* Search */}
         <div className="flex justify-start w-full">
           <div className="relative w-1/3">
             <input
@@ -99,126 +107,89 @@ export default function DesktopHeader() {
           </div>
         </div>
 
-        {/* 📱 Right side links */}
-        <div className="absolute right-8 top-1/2 -translate-y-1/2 flex items-center gap-5 text-white font-medium">
-          <a
-            href="#"
-            className="flex items-center gap-1 hover:text-gray-200 transition"
-          >
-            <Smartphone size={15} />
-            <span>DOWNLOAD APP</span>
+        {/* RIGHT SIDE */}
+        <div className="absolute right-8 top-1/2 -translate-y-1/2 flex items-center gap-6 text-white font-medium">
+
+          <a className="flex items-center gap-1 hover:text-gray-200 transition">
+            <Smartphone size={15} /> DOWNLOAD APP
           </a>
-          <a
-            href="#"
-            className="flex items-center gap-1 hover:text-gray-200 transition"
-          >
-            <Info size={15} />
-            <span>SUPPORT</span>
+
+          <a className="flex items-center gap-1 hover:text-gray-200 transition">
+            <Info size={15} /> SUPPORT
           </a>
-          <a
-            href="#"
-            className="flex items-center gap-1 hover:text-gray-200 transition"
-          >
-            <Truck size={15} />
-            <span>TRACK ORDER</span>
+
+          <a className="flex items-center gap-1 hover:text-gray-200 transition">
+            <Truck size={15} /> TRACK ORDER
           </a>
+
+          {/* ⭐ SIGN IN / USER NAME */}
+          {user ? (
+            <div className="flex items-center gap-2">
+              <User size={16} className="cursor-pointer hover:text-pink-900 " onClick={handleProfileClick} />
+              <span className="font-semibold cursor-pointer" onClick={handleProfileClick}>
+                {user.userName}
+              </span>
+              <LogOut size={16} className="cursor-pointer" onClick={handleLogout} />
+            </div>
+          ) : (
+            <Link to="/signin" className="hover:text-gray-200">Sign In</Link>
+          )}
         </div>
       </div>
 
-      {/* ✅ Main Navbar */}
-      <div className="flex justify-between items-center px-8 py-3 bg-white shadow-md relative z-50">
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          <Link to="/">
-            <img
-              src={logo}
-              alt="Logo"
-              className="h-12 w-auto object-contain cursor-pointer hover:scale-105 transition-transform duration-300"
-            />
-          </Link>
-        </div>
+      {/* 🔵 MENU NAVBAR */}
+      <div className="flex justify-between items-center px-8 py-3 bg-white shadow-md">
+        <Link to="/">
+          <img
+            src={logo}
+            alt="Logo"
+            className="h-12 w-auto object-contain cursor-pointer hover:scale-105 transition-transform duration-300"
+          />
+        </Link>
 
-        {/* 🛍️ Middle Menu Items with dropdown + active underline animation */}
-        <div className="flex-1 flex justify-center">
-          <ul className="flex items-center gap-5 text-gray-800 font-semibold relative">
-            {menuItems.map((item, index) => (
-              <li
-                key={index}
-                className="relative group"
-                onMouseEnter={() => setActiveMenu(index)}
-                onMouseLeave={() => setActiveMenu(null)}
-              >
-                <Link
-                  to={`/category/${item.slug}`}
-                  className="flex items-center gap-1 relative py-1
-                            after:content-[''] after:absolute after:left-0 after:bottom-0 
-                            after:w-0 after:h-[2px] after:bg-pink-500 after:transition-all after:duration-300
-                            group-hover:after:w-full hover:text-pink-600"
-                >
-                  {item.name}
-                  {item.subcategories.length > 0 && (
-                    <ChevronDown size={16} className="mt-0.5" />
-                  )}
-                </Link>
-
-                {/* 🔽 Dropdown */}
-                {item.subcategories.length > 0 && activeMenu === index && (
-                  <ul className="absolute top-8 left-0 bg-white border border-pink-100 shadow-lg rounded-md w-44 py-2 z-50">
-                    {item.subcategories.map((sub, subIndex) => (
-                      <li key={subIndex}>
-                        <Link
-                          to={`/category/${item.slug}/${sub.slug}`}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition"
-                        >
-                          {sub.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* 🛒 Right Icons */}
-        <div className="flex items-center gap-6 text-gray-700">
-          {/* If user is logged in, display the user's name */}
-          {user ? (
-            <span className="text-gray-800 font-semibold">
-              {user.userName} {/* Adjust the field based on your response structure */}
-            </span>
-          ) : (
-            <Link
-              to="/signin"
-              className="cursor-pointer hover:text-pink-600 transition"
+        <ul className="flex items-center gap-4 text-gray-800 font-semibold whitespace-nowrap z-10">
+          {menuItems.map((item, index) => (
+            <li
+              key={index}
+              className="relative group"
+              onMouseEnter={() => setActiveMenu(index)}
+              onMouseLeave={() => setActiveMenu(null)}
             >
-              Sign In
-            </Link>
-          )}
+              <Link
+                to={`/category/${item.slug}`}
+                className="flex items-center gap-1 relative py-1 
+                after:content-[''] after:absolute after:left-0 after:bottom-0 
+                after:w-0 after:h-[2px] after:bg-pink-500 after:transition-all after:duration-300
+                group-hover:after:w-full hover:text-pink-600"
+              >
+                {item.name}
+                {item.subcategories.length > 0 && (
+                  <ChevronDown size={16} className="mt-0.5" />
+                )}
+              </Link>
 
-          <Link
-            to="/cart"
-            className="cursor-pointer hover:text-pink-600 transition"
-          >
-            <ShoppingCart />
-          </Link>
+              {item.subcategories.length > 0 && activeMenu === index && (
+                <ul className="absolute top-8 left-0 bg-white border border-pink-100 shadow-lg rounded-md w-44 py-2">
+                  {item.subcategories.map((sub, subIndex) => (
+                    <li key={subIndex}>
+                      <Link
+                        to={`/category/${item.slug}/${sub.slug}`}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600"
+                      >
+                        {sub.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
 
-          <Link to="/profile">
-            <User
-              className="cursor-pointer hover:text-pink-600 transition"
-              size={22}
-            />
-          </Link>
-
-          {user && (
-            <LogOut
-              className="cursor-pointer hover:text-pink-600 transition"
-              size={22}
-              onClick={handleLogout} // Call logout on click
-            />
-          )}
-        </div>
+        {/* CART ICON */}
+        <Link to="/cart" className="cursor-pointer hover:text-pink-600 transition">
+          <ShoppingCart />
+        </Link>
       </div>
     </header>
   );
