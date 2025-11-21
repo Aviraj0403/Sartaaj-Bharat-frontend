@@ -4,8 +4,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   user: null,
   isAuthenticated: false,
-  loading: true,       // app start pe
-  authChecked: false,  // /auth/me call ho chuka ya nahi
+  loading: true,      
+  authChecked: false,  
 };
 
 const authSlice = createSlice({

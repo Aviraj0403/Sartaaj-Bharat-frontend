@@ -1,25 +1,26 @@
-//cartapiimport axios from '../utils/Axios'; // Ensure this instance handles tokens
+//cartapiimport Axios from '../utils/Axios'; // Ensure this instance handles tokens
+import Axios from '../utils/Axios';
 
 export const getUserCart = () => {
-  return axios.get('/getUserCart');
+  return Axios.get('/cart/getUserCart');
 };
 
 export const addToCart = (payload) => {
-  return axios.post('/addToCart', payload); // Token required (verifyToken)
+  return Axios.post('/cart/addToCart', payload); // Token required (verifyToken)
 };
 
 export const updateCartItem = (payload) => {
-  return axios.put('/updateCartItem', payload);
+  return Axios.put('/cart/updateCartItem', payload);
 };
 
 // cartApi.js
 export const removeCartItem = ({ productId, unit }) => {
-  return axios.delete('/removeCartItem', {
+  return Axios.delete('/cart/removeCartItem', {
     params: { productId, size }, // ✅ send via query string
   });
 };
 
 
 export const clearCart = () => {
-  return axios.delete('/clearCart');
+  return Axios.delete('/cart/clearCart');
 };
