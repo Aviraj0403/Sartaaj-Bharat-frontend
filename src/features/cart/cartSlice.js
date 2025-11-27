@@ -14,14 +14,15 @@ const calculateTotals = (items) => {
   return { totalQuantity, totalAmount };
 };
 
-// Normalize backend response → Redux format (size = unit)
+// Normalize backend response
 const normalizeItem = (item) => ({
-  id: item.productId,
+  
+  id: item.id,
   name: item.name,
   image: item.image,
   price: Number(item.price),
   quantity: Number(item.quantity),
-  size: item.size, // ← yeh tumhara "unit" hai
+  size: item.size,
 });
 
 const cartSlice = createSlice({
@@ -44,7 +45,6 @@ const cartSlice = createSlice({
       state.totalQuantity = totalQuantity;
       state.totalAmount = totalAmount;
     },
-
     updateItemQuantity(state, action) {
       const { id, size, quantity } = action.payload;
       const item = state.items.find((i) => i.id === id && i.size === size);
@@ -56,7 +56,6 @@ const cartSlice = createSlice({
       state.totalQuantity = totalQuantity;
       state.totalAmount = totalAmount;
     },
-
     removeItem(state, action) {
       const { id, size } = action.payload;
       state.items = state.items.filter((i) => !(i.id === id && i.size === size));
@@ -65,14 +64,12 @@ const cartSlice = createSlice({
       state.totalQuantity = totalQuantity;
       state.totalAmount = totalAmount;
     },
-
     clearCart(state) {
       state.items = [];
       state.totalQuantity = 0;
       state.totalAmount = 0;
       state.merged = false;
     },
-
     setCart(state, action) {
       const rawItems = action.payload.items || [];
       state.items = rawItems.map(normalizeItem);
@@ -81,7 +78,6 @@ const cartSlice = createSlice({
       state.totalAmount = totalAmount;
       state.merged = true;
     },
-
     mergeCart(state, action) {
       const backendItems = (action.payload.items || []).map(normalizeItem);
 
@@ -102,7 +98,6 @@ const cartSlice = createSlice({
       state.totalAmount = totalAmount;
       state.merged = true;
     },
-
     setMerged(state, action) {
       state.merged = action.payload;
     },

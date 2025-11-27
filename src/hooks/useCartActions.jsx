@@ -19,7 +19,7 @@ export const useCartActions = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  console.log("Cart Items in useCartActions:", cartItems);
   // Find item in cart by productId + size
   const findCartItem = (productId, size) => {
     return cartItems.find(

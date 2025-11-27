@@ -1,62 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Minus, Plus, X } from "lucide-react";
 import ApplyCouponPanel from "./ApplyCouponPanel";
 import { useNavigate } from "react-router-dom";
+import { useCartActions } from "../hooks/useCartActions";
 
 export default function CartPage() {
   const [couponOpen, setCouponOpen] = useState(false);
   const navigate = useNavigate();
 
+  // Using custom hook for cart actions
+  const {
+    cartItems,
+    totalAmount,
+    addToCart,
+    updateQuantity,
+    removeFromCart,
+    clearCart,
+  } = useCartActions();
 
-  const orders = [
-    {
-      id: 1,
-      name: "MARS HD 2in1 Super Stay Foundation 05",
-      size: "Small",
-      price: 47.53,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
-      quantity: 1,
-    },
-    {
-      id: 2,
-      name: "Nice & Naughty Bombshell Lipistick Set B (6pcs)",
-      size: "Large",
-      price: 96.03,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
-      quantity: 1,
-    },
-  ];
+  // Update cart items when cart is updated
+  useEffect(() => {
+    // Additional logic can be added here if needed, such as fetching cart from backend on page load
+  }, [cartItems]);
 
-  const [cartItems, setCartItems] = useState(orders);
-
-  const increment = (id) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
+  const handleIncrement = (id, size) => {
+    updateQuantity(id, size, 1); // Increment quantity by 1
   };
 
-  const decrement = (id) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
+  const handleDecrement = (id, size) => {
+    updateQuantity(id, size, -1); // Decrement quantity by 1
   };
 
-  const removeItem = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+  const handleRemoveItem = (id, size) => {
+    removeFromCart(id, size); // Remove item from cart
   };
-
-  const totalAmount = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
 
   return (
     <div className="min-h-screen p-4 sm:p-8 flex justify-center relative bg-pink-50">
@@ -67,64 +44,68 @@ export default function CartPage() {
             Your Shopping Cart
           </h1>
 
-          {cartItems.map((item) => (
-            <div
-              key={item.id}
-              className="relative bg-white shadow-md rounded-2xl p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between"
-            >
-              {/* Mobile Cross Button */}
-              <button
-                className="absolute top-2 right-2 md:hidden bg-pink-100 p-2 rounded-full text-pink-600 hover:bg-pink-200"
-                onClick={() => removeItem(item.id)}
+          {cartItems.length === 0 ? (
+            <p>Your cart is empty.</p>
+          ) : (
+            cartItems.map((item) => (
+              <div
+                key={item.id + item.size} // unique key by combining id and size
+                className="relative bg-white shadow-md rounded-2xl p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between"
               >
-                <X size={16} />
-              </button>
-
-              <div className="flex items-center gap-4 mb-4 sm:mb-0">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-20 h-20 rounded-xl object-cover"
-                />
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-800">
-                    {item.name}
-                  </h2>
-                  <p className="text-sm text-gray-500">{item.size}</p>
-                  <p className="text-pink-600 font-semibold mt-1">
-                    ₹{item.price.toFixed(2)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between sm:justify-end gap-4">
-                <div className="flex items-center bg-gray-100 rounded-full px-3 py-1">
-                  <button
-                    className="text-gray-600 hover:text-pink-600"
-                    onClick={() => decrement(item.id)}
-                  >
-                    <Minus size={16} />
-                  </button>
-                  <span className="mx-2 font-medium">{item.quantity}</span>
-                  <button
-                    className="text-gray-600 hover:text-pink-600"
-                    onClick={() => increment(item.id)}
-                  >
-                    <Plus size={16} />
-                  </button>
-                </div>
-                <p className="text-gray-800 font-semibold">
-                  ₹{(item.price * item.quantity).toFixed(2)}
-                </p>
+                {/* Mobile Cross Button */}
                 <button
-                  className="hidden md:block bg-pink-100 p-2 rounded-full text-pink-600 hover:bg-pink-200"
-                  onClick={() => removeItem(item.id)}
+                  className="absolute top-2 right-2 md:hidden bg-pink-100 p-2 rounded-full text-pink-600 hover:bg-pink-200"
+                  onClick={() => handleRemoveItem(item.id, item.size)}
                 >
                   <X size={16} />
                 </button>
+
+                <div className="flex items-center gap-4 mb-4 sm:mb-0">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-20 h-20 rounded-xl object-cover"
+                  />
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-800">
+                      {item.name}
+                    </h2>
+                    <p className="text-sm text-gray-500">{item.size}</p>
+                    <p className="text-pink-600 font-semibold mt-1">
+                      ₹{item.price.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between sm:justify-end gap-4">
+                  <div className="flex items-center bg-gray-100 rounded-full px-3 py-1">
+                    <button
+                      className="text-gray-600 hover:text-pink-600"
+                      onClick={() => handleDecrement(item.id, item.size)}
+                    >
+                      <Minus size={16} />
+                    </button>
+                    <span className="mx-2 font-medium">{item.quantity}</span>
+                    <button
+                      className="text-gray-600 hover:text-pink-600"
+                      onClick={() => handleIncrement(item.id, item.size)}
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                  <p className="text-gray-800 font-semibold">
+                    ₹{(item.price * item.quantity).toFixed(2)}
+                  </p>
+                  <button
+                    className="hidden md:block bg-pink-100 p-2 rounded-full text-pink-600 hover:bg-pink-200"
+                    onClick={() => handleRemoveItem(item.id, item.size)}
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         {/* Right Section */}
@@ -169,15 +150,15 @@ export default function CartPage() {
             </div>
 
             <button
-        onClick={() => navigate("/checkout")}
-        className="w-full bg-pink-100 text-pink-700 font-semibold py-2 rounded-lg mb-3 hover:bg-pink-200 transition"
-      >
-        PROCEED TO CHECKOUT
-      </button>
+              onClick={() => navigate("/checkout")}
+              className="w-full bg-pink-100 text-pink-700 font-semibold py-2 rounded-lg mb-3 hover:bg-pink-200 transition"
+            >
+              PROCEED TO CHECKOUT
+            </button>
 
             <button
               className="w-full border border-pink-300 text-pink-600 font-medium py-2 rounded-lg hover:bg-pink-50 transition"
-              onClick={() => setCartItems([])}
+              onClick={() => clearCart()}
             >
               Clear Cart
             </button>

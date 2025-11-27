@@ -14,11 +14,16 @@ import logo from "../../image/logo-cosmetic2.jpg";
 import { useQuery } from "@tanstack/react-query";
 import { getMenuCategories } from "../../services/categoryApi";
 import { useAuth } from "../../context/AuthContext";
+import { useSelector } from "react-redux"; // Import useSelector
 
 export default function DesktopHeader() {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState(null);
   const { user, logout } = useAuth();
+
+  // Get cart data from Redux store
+  const { items: cartItems } = useSelector((state) => state.cart); // Access cart items from Redux store
+  const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0); // Calculate total quantity of items in the cart
 
   const { data: menuItems, isLoading, isError, error } = useQuery({
     queryKey: ["categories"],
@@ -149,47 +154,50 @@ export default function DesktopHeader() {
 
         <ul className="flex items-center gap-4 text-gray-800 font-semibold whitespace-nowrap z-10">
           {menuItems.map((item, index) => (
-  <li
-    key={index}
-    className="relative group"
-    onMouseEnter={() => setActiveMenu(index)}
-    onMouseLeave={() => setActiveMenu(null)}
-  >
-    <Link
-      to={`/category/${item.slug}`}
-      className="flex items-center gap-1 relative py-1 
-      after:content-[''] after:absolute after:left-0 after:bottom-0 
-      after:w-0 after:h-[2px] after:bg-pink-500 after:transition-all after:duration-300
-      group-hover:after:w-full hover:text-pink-600"
-    >
-      {item.name}
-      {item.subcategories.length > 0 && (
-        <ChevronDown size={16} className="mt-0.5" />
-      )}
-    </Link>
-
-    {item.subcategories.length > 0 && activeMenu === index && (
-      <ul className="absolute top-8 left-0 bg-white border border-pink-100 shadow-lg rounded-md w-44 py-2">
-        {item.subcategories.map((sub, subIndex) => (
-          <li key={subIndex}>
-            <Link
-              to={`/${item.slug}/${sub.slug}`}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600"
+            <li
+              key={index}
+              className="relative group"
+              onMouseEnter={() => setActiveMenu(index)}
+              onMouseLeave={() => setActiveMenu(null)}
             >
-              {sub.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    )}
-  </li>
-))}
+              <Link
+                to={`/category/${item.slug}`}
+                className="flex items-center gap-1 relative py-1 
+                after:content-[''] after:absolute after:left-0 after:bottom-0 
+                after:w-0 after:h-[2px] after:bg-pink-500 after:transition-all after:duration-300
+                group-hover:after:w-full hover:text-pink-600"
+              >
+                {item.name}
+                {item.subcategories.length > 0 && (
+                  <ChevronDown size={16} className="mt-0.5" />
+                )}
+              </Link>
+
+              {item.subcategories.length > 0 && activeMenu === index && (
+                <ul className="absolute top-8 left-0 bg-white border border-pink-100 shadow-lg rounded-md w-44 py-2">
+                  {item.subcategories.map((sub, subIndex) => (
+                    <li key={subIndex}>
+                      <Link
+                        to={`/${item.slug}/${sub.slug}`}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600"
+                      >
+                        {sub.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
 
         </ul>
 
         {/* CART ICON */}
         <Link to="/cart" className="cursor-pointer hover:text-pink-600 transition">
           <ShoppingCart />
+          <span className="absolute top-0 right-0 text-xs bg-pink-600 text-white rounded-full px-2 py-1">
+            {totalQuantity}
+          </span>
         </Link>
       </div>
     </header>
