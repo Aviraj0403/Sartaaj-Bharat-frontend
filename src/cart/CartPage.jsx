@@ -8,36 +8,40 @@ export default function CartPage() {
   const [couponOpen, setCouponOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Using custom hook for cart actions
   const {
     cartItems,
-    totalAmount,
     addToCart,
     updateQuantity,
     removeFromCart,
-    clearCart,
+    clearCart,       // make sure this is returned from hook
+    totalAmount,     // totalAmount from hook
   } = useCartActions();
 
-  // Update cart items when cart is updated
-  useEffect(() => {
-    // Additional logic can be added here if needed, such as fetching cart from backend on page load
-  }, [cartItems]);
-
+  // Increment / Decrement properly
   const handleIncrement = (id, size) => {
-    updateQuantity(id, size, 1); // Increment quantity by 1
+    const item = cartItems.find((i) => i.id === id && i.size === size);
+    if (item) updateQuantity(id, size, item.quantity + 1);
   };
 
   const handleDecrement = (id, size) => {
-    updateQuantity(id, size, -1); // Decrement quantity by 1
+    const item = cartItems.find((i) => i.id === id && i.size === size);
+    if (!item) return;
+
+    if (item.quantity <= 1) {
+      removeFromCart(id, size);
+    } else {
+      updateQuantity(id, size, item.quantity - 1);
+    }
   };
 
   const handleRemoveItem = (id, size) => {
-    removeFromCart(id, size); // Remove item from cart
+    removeFromCart(id, size);
   };
 
   return (
     <div className="min-h-screen p-4 sm:p-8 flex justify-center relative bg-pink-50">
       <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6">
+
         {/* Left Section */}
         <div className="flex-1">
           <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">
@@ -49,10 +53,10 @@ export default function CartPage() {
           ) : (
             cartItems.map((item) => (
               <div
-                key={item.id + item.size} // unique key by combining id and size
+                key={item.id + item.size}
                 className="relative bg-white shadow-md rounded-2xl p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between"
               >
-                {/* Mobile Cross Button */}
+                {/* Mobile Cross */}
                 <button
                   className="absolute top-2 right-2 md:hidden bg-pink-100 p-2 rounded-full text-pink-600 hover:bg-pink-200"
                   onClick={() => handleRemoveItem(item.id, item.size)}
@@ -166,7 +170,6 @@ export default function CartPage() {
         </div>
       </div>
 
-      {/* Apply Coupon Side Panel */}
       <ApplyCouponPanel
         isOpen={couponOpen}
         onClose={() => setCouponOpen(false)}

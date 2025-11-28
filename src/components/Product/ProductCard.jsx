@@ -1,112 +1,93 @@
+// FINAL FIXED ProductCard.jsx
 import React, { useState, useEffect } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; // Import toast for notifications
-import { useCartActions } from "../../hooks/useCartActions"; // Hook for adding/removing items in the cart
+import { toast } from "react-toastify";
+import { useCartActions } from "../../hooks/useCartActions";
 
 export default function ProductCard({ product, onProductClick }) {
   const navigate = useNavigate();
-  const { addToCart, removeFromCart } = useCartActions();
-
-  const [quantity, setQuantity] = useState(0); // Track quantity of this product in the cart
-  const [addedToCart, setAddedToCart] = useState(false); // Track if product is added to cart
+  const { cartItems, addToCart, updateQuantity, removeFromCart } = useCartActions();
 
   const activeVariant = product?.variants;
+  const size = activeVariant?.size; // <--- Important
 
-  // Calculate the discount percentage if realPrice exists
+  const [quantity, setQuantity] = useState(0);
+
+  // ⭐ FIX: size add in dependency
+  useEffect(() => {
+    const item = cartItems.find(
+      (i) => i.id === product._id && i.size === size
+    );
+    setQuantity(item?.quantity || 0);
+  }, [cartItems, size]); // <--- FIX
+
   const discount = activeVariant?.realPrice
     ? Math.round(
-        ((activeVariant?.realPrice - activeVariant?.price) / activeVariant?.realPrice) * 100
+        ((activeVariant.realPrice - activeVariant.price) /
+          activeVariant.realPrice) *
+          100
       )
     : 0;
 
-  // Get the current quantity of this product in the cart
-  const getCartQuantity = () => {
-    const cartItem = product.cartItems?.find((item) => item.variant === activeVariant?.size);
-    return cartItem?.quantity || 0;
-  };
-
-  useEffect(() => {
-    setQuantity(getCartQuantity()); // Set the initial quantity
-  }, [product]);
-
-  // Handle product card click (either custom or default navigation)
   const handleProductClick = () => {
-    if (onProductClick) {
-      onProductClick(product.slug); // Custom callback for click event
-    } else {
-      navigate(`/product/${product.slug}`); // Default navigation
-    }
+    if (onProductClick) onProductClick(product.slug);
+    else navigate(`/product/${product.slug}`);
   };
 
-  // Add product to cart
+  // ⭐ ADD TO CART
   const handleAddToCart = async () => {
-    const result = await addToCart(product._id, activeVariant?.size, activeVariant?.price);
+    const result = await addToCart(product, size, 1);
     if (result.success) {
-      setAddedToCart(true); // Set the product as added to cart
-      setQuantity(1); // Start quantity from 1 when added to cart
-      toast.success("Added to Cart!");
+      toast.success("Added to cart!");
     } else {
-      toast.error(result.error || "Failed to add item to cart");
+      toast.error("Failed to add to cart");
     }
   };
 
-  // Increment quantity in the cart
   const handleIncrement = async () => {
-    const newQuantity = quantity + 1;
-    await addToCart(product._id, activeVariant?.size, activeVariant?.price, newQuantity);
-    setQuantity(newQuantity);
+    const newQty = quantity + 1;
+    await updateQuantity(product._id, size, newQty);
   };
 
-  // Decrement quantity in the cart
   const handleDecrement = async () => {
-    if (quantity > 1) {
-      const newQuantity = quantity - 1;
-      await addToCart(product._id, activeVariant?.size, activeVariant?.price, newQuantity);
-      setQuantity(newQuantity);
-    } else {
-      // If quantity is 1, remove the item from cart and reset quantity
-      await removeFromCart(product._id, activeVariant?.size);
-      setQuantity(0);
-      setAddedToCart(false); // Reset the "Add to Cart" state
+    if (quantity <= 1) {
+      await removeFromCart(product._id, size);
+      return;
     }
+    const newQty = quantity - 1;
+    await updateQuantity(product._id, size, newQty);
   };
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 relative group p-4 flex flex-col justify-between overflow-hidden">
-      {/* ❤️ Heart Icon */}
+
       <div className="absolute top-3 right-3 z-20 text-pink-500 cursor-pointer opacity-80 hover:opacity-100 transition text-lg">
         <FaHeart />
       </div>
 
-      {/* 🏷️ Discount Badge */}
       {discount > 0 && (
         <div className="absolute top-3 left-3 z-20 bg-pink-500 text-white text-xs font-semibold px-2 py-1 rounded-md shadow">
           {discount}% OFF
         </div>
       )}
 
-      {/* 🖼️ Product Image */}
       <div
-        className="w-full h-24 md:h-36 flex justify-center items-center mb-3 cursor-pointer relative z-10"
+        className="w-full h-24 md:h-36 flex justify-center items-center mb-3 cursor-pointer"
         onClick={handleProductClick}
       >
         <img
           src={product.pimage}
           alt={product.name}
-          className="h-full object-contain transition-transform duration-300 group-hover:scale-105 relative z-10"
+          className="h-full object-contain transition-transform duration-300 group-hover:scale-105"
         />
       </div>
 
-      {/* 🏷️ Product Info */}
-      <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-1 text-left">
+      <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-1">
         {product.name}
       </h3>
-      <p className="text-gray-600 text-xs md:text-sm mb-2 text-left">
-        {product.description}
-      </p>
+      <p className="text-gray-600 text-xs md:text-sm mb-2">{product.description}</p>
 
-      {/* 💰 Price and Rating */}
       <div className="flex justify-between items-center mb-3 px-1 text-sm">
         <div className="flex items-center gap-1">
           <p className="text-pink-500 font-medium text-sm">₹{activeVariant?.price}</p>
@@ -120,8 +101,7 @@ export default function ProductCard({ product, onProductClick }) {
         </div>
       </div>
 
-      {/* Quantity Controls */}
-      {addedToCart ? (
+      {quantity > 0 ? (
         <div className="flex justify-between items-center border border-pink-500 rounded">
           <button
             onClick={handleDecrement}
@@ -140,13 +120,12 @@ export default function ProductCard({ product, onProductClick }) {
       ) : (
         <button
           onClick={handleAddToCart}
-          className="w-full bg-pink-500 text-white font-semibold py-2 rounded-lg hover:bg-pink-600 transition text-sm"
+          className="w-full bg-pink-500 text-white font-semibold py-2 rounded-lg hover:bg-ppink-600 transition text-sm"
         >
           Add to Cart
         </button>
       )}
 
-      {/* 🛒 Buy Now Button */}
       <button
         onClick={handleProductClick}
         className="w-full border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm mt-3"

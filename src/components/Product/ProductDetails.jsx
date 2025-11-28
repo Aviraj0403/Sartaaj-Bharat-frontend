@@ -1,46 +1,84 @@
+// src/pages/product/ProductDetails.jsx
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
-import { getProductBySlug } from "../../services/productApi"; // Adjust the path if necessary
-import RelatedProduct from "../../pages/home/RelatedProduct"; // Adjust path if needed
+import { getProductBySlug } from "../../services/productApi";
+import RelatedProduct from "../../pages/home/RelatedProduct";
+import { useCartActions } from "../../hooks/useCartActions";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ProductDetails() {
-  const { slug } = useParams(); // Get the product slug from the URL
+  const { slug } = useParams();
   const [mainImage, setMainImage] = useState(null);
-  const [activeTab, setActiveTab] = useState("description"); // State for active tab
-  const [selectedVariant, setSelectedVariant] = useState(null); // Manage the selected variant
+  const [activeTab, setActiveTab] = useState("description");
+  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [quantity, setQuantity] = useState(1);
 
-  // Fetch product details using React Query
+  const { cartItems, addToCart } = useCartActions();
+
+  // Fetch product
   const { data, isLoading, error } = useQuery({
     queryKey: ["product", slug],
     queryFn: () => getProductBySlug(slug),
-    enabled: !!slug, // Ensure query is only triggered if slug is available
+    enabled: !!slug,
   });
 
-  // Handle loading and error states
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading product details</div>;
 
-  if (error) {
-    return <div>Error loading product details</div>;
-  }
+  const product = data?.product;
+  if (!product) return <div>No product found</div>;
 
-  const product = data?.product; // Get the product data from the response
-  if (!product) return <div>No product found</div>; // Handle case where no product is returned
+  const {
+    name,
+    category,
+    description,
+    variants,
+    pimages,
+    rating,
+    reviewCount,
+    productCode,
+    tags,
+    additionalInfo,
+  } = product;
 
-  const { name, category, description, variants, pimages, rating, reviewCount, productCode, tags, additionalInfo } = product;
-
-  // Set the main image to the first image from the product
+  // Initialize main image & variant
   if (!mainImage) {
     setMainImage(pimages[0]);
-    setSelectedVariant(variants[0]); // Default to the first variant if no variant is selected
+    setSelectedVariant(variants[0]);
   }
 
-  // Handle variant selection (size or volume)
   const handleSizeSelect = (variant) => {
     setSelectedVariant(variant);
+  };
+
+  const handleAddToCart = async () => {
+    if (!selectedVariant) return;
+
+    const response = await addToCart(
+      {
+        _id: product._id,
+        name: product.name,
+        pimage: selectedVariant.image || pimages[0],
+        variants: selectedVariant,
+      },
+      selectedVariant.size,
+      quantity
+    );
+
+    if (response.success) {
+      toast.success(`${name} (${selectedVariant.size}) added to cart!`, {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    } else {
+      toast.error(`Failed to add to cart: ${response.error}`, {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
   };
 
   return (
@@ -56,8 +94,9 @@ export default function ProductDetails() {
                   src={img}
                   alt={`thumb-${i}`}
                   onClick={() => setMainImage(img)}
-                  className={`w-16 h-16 sm:w-20 sm:h-20 object-contain border-2 rounded-md cursor-pointer transition-transform duration-200 hover:scale-105 ${mainImage === img ? "border-pink-500" : "border-gray-200"
-                    }`}
+                  className={`w-16 h-16 sm:w-20 sm:h-20 object-contain border-2 rounded-md cursor-pointer transition-transform duration-200 hover:scale-105 ${
+                    mainImage === img ? "border-pink-500" : "border-gray-200"
+                  }`}
                 />
               ))}
             </div>
@@ -86,8 +125,9 @@ export default function ProductDetails() {
                 {Array.from({ length: 5 }, (_, i) => (
                   <FaStar
                     key={i}
-                    className={`${i < Math.round(rating) ? "text-yellow-400" : "text-gray-300"
-                      } text-sm`}
+                    className={`${
+                      i < Math.round(rating) ? "text-yellow-400" : "text-gray-300"
+                    } text-sm`}
                   />
                 ))}
               </div>
@@ -99,7 +139,9 @@ export default function ProductDetails() {
             {/* Price */}
             <div className="flex items-center gap-3 mb-4">
               <p className="text-2xl font-bold text-pink-500">₹{selectedVariant?.price}</p>
-              <p className="text-gray-400 line-through">₹{selectedVariant?.realPrice.toFixed(2)}</p>
+              <p className="text-gray-400 line-through">
+                ₹{selectedVariant?.realPrice?.toFixed(2)}
+              </p>
               <span className="bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-md">
                 In Stock
               </span>
@@ -108,7 +150,7 @@ export default function ProductDetails() {
             {/* Description */}
             <p className="text-gray-600 text-sm mb-4 leading-relaxed">{description}</p>
 
-            {/* Variants (Size / Volume) */}
+            {/* Variants */}
             <div className="mb-5">
               <p className="text-gray-700 font-medium mb-2">Variants</p>
               <div className="flex gap-2">
@@ -116,8 +158,9 @@ export default function ProductDetails() {
                   <button
                     key={i}
                     onClick={() => handleSizeSelect(variant)}
-                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${selectedVariant?.size === variant.size ? "bg-pink-100" : ""
-                      }`}
+                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${
+                      selectedVariant?.size === variant.size ? "bg-pink-100" : ""
+                    }`}
                   >
                     {variant.size}
                   </button>
@@ -128,13 +171,26 @@ export default function ProductDetails() {
             {/* Quantity + Buttons */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
               <div className="flex items-center border border-gray-300 rounded-md w-fit">
-                <button className="px-3 py-1 text-gray-600">-</button>
-                <span className="px-3 py-1">1</span>
-                <button className="px-3 py-1 text-gray-600">+</button>
+                <button
+                  className="px-3 py-1 text-gray-600"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                >
+                  -
+                </button>
+                <span className="px-3 py-1">{quantity}</span>
+                <button
+                  className="px-3 py-1 text-gray-600"
+                  onClick={() => setQuantity(quantity + 1)}
+                >
+                  +
+                </button>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <button className="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg transition">
+                <button
+                  onClick={handleAddToCart}
+                  className="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg transition"
+                >
                   Add to Cart
                 </button>
                 <button className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition">
@@ -162,7 +218,11 @@ export default function ProductDetails() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-2 font-medium capitalize ${activeTab === tab ? "text-pink-500 border-b-2 border-pink-500" : "text-gray-500 hover:text-pink-500"}`}
+                className={`pb-2 font-medium capitalize ${
+                  activeTab === tab
+                    ? "text-pink-500 border-b-2 border-pink-500"
+                    : "text-gray-500 hover:text-pink-500"
+                }`}
               >
                 {tab === "additional" ? "Additional Information" : tab}
               </button>
@@ -200,10 +260,10 @@ export default function ProductDetails() {
             </div>
           )}
         </div>
-      </div>
 
-      {/* Related Products */}
-      <RelatedProduct categorySlug={category.slug} />
+        {/* Related Products */}
+        <RelatedProduct categorySlug={category.slug} />
+      </div>
     </div>
   );
 }

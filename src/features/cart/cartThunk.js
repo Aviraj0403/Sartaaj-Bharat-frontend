@@ -1,33 +1,32 @@
 // src/features/cart/cartThunks.js
-import { createAsyncThunk } from '@reduxjs/toolkit';
+
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   getUserCart,
   addToCart,
   updateCartItem,
   removeCartItem,
   clearCart as clearCartApi,
-} from '../../services/cartApi'; // tumhara path
+} from "../../services/cartApi";
 
-import {
-  setCart,
-  mergeCart,
-  clearCart,
-  addItem,
-} from './cartSlice';
+import { setCart, mergeCart, clearCart } from "./cartSlice";
 
-// Login ke baad guest cart → backend sync
+// ⭐ 1. LOGIN → guest cart merge with backend
 export const syncCartOnLogin = createAsyncThunk(
-  'cart/syncOnLogin',
+  "cart/syncOnLogin",
   async (_, { dispatch, getState }) => {
     const localCart = getState().cart.items;
 
+    // STEP 1 → Fetch backend cart
+    const backend = await getUserCart();
+    const backendItems = backend.data.cartItems;
+
     if (localCart.length === 0) {
-      const res = await getUserCart();
-      dispatch(setCart({ items: res.data.cartItems }));
+      dispatch(setCart({ items: backendItems }));
       return;
     }
 
-    // Add local items to backend
+    // STEP 2 → Push local guest items → backend
     for (const item of localCart) {
       await addToCart({
         productId: item.id,
@@ -36,55 +35,63 @@ export const syncCartOnLogin = createAsyncThunk(
       });
     }
 
-    // Final sync
-    const res = await getUserCart();
-    dispatch(setCart({ items: res.data.cartItems }));
+    // STEP 3 → Fetch updated backend cart
+    const finalCart = await getUserCart();
+
+    // STEP 4 → Merge backend + local
+    dispatch(
+      mergeCart({
+        items: finalCart.data.cartItems,
+      })
+    );
   }
 );
 
-// Page refresh pe backend se cart load karo
+// ⭐ 2. GET backend cart (page refresh)
 export const fetchBackendCart = createAsyncThunk(
-  'cart/fetchBackendCart',
+  "cart/fetchBackendCart",
   async (_, { dispatch }) => {
     const res = await getUserCart();
     dispatch(setCart({ items: res.data.cartItems }));
   }
 );
 
-// Add item → backend + local
+// ⭐ 3. BACKEND add item (NO optimistic)
 export const addItemToCart = createAsyncThunk(
-  'cart/addItem',
-  async ({ productId, size, quantity = 1 }, { dispatch }) => {
+  "cart/addItem",
+  async ({ productId, size, quantity }, { dispatch }) => {
     await addToCart({ productId, size, quantity });
-    dispatch(addItem({ productId, size, price: 0, quantity })); // price backend se aayega baad mein
-    const res = await getUserCart();
-    dispatch(setCart({ items: res.data.cartItems })); // fresh sync
+
+    const updated = await getUserCart();
+    dispatch(setCart({ items: updated.data.cartItems }));
   }
 );
 
-// Update quantity
+// ⭐ 4. Update quantity
 export const updateItemQty = createAsyncThunk(
-  'cart/updateQty',
+  "cart/updateQty",
   async ({ productId, size, quantity }, { dispatch }) => {
     await updateCartItem({ productId, size, quantity });
-    const res = await getUserCart();
-    dispatch(setCart({ items: res.data.cartItems }));
+
+    const updated = await getUserCart();
+    dispatch(setCart({ items: updated.data.cartItems }));
   }
 );
 
-// Remove item
+// ⭐ 5. Remove item
 export const removeItemFromCart = createAsyncThunk(
-  'cart/removeItem',
+  "cart/removeItem",
   async ({ productId, size }, { dispatch }) => {
     await removeCartItem({ productId, size });
-    const res = await getUserCart();
-    dispatch(setCart({ items: res.data.cartItems }));
+
+    const updated = await getUserCart();
+    dispatch(setCart({ items: updated.data.cartItems }));
   }
 );
 
-// Clear cart
+// ⭐ 6. CLEAR cart
 export const clearEntireCart = createAsyncThunk(
-  'cart/clear',
+  "cart/clear",
   async (_, { dispatch }) => {
     await clearCartApi();
     dispatch(clearCart());

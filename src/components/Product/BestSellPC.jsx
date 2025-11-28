@@ -1,17 +1,27 @@
 import React from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useCartActions } from "../hooks/useCartActions"; // adjust path
 
-// Reusable Product Card Component
 export default function BestSellPC({ product, onProductClick }) {
   const navigate = useNavigate();
+  const { addToCart } = useCartActions();
 
   const handleProductClick = () => {
     if (onProductClick) {
-      onProductClick(product.slug); // Custom callback for click event
+      onProductClick(product.slug);
     } else {
-      navigate(`/product/${product.slug}`); // Default navigation
+      navigate(`/product/${product.slug}`);
     }
+  };
+
+  const handleAddToCart = async () => {
+    // For simplicity, using first variant. Adjust if multiple variants/sizes exist.
+    const variant = product?.variants;
+
+    if (!variant) return;
+
+    await addToCart(product, variant.size || "default", variant.price, 1);
   };
 
   const discount = product?.variants?.realPrice
@@ -36,7 +46,7 @@ export default function BestSellPC({ product, onProductClick }) {
         </div>
       )}
 
-      {/* ⭐ Bestseller Badge - Always visible */}
+      {/* ⭐ Bestseller Badge */}
       {product.isBestSeller && (
         <div className="absolute top-3 right-3 bg-pink-500 z-20 text-white px-3 py-1 rounded-tl-xl rounded-bl-xl text-xs font-bold">
           Bestseller
@@ -70,7 +80,7 @@ export default function BestSellPC({ product, onProductClick }) {
             ₹{product?.variants?.price}
           </p>
           <p className="text-gray-400 line-through text-xs">
-            ₹{product?.variants?.realPrice.toFixed(2)}
+            ₹{product?.variants?.realPrice?.toFixed(2)}
           </p>
         </div>
         <div className="flex items-center">
@@ -81,7 +91,10 @@ export default function BestSellPC({ product, onProductClick }) {
 
       {/* 🛒 Buttons */}
       <div className="flex flex-col md:flex-row gap-2">
-        <button className="flex-1 bg-pink-500 text-white font-semibold py-1 rounded-lg hover:bg-pink-600 transition text-sm">
+        <button
+          onClick={handleAddToCart}
+          className="flex-1 bg-pink-500 text-white font-semibold py-1 rounded-lg hover:bg-pink-600 transition text-sm"
+        >
           Add to Cart
         </button>
         <button

@@ -193,12 +193,15 @@ export default function DesktopHeader() {
         </ul>
 
         {/* CART ICON */}
-        <Link to="/cart" className="cursor-pointer hover:text-pink-600 transition">
-          <ShoppingCart />
-          <span className="absolute top-0 right-0 text-xs bg-pink-600 text-white rounded-full px-2 py-1">
-            {totalQuantity}
-          </span>
-        </Link>
+      <Link to="/cart" className="relative cursor-pointer hover:text-pink-600 transition">
+  <ShoppingCart size={24} />
+  {totalQuantity > 0 && (
+    <span className="absolute -top-2 -right-2 text-xs bg-pink-600 text-white rounded-full px-2 py-0.5">
+      {totalQuantity}
+    </span>
+  )}
+</Link>
+
       </div>
     </header>
   );

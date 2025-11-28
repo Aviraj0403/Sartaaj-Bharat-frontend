@@ -1,22 +1,14 @@
-// src/features/cart/cartSlice.js
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   items: [],
   totalQuantity: 0,
   totalAmount: 0,
-  merged: false, // for guest → login sync
+  merged: false,   // IMPORTANT for guest → login sync
 };
 
-const calculateTotals = (items) => {
-  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  return { totalQuantity, totalAmount };
-};
-
-// Normalize backend response
+// Normalize item coming from payload or backend
 const normalizeItem = (item) => ({
-  
   id: item.id,
   name: item.name,
   image: item.image,
@@ -25,59 +17,74 @@ const normalizeItem = (item) => ({
   size: item.size,
 });
 
+// Calculate totals for cart
+const calculateTotals = (items) => {
+  const totalQuantity = items.reduce((sum, i) => sum + i.quantity, 0);
+  const totalAmount = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  return { totalQuantity, totalAmount };
+};
+
 const cartSlice = createSlice({
-  name: 'cart',
+  name: "cart",
   initialState,
   reducers: {
+    // ⭐ LOCAL ADD (Optimistic Update)
     addItem(state, action) {
       const newItem = normalizeItem(action.payload);
-      const existingItem = state.items.find(
-        (item) => item.id === newItem.id && item.size === newItem.size
+
+      const existing = state.items.find(
+        (i) => i.id === newItem.id && i.size === newItem.size
       );
 
-      if (existingItem) {
-        existingItem.quantity += newItem.quantity;
+      if (existing) {
+        existing.quantity += newItem.quantity;
       } else {
         state.items.push(newItem);
       }
 
-      const { totalQuantity, totalAmount } = calculateTotals(state.items);
-      state.totalQuantity = totalQuantity;
-      state.totalAmount = totalAmount;
+      const totals = calculateTotals(state.items);
+      state.totalQuantity = totals.totalQuantity;
+      state.totalAmount = totals.totalAmount;
     },
+
+    // ⭐ LOCAL UPDATE QTY
     updateItemQuantity(state, action) {
       const { id, size, quantity } = action.payload;
+
       const item = state.items.find((i) => i.id === id && i.size === size);
       if (item) {
         item.quantity = quantity;
       }
 
-      const { totalQuantity, totalAmount } = calculateTotals(state.items);
-      state.totalQuantity = totalQuantity;
-      state.totalAmount = totalAmount;
+      const totals = calculateTotals(state.items);
+      state.totalQuantity = totals.totalQuantity;
+      state.totalAmount = totals.totalAmount;
     },
+
+    // ⭐ LOCAL REMOVE
     removeItem(state, action) {
       const { id, size } = action.payload;
+
       state.items = state.items.filter((i) => !(i.id === id && i.size === size));
 
-      const { totalQuantity, totalAmount } = calculateTotals(state.items);
-      state.totalQuantity = totalQuantity;
-      state.totalAmount = totalAmount;
+      const totals = calculateTotals(state.items);
+      state.totalQuantity = totals.totalQuantity;
+      state.totalAmount = totals.totalAmount;
     },
-    clearCart(state) {
-      state.items = [];
-      state.totalQuantity = 0;
-      state.totalAmount = 0;
-      state.merged = false;
-    },
+
+    // ⭐ SET CART (Backend overwrite)
     setCart(state, action) {
-      const rawItems = action.payload.items || [];
-      state.items = rawItems.map(normalizeItem);
-      const { totalQuantity, totalAmount } = calculateTotals(state.items);
-      state.totalQuantity = totalQuantity;
-      state.totalAmount = totalAmount;
+      const incoming = action.payload.items || [];
+      state.items = incoming.map(normalizeItem);
+
+      const totals = calculateTotals(state.items);
+      state.totalQuantity = totals.totalQuantity;
+      state.totalAmount = totals.totalAmount;
+
       state.merged = true;
     },
+
+    // ⭐ GUEST CART MERGE WITH BACKEND CART
     mergeCart(state, action) {
       const backendItems = (action.payload.items || []).map(normalizeItem);
 
@@ -93,13 +100,22 @@ const cartSlice = createSlice({
         }
       });
 
-      const { totalQuantity, totalAmount } = calculateTotals(state.items);
-      state.totalQuantity = totalQuantity;
-      state.totalAmount = totalAmount;
+      const totals = calculateTotals(state.items);
+      state.totalQuantity = totals.totalQuantity;
+      state.totalAmount = totals.totalAmount;
+
       state.merged = true;
     },
+
     setMerged(state, action) {
       state.merged = action.payload;
+    },
+
+    clearCart(state) {
+      state.items = [];
+      state.totalQuantity = 0;
+      state.totalAmount = 0;
+      state.merged = false;
     },
   },
 });
