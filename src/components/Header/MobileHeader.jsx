@@ -15,10 +15,10 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../image/logo-cosmetic2.jpg";
-
 import { useQuery } from "@tanstack/react-query";
 import { getMenuCategories } from "../../services/categoryApi";
 import { useAuth } from "../../context/AuthContext";
+import { useSelector } from "react-redux";
 
 export default function MobileHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,7 +26,14 @@ export default function MobileHeader() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
-  // ⭐ Fetch Categories Dynamically (Same as Desktop)
+  // Redux Cart
+  const { items: cartItems } = useSelector((state) => state.cart);
+  const totalQuantity = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
+
+  // Categories
   const { data: menuItems = [], isLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: getMenuCategories,
@@ -34,15 +41,14 @@ export default function MobileHeader() {
 
   const handleLogout = async () => {
     await logout();
+    setIsMenuOpen(false);
     navigate("/signin");
   };
 
   const handleProfileClick = () => {
-    if (user) {
-      navigate("/profile");
-    } else {
-      navigate("/signin?redirect=/profile");
-    }
+    setIsMenuOpen(false);
+    if (user) navigate("/profile");
+    else navigate("/signin?redirect=/profile");
   };
 
   const toggleSubMenu = (index) => {
@@ -51,12 +57,10 @@ export default function MobileHeader() {
 
   return (
     <div className="w-full bg-white flex flex-col md:hidden">
-
       {/* 🔝 Sticky Header */}
-      <div className="fixed top-0 left-0 w-full z-[90] bg-white ">
-        
-        {/* Top Header */}
+      <div className="fixed top-0 left-0 w-full z-[90] bg-white shadow-md">
         <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
+          {/* Menu Button */}
           <button
             className="text-pink-500 hover:text-pink-600 transition"
             onClick={() => setIsMenuOpen(true)}
@@ -64,16 +68,17 @@ export default function MobileHeader() {
             <Menu size={28} />
           </button>
 
+          {/* Logo */}
           <Link to="/" className="flex justify-center">
             <img src={logo} alt="Logo" className="h-12 w-auto" />
           </Link>
 
+          {/* Profile + Cart */}
           <div className="flex items-center gap-4 text-gray-700">
-
             {/* Profile */}
             <button
               onClick={handleProfileClick}
-              className="flex flex-col items-center text-xs hover:text-pink-500 transition"
+              className="relative flex flex-col items-center text-xs hover:text-pink-500 transition"
             >
               <User size={22} />
               <span>Profile</span>
@@ -82,9 +87,14 @@ export default function MobileHeader() {
             {/* Cart */}
             <Link
               to="/cart"
-              className="flex flex-col items-center text-xs hover:text-pink-500 transition"
+              className="relative flex flex-col items-center text-xs hover:text-pink-500 transition"
             >
               <ShoppingBag size={22} />
+              {totalQuantity > 0 && (
+                <span className="absolute -top-1 -right-2 text-[10px] bg-pink-600 text-white rounded-full px-1.5 py-0.5">
+                  {totalQuantity}
+                </span>
+              )}
               <span>Cart</span>
             </Link>
           </div>
@@ -113,7 +123,10 @@ export default function MobileHeader() {
           <span className="text-xs">Home</span>
         </Link>
 
-        <button onClick={() => setIsMenuOpen(true)} className="flex flex-col items-center text-gray-700">
+        <button
+          onClick={() => setIsMenuOpen(true)}
+          className="flex flex-col items-center text-gray-700"
+        >
           <List size={22} />
           <span className="text-xs">Menu</span>
         </button>
@@ -128,136 +141,134 @@ export default function MobileHeader() {
           <span className="text-xs">Offers</span>
         </Link>
 
-        <button onClick={handleProfileClick} className="flex flex-col items-center text-gray-700">
+        <button
+          onClick={handleProfileClick}
+          className="flex flex-col items-center text-gray-700"
+        >
           <User size={22} />
           <span className="text-xs">Account</span>
         </button>
       </div>
 
-      {/* ⭐ Sidebar Menu with Dynamic Categories */}
- {/* ⭐ Sidebar Menu with Dynamic Categories */}
-<div
-  className={`fixed top-0 left-0 h-screen w-72 bg-white shadow-xl transform transition-transform duration-300 z-[100] rounded-r-2xl ${
-    isMenuOpen ? "translate-x-0" : "-translate-x-full"
-  }`}
->
-
-  {/* 🔒 FIXED MENU HEADER */}
-  <div className="flex justify-between items-center px-6 py-4 bg-pink-100 sticky top-0 z-10">
-    <h2 className="text-xl font-bold text-pink-600">Menu</h2>
-    <button onClick={() => setIsMenuOpen(false)}>
-      <X size={26} className="text-pink-600" />
-    </button>
-  </div>
-
-  {/* 🔽 SCROLLABLE CONTENT */}
-  <div className="h-[calc(100vh-64px)] overflow-y-auto pb-20">
-
-    {/* Static Links */}
-    <div className="flex flex-col px-6 py-4 border-b border-pink-200 gap-4">
-      <button
-        onClick={() => {
-          handleProfileClick();
-          setIsMenuOpen(false);
-        }}
-        className="flex items-center gap-3 text-gray-800 hover:text-pink-600 transition"
+      {/* ⭐ Sidebar Menu */}
+      <div
+        className={`fixed top-0 left-0 h-screen w-72 bg-white shadow-xl transform transition-transform duration-300 z-[100] rounded-r-2xl ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
-        <User size={22} />
-        <span>My Profile</span>
-      </button>
+        {/* Header */}
+        <div className="flex justify-between items-center px-6 py-4 bg-pink-100 sticky top-0 z-10">
+          <h2 className="text-xl font-bold text-pink-600">Menu</h2>
+          <button onClick={() => setIsMenuOpen(false)}>
+            <X size={26} className="text-pink-600" />
+          </button>
+        </div>
 
-      <Link
-        to="/cart"
-        onClick={() => setIsMenuOpen(false)}
-        className="flex items-center gap-3 text-gray-800 hover:text-pink-600 transition"
-      >
-        <ShoppingBag size={22} />
-        <span>My Cart</span>
-      </Link>
+        {/* Scrollable Menu */}
+        <div className="h-[calc(100vh-64px)] overflow-y-auto pb-20">
+          {/* Static Links */}
+          <div className="flex flex-col px-6 py-4 border-b border-pink-200 gap-4">
+            <button
+              onClick={handleProfileClick}
+              className="flex items-center gap-3 text-gray-800 hover:text-pink-600 transition"
+            >
+              <User size={22} />
+              <span>My Profile</span>
+            </button>
 
-      <Link
-        to="/new-product"
-        onClick={() => setIsMenuOpen(false)}
-        className="flex items-center gap-3 text-gray-800 hover:text-pink-600 transition"
-      >
-        <Tag size={22} />
-        <span>New Arrival</span>
-      </Link>
+            <Link
+              to="/cart"
+              onClick={() => setIsMenuOpen(false)}
+              className="flex items-center gap-3 text-gray-800 hover:text-pink-600 transition relative"
+            >
+              <ShoppingBag size={22} />
+              {totalQuantity > 0 && (
+                <span className="absolute -top-1 -right-2 text-[10px] bg-pink-600 text-white rounded-full px-1.5 py-0.5">
+                  {totalQuantity}
+                </span>
+              )}
+              <span>My Cart</span>
+            </Link>
 
-      <Link
-        to="/collections"
-        onClick={() => setIsMenuOpen(false)}
-        className="flex items-center gap-3 text-gray-800 hover:text-pink-600 transition"
-      >
-        <List size={22} />
-        <span>Collections</span>
-      </Link>
-    </div>
+            <Link
+              to="/new-product"
+              onClick={() => setIsMenuOpen(false)}
+              className="flex items-center gap-3 text-gray-800 hover:text-pink-600 transition"
+            >
+              <Tag size={22} />
+              <span>New Arrival</span>
+            </Link>
 
-    {/* Categories */}
-    <ul className="flex flex-col mt-2 text-gray-800 font-semibold">
-      {isLoading && (
-        <p className="px-6 py-4 text-gray-500">Loading categories...</p>
-      )}
-
-      {menuItems.map((item, index) => (
-        <li key={item._id} className="border-b border-pink-100">
-          <div
-            className="flex justify-between items-center px-5 py-3 hover:bg-pink-500 hover:text-white transition cursor-pointer"
-            onClick={() => {
-              if (item.subcategories.length > 0) {
-                toggleSubMenu(index);
-              } else {
-                navigate(`/category/${item.slug}`);
-                setIsMenuOpen(false);
-              }
-            }}
-          >
-            {item.name}
-
-            {item.subcategories.length > 0 &&
-              (openSubMenu === index ? (
-                <ChevronUp size={18} />
-              ) : (
-                <ChevronDown size={18} />
-              ))}
+            <Link
+              to="/collections"
+              onClick={() => setIsMenuOpen(false)}
+              className="flex items-center gap-3 text-gray-800 hover:text-pink-600 transition"
+            >
+              <List size={22} />
+              <span>Collections</span>
+            </Link>
           </div>
 
-          {openSubMenu === index && item.subcategories.length > 0 && (
-            <ul className="bg-pink-50 text-sm font-normal">
-              {item.subcategories.map((sub) => (
-                <li key={sub._id}>
-                  <Link
-                    to={`/${item.slug}/${sub.slug}`}
-                    onClick={() => setIsMenuOpen(false)}
-                    className="block px-8 py-2 hover:bg-pink-100 hover:text-pink-600"
-                  >
-                    {sub.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          {/* Categories */}
+          <ul className="flex flex-col mt-2 text-gray-800 font-semibold">
+            {isLoading && (
+              <p className="px-6 py-4 text-gray-500">Loading categories...</p>
+            )}
+            {menuItems.map((item, index) => (
+              <li key={item._id} className="border-b border-pink-100">
+                <div
+                  className="flex justify-between items-center px-5 py-3 hover:bg-pink-500 hover:text-white transition cursor-pointer"
+                  onClick={() => {
+                    if (item.subcategories.length > 0) toggleSubMenu(index);
+                    else {
+                      navigate(`/category/${item.slug}`);
+                      setIsMenuOpen(false);
+                    }
+                  }}
+                >
+                  {item.name}
+                  {item.subcategories.length > 0 &&
+                    (openSubMenu === index ? (
+                      <ChevronUp size={18} />
+                    ) : (
+                      <ChevronDown size={18} />
+                    ))}
+                </div>
+
+                {openSubMenu === index && item.subcategories.length > 0 && (
+                  <ul className="bg-pink-50 text-sm font-normal">
+                    {item.subcategories.map((sub) => (
+                      <li key={sub._id}>
+                        <Link
+                          to={`/${item.slug}/${sub.slug}`}
+                          onClick={() => setIsMenuOpen(false)}
+                          className="block px-8 py-2 hover:bg-pink-100 hover:text-pink-600"
+                        >
+                          {sub.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          {/* Logout */}
+          {user && (
+            <div className="w-full px-6 py-6">
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 w-full justify-center bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 rounded-xl"
+              >
+                <LogOut size={20} /> Logout
+              </button>
+            </div>
           )}
-        </li>
-      ))}
-    </ul>
-
-    {/* Logout */}
-    {user && (
-      <div className="w-full px-6 py-6">
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 w-full justify-center bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 rounded-xl"
-        >
-          <LogOut size={20} /> Logout
-        </button>
+        </div>
       </div>
-    )}
-  </div>
-</div>
 
-
-
+      {/* Overlay */}
       {isMenuOpen && (
         <div
           className="fixed inset-0 bg-black opacity-30 z-[95]"
