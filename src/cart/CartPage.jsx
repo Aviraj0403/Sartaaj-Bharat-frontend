@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Minus, Plus, X } from "lucide-react";
 import ApplyCouponPanel from "./ApplyCouponPanel";
 import { useNavigate } from "react-router-dom";
@@ -13,16 +13,20 @@ export default function CartPage() {
     addToCart,
     updateQuantity,
     removeFromCart,
-    clearCart,       // make sure this is returned from hook
-    totalAmount,     // totalAmount from hook
+    clearCart,
+    totalAmount,
+    totalItems,
+    loading, // Track loading state
+    error,   // Track errors
   } = useCartActions();
-
-  // Increment / Decrement properly
+  console.log("Cart Items:", cartItems);
+  // Increment quantity
   const handleIncrement = (id, size) => {
     const item = cartItems.find((i) => i.id === id && i.size === size);
     if (item) updateQuantity(id, size, item.quantity + 1);
   };
 
+  // Decrement quantity (removes item if quantity reaches 0)
   const handleDecrement = (id, size) => {
     const item = cartItems.find((i) => i.id === id && i.size === size);
     if (!item) return;
@@ -34,14 +38,21 @@ export default function CartPage() {
     }
   };
 
+  // Handle removing item from the cart
   const handleRemoveItem = (id, size) => {
+    console.log("Removing item:", id, size);
     removeFromCart(id, size);
+  };
+
+  // Handle clearing the cart
+  const handleClearCart = () => {
+    clearCart();
   };
 
   return (
     <div className="min-h-screen p-4 sm:p-8 flex justify-center relative bg-pink-50">
       <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6">
-
+        
         {/* Left Section */}
         <div className="flex-1">
           <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">
@@ -86,6 +97,7 @@ export default function CartPage() {
                     <button
                       className="text-gray-600 hover:text-pink-600"
                       onClick={() => handleDecrement(item.id, item.size)}
+                      disabled={loading} // Disable buttons while loading
                     >
                       <Minus size={16} />
                     </button>
@@ -93,6 +105,7 @@ export default function CartPage() {
                     <button
                       className="text-gray-600 hover:text-pink-600"
                       onClick={() => handleIncrement(item.id, item.size)}
+                      disabled={loading} // Disable buttons while loading
                     >
                       <Plus size={16} />
                     </button>
@@ -121,7 +134,7 @@ export default function CartPage() {
 
             <div className="flex justify-between items-center border-b pb-3 mb-3">
               <p className="text-gray-600">Total Items</p>
-              <p className="font-medium">{cartItems.length}</p>
+              <p className="font-medium">{totalItems}</p>
             </div>
 
             <div className="bg-pink-50 rounded-xl p-4 text-center mb-4">
@@ -162,7 +175,8 @@ export default function CartPage() {
 
             <button
               className="w-full border border-pink-300 text-pink-600 font-medium py-2 rounded-lg hover:bg-pink-50 transition"
-              onClick={() => clearCart()}
+              onClick={handleClearCart} // Trigger clear cart action
+              disabled={loading} // Disable while loading
             >
               Clear Cart
             </button>

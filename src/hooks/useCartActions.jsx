@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import debounce from "lodash.debounce";
 
 import {
-  addItemToCart,
-  updateItemQty,
-  removeItemFromCart,
+  syncCartOnLogin,
+  addToCartThunk,
+  updateCartItemThunk,
+  removeFromCartThunk,
+  clearCartThunk,
 } from "../features/cart/cartThunk";
 
 import {
@@ -22,15 +24,41 @@ export const useCartActions = () => {
   const { user } = useAuth();
   const isAuthenticated = !!user;
 
+  // Local state to track loading and error
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Function to find a specific item in the cart by product ID and size
   const findCartItem = (productId, size) =>
-    cartItems.find((i) => i.id === productId && i.size === size);
+    cartItems.find((item) => item.id === productId && item.size === size);
 
-  // ⭐ ADD TO CART
-  const addToCart = async (product, size, quantity = 1) => {
+  // Helper function to handle loading and error states
+  const handleAction = async (actionCallback) => {
+    setLoading(true);
+    setError(null);
     try {
-      const existingItem = findCartItem(product._id, size);
-      const newQty = (existingItem?.quantity || 0) + quantity;
+      const result = await actionCallback();
+      return result;
+    } catch (err) {
+      setError(err.message || err);
+      return { success: false, error: err.message || err };
+    } finally {
+      setLoading(false);
+    }
+  };
+ console.log("useCartActions - cartItems:", cartItems);
+  // ⭐ Sync Cart after login (merge guest cart with backend cart)
+  const syncCart = async () => {
+    await handleAction(() => dispatch(syncCartOnLogin()).unwrap());
+  };
 
+  // ⭐ Add to Cart (Optimistic Update for Local Cart + Backend Sync)
+  const addToCart = async (product, size, quantity = 1) => {
+    const existingItem = findCartItem(product._id, size);
+    const newQty = (existingItem?.quantity || 0) + quantity;
+
+    const addItemAction = async () => {
+      // Optimistically update local cart
       dispatch(
         addItem({
           id: product._id,
@@ -42,68 +70,98 @@ export const useCartActions = () => {
         })
       );
 
+      // If authenticated, sync with backend
       if (isAuthenticated) {
-        await dispatch(
-          addItemToCart({
-            productId: product._id,
-            size,
-            quantity: newQty,
-          })
-        ).unwrap();
+        await dispatch(addToCartThunk({ productId: product._id, size, quantity: newQty })).unwrap();
       }
 
       return { success: true, newQuantity: newQty };
-    } catch (err) {
-      return { success: false, error: err.message };
-    }
+    };
+
+    return handleAction(addItemAction);
   };
 
-  // ⭐ UPDATE QTY
+  // ⭐ Update Quantity in Cart (Optimistic Update for Local Cart + Backend Sync)
   const updateQuantity = async (productId, size, quantity) => {
     if (quantity < 1) return;
 
-    dispatch(updateItemQuantity({ id: productId, size, quantity }));
+    const updateQtyAction = async () => {
+      // Optimistically update local cart
+      dispatch(updateItemQuantity({ id: productId, size, quantity }));
 
-    if (isAuthenticated) {
-      await dispatch(updateItemQty({ productId, size, quantity })).unwrap();
-    }
+      // If authenticated, sync with backend
+      if (isAuthenticated) {
+        await dispatch(updateCartItemThunk({ productId, size, quantity })).unwrap();
+      }
+
+      return { success: true };
+    };
+
+    return handleAction(updateQtyAction);
   };
 
+  // Debounced version of updateQuantity to reduce backend calls
   const updateQuantityDebounced = useCallback(
     debounce((productId, size, qty) => updateQuantity(productId, size, qty), 500),
     []
   );
 
-  // ⭐ REMOVE ITEM
+  // ⭐ Remove Item from Cart (Backend Sync)
   const removeFromCart = async (productId, size) => {
-    dispatch(removeItem({ id: productId, size }));
+    const removeItemAction = async () => {
+      // Optimistically remove item from local cart
+      dispatch(removeItem({ id: productId, size }));
 
-    if (isAuthenticated) {
-      await dispatch(removeItemFromCart({ productId, size })).unwrap();
-    }
+      // If authenticated, remove from backend
+      if (isAuthenticated) {
+        await dispatch(removeFromCartThunk({ productId, size })).unwrap();
+      }
+
+      return { success: true };
+    };
+
+    return handleAction(removeItemAction);
   };
 
-  // ⭐ CLEAR CART
-  const clearCart = () => {
-    cartItems.forEach((item) => dispatch(removeItem({ id: item.id, size: item.size })));
+  // ⭐ Clear Cart (Backend Sync + Local)
+  const clearCart = async () => {
+    const clearAction = async () => {
+      // Optimistically clear local cart
+      cartItems.forEach((item) => dispatch(removeItem({ id: item.id, size: item.size })));
+
+      // If authenticated, clear from backend
+      if (isAuthenticated) {
+        await dispatch(clearCartThunk()).unwrap();
+      }
+
+      return { success: true };
+    };
+
+    return handleAction(clearAction);
   };
 
-  // ⭐ CALCULATE TOTALS
+  // ⭐ Calculate Cart Totals
   const totalAmount = cartItems.reduce(
     (acc, item) => acc + (item.price || 0) * (item.quantity || 0),
     0
   );
 
-  const totalItems = cartItems.reduce((acc, item) => acc + (item.quantity || 0), 0);
+  const totalItems = cartItems.reduce(
+    (acc, item) => acc + (item.quantity || 0),
+    0
+  );
 
   return {
     cartItems,
+    syncCart,
     addToCart,
     updateQuantity,
     updateQuantityDebounced,
     removeFromCart,
     clearCart,
-    totalAmount,   // ✅ Add this
-    totalItems,    // ✅ Optional, for total item count
+    totalAmount,
+    totalItems,
+    loading, // Provide loading state for UI feedback
+    error,   // Provide error state for UI feedback
   };
 };

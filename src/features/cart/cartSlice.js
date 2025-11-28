@@ -4,12 +4,12 @@ const initialState = {
   items: [],
   totalQuantity: 0,
   totalAmount: 0,
-  merged: false,   // IMPORTANT for guest → login sync
+  merged: false, // For tracking if the cart has been merged after guest login
 };
 
-// Normalize item coming from payload or backend
+// Normalize cart item
 const normalizeItem = (item) => ({
-  id: item.id,
+  id: item.id || item.productId,
   name: item.name,
   image: item.image,
   price: Number(item.price),
@@ -28,10 +28,9 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    // ⭐ LOCAL ADD (Optimistic Update)
+    // Add item (optimistic update for local cart)
     addItem(state, action) {
       const newItem = normalizeItem(action.payload);
-
       const existing = state.items.find(
         (i) => i.id === newItem.id && i.size === newItem.size
       );
@@ -47,24 +46,20 @@ const cartSlice = createSlice({
       state.totalAmount = totals.totalAmount;
     },
 
-    // ⭐ LOCAL UPDATE QTY
+    // Update item quantity
     updateItemQuantity(state, action) {
       const { id, size, quantity } = action.payload;
-
       const item = state.items.find((i) => i.id === id && i.size === size);
-      if (item) {
-        item.quantity = quantity;
-      }
+      if (item) item.quantity = quantity;
 
       const totals = calculateTotals(state.items);
       state.totalQuantity = totals.totalQuantity;
       state.totalAmount = totals.totalAmount;
     },
 
-    // ⭐ LOCAL REMOVE
+    // Remove item
     removeItem(state, action) {
       const { id, size } = action.payload;
-
       state.items = state.items.filter((i) => !(i.id === id && i.size === size));
 
       const totals = calculateTotals(state.items);
@@ -72,7 +67,7 @@ const cartSlice = createSlice({
       state.totalAmount = totals.totalAmount;
     },
 
-    // ⭐ SET CART (Backend overwrite)
+    // Set cart items (overwrite with backend data)
     setCart(state, action) {
       const incoming = action.payload.items || [];
       state.items = incoming.map(normalizeItem);
@@ -80,11 +75,10 @@ const cartSlice = createSlice({
       const totals = calculateTotals(state.items);
       state.totalQuantity = totals.totalQuantity;
       state.totalAmount = totals.totalAmount;
-
       state.merged = true;
     },
 
-    // ⭐ GUEST CART MERGE WITH BACKEND CART
+    // Merge cart (merge guest cart with backend)
     mergeCart(state, action) {
       const backendItems = (action.payload.items || []).map(normalizeItem);
 
@@ -103,12 +97,7 @@ const cartSlice = createSlice({
       const totals = calculateTotals(state.items);
       state.totalQuantity = totals.totalQuantity;
       state.totalAmount = totals.totalAmount;
-
       state.merged = true;
-    },
-
-    setMerged(state, action) {
-      state.merged = action.payload;
     },
 
     clearCart(state) {
@@ -124,10 +113,9 @@ export const {
   addItem,
   updateItemQuantity,
   removeItem,
-  clearCart,
   setCart,
   mergeCart,
-  setMerged,
+  clearCart,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

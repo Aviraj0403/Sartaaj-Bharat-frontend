@@ -101,6 +101,7 @@ export const AuthProvider = ({ children }) => {
   };
   const logout = async () => {
     await Axios.post("/auth/user/logout", {}, { withCredentials: true });
+    localStorage.removeItem('authToken');
     dispatch(clearCart());
     setUser(null);
     queryClient.clear();

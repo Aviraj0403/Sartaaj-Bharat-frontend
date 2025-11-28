@@ -1,5 +1,4 @@
-//cartapiimport Axios from '../utils/Axios'; // Ensure this instance handles tokens
-import Axios from '../utils/Axios';
+import Axios from '../utils/Axios'; // Ensure this instance handles tokens
 
 export const getUserCart = () => {
   return Axios.get('/cart/getUserCart');
@@ -13,13 +12,11 @@ export const updateCartItem = (payload) => {
   return Axios.put('/cart/updateCartItem', payload);
 };
 
-// cartApi.js
-export const removeCartItem = ({ productId, unit }) => {
+export const removeCartItem = ({ productId, size }) => {
   return Axios.delete('/cart/removeCartItem', {
     params: { productId, size }, // ✅ send via query string
   });
 };
-
 
 export const clearCart = () => {
   return Axios.delete('/cart/clearCart');
