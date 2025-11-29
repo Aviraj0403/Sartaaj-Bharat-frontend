@@ -161,7 +161,7 @@ export default function DesktopHeader() {
               onMouseLeave={() => setActiveMenu(null)}
             >
               <Link
-                to={`/category/${item.slug}`}
+                to={`/${item.slug}`}
                 className="flex items-center gap-1 relative py-1 
                 after:content-[''] after:absolute after:left-0 after:bottom-0 
                 after:w-0 after:h-[2px] after:bg-pink-500 after:transition-all after:duration-300

@@ -170,7 +170,7 @@ export default function ProductDetails() {
 
             {/* Quantity + Buttons */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
-              <div className="flex items-center border border-gray-300 rounded-md w-fit">
+              {/* <div className="flex items-center border border-gray-300 rounded-md w-fit">
                 <button
                   className="px-3 py-1 text-gray-600"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -184,7 +184,7 @@ export default function ProductDetails() {
                 >
                   +
                 </button>
-              </div>
+              </div> */}
 
               <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <button

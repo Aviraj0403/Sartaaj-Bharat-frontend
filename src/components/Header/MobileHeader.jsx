@@ -221,7 +221,7 @@ export default function MobileHeader() {
                   onClick={() => {
                     if (item.subcategories.length > 0) toggleSubMenu(index);
                     else {
-                      navigate(`/category/${item.slug}`);
+                      navigate(`/${item.slug}`);
                       setIsMenuOpen(false);
                     }
                   }}
