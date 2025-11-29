@@ -1,30 +1,61 @@
-import React, { useState } from "react";
-import { X, Check } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { X, Check, AlertCircle } from "lucide-react";
+import { getActiveOffers, applyDiscount } from "../services/offerApi";
 
-export default function ApplyCouponPanel({ isOpen, onClose, onApply }) {
-  const [coupon, setCoupon] = useState("");
-  const [applied, setApplied] = useState(false);
+export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoupon, totalAmount }) {
+  const [coupon, setCoupon] = useState(""); // Coupon code input
+  const [error, setError] = useState(null); // Error handling
+  const [offers, setOffers] = useState([]); // List of active offers
+  const [loading, setLoading] = useState(true); // Loading state for fetching offers
 
-  const sampleCoupons = [
-    { code: "WELCOME10", description: "Get 10% off on your first order!" },
-    { code: "FREESHIP", description: "Free shipping for orders above ₹500!" },
-  ];
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const activeOffers = await getActiveOffers(); // Fetch active offers
+        setOffers(activeOffers);
+      } catch (error) {
+        console.error("Failed to fetch offers", error);
+        setError("Failed to load offers.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleApply = (code) => {
+    if (isOpen) {
+      fetchOffers();
+      setError(null); // Clear any previous errors when panel opens
+    }
+  }, [isOpen]);
+
+  const handleApply = async (code, offerName = "") => {
     if (code.trim() !== "") {
-      setCoupon(code);
-      setApplied(true);
-      onApply(code);
+      setLoading(true);  // Show loading state
+
+      try {
+        const discountResult = await applyDiscount(totalAmount, code);
+        console.log("Discount Result:", discountResult); // Debugging the result
+        if (discountResult) {
+          onApply(discountResult, code, offerName || code);
+        } else {
+          setError("Invalid coupon code or error applying discount.");
+        }
+      } catch (error) {
+        console.error("Error applying discount:", error);
+        setError("An error occurred while applying the coupon.");
+      } finally {
+        setLoading(false);  // Hide loading state after the request
+      }
+    } else {
+      setError("Please enter a coupon code.");
     }
   };
 
   return (
-   <div
-  className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-xl z-[200] transform transition-transform duration-300 ${
-    isOpen ? "translate-x-0" : "translate-x-full"
-  }`}
->
-
+    <div
+      className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-xl z-[200] transform transition-transform duration-300 ${
+        isOpen ? "translate-x-0" : "translate-x-full"
+      }`}
+    >
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b border-gray-200">
         <h2 className="text-lg font-semibold text-gray-800">Apply Coupon</h2>
@@ -38,24 +69,28 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply }) {
 
       {/* Content */}
       <div className="p-6 flex flex-col gap-4">
-        {applied ? (
+        {appliedCoupon ? (
           <div className="flex flex-col items-center gap-2">
             <Check className="text-green-500" size={32} />
             <p className="text-green-600 font-semibold text-center">
-              Coupon "{coupon}" Applied Successfully!
+              Coupon "{appliedCoupon}" Applied Successfully!
             </p>
             <button
-              onClick={() => {
-                setApplied(false);
-                setCoupon("");
-              }}
-              className="mt-2 px-4 py-2 bg-pink-100 text-pink-600 rounded-lg hover:bg-pink-200 transition"
+              onClick={onClose}
+              className="mt-2 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition"
             >
-              Remove
+              Close
             </button>
           </div>
         ) : (
           <>
+            {error && (
+              <div className="flex items-center gap-2 text-red-600 bg-red-100 p-4 rounded-lg">
+                <AlertCircle size={20} />
+                <span>{error}</span>
+              </div>
+            )}
+
             <p className="text-gray-600 mb-2">
               Enter your coupon code or choose one of our amazing offers:
             </p>
@@ -77,27 +112,34 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply }) {
               </button>
             </div>
 
-            {/* Sample Coupons Section */}
+            {/* Loading State */}
+            {loading && <p className="text-gray-500 mt-4">Loading offers...</p>}
+
+            {/* Active Offers Section */}
             <div className="mt-4 flex flex-col gap-3">
-              {sampleCoupons.map((c) => (
-                <div
-                  key={c.code}
-                  className="relative bg-gradient-to-r from-pink-50 via-pink-100 to-pink-50 border-l-4 border-pink-500 rounded-xl p-4 flex justify-between items-center shadow-md hover:shadow-lg transition cursor-pointer"
-                  onClick={() => handleApply(c.code)}
-                >
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-pink-600 text-sm sm:text-base">
-                      {c.code}
-                    </span>
-                    <span className="text-gray-600 text-xs sm:text-sm">
-                      {c.description}
-                    </span>
+              {!loading && offers.length === 0 ? (
+                <p className="text-gray-600">No active offers available.</p>
+              ) : (
+                offers.map((offer) => (
+                  <div
+                    key={offer._id}
+                    className="relative bg-gradient-to-r from-pink-50 via-pink-100 to-pink-50 border-l-4 border-pink-500 rounded-xl p-4 flex justify-between items-center shadow-md hover:shadow-lg transition cursor-pointer"
+                    onClick={() => handleApply(offer.code, offer.name)}
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-pink-600 text-sm sm:text-base">
+                        {offer.code}
+                      </span>
+                      <span className="text-gray-600 text-xs sm:text-sm">
+                        {offer.name} - {offer.discountPercentage}% off
+                      </span>
+                    </div>
+                    <button className="bg-pink-500 text-white px-3 py-1 rounded-lg text-xs sm:text-sm hover:bg-pink-600 transition">
+                      Apply
+                    </button>
                   </div>
-                  <button className="bg-pink-500 text-white px-3 py-1 rounded-lg text-xs sm:text-sm hover:bg-pink-600 transition">
-                    Apply
-                  </button>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </>
         )}

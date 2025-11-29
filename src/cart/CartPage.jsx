@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Minus, Plus, X } from "lucide-react";
 import ApplyCouponPanel from "./ApplyCouponPanel";
 import { useNavigate } from "react-router-dom";
 import { useCartActions } from "../hooks/useCartActions";
-import { useAuth } from "../context/AuthContext"; // Import useAuth for cartSyncing state
+import { useAuth } from "../context/AuthContext";
 
 export default function CartPage() {
   const [couponOpen, setCouponOpen] = useState(false);
+  const [coupon, setCoupon] = useState({
+    applied: false,
+    code: "",
+    name: "",
+    discountedAmount: null,
+    discountPercentage: null,
+    maxDiscountAmount: null,
+  });
   const navigate = useNavigate();
 
   const {
@@ -17,24 +25,20 @@ export default function CartPage() {
     clearCart,
     totalAmount,
     totalItems,
-    loading, // Track loading state
-    error,   // Track errors
+    loading,
   } = useCartActions();
 
-  const { cartSyncing } = useAuth(); // Track if cart is syncing from AuthContext
+  const { cartSyncing } = useAuth();
 
-  // Show a loading state while the cart is syncing
   if (cartSyncing) {
-    return <div>Loading cart...</div>; // You can replace this with a spinner or loading animation
+    return <div>Loading cart...</div>;
   }
 
-  // Increment quantity
   const handleIncrement = (id, size) => {
     const item = cartItems.find((i) => i.id === id && i.size === size);
     if (item) updateQuantity(id, size, item.quantity + 1);
   };
 
-  // Decrement quantity (removes item if quantity reaches 0)
   const handleDecrement = (id, size) => {
     const item = cartItems.find((i) => i.id === id && i.size === size);
     if (!item) return;
@@ -46,15 +50,54 @@ export default function CartPage() {
     }
   };
 
-  // Handle removing item from the cart
   const handleRemoveItem = (id, size) => {
     removeFromCart(id, size);
   };
 
-  // Handle clearing the cart
   const handleClearCart = () => {
     clearCart();
+    handleCouponRemove();
   };
+
+  // Handle coupon application
+// Handle coupon application
+const handleCouponApply = (response, code) => {
+  const { discountAmount, finalAmount, offerDetails } = response;
+
+  console.log("Coupon applied:", response); // Debug log
+  setCoupon({
+    applied: true,
+    code,
+    name: offerDetails.name, // Offer name
+    discountedAmount: finalAmount, // Final amount after discount
+    discountPercentage: offerDetails.discountPercentage, // Discount percentage
+    maxDiscountAmount: offerDetails.maxDiscountAmount, // Max discount
+  });
+  setCouponOpen(false); // Close panel after successful application
+};
+
+
+  // Handle removing the applied coupon
+  const handleCouponRemove = () => {
+    setCoupon({
+      applied: false,
+      code: "",
+      name: "",
+      discountedAmount: null,
+      discountPercentage: null,
+      maxDiscountAmount: null,
+    });
+  };
+
+  // Calculate the final amount
+  const finalAmount = coupon.discountedAmount || totalAmount;
+
+  const calculateGST = (amount) => amount * 0.05;
+
+  // Use effect to ensure re-rendering when coupon is applied or removed
+  useEffect(() => {
+    console.log("Updated finalAmount:", finalAmount); // Debugging
+  }, [coupon, totalAmount]); // Re-run when coupon or totalAmount changes
 
   return (
     <div className="min-h-screen p-4 sm:p-8 flex justify-center relative bg-pink-50">
@@ -74,7 +117,6 @@ export default function CartPage() {
                 key={item.id + item.size}
                 className="relative bg-white shadow-md rounded-2xl p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between"
               >
-                {/* Mobile Cross */}
                 <button
                   className="absolute top-2 right-2 md:hidden bg-pink-100 p-2 rounded-full text-pink-600 hover:bg-pink-200"
                   onClick={() => handleRemoveItem(item.id, item.size)}
@@ -104,7 +146,7 @@ export default function CartPage() {
                     <button
                       className="text-gray-600 hover:text-pink-600"
                       onClick={() => handleDecrement(item.id, item.size)}
-                      disabled={loading} // Disable buttons while loading
+                      disabled={loading}
                     >
                       <Minus size={16} />
                     </button>
@@ -112,7 +154,7 @@ export default function CartPage() {
                     <button
                       className="text-gray-600 hover:text-pink-600"
                       onClick={() => handleIncrement(item.id, item.size)}
-                      disabled={loading} // Disable buttons while loading
+                      disabled={loading}
                     >
                       <Plus size={16} />
                     </button>
@@ -147,29 +189,59 @@ export default function CartPage() {
             <div className="bg-pink-50 rounded-xl p-4 text-center mb-4">
               <p className="text-gray-600 text-sm">TOTAL AMOUNT</p>
               <p className="text-2xl font-bold text-pink-600 mt-1">
-                ₹{totalAmount.toFixed(2)}
+                ₹{finalAmount.toFixed(2)}
               </p>
             </div>
 
-            <button
-              className="w-full bg-pink-500 hover:bg-pink-600 text-white font-medium py-2 rounded-lg transition mb-4"
-              onClick={() => setCouponOpen(true)}
-            >
-              Apply Coupon
-            </button>
+            {/* Applied Coupon Display */}
+            {coupon.applied && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Applied Coupon</p>
+                    <p className="font-semibold text-green-700 text-lg">{coupon.code}</p>
+                    {coupon.name && coupon.name !== coupon.code && (
+                      <p className="text-sm text-gray-600 mt-1">{coupon.name}</p>
+                    )}
+                  </div>
+                  <button
+                    onClick={handleCouponRemove}
+                    className="text-red-500 hover:text-red-700 font-semibold text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Apply Coupon Button */}
+            {!coupon.applied && (
+              <button
+                className="w-full bg-pink-500 hover:bg-pink-600 text-white font-medium py-2 rounded-lg transition mb-4"
+                onClick={() => setCouponOpen(true)}
+              >
+                Apply Coupon
+              </button>
+            )}
 
             <div className="space-y-2 text-sm text-gray-700 mb-6">
               <div className="flex justify-between">
                 <p>Item Total</p>
                 <p>₹{totalAmount.toFixed(2)}</p>
               </div>
+              {coupon.applied && (
+                <div className="flex justify-between text-green-600">
+                  <p>Discount</p>
+                  <p>-₹{(totalAmount - finalAmount).toFixed(2)}</p>
+                </div>
+              )}
               <div className="flex justify-between">
                 <p>Delivery Fee</p>
                 <p>₹23.00</p>
               </div>
               <div className="flex justify-between">
                 <p>GST (5%)</p>
-                <p>₹{(totalAmount * 0.05).toFixed(2)}</p>
+                <p>₹{calculateGST(finalAmount).toFixed(2)}</p>
               </div>
             </div>
 
@@ -182,8 +254,8 @@ export default function CartPage() {
 
             <button
               className="w-full border border-pink-300 text-pink-600 font-medium py-2 rounded-lg hover:bg-pink-50 transition"
-              onClick={handleClearCart} // Trigger clear cart action
-              disabled={loading} // Disable while loading
+              onClick={handleClearCart}
+              disabled={loading}
             >
               Clear Cart
             </button>
@@ -194,7 +266,9 @@ export default function CartPage() {
       <ApplyCouponPanel
         isOpen={couponOpen}
         onClose={() => setCouponOpen(false)}
-        onApply={(code) => console.log("Coupon applied:", code)}
+        onApply={handleCouponApply}
+        appliedCoupon={coupon.applied ? coupon.code : null}
+        totalAmount={totalAmount}
       />
     </div>
   );
