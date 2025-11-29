@@ -73,6 +73,7 @@ export const useCartActions = () => {
       // If authenticated, sync with backend
       if (isAuthenticated) {
         await dispatch(addToCartThunk({ productId: product._id, size, quantity: newQty })).unwrap();
+        //  await dispatch(fetchBackendCart()).unwrap();
       }
 
       return { success: true, newQuantity: newQty };

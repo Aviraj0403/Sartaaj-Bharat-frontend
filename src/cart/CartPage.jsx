@@ -3,6 +3,7 @@ import { Minus, Plus, X } from "lucide-react";
 import ApplyCouponPanel from "./ApplyCouponPanel";
 import { useNavigate } from "react-router-dom";
 import { useCartActions } from "../hooks/useCartActions";
+import { useAuth } from "../context/AuthContext"; // Import useAuth for cartSyncing state
 
 export default function CartPage() {
   const [couponOpen, setCouponOpen] = useState(false);
@@ -19,7 +20,14 @@ export default function CartPage() {
     loading, // Track loading state
     error,   // Track errors
   } = useCartActions();
-  console.log("Cart Items:", cartItems);
+
+  const { cartSyncing } = useAuth(); // Track if cart is syncing from AuthContext
+
+  // Show a loading state while the cart is syncing
+  if (cartSyncing) {
+    return <div>Loading cart...</div>; // You can replace this with a spinner or loading animation
+  }
+
   // Increment quantity
   const handleIncrement = (id, size) => {
     const item = cartItems.find((i) => i.id === id && i.size === size);
@@ -40,7 +48,6 @@ export default function CartPage() {
 
   // Handle removing item from the cart
   const handleRemoveItem = (id, size) => {
-    console.log("Removing item:", id, size);
     removeFromCart(id, size);
   };
 

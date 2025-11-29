@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await Axios.get("/auth/me");
         setUser(res.data.data);
-
+        
         setCartSyncing(true);
         await dispatch(fetchBackendCart()).unwrap();
       } catch {
@@ -52,8 +52,10 @@ export const AuthProvider = ({ children }) => {
     await Axios.post("/auth/signIn", credentials, { withCredentials: true });
     const res = await Axios.get("/auth/me");
     setUser(res.data.data);
+    dispatch(clearCart());
     setCartSyncing(true);
     await dispatch(syncCartOnLogin()).unwrap();
+     dispatch(fetchBackendCart()).unwrap();
     setCartSyncing(false);
     return res.data.data;
   };
@@ -67,6 +69,7 @@ export const AuthProvider = ({ children }) => {
     await Axios.post("/auth/googleSignIn", { idToken: idToken }, { withCredentials: true });
     const res = await Axios.get("/auth/me");
     setUser(res.data.data);
+    dispatch(clearCart());
     setCartSyncing(true);
     await dispatch(syncCartOnLogin()).unwrap();
     setCartSyncing(false);
