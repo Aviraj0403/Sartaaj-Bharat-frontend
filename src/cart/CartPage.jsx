@@ -208,8 +208,12 @@ export default function CartPage() {
             <div className="bg-pink-50 rounded-xl p-4 text-center mb-4">
               <p className="text-gray-600 text-sm">TOTAL AMOUNT</p>
               <p className="text-2xl font-bold text-pink-600 mt-1">
-  ₹{(finalAmount + (finalAmount * 0.05) + 23).toFixed(2)}
+  ₹{
+    (finalAmount + (finalAmount * 0.05) + (finalAmount > 10 ? 23 : 0))
+      .toFixed(2)
+  }
 </p>
+
 
             </div>
 
