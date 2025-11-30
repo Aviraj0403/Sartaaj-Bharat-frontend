@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import axios from "../utils/Axios"; // Your Axios instance
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
-export default function AddressSidebar({ isOpen, onClose }) {
+export default function AddressSidebar({ isOpen, onClose, refreshAddresses, userName, email }) {
   const [address, setAddress] = useState({
-    name: "",
-    email: "",
+    name: userName || "",
+    email: email || "",
     phone: "",
     street: "",
     flat: "",
@@ -16,7 +19,9 @@ export default function AddressSidebar({ isOpen, onClose }) {
   });
 
   const [location, setLocation] = useState({ lat: null, lng: null });
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Function to sync location
   const handleSyncLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -24,26 +29,21 @@ export default function AddressSidebar({ isOpen, onClose }) {
           const { latitude, longitude } = position.coords;
           setLocation({ lat: latitude, lng: longitude });
 
-          const apiKey = "YOUR_GOOGLE_MAPS_API_KEY";
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
-          );
-          const data = await response.json();
-
-          if (data.results.length > 0) {
-            const formattedAddress = data.results[0].formatted_address;
-            const components = data.results[0].address_components;
-            const getComponent = (type) =>
-              components.find((c) => c.types.includes(type))?.long_name || "";
-
+          try {
+            const res = await axios.get(`/map?lat=${latitude}&lon=${longitude}`);
+            const data = res.data;
+            const components = data.address;
             setAddress((prev) => ({
               ...prev,
-              street: formattedAddress,
-              city: getComponent("locality"),
-              state: getComponent("administrative_area_level_1"),
-              country: getComponent("country"),
-              pincode: getComponent("postal_code"),
+              street: data.display_name,
+              city: components.city || components.town,
+              state: components.state || "",
+              country: components.country || "",
+              pincode: components.postcode || "",
             }));
+          } catch (err) {
+            console.error(err);
+            alert("Failed to fetch address from location.");
           }
         },
         (error) => {
@@ -56,40 +56,87 @@ export default function AddressSidebar({ isOpen, onClose }) {
     }
   };
 
+  // Function to handle form data change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setAddress((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Function to save the address
+  const saveAddress = async (e) => {
+    e.preventDefault();
+    if (!address.phone || !/^\d{10}$/.test(address.phone)) {
+      alert("⚠️ Enter a valid 10-digit phone number.");
+      return;
+    }
+
+    if (!address.pincode || !/^\d{6}$/.test(address.pincode)) {
+      alert("⚠️ Enter a valid 6-digit pincode.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    const addressPayload = {
+      ...address,
+      location: { type: "Point", coordinates: [location.lng || 0, location.lat || 0] },
+    };
+
+    try {
+      await axios.post("/users/address", addressPayload, { withCredentials: true });
+      toast.success("✅ Address saved!");
+      setIsLoading(false);
+      onClose();
+      if (refreshAddresses) refreshAddresses();
+    } catch (err) {
+      console.error(err);
+      toast.danger("❌ Failed to save address.");
+      setIsLoading(false);
+    }
+  };
+
+  // Return if sidebar is closed
   if (!isOpen) return null;
+
+  const fields = [
+    { label: "User Name", field: "name", type: "text" },
+    { label: "Email", field: "email", type: "email" },
+    { label: "Phone Number *", field: "phone", type: "tel", maxLength: 10 },
+    { label: "Street Address", field: "street", type: "text" },
+    { label: "Flat / House No.", field: "flat", type: "text" },
+    { label: "Landmark (optional)", field: "landmark", type: "text" },
+    { label: "City", field: "city", type: "text" },
+    { label: "State", field: "state", type: "text" },
+    { label: "Country", field: "country", type: "text" },
+    { label: "Pincode", field: "pincode", type: "text", maxLength: 6 },
+  ];
 
   return (
     <div className="fixed inset-0 flex justify-end z-[9999]">
-      {/* Sidebar */}
       <div className="w-full sm:w-[420px] bg-white h-full shadow-2xl p-0 overflow-y-auto relative">
-        {/* ✅ Fixed Header */}
+        {/* Header Section */}
         <div className="sticky top-0 z-[10000] bg-white px-6 py-4 flex justify-between items-center border-b border-gray-200 shadow-sm">
           <h2 className="text-xl font-semibold text-gray-800">Add New Address</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-lg font-bold"
-          >
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-lg font-bold">
             ✕
           </button>
         </div>
 
         {/* Content Section */}
         <div className="p-6">
-          {/* Google Map Visual */}
+          {/* Leaflet Map or Custom Image */}
           <div className="w-full h-48 rounded-lg overflow-hidden mb-4 border">
             {location.lat ? (
-              <iframe
-                title="map"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                loading="lazy"
-                allowFullScreen
-                src={`https://www.google.com/maps/embed/v1/view?key=YOUR_GOOGLE_MAPS_API_KEY&center=${location.lat},${location.lng}&zoom=16`}
-              ></iframe>
+              <MapContainer center={[location.lat, location.lng]} zoom={16} style={{ width: "100%", height: "100%" }}>
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <Marker position={[location.lat, location.lng]}>
+                  <Popup>{address.street}</Popup>
+                </Marker>
+              </MapContainer>
             ) : (
               <div className="flex items-center justify-center h-full text-gray-500">
-                Map will appear here after syncing location
+                <img src="/logo-cosmetic2.jpg" alt="Custom Image" className="w-full h-full object-cover" />
+                <p>Map will appear here after syncing location</p>
               </div>
             )}
           </div>
@@ -103,30 +150,16 @@ export default function AddressSidebar({ isOpen, onClose }) {
           </button>
 
           {/* Address Form */}
-          <form className="space-y-4">
-            {[
-              { label: "User Name", field: "name", type: "text" },
-              { label: "Email", field: "email", type: "email" },
-              { label: "Phone Number *", field: "phone", type: "tel", maxLength: 10 },
-              { label: "Street Address", field: "street", type: "text" },
-              { label: "Flat / House No.", field: "flat", type: "text" },
-              { label: "Landmark (optional)", field: "landmark", type: "text" },
-              { label: "City", field: "city", type: "text" },
-              { label: "State", field: "state", type: "text" },
-              { label: "Country", field: "country", type: "text" },
-              { label: "Pincode", field: "pincode", type: "text", maxLength: 6 },
-            ].map(({ label, field, type, maxLength }) => (
+          <form onSubmit={saveAddress} className="space-y-4">
+            {fields.map(({ label, field, type, maxLength }) => (
               <div key={field}>
-                <label className="block text-gray-700 font-medium mb-1">
-                  {label}
-                </label>
+                <label className="block text-gray-700 font-medium mb-1">{label}</label>
                 <input
                   type={type}
+                  name={field}
                   value={address[field]}
                   maxLength={maxLength}
-                  onChange={(e) =>
-                    setAddress({ ...address, [field]: e.target.value })
-                  }
+                  onChange={handleChange}
                   placeholder={label}
                   className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-pink-400"
                 />
@@ -135,9 +168,7 @@ export default function AddressSidebar({ isOpen, onClose }) {
 
             {/* Address Type */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                Address Type
-              </label>
+              <label className="block text-gray-700 font-medium mb-2">Address Type</label>
               <div className="flex gap-4">
                 {["Home", "Work", "Other"].map((type) => (
                   <label key={type} className="flex items-center gap-2 cursor-pointer">
@@ -156,8 +187,9 @@ export default function AddressSidebar({ isOpen, onClose }) {
             <button
               type="submit"
               className="w-full bg-pink-500 text-white py-2 rounded-lg font-medium hover:bg-pink-600 transition mt-2"
+              disabled={isLoading}
             >
-              Save Address
+              {isLoading ? "Saving..." : "Save Address"}
             </button>
           </form>
         </div>
