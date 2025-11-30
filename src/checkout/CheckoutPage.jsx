@@ -63,7 +63,7 @@ export default function CheckoutPage() {
   const refreshAddresses = () => setIsSidebarOpen(false);
 
   const placeOrder = async (paymentMethod = "COD") => {
-    if (!isAuthenticated) return toast.warn("Please login first"), navigate("/login");
+    if (!isAuthenticated) return toast.warn("Please login first"), navigate("/signin");
     if (!selectedAddress) return toast.warn("Please select a delivery address");
 
     setIsPlacingOrder(true);
