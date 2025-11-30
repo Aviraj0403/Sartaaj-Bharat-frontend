@@ -223,23 +223,26 @@ export default function CheckoutPage() {
             </button>
           </div>
 
-          <h3 className="text-center font-semibold mb-4">Payment Method</h3>
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={() => placeOrder("COD")}
-              disabled={isPlacingOrder}
-              className="bg-pink-100 text-pink-700 font-semibold px-8 py-3 rounded-lg hover:bg-pink-200 disabled:opacity-60"
-            >
-              {isPlacingOrder ? "Processing..." : "Cash on Delivery"}
-            </button>
-            <button
-              onClick={() => placeOrder("Razorpay")}
-              disabled={isPlacingOrder}
-              className="bg-pink-500 text-white font-semibold px-8 py-3 rounded-lg hover:bg-pink-600 disabled:opacity-60"
-            >
-              {isPlacingOrder ? "Redirecting..." : "Pay Online"}
-            </button>
-          </div>
+         <h3 className="text-center font-semibold mb-4">Payment Method</h3>
+
+<div className="flex justify-center gap-3 flex-nowrap">
+  <button
+    onClick={() => placeOrder("COD")}
+    disabled={isPlacingOrder}
+    className="bg-pink-100 text-pink-700 font-semibold px-4 py-2 md:px-8 md:py-3 rounded-lg hover:bg-pink-200 disabled:opacity-60"
+  >
+    {isPlacingOrder ? "Processing..." : "Cash on Delivery"}
+  </button>
+
+  <button
+    onClick={() => placeOrder("Razorpay")}
+    disabled={isPlacingOrder}
+    className="bg-pink-500 text-white font-semibold px-4 py-2 md:px-8 md:py-3 rounded-lg hover:bg-pink-600 disabled:opacity-60"
+  >
+    {isPlacingOrder ? "Redirecting..." : "Pay Online"}
+  </button>
+</div>
+
         </div>
 
         {/* Right: Order Summary */}
