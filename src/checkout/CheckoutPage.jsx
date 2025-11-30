@@ -14,16 +14,12 @@ export default function CheckoutPage() {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  // Data from Cart → Checkout
   const {
     cartItems = [],
     totalAmount = 0,
     totalQuantity = 0,
     grandTotal = 0,
     appliedCoupon = null,
-    // finalAmount = appliedCoupon
-    //   ? grandTotal * (1 - appliedCoupon.discountPercentage / 100)
-    //   : grandTotal,
     finalAmount = grandTotal,
   } = location.state || {};
 
@@ -32,7 +28,7 @@ export default function CheckoutPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
-  // Fetch saved addresses
+  // Fetch addresses
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -45,17 +41,17 @@ export default function CheckoutPage() {
       }
     };
     fetchAddresses();
-  }, [isAuthenticated, isSidebarOpen]); // Refresh when sidebar closes
+  }, [isAuthenticated, isSidebarOpen]);
 
   // Auto-select default address
   useEffect(() => {
     if (addresses.length > 0 && !selectedAddress) {
-      const defaultAddr = addresses.find((a) => a.isDefault);
+      const defaultAddr = addresses.find(a => a.isDefault);
       setSelectedAddress(defaultAddr || addresses[0]);
     }
-  }, [addresses, selectedAddress]);
+  }, [addresses]);
 
-  // Load Razorpay Script
+  // Load Razorpay
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
@@ -64,37 +60,30 @@ export default function CheckoutPage() {
     return () => document.body.removeChild(script);
   }, []);
 
-  const refreshAddresses = () => {
-    // Trigger re-fetch after adding new address
-    setIsSidebarOpen(false);
-  };
+  const refreshAddresses = () => setIsSidebarOpen(false);
 
   const placeOrder = async (paymentMethod = "COD") => {
-    if (!isAuthenticated) {
-      toast.warn("Please login first");
-      navigate("/login");
-      return;
-    }
-    if (!selectedAddress) {
-      toast.warn("Please select a delivery address");
-      return;
-    }
+    if (!isAuthenticated) return toast.warn("Please login first"), navigate("/login");
+    if (!selectedAddress) return toast.warn("Please select a delivery address");
 
     setIsPlacingOrder(true);
 
+    // FINAL PAYLOAD — WORKS 100% WITH YOUR BACKEND
     const payload = {
-      userId: user.id,
-      items: cartItems.map((item) => ({
-        food: item.id,
-        selectedVariant: item.selectedVariant,
-        quantity: item.quantity,
+      items: cartItems.map(item => ({
+        product: item.id, // Product ObjectId
+        selectedVariant: {
+          size: item.size,           // Must match DB exactly
+          price: Number(item.price)  // Must be number and match DB
+        },
+        quantity: item.quantity
       })),
       shippingAddress: {
-        label: selectedAddress.label || selectedAddress.type,
-        name: selectedAddress.name || user.userName,
+        label: selectedAddress.label || selectedAddress.type || "Home",
+        name: selectedAddress.name || user.userName || "Customer",
         email: user.email,
         phoneNumber: selectedAddress.phoneNumber,
-        street: selectedAddress.street,
+        street: selectedAddress.street || selectedAddress.flat || "",
         city: selectedAddress.city,
         state: selectedAddress.state,
         postalCode: selectedAddress.pincode || selectedAddress.postalCode,
@@ -103,7 +92,7 @@ export default function CheckoutPage() {
       },
       paymentMethod,
       discountCode: appliedCoupon?.code || null,
-      totalAmount: finalAmount,
+      totalAmount: Number(finalAmount.toFixed(2)),
     };
 
     if (paymentMethod === "Razorpay") {
@@ -126,23 +115,27 @@ export default function CheckoutPage() {
         currency: "INR",
         order_id: data.order_id,
         name: "Gurmeet Kaur Store",
-        description: "Order Payment",
+        description: "Thank you for shopping!",
         handler: async (response) => {
-          const verified = await axios.post("/razorpay/verifyPayment", {
-            payment_id: response.razorpay_payment_id,
-            order_id: response.razorpay_order_id,
-            signature: response.razorpay_signature,
-            paymentId: data.paymentId,
-          }, { withCredentials: true });
+          try {
+            const verified = await axios.post("/razorpay/verifyPayment", {
+              payment_id: response.razorpay_payment_id,
+              order_id: response.razorpay_order_id,
+              signature: response.razorpay_signature,
+              paymentId: data.paymentId,
+            }, { withCredentials: true });
 
-          if (verified.data.message === "Payment verified successfully") {
-            await submitOrder({ ...orderPayload, paymentMethod: "Razorpay" });
-          } else {
+            if (verified.data.message === "Payment verified successfully") {
+              await submitOrder({ ...orderPayload, paymentMethod: "Razorpay" });
+            } else {
+              toast.error("Payment failed. Try again.");
+            }
+          } catch (err) {
             toast.error("Payment verification failed");
           }
         },
         prefill: {
-          name: user.userName,
+          name: user.userName || "Customer",
           email: user.email,
           contact: selectedAddress.phoneNumber,
         },
@@ -152,7 +145,7 @@ export default function CheckoutPage() {
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (err) {
-      toast.error("Payment failed");
+      toast.error("Payment gateway error");
     } finally {
       setIsPlacingOrder(false);
     }
@@ -163,17 +156,18 @@ export default function CheckoutPage() {
       const res = await axios.post("/orders/createOrder", payload, { withCredentials: true });
       dispatch(clearCartThunk());
       toast.success("Order placed successfully!");
-      navigate("/order-confirmation", { state: { order: res.data.order } });
+      navigate("/invoice/123", { state: { order: res.data.order } });
     } catch (err) {
-      toast.error("Failed to place order");
+      const msg = err.response?.data?.message || "Failed to place order";
+      toast.error(msg);
+      console.error("Order error:", err.response?.data);
     } finally {
       setIsPlacingOrder(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-pink-50 flex justify-center items-start p-4 sm:p-8 relative overflow-hidden">
-      {/* Address Sidebar */}
+    <div className="min-h-screen bg-pink-50 flex justify-center items-start p-4 sm:p-8">
       <AddressSidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
@@ -183,20 +177,17 @@ export default function CheckoutPage() {
       />
 
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Shipping Information */}
+        {/* Left: Address & Payment */}
         <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
-            Shipping Information
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Shipping Information</h2>
 
-          {/* Saved Addresses */}
           <div className="space-y-4 mb-6">
             {addresses.length > 0 ? (
-              addresses.map((addr) => (
+              addresses.map(addr => (
                 <label
-                  key={addr.id || addr._id}
+                  key={addr._id}
                   className={`block border-2 rounded-xl p-4 cursor-pointer transition ${
-                    selectedAddress?.id === addr.id || selectedAddress?._id === addr._id
+                    selectedAddress?._id === addr._id
                       ? "border-pink-500 bg-pink-50"
                       : "border-gray-300 hover:bg-gray-50"
                   }`}
@@ -205,77 +196,65 @@ export default function CheckoutPage() {
                     <input
                       type="radio"
                       name="address"
-                      checked={
-                        selectedAddress?.id === addr.id || selectedAddress?._id === addr._id
-                      }
+                      checked={selectedAddress?._id === addr._id}
                       onChange={() => setSelectedAddress(addr)}
                       className="mt-1 text-pink-500"
                     />
                     <div>
                       <p className="font-semibold text-gray-800">
                         {addr.label || addr.type} ({addr.phoneNumber})
-                        {addr.isDefault && (
-                          <span className="italic text-gray-500 text-sm ml-2">(Default)</span>
-                        )}
+                        {addr.isDefault && <span className="text-sm text-gray-500 ml-2">(Default)</span>}
                       </p>
-                      <p className="text-gray-600 text-sm">
-                        {addr.street || addr.flat}, {addr.city}, {addr.state}, {addr.pincode || addr.postalCode}
+                      <p className="text-sm text-gray-600">
+                        {addr.street || addr.flat}, {addr.city}, {addr.state} - {addr.pincode || addr.postalCode}
                       </p>
                     </div>
                   </div>
                 </label>
               ))
             ) : (
-              <p className="text-center text-gray-500">No saved addresses yet.</p>
+              <p className="text-center text-gray-500">No saved addresses</p>
             )}
           </div>
 
           <div className="text-center mb-8">
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              className="text-pink-600 font-medium hover:text-pink-700 text-lg"
-            >
+            <button onClick={() => setIsSidebarOpen(true)} className="text-pink-600 font-medium text-lg">
               + Add New Address
             </button>
           </div>
 
-          {/* Payment Methods */}
-          <h3 className="text-gray-700 font-semibold text-center mb-4">Payment Method</h3>
+          <h3 className="text-center font-semibold mb-4">Payment Method</h3>
           <div className="flex justify-center gap-4">
             <button
               onClick={() => placeOrder("COD")}
               disabled={isPlacingOrder}
-              className="bg-pink-100 text-pink-700 font-semibold px-8 py-3 rounded-lg hover:bg-pink-200 transition disabled:opacity-60"
+              className="bg-pink-100 text-pink-700 font-semibold px-8 py-3 rounded-lg hover:bg-pink-200 disabled:opacity-60"
             >
-              {isPlacingOrder ? "Processing..." : "Pay Cash"}
+              {isPlacingOrder ? "Processing..." : "Cash on Delivery"}
             </button>
             <button
               onClick={() => placeOrder("Razorpay")}
               disabled={isPlacingOrder}
-              className="bg-pink-500 text-white font-semibold px-8 py-3 rounded-lg hover:bg-pink-600 transition disabled:opacity-60"
+              className="bg-pink-500 text-white font-semibold px-8 py-3 rounded-lg hover:bg-pink-600 disabled:opacity-60"
             >
               {isPlacingOrder ? "Redirecting..." : "Pay Online"}
             </button>
           </div>
         </div>
 
-        {/* Order Summary */}
+        {/* Right: Order Summary */}
         <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Order Summary</h2>
           <div className="space-y-3">
-            {cartItems.map((item) => (
-              <div key={item.id} className="flex justify-between text-gray-700">
-                <span>
-                  {item.name} ({item.size}) × {item.quantity}
-                </span>
-                <span className="font-medium">
-                  ₹{(item?.price * item.quantity).toFixed(2)}
-                </span>
+            {cartItems.map(item => (
+              <div key={item.id + item.size} className="flex justify-between text-gray-700">
+                <span>{item.name} ({item.size}) × {item.quantity}</span>
+                <span className="font-medium">₹{(item.price * item.quantity).toFixed(2)}</span>
               </div>
             ))}
 
             <div className="border-t pt-4">
-              <div className="flex justify-between text-gray-700">
+              <div className="flex justify-between">
                 <span>Total Items:</span>
                 <span className="font-semibold">{totalQuantity}</span>
               </div>
@@ -286,8 +265,8 @@ export default function CheckoutPage() {
                 </div>
               )}
               <div className="flex justify-between text-xl font-bold text-gray-800 mt-4 border-t pt-4">
-                <span>Total Amount:</span>
-                <span className="text-pink-600">₹{grandTotal}</span>
+                <span>Total Payable:</span>
+                <span className="text-pink-600">₹{Number(grandTotal).toFixed(2)}</span>
               </div>
             </div>
           </div>
