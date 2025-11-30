@@ -11,7 +11,6 @@ export default function CartPage() {
     applied: false,
     code: "",
     name: "",
-    discountedAmount: null,
     discountPercentage: null,
     maxDiscountAmount: null,
   });
@@ -30,15 +29,27 @@ export default function CartPage() {
 
   const { cartSyncing } = useAuth();
 
-  if (cartSyncing) {
-    return <div>Loading cart...</div>;
-  }
+  // Calculate discount based on the coupon's discount percentage and max discount cap
+  const calculateDiscount = () => {
+    if (!coupon.discountPercentage) return 0;
 
+    // Calculate the discount based on the totalAmount
+    const discountAmount = (totalAmount * coupon.discountPercentage) / 100;
+
+    // Cap the discount to the max discount allowed
+    return Math.min(discountAmount, coupon.maxDiscountAmount);
+  };
+
+  // Calculate the final amount after applying the discount
+  const finalAmount = totalAmount - calculateDiscount();
+
+  // Handle incrementing item quantity
   const handleIncrement = (id, size) => {
     const item = cartItems.find((i) => i.id === id && i.size === size);
     if (item) updateQuantity(id, size, item.quantity + 1);
   };
 
+  // Handle decrementing item quantity
   const handleDecrement = (id, size) => {
     const item = cartItems.find((i) => i.id === id && i.size === size);
     if (!item) return;
@@ -50,32 +61,32 @@ export default function CartPage() {
     }
   };
 
+  // Handle item removal from the cart
   const handleRemoveItem = (id, size) => {
     removeFromCart(id, size);
   };
 
+  // Handle clearing the cart
   const handleClearCart = () => {
     clearCart();
     handleCouponRemove();
   };
 
-  // Handle coupon application
-// Handle coupon application
-const handleCouponApply = (response, code) => {
-  const { discountAmount, finalAmount, offerDetails } = response;
+  // Handle applying a coupon
+  const handleCouponApply = (response, code) => {
+    const { discountAmount, finalAmount, offerDetails } = response;
 
-  console.log("Coupon applied:", response); // Debug log
-  setCoupon({
-    applied: true,
-    code,
-    name: offerDetails.name, // Offer name
-    discountedAmount: finalAmount, // Final amount after discount
-    discountPercentage: offerDetails.discountPercentage, // Discount percentage
-    maxDiscountAmount: offerDetails.maxDiscountAmount, // Max discount
-  });
-  setCouponOpen(false); // Close panel after successful application
-};
+    // Update coupon state with the offer details
+    setCoupon({
+      applied: true,
+      code,
+      name: offerDetails.name,
+      discountPercentage: offerDetails.discountPercentage,
+      maxDiscountAmount: offerDetails.maxDiscountAmount,
+    });
 
+    setCouponOpen(false); // Close panel after successful application
+  };
 
   // Handle removing the applied coupon
   const handleCouponRemove = () => {
@@ -83,26 +94,34 @@ const handleCouponApply = (response, code) => {
       applied: false,
       code: "",
       name: "",
-      discountedAmount: null,
       discountPercentage: null,
       maxDiscountAmount: null,
     });
   };
 
-  // Calculate the final amount
-  const finalAmount = coupon.discountedAmount || totalAmount;
-
-  const calculateGST = (amount) => amount * 0.05;
-
   // Use effect to ensure re-rendering when coupon is applied or removed
   useEffect(() => {
     console.log("Updated finalAmount:", finalAmount); // Debugging
-  }, [coupon, totalAmount]); // Re-run when coupon or totalAmount changes
+  }, [coupon, totalAmount]);
 
-  return (
-    <div className="min-h-screen p-4 sm:p-8 flex justify-center relative bg-pink-50">
+  // Render the loading or main content based on the cart syncing state
+  const renderContent = () => {
+    if (cartSyncing) {
+      return (
+        <div className="min-h-screen p-4 sm:p-8 flex justify-center relative bg-pink-50">
+          <div className="w-full max-w-6xl flex flex-col gap-6">
+            <div className="w-full md:w-80">
+              <div className="bg-white shadow-md rounded-2xl p-6 text-center">
+                <h2>Loading cart...</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
       <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6">
-        
         {/* Left Section */}
         <div className="flex-1">
           <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">
@@ -189,8 +208,9 @@ const handleCouponApply = (response, code) => {
             <div className="bg-pink-50 rounded-xl p-4 text-center mb-4">
               <p className="text-gray-600 text-sm">TOTAL AMOUNT</p>
               <p className="text-2xl font-bold text-pink-600 mt-1">
-                ₹{finalAmount.toFixed(2)}
-              </p>
+  ₹{(finalAmount + (finalAmount * 0.05) + 23).toFixed(2)}
+</p>
+
             </div>
 
             {/* Applied Coupon Display */}
@@ -229,19 +249,26 @@ const handleCouponApply = (response, code) => {
                 <p>Item Total</p>
                 <p>₹{totalAmount.toFixed(2)}</p>
               </div>
+
               {coupon.applied && (
                 <div className="flex justify-between text-green-600">
                   <p>Discount</p>
-                  <p>-₹{(totalAmount - finalAmount).toFixed(2)}</p>
+                  <p>
+                    {/* Conditional display of the discount */}
+                    -₹{
+                      calculateDiscount().toFixed(2)
+                    }
+                  </p>
                 </div>
               )}
+
               <div className="flex justify-between">
                 <p>Delivery Fee</p>
                 <p>₹23.00</p>
               </div>
               <div className="flex justify-between">
                 <p>GST (5%)</p>
-                <p>₹{calculateGST(finalAmount).toFixed(2)}</p>
+                <p>₹{(finalAmount * 0.05).toFixed(2)}</p>
               </div>
             </div>
 
@@ -262,7 +289,12 @@ const handleCouponApply = (response, code) => {
           </div>
         </div>
       </div>
+    );
+  };
 
+  return (
+    <div className="min-h-screen p-4 sm:p-8 flex justify-center relative bg-pink-50">
+      {renderContent()}
       <ApplyCouponPanel
         isOpen={couponOpen}
         onClose={() => setCouponOpen(false)}
