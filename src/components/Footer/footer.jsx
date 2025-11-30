@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 import { SiRazorpay, SiPhonepe } from "react-icons/si";
 import { MapPin, Phone, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -89,14 +90,38 @@ export default function Footer() {
               <h4 className="font-semibold text-lg text-gray-800 mb-3 border-l-2 border-pink-500 pl-2">
                 Customer Care
               </h4>
-              <ul className="space-y-2 text-gray-600 text-sm md:text-base">
-                <li>About Us</li>
-                <li>Contact Us</li>
-                <li>Track Order</li>
-                <li>Returns & Exchange</li>
-                <li>Shipping Info</li>
-                <li>FAQ</li>
-              </ul>
+             <ul className="space-y-2 text-gray-600 text-sm md:text-base">
+  <li>
+    <Link to="/about-us" className="hover:text-pink-500 transition">
+      About Us
+    </Link>
+  </li>
+  <li>
+    <Link to="/contact-us" className="hover:text-pink-500 transition">
+      Contact Us
+    </Link>
+  </li>
+  <li>
+    <Link to="/track-order" className="hover:text-pink-500 transition">
+      Track Order
+    </Link>
+  </li>
+  <li>
+    <Link to="/retun-exchnage-policy" className="hover:text-pink-500 transition">
+      Returns & Exchange
+    </Link>
+  </li>
+  <li>
+    <Link to="/shipping-info" className="hover:text-pink-500 transition">
+      Shipping Info
+    </Link>
+  </li>
+  <li>
+    <Link to="/faq" className="hover:text-pink-500 transition">
+      FAQ
+    </Link>
+  </li>
+</ul>
             </div>
           </div>
         </div>

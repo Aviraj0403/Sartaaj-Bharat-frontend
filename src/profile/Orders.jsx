@@ -1,3 +1,4 @@
+// src/pages/Orders.jsx
 import React from "react";
 import { Download, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +30,7 @@ export default function Orders() {
       ],
     },
     {
-      id: "#12346",
+      id: "12346",
       date: "07 Nov 2025",
       status: "Processing",
       total: 999,
@@ -51,18 +52,13 @@ export default function Orders() {
     Cancelled: "bg-red-400",
   };
 
+  // 👉 Redirect user to Invoice page
   const handleDownloadInvoice = (orderId) => {
-    const blob = new Blob([`Invoice for ${orderId}`], { type: "text/plain" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${orderId}-invoice.txt`;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    navigate(`/invoice/${orderId}`);
   };
 
   return (
-    <div className="p-  min-h-screen">
+    <div className="p-5 min-h-screen">
       <h1 className="text-3xl font-extrabold text-pink-600 mb-2">My Orders</h1>
       <p className="text-gray-600 mb-6 text-sm">
         Manage and track your recent orders below.
@@ -78,11 +74,11 @@ export default function Orders() {
               key={order.id}
               className="bg-white rounded-2xl shadow-md border border-pink-100 overflow-hidden hover:shadow-lg transition-all"
             >
-              {/* Order Header */}
+              {/* Header */}
               <div className="flex justify-between items-center p-4 bg-gradient-to-r from-pink-50 to-pink-100 border-b border-pink-100">
                 <div>
                   <h2 className="text-base font-semibold text-gray-800">
-                    {order.id}
+                    #{order.id}
                   </h2>
                   <p className="text-gray-500 text-xs">Placed on {order.date}</p>
                 </div>
@@ -93,7 +89,7 @@ export default function Orders() {
                 </span>
               </div>
 
-              {/* Image & Info */}
+              {/* Item */}
               <div className="p-4 flex items-center gap-4 cursor-pointer">
                 <div className="relative flex-shrink-0">
                   <img
@@ -130,8 +126,9 @@ export default function Orders() {
                   className="flex items-center gap-2 text-pink-600 text-sm font-medium hover:text-pink-700 transition"
                 >
                   <Download size={16} />
-                  Download Invoice
+                  View Invoice
                 </button>
+
                 <button
                   onClick={() => navigate(`/order/${order.id}`)}
                   className="px-4 py-1.5 bg-pink-500 text-white text-xs rounded-full hover:bg-pink-600 transition"

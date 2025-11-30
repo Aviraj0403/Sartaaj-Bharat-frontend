@@ -15,6 +15,12 @@ import CategoryDetails from "./pages/category/CategoryDetails.jsx";
 import SignInPage from "./pages/auth/SignInPage.jsx";
 import SignupPage from "./pages/auth/SignupPage.jsx";
 import CategorySubCategoryDetails from "./pages/category/CategorySubCategoryDetails.jsx";
+import AboutUs from "./pages/details/AboutUs.jsx";
+import ContactUs from "./pages/details/ContactUs.jsx";
+import ReturnExchange from "./pages/details/ReturnExchange.jsx";
+import ShippingInfo from "./pages/details/ShippingInfo.jsx";
+import FAQPage from "./pages/details/FAQPage.jsx";
+import Invoice from "./profile/Invoice.jsx";
 // import Login from "./authentication/Login.jsx";
 // import Signup from "./authentication/Signup.jsx";
 
@@ -42,7 +48,13 @@ const router = createBrowserRouter([
         path: "/:categorySlug/:subCategorySlug",
         element: <CategorySubCategoryDetails />,
       },
-
+       { path: "/about-us", element: <AboutUs /> },
+       {path : "/contact-us", element: <ContactUs />},
+       {path : "/retun-exchnage-policy", element: <ReturnExchange />},
+       { path : "/shipping-info", element: <ShippingInfo />},
+       { path: "/faq", element: <FAQPage /> },
+      //  <Route path="/invoice/:orderId" element={<Invoice />} />
+       {path : "/invoice/:orderId", element: <Invoice />},
 
 
       // {path: "/auth", element: < Login/>},

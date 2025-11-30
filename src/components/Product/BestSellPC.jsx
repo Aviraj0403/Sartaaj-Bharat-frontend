@@ -89,21 +89,21 @@ export default function BestSellPC({ product, onProductClick }) {
         </div>
       </div>
 
-      {/* 🛒 Buttons */}
-      <div className="flex flex-col md:flex-row gap-2">
-        <button
-          onClick={handleAddToCart}
-          className="flex-1 bg-pink-500 text-white font-semibold py-1 rounded-lg hover:bg-pink-600 transition text-sm"
-        >
-          Add to Cart
-        </button>
-        <button
-          onClick={handleProductClick}
-          className="flex-1 border border-pink-500 text-pink-500 font-semibold py-1 rounded-lg hover:bg-pink-50 transition text-sm"
-        >
-          Buy Now
-        </button>
-      </div>
+     <div className="flex gap-2">
+  <button
+    onClick={handleAddToCart}
+    className="flex-1 bg-pink-500 text-white font-semibold py-2 rounded-lg hover:bg-pink-600 transition text-sm"
+  >
+    Add to Cart
+  </button>
+  <button
+    onClick={handleProductClick}
+    className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm"
+  >
+    Buy Now
+  </button>
+</div>
+
     </div>
   );
 }
