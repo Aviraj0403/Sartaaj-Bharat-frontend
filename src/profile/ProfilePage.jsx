@@ -25,10 +25,10 @@ export default function ProfilePage() {
   const profileOptions = [
     { key: "orders", title: "My Orders", icon: <ShoppingBag size={24} />, component: <Orders /> },
     { key: "support", title: "Customer Support", icon: <Smile size={24} />, component: <Support /> },
-    { key: "wishlist", title: "My Wishlist", icon: <Heart size={24} />, component: <Wishlist /> },
+    // { key: "wishlist", title: "My Wishlist", icon: <Heart size={24} />, component: <Wishlist /> },
     { key: "reviews", title: "My Reviews", icon: <Star size={24} />, component: <Reviews /> },
     { key: "beauty", title: "My Beauty Profile", icon: <User size={24} />, component: <BeautyProfile /> },
-    { key: "payments", title: "My Payments", icon: <CreditCard size={24} />, component: <Payments /> },
+    // { key: "payments", title: "My Payments", icon: <CreditCard size={24} />, component: <Payments /> },
     { key: "addresses", title: "My Addresses", icon: <MapPin size={24} />, component: <Addresses /> },
     { key: "delete", title: "Delete Account", icon: <Trash2 size={24} />, component: <DeleteAccount /> },
   ];
