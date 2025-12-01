@@ -21,6 +21,7 @@ import ReturnExchange from "./pages/details/ReturnExchange.jsx";
 import ShippingInfo from "./pages/details/ShippingInfo.jsx";
 import FAQPage from "./pages/details/FAQPage.jsx";
 import Invoice from "./profile/Invoice.jsx";
+import NewProducts from "./pages/newProduct/NewProducts.jsx";
 // import Login from "./authentication/Login.jsx";
 // import Signup from "./authentication/Signup.jsx";
 
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
        { path: "/faq", element: <FAQPage /> },
       //  <Route path="/invoice/:orderId" element={<Invoice />} />
        {path : "/invoice/:orderId", element: <Invoice />},
-
+       {path:"/new-products", element:<NewProducts />},
 
       // {path: "/auth", element: < Login/>},
       { path: "/auth", element: < AuthPage /> },

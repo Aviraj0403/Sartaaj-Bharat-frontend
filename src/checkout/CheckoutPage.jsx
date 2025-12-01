@@ -92,7 +92,7 @@ export default function CheckoutPage() {
       },
       paymentMethod,
       discountCode: appliedCoupon?.code || null,
-      totalAmount: Number(finalAmount.toFixed(2)),
+      totalAmount: Number(grandTotal),
     };
 
     if (paymentMethod === "Razorpay") {
@@ -105,7 +105,7 @@ export default function CheckoutPage() {
   const initiateRazorpay = async (orderPayload) => {
     try {
       const { data } = await axios.post("/razorpay/createRazorpayOrder", {
-        amount: Math.round(finalAmount),
+        amount: Math.round(grandTotal),
         userId: user.id,
       }, { withCredentials: true });
 
@@ -264,7 +264,7 @@ export default function CheckoutPage() {
               {appliedCoupon && (
                 <div className="flex justify-between text-green-600">
                   <span>Coupon: {appliedCoupon.code}</span>
-                  <span>-{appliedCoupon.discountPercentage}%</span>
+                  <span>{appliedCoupon.discountPercentage}%</span>
                 </div>
               )}
               <div className="flex justify-between text-xl font-bold text-gray-800 mt-4 border-t pt-4">
