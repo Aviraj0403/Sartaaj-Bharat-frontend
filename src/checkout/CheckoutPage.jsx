@@ -156,7 +156,9 @@ export default function CheckoutPage() {
       const res = await axios.post("/orders/createOrder", payload, { withCredentials: true });
       dispatch(clearCartThunk());
       toast.success("Order placed successfully!");
-      navigate("/invoice/123", { state: { order: res.data.order } });
+      // navigate("/invoice/123", { state: { order: res.data.order } });
+      const orderId = res.data.order._id; // Assuming that order ID is stored in _id
+navigate(`/invoice/${orderId}`, { state: { order: res.data.order } });
     } catch (err) {
       const msg = err.response?.data?.message || "Failed to place order";
       toast.error(msg);
