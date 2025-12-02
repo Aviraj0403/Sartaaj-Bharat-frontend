@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "../utils/Axios"; // Your Axios instance
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { toast } from 'react-toastify'; // Assuming you use react-toastify for notifications
+import { useAuth } from "../context/AuthContext";
 
 export default function AddressSidebar({ isOpen, onClose, refreshAddresses, userName, email }) {
+
+  const { user } = useAuth();
   const [address, setAddress] = useState({
-    name: userName || "",
-    email: email || "",
+    name: user?.userName || "",  // Prefill with userName from context
+    email: user?.email || "",
     phone: "",
     street: "",
     flat: "",
@@ -17,6 +21,17 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     pincode: "",
     addressType: "Home",
   });
+
+
+  useEffect(() => {
+    if (user) {
+      setAddress((prev) => ({
+        ...prev,
+        name: user.userName || "",
+        email: user.email || "",
+      }));
+    }
+  }, [user]);
 
   const [location, setLocation] = useState({ lat: null, lng: null });
   const [isLoading, setIsLoading] = useState(false);
@@ -86,11 +101,11 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
       await axios.post("/users/address", addressPayload, { withCredentials: true });
       toast.success("✅ Address saved!");
       setIsLoading(false);
-      onClose();
+      onClose(); // Automatically close the sidebar after successful save
       if (refreshAddresses) refreshAddresses();
     } catch (err) {
       console.error(err);
-      toast.danger("❌ Failed to save address.");
+      toast.error("❌ Failed to save address.");
       setIsLoading(false);
     }
   };

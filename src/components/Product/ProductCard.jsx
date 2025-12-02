@@ -1,4 +1,3 @@
-// src/components/Product/ProductCard.jsx
 import React, { useState, useEffect } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -23,8 +22,7 @@ export default function ProductCard({ product, onProductClick }) {
 
   const discount = activeVariant?.realPrice
     ? Math.round(
-        ((activeVariant.realPrice - activeVariant.price) /
-          activeVariant.realPrice) *
+        ((activeVariant.realPrice - activeVariant.price) / activeVariant.realPrice) *
           100
       )
     : 0;
@@ -38,6 +36,16 @@ export default function ProductCard({ product, onProductClick }) {
     const result = await addToCart(product, size, 1);
     if (result.success) toast.success("Added to cart!");
     else toast.error("Failed to add to cart");
+  };
+
+  const handleBuyNow = async () => {
+    const result = await addToCart(product, size, 1);
+    if (result.success) {
+      toast.success("Added to cart!");
+      navigate("/cart"); // Navigate to the cart page
+    } else {
+      toast.error("Failed to add to cart");
+    }
   };
 
   const handleIncrement = async () => {
@@ -123,7 +131,7 @@ export default function ProductCard({ product, onProductClick }) {
 
           {/* Buy Now */}
           <button
-            onClick={handleProductClick}
+            onClick={handleBuyNow} // Updated Buy Now logic
             className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm md:py-2"
           >
             Buy Now
@@ -141,7 +149,7 @@ export default function ProductCard({ product, onProductClick }) {
 
           {/* Buy Now */}
           <button
-            onClick={handleProductClick}
+            onClick={handleBuyNow} // Updated Buy Now logic
             className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm md:py-1"
           >
             Buy Now

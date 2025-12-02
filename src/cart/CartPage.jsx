@@ -27,7 +27,7 @@ export default function CartPage() {
     loading,
   } = useCartActions();
 
-  const { cartSyncing } = useAuth();
+  const { cartSyncing , user } = useAuth();
 
   // Calculate discount based on the coupon's discount percentage and max discount cap
   const calculateDiscount = () => {
@@ -273,25 +273,33 @@ export default function CartPage() {
                 <p>₹{(finalAmount * 0.05).toFixed(2)}</p>
               </div>
             </div>
-
-           <button
-  onClick={() =>
-    navigate("/checkout", {
-      state: {
-        cartItems, // Items in the cart
-        totalAmount, // Total amount before discount
-        totalQuantity: totalItems, // Total quantity of items
-        grandTotal: (finalAmount + (finalAmount * 0.05) + (finalAmount > 10 ? 23 : 0))
-                      .toFixed(2), // Final amount after coupon (if applied)
-        appliedCoupon: coupon.applied ? coupon : null, // Coupon details (if any)
-        finalAmount, // Final amount after discount
-      },
-    })
-  }
+<button
+  onClick={() => {
+    if (!user) {
+      // If the user is not logged in, redirect to login page
+      navigate("/signin", {
+        state: { from: "/checkout" }, // Redirect back to checkout after login
+      });
+    } else {
+      // Proceed to checkout if the user is logged in
+      navigate("/checkout", {
+        state: {
+          cartItems, // Items in the cart
+          totalAmount, // Total amount before discount
+          totalQuantity: totalItems, // Total quantity of items
+          grandTotal: (finalAmount + (finalAmount * 0.05) + (finalAmount > 10 ? 23 : 0))
+            .toFixed(2), // Final amount after coupon (if applied)
+          appliedCoupon: coupon.applied ? coupon : null, // Coupon details (if any)
+          finalAmount, // Final amount after discount
+        },
+      });
+    }
+  }}
   className="w-full bg-pink-100 text-pink-700 font-semibold py-2 rounded-lg mb-3 hover:bg-pink-200 transition"
 >
   PROCEED TO CHECKOUT
 </button>
+
 
 
             <button

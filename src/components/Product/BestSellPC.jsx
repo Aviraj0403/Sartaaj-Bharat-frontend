@@ -16,7 +16,6 @@ export default function BestSellPC({ product, onProductClick }) {
   };
 
   const handleAddToCart = async () => {
-    // For simplicity, using first variant. Adjust if multiple variants/sizes exist.
     const variant = product?.variants;
 
     if (!variant) return;
@@ -24,11 +23,23 @@ export default function BestSellPC({ product, onProductClick }) {
     await addToCart(product, variant.size || "default", variant.price, 1);
   };
 
+  const handleBuyNow = async () => {
+    const variant = product?.variants;
+
+    if (!variant) return;
+
+    const result = await addToCart(product, variant.size || "default", variant.price, 1);
+    if (result.success) {
+      navigate("/cart"); // Navigate to the cart page after adding the product
+    } else {
+      // Handle error if the add to cart fails
+    }
+  };
+
   const discount = product?.variants?.realPrice
     ? Math.round(
-        ((product?.variants?.realPrice - product?.variants?.price) /
-          product?.variants?.realPrice) *
-          100
+        ((product?.variants?.realPrice - product?.variants?.price) / 
+        product?.variants?.realPrice) * 100
       )
     : 0;
 
@@ -89,21 +100,24 @@ export default function BestSellPC({ product, onProductClick }) {
         </div>
       </div>
 
-     <div className="flex gap-2">
-  <button
-    onClick={handleAddToCart}
-    className="flex-1 bg-pink-500 text-white font-semibold py-2 rounded-lg hover:bg-pink-600 transition text-sm"
-  >
-    Add to Cart
-  </button>
-  <button
-    onClick={handleProductClick}
-    className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm"
-  >
-    Buy Now
-  </button>
-</div>
+      {/* 🛒 Action Buttons */}
+      <div className="flex gap-2">
+        {/* Add to Cart */}
+        <button
+          onClick={handleAddToCart}
+          className="flex-1 bg-pink-500 text-white font-semibold py-2 rounded-lg hover:bg-pink-600 transition text-sm"
+        >
+          Add to Cart
+        </button>
 
+        {/* Buy Now */}
+        <button
+          onClick={handleBuyNow}
+          className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm"
+        >
+          Buy Now
+        </button>
+      </div>
     </div>
   );
 }

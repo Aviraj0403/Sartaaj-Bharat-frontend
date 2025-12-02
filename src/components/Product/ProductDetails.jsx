@@ -1,6 +1,6 @@
 // src/pages/product/ProductDetails.jsx
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams , useNavigate  } from "react-router-dom";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getProductBySlug } from "../../services/productApi";
@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function ProductDetails() {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const [mainImage, setMainImage] = useState(null);
   const [activeTab, setActiveTab] = useState("description");
   const [selectedVariant, setSelectedVariant] = useState(null);
@@ -73,6 +74,34 @@ export default function ProductDetails() {
         position: "top-right",
         autoClose: 2000,
       });
+    } else {
+      toast.error(`Failed to add to cart: ${response.error}`, {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  };
+
+    const handleBuyNow = async () => {
+    if (!selectedVariant) return;
+
+    const response = await addToCart(
+      {
+        _id: product._id,
+        name: product.name,
+        pimage: selectedVariant.image || pimages[0],
+        variants: selectedVariant,
+      },
+      selectedVariant.size,
+      quantity
+    );
+
+    if (response.success) {
+      toast.success(`${name} (${selectedVariant.size}) added to cart!`, {
+        position: "top-right",
+        autoClose: 2000,
+      });
+      navigate("/cart"); // Navigate to the cart page after adding to the cart
     } else {
       toast.error(`Failed to add to cart: ${response.error}`, {
         position: "top-right",
@@ -193,7 +222,10 @@ export default function ProductDetails() {
                 >
                   Add to Cart
                 </button>
-                <button className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition">
+                <button
+                  onClick={handleBuyNow} // Added Buy Now functionality
+                  className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition"
+                >
                   Buy Now
                 </button>
               </div>

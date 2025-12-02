@@ -22,8 +22,7 @@ export default function NewArrivalPC({ product, onProductClick }) {
 
   const discount = activeVariant?.realPrice
     ? Math.round(
-        ((activeVariant.realPrice - activeVariant.price) / 
-        activeVariant.realPrice) * 100
+        ((activeVariant.realPrice - activeVariant.price) / activeVariant.realPrice) * 100
       )
     : 0;
 
@@ -36,6 +35,16 @@ export default function NewArrivalPC({ product, onProductClick }) {
     const result = await addToCart(product, size, 1);
     if (result.success) toast.success("Added to cart!");
     else toast.error("Failed to add to cart");
+  };
+
+  const handleBuyNow = async () => {
+    const result = await addToCart(product, size, 1);
+    if (result.success) {
+      toast.success("Added to cart!");
+      navigate("/cart"); // Navigate to the cart page after adding the item
+    } else {
+      toast.error("Failed to add to cart");
+    }
   };
 
   const handleIncrement = async () => {
@@ -126,7 +135,7 @@ export default function NewArrivalPC({ product, onProductClick }) {
 
           {/* Buy Now */}
           <button
-            onClick={handleProductClick}
+            onClick={handleBuyNow} // Updated Buy Now logic
             className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm md:py-2"
           >
             Buy Now
@@ -144,7 +153,7 @@ export default function NewArrivalPC({ product, onProductClick }) {
 
           {/* Buy Now */}
           <button
-            onClick={handleProductClick}
+            onClick={handleBuyNow} // Updated Buy Now logic
             className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm md:py-1"
           >
             Buy Now
