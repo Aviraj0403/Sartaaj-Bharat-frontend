@@ -19,13 +19,16 @@ import { useQuery } from "@tanstack/react-query";
 import { getMenuCategories } from "../../services/categoryApi";
 import { useAuth } from "../../context/AuthContext";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+
 
 export default function MobileHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState(null);
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-
+const location = useLocation();
+ const hideSearch = location.pathname === "/search";
   // Redux Cart
   const { items: cartItems } = useSelector((state) => state.cart);
   const totalQuantity = cartItems.reduce(
@@ -101,16 +104,23 @@ export default function MobileHeader() {
         </div>
 
         {/* Search Bar */}
-        <div className="px-4 py-2 border-b border-gray-200 bg-white">
-          <div className="flex items-center gap-2 bg-pink-50 rounded-full px-3 py-2 border border-pink-200">
-            <Search className="text-pink-300" size={18} />
-            <input
-              type="text"
-              placeholder="Search for products..."
-              className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder-pink-300"
-            />
-          </div>
-        </div>
+       {/* Search Bar (Hide on /search page) */}
+{!hideSearch && (
+  <div className="px-4 py-2 border-b border-gray-200 bg-white">
+    <div className="flex items-center gap-2 bg-pink-50 rounded-full px-3 py-2 border border-pink-200">
+      <Search className="text-pink-300" size={18} />
+      <div
+        className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder-pink-300"
+        onClick={() => navigate("/search")}
+      >
+        <span className="text-gray-500">Search for products...</span>
+      </div>
+    </div>
+  </div>
+)}
+
+     
+      
       </div>
 
       {/* Spacer for sticky header */}

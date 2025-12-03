@@ -64,21 +64,24 @@ export default function Orders() {
               className="bg-white rounded-2xl shadow-md border border-pink-100 overflow-hidden hover:shadow-lg transition-all"
             >
               {/* Header */}
-              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-pink-50 to-pink-100 border-b border-pink-100">
-                <div>
-                  <h2 className="text-base font-semibold text-gray-800">
-                    #{order._id} {/* Display order ID */}
-                  </h2>
-                  <p className="text-gray-500 text-xs">
-                    Placed on {new Date(order.placedAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <span
-                  className={`px-3 py-1 rounded-full text-white text-xs font-semibold ${statusColors[order.orderStatus]}`}
-                >
-                  {order.orderStatus}
-                </span>
-              </div>
+{/* Header */}
+<div className="flex justify-between items-center p-4 bg-gradient-to-r from-pink-50 to-pink-100 border-b border-pink-100 flex-wrap gap-2">
+  <div className="min-w-0">
+    <h2 className="text-sm font-semibold text-gray-800 truncate max-w-[200px]">
+      #{order._id}
+    </h2>
+    <p className="text-gray-500 text-xs">
+      Placed on {new Date(order.placedAt).toLocaleDateString()}
+    </p>
+  </div>
+
+  <span
+    className={`px-3 py-1 rounded-full text-white text-xs font-semibold whitespace-nowrap ${statusColors[order.orderStatus]}`}
+  >
+    {order.orderStatus}
+  </span>
+</div>
+
 
               {/* Item */}
               <div className="p-4 flex items-center gap-4 cursor-pointer">

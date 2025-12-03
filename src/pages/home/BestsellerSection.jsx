@@ -44,7 +44,7 @@ export default function BestsellerSection({ categorySlug }) {
   if (isError) return <div>Error: {error.message}</div>;
 
   return (
-    <section className="bg-white relative">
+    <section className="bg-white relative ">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-0">
         <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-6 text-center">
           Bestseller Products

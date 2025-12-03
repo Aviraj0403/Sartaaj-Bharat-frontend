@@ -231,7 +231,7 @@ navigate(`/invoice/${orderId}`, { state: { order: res.data.order } });
   <button
     onClick={() => placeOrder("COD")}
     disabled={isPlacingOrder}
-    className="bg-pink-100 text-pink-700 font-semibold px-4 py-2 md:px-8 md:py-3 rounded-lg hover:bg-pink-200 disabled:opacity-60"
+    className="bg-pink-100 text-pink-700 font-semibold px-4 py-2 md:px-8 md:py-3 rounded-lg hover:bg-pink-200 disabled:opacity-60 whitespace-nowrap"
   >
     {isPlacingOrder ? "Processing..." : "Cash on Delivery"}
   </button>
@@ -239,11 +239,12 @@ navigate(`/invoice/${orderId}`, { state: { order: res.data.order } });
   <button
     onClick={() => placeOrder("Razorpay")}
     disabled={isPlacingOrder}
-    className="bg-pink-500 text-white font-semibold px-4 py-2 md:px-8 md:py-3 rounded-lg hover:bg-pink-600 disabled:opacity-60"
+    className="bg-pink-500 text-white font-semibold px-4 py-2 md:px-8 md:py-3 rounded-lg hover:bg-pink-600 disabled:opacity-60 whitespace-nowrap"
   >
     {isPlacingOrder ? "Redirecting..." : "Pay Online"}
   </button>
 </div>
+
 
         </div>
 
