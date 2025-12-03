@@ -29,7 +29,8 @@ const Layout = () => {
         <ScrollToTop />
 
         {/* Render the nested routes here */}
-        <main className="container mx-auto px-4">
+      <main className="w-full">
+
           <Outlet />
         </main>
       </div>

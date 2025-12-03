@@ -34,20 +34,24 @@ const products = [
 export default function PromoSection() {
   return (
     <section className="bg-white py-12">
-      <div className="max-w-7xl mx-auto px-0"> {/* Removed padding */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-0">
+      <div className="max-w-7xl mx-auto px-4 md:px-6"> 
+        {/* px-4 / px-6 = Left and Right Margin */}
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {products.map((product, idx) => (
             <div
               key={idx}
-              className="flex flex-col items-center text-center" // Removed padding and bg-white
+              className="flex flex-col items-center text-center"
             >
               <img
                 src={product.image}
                 alt={product.brand}
-                className="w-full h-60 object-cover" // Increased size and cover
+                className="w-full h-60 object-cover rounded-lg"
               />
-              <div className="bg-white w-full py-2"> {/* Text container */}
-                <h3 className="font-bold text-lg text-gray-900">{product.offer}</h3>
+              <div className="bg-white w-full py-3">
+                <h3 className="font-bold text-lg text-gray-900">
+                  {product.offer}
+                </h3>
                 <p className="text-gray-600 text-sm">{product.extra}</p>
               </div>
             </div>

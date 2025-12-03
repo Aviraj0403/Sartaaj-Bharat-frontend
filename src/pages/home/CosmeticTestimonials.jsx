@@ -1,99 +1,101 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import { Pagination, Navigation } from "swiper/modules";
 
-export default function CosmeticTestimonials() {
-  const reviews = [
+export default function Testimonials() {
+  const testimonials = [
     {
-      name: "Sana Kapoor",
-      role: "Beauty Influencer",
-      review:
-        "This cosmetic product completely transformed my skin! The texture feels luxurious and results are visible within days.",
-      img: "https://i.ibb.co/4Ws7dby/girl1.jpg",
+      id: 1,
+      name: "Smita mishra",
+      role: "Cosmetic Product User",
+      image: "https://i.ibb.co/4Ws7dby/girl1.jpg",
+      feedback:
+        "This cosmetic product has completely changed my skincare routine. The glow, hydration, and softness it gives my skin is amazing. I noticed visible results within just one week!",
     },
     {
-      name: "Aisha Sharma",
+      id: 2,
+      name: "Sweety sharma",
+      role: "Beauty Enthusiast",
+      image: "https://i.ibb.co/5LM5ZJB/girl2.jpg",
+      feedback:
+        "I absolutely love this product! It feels premium, absorbs quickly, and gives a natural shine. My acne marks started fading and my skin tone improved within days.",
+    },
+    {
+      id: 3,
+      name: "Manshi Gupta",
       role: "Makeup Artist",
-      review:
-        "The formula is lightweight yet super effective. Perfect for daily use and gives a natural radiant glow!",
-      img: "https://i.ibb.co/Cv6Q0Fp/girl2.jpg",
-    },
-    {
-      name: "Riya Mehta",
-      role: "Fashion Model",
-      review:
-        "Absolutely in love! My skin feels hydrated, fresh, and beautifully smooth. Highly recommended!",
-      img: "https://i.ibb.co/7YSWcQG/girl3.jpg",
-    },
-    {
-      name: "Kritika Verma",
-      role: "Skin Care Specialist",
-      review:
-        "A premium formula that nourishes the skin deeply. Perfect for achieving a natural glow.",
-      img: "https://i.ibb.co/Cv6Q0Fp/girl2.jpg",
-    },
-    {
-      name: "Niharika Jain",
-      role: "Makeup Reviewer",
-      review:
-        "Super smooth, non-sticky and gives a flawless finish. I use it daily!",
-      img: "https://i.ibb.co/4Ws7dby/girl1.jpg",
+      image: "https://i.ibb.co/D5B8jSB/girl3.jpg",
+      feedback:
+        "As a makeup artist, I’ve tried many brands. But this product is truly impressive — lightweight, long-lasting, and perfect for daily use. Highly recommended for all skin types!",
     },
   ];
 
-  // Duplicate list for seamless infinite scroll
-  const doubledReviews = [...reviews, ...reviews];
-
   return (
-    <section className="py-10 bg-gradient-to-b from-pink-50 to-white overflow-hidden">
-      {/* Heading */}
-      <h1 className="text-center text-5xl font-extrabold text-pink-600 mb-4 tracking-wide">
-        What Our Customers Say
-      </h1>
-      <p className="text-center text-gray-600 max-w-2xl mx-auto mb-16 text-lg">
-        Real experiences from customers who trust our cosmetic products for
-        beauty, glow, and confidence.
-      </p>
+    <section className="py-5 bg-white">
+      <div className="container mx-auto px-5">
 
-      {/* Slider Wrapper */}
-      <div className="relative w-full overflow-hidden">
-        <motion.div
-          className="flex gap-10"
-          animate={{
-            x: ["0%", "-100%"], // slide full width
+        {/* Heading */}
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">What’s our students says</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Beauty lovers from across India trust our cosmetic products for their amazing results. 
+            Our formulations are designed to enhance your natural glow, improve skin texture, 
+            and give long-lasting nourishment.
+          </p>
+        </div>
+
+        {/* Swiper Slider */}
+        <Swiper
+          slidesPerView={1}
+          spaceBetween={20}
+          pagination={{ clickable: true, el: ".custom-pagination" }}
+          navigation={{ nextEl: ".custom-next", prevEl: ".custom-prev" }}
+          breakpoints={{
+            640: { slidesPerView: 1 },
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
           }}
-          transition={{
-            repeat: Infinity,
-            duration: 25,
-            ease: "linear",
-          }}
+          modules={[Pagination, Navigation]}
+          className="pb-12"
         >
-          {doubledReviews.map((r, i) => (
-            <div
-              key={i}
-              className="min-w-[90%] sm:min-w-[45%] md:min-w-[30%] bg-white/60 backdrop-blur-xl p-8 rounded-3xl shadow-lg border border-pink-100"
-            >
-              {/* Profile Image */}
-              <div className="flex justify-center mb-6">
-                <img
-                  src={r.img}
-                  alt={r.name}
-                  className="w-24 h-24 rounded-full object-cover border-4 border-pink-300 shadow-md"
-                />
+          {testimonials.map((testimonial) => (
+            <SwiperSlide key={testimonial.id}>
+              <div className="bg-white border border-pink-300 rounded-lg shadow-md p-6 text-left">
+                {/* Profile */}
+                <div className="flex items-center mb-4">
+                  <img
+                    src={testimonial.image}
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full mr-4"
+                  />
+                  <div>
+                    <h4 className="font-semibold text-gray-800">{testimonial.name}</h4>
+                    <p className="text-sm text-gray-500">{testimonial.role}</p>
+                  </div>
+                </div>
+
+                {/* Feedback */}
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  {testimonial.feedback}
+                </p>
               </div>
-
-              {/* Review */}
-              <p className="text-gray-700 text-center italic leading-relaxed mb-4">
-                “{r.review}”
-              </p>
-
-              {/* Name */}
-              <h2 className="text-center text-xl font-bold text-pink-600">
-                {r.name}
-              </h2>
-              <p className="text-center text-gray-500">{r.role}</p>
-            </div>
+            </SwiperSlide>
           ))}
-        </motion.div>
+        </Swiper>
+
+        {/* Controls */}
+        <div className="flex justify-end items-center mt-6 space-x-4">
+          <div className="custom-pagination flex space-x-2"></div>
+
+          <div className="flex space-x-2">
+            <button className="custom-prev px-3 py-1 bg-pink-200 rounded">←</button>
+            <button className="custom-next px-3 py-1 bg-pink-200 rounded">→</button>
+          </div>
+        </div>
+
       </div>
     </section>
   );

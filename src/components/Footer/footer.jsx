@@ -134,13 +134,13 @@ export default function Footer() {
           <ul className="space-y-3 text-gray-600 text-sm md:text-base">
             <li className="flex items-start gap-3">
               <MapPin className="text-pink-500 mt-1" size={18} />
-              <span>123 Beauty Street, Cosmetic City, CC 12345</span>
+              <span>11021, 5A Block WEA, Sat Nagar, Karol Bagh, Delhi, 110005</span>
             </li>
             <li className="flex items-center gap-3">
-              <Phone className="text-pink-500" size={18} /> +1 (555) 123-4567
+              <Phone className="text-pink-500" size={18} />  +91 9999161803
             </li>
             <li className="flex items-center gap-3">
-              <Mail className="text-pink-500" size={18} /> hello@beautyglow.com
+              <Mail className="text-pink-500" size={18} /> gurmeetkaurstore@gmail.com
             </li>
           </ul>
         </div>
@@ -168,11 +168,18 @@ export default function Footer() {
 
       {/* Bottom Bar */}
       <div className="border-t border-gray-200 py-5 px-6 md:px-20 flex flex-col md:flex-row justify-between items-center text-gray-600 text-sm gap-3">
-        <p className="text-center md:text-left">
-          © 2025 GurpreetKaurStore. All rights reserved. Made with{" "}
-          <FaHeart className="inline text-pink-500" /> for beauty lovers.
-        </p>
+        <p className="text-center text-sm text-gray-600">
+  © 2025 GurpreetKaurStore. All rights reserved. | Made by{" "}
+ <a
+  href="https://www.jdinfotechsolutions.in/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="font-semibold text-blue-600 hover:underline"
+>
+  JD Infotech Solutions
+</a>
 
+</p>
 
         {/* Payment Icons */}
         <div className="flex flex-wrap justify-center items-center gap-3 mt-2 md:mt-0">

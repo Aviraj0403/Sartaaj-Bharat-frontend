@@ -83,7 +83,7 @@ export const getMiniProducts = async (
 export const getProductBySlug = async (slug) => {
   try {
     // Send GET request to fetch product by slug
-    const response = await Axios.get(`/products/getProduct/${slug}`);
+    const response = await Axios.get(`/products/getSingleProduct/${slug}`);
     
     // Check if the response is successful
     if (response.data && response.data.success) {

@@ -44,43 +44,43 @@ export default function BestsellerSection({ categorySlug }) {
   if (isError) return <div>Error: {error.message}</div>;
 
   return (
-    <section className="bg-white relative ">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-0">
-        <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-6 text-center">
-          Bestseller Products
-        </h2>
+   <section className="bg-white relative ">
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6"> 
+    <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-6 text-center">
+      Bestseller Products
+    </h2>
 
-        {/* Carousel Container */}
-        <div className="relative">
-          {/* Left / Right Buttons */}
-          <button
-            onClick={scrollLeft}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white p-2 rounded-full shadow hover:bg-pink-50 transition"
-          >
-            <FaChevronLeft className="text-pink-500" />
-          </button>
-          <button
-            onClick={scrollRight}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white p-2 rounded-full shadow hover:bg-pink-50 transition"
-          >
-            <FaChevronRight className="text-pink-500" />
-          </button>
+    <div className="relative">
+      <button
+        onClick={scrollLeft}
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white p-2 rounded-full shadow hover:bg-pink-50 transition"
+      >
+        <FaChevronLeft className="text-pink-500" />
+      </button>
 
-          {/* Products */}
-          <div ref={carouselRef} className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory py-2 px-0 sm:px-4">
-            {data.products.map((product) => {
-              return (
-                <div key={product._id} className="flex-shrink-0 w-1/2 sm:w-60 md:w-52 lg:w-60">
-                  <BestSellPC
-                    product={product}
-                    onProductClick={(productId) => navigate(`/product/${productId}`)}
-                  />
-                </div>
-              );
-            })}
+      <button
+        onClick={scrollRight}
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white p-2 rounded-full shadow hover:bg-pink-50 transition"
+      >
+        <FaChevronRight className="text-pink-500" />
+      </button>
+
+      <div
+        ref={carouselRef}
+        className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory py-2 px-2"
+      >
+        {data.products.map((product) => (
+          <div key={product._id} className="flex-shrink-0 w-1/2 sm:w-60 md:w-52 lg:w-60">
+            <BestSellPC
+              product={product}
+              onProductClick={(productId) => navigate(`/product/${productId}`)}
+            />
           </div>
-        </div>
+        ))}
       </div>
-    </section>
+    </div>
+  </div>
+</section>
+
   );
 }
