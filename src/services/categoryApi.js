@@ -13,3 +13,18 @@ export const getMenuCategories = async () => {
     return [];
   }
 };
+export const getSearchSuggestions = async (query) => {
+  try {
+    const response = await Axios.get(`/products/suggestions`, {
+      params: { search: query, limit: 5 },
+    });
+    if (response.data.success) {
+      return response.data.suggestions;  // Return the suggestions list
+    } else {
+      throw new Error('Failed to fetch search suggestions');
+    }
+  } catch (error) {
+    console.error('Error fetching search suggestions:', error);
+    return [];
+  }
+};
