@@ -43,7 +43,6 @@ export default function MobileSearchPage() {
               onChange={(e) => setQuery(e.target.value)}
               className="bg-transparent ml-2 outline-none text-gray-700 w-full"
             />
-            {/* Clear Icon when there's text in the input */}
             {query.length > 0 && (
               <button onClick={() => setQuery("")} className="text-gray-600 text-lg">
                 <X size={18} />
@@ -52,12 +51,8 @@ export default function MobileSearchPage() {
           </div>
         </div>
 
-        {/* Cancel Button */}
         {query.length > 0 && (
-          <button
-            onClick={() => setQuery("")}
-            className="text-gray-600 text-lg ml-2"
-          >
+          <button onClick={() => setQuery("")} className="text-gray-600 text-lg ml-2">
             Cancel
           </button>
         )}
@@ -86,7 +81,7 @@ export default function MobileSearchPage() {
           <h2 className="text-2xl font-semibold text-pink-600">Shop by Categories</h2>
           <div className="mt-4">
             {/* Category Slider */}
-            <div className="flex overflow-x-auto space-x-4 scrollbar-hide cursor-grab select-none scroll-smooth">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {isCategoriesLoading && <p className="w-full text-center text-pink-600">Loading categories...</p>}
               {isCategoriesError && (
                 <div className="w-full text-center text-red-600">
@@ -97,17 +92,16 @@ export default function MobileSearchPage() {
                 <div
                   key={cat._id}
                   onClick={() => navigate(`/${cat.slug}`)}
-                  className="flex-shrink-0 w-[48%] sm:w-[200px] cursor-pointer group relative"
+                  className="flex flex-col items-center justify-center cursor-pointer group relative"
                 >
-                  <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105">
+                  <div className="rounded-lg overflow-hidden shadow-md border border-gray-100">
                     <img
                       src={cat.image[0]} // Display first image in the array
                       alt={cat.name}
-                      className="w-full h-[130px] sm:h-[150px] object-cover"
+                      className="w-full h-[150px] sm:h-[180px] object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-all"></div>
                   </div>
-                  <h3 className="text-center mt-3 font-semibold text-gray-700 group-hover:text-pink-600 text-sm sm:text-base">
+                  <h3 className="text-center mt-3 font-semibold text-gray-700 text-sm sm:text-base">
                     {cat.name}
                   </h3>
                 </div>
@@ -129,18 +123,23 @@ export default function MobileSearchPage() {
                 <div
                   key={item._id} // Assuming each item has a unique _id
                   onClick={() => navigate(`/product/${item.slug}`)} // Redirect to product page
-                  className="cursor-pointer rounded-lg shadow-lg border border-gray-100 p-4 hover:shadow-xl hover:scale-105"
+                  className="cursor-pointer rounded-lg shadow-lg border border-gray-100 p-4 bg-white"
+                  style={{
+                    transform: "perspective(1200px) rotateX(5deg) rotateY(5deg)", // 3D perspective for static 3D effect
+                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+                  }}
                 >
                   <img
                     src={item.pimages[0]} // Use the first image in the pimages array
                     alt={item.name}
-                    className="w-full h-[150px] object-cover rounded-t-lg"
+                    className="w-full h-[200px] object-cover rounded-t-lg"
                   />
-                  <div className="mt-2">
-                    <h3 className="text-gray-800 font-semibold">{item.name}</h3>
-                    <p className="text-sm text-gray-500">{item.description}</p>
-                    <div className="mt-2">
+                  <div className="mt-3">
+                    <h3 className="text-gray-800 font-semibold text-lg">{item.name}</h3>
+                    <p className="text-sm text-gray-500 mt-1">{item.description}</p>
+                    <div className="mt-3 flex items-center justify-between">
                       <span className="text-xl font-semibold text-gray-900">₹ {item.price}</span>
+                      <button className="text-sm text-pink-600 hover:text-pink-700 transition-colors">View</button>
                     </div>
                   </div>
                 </div>
