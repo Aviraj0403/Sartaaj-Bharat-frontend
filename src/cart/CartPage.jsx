@@ -27,7 +27,7 @@ export default function CartPage() {
     loading,
   } = useCartActions();
 
-  const { cartSyncing , user } = useAuth();
+  const { cartSyncing, user } = useAuth();
 
   // Calculate discount based on the coupon's discount percentage and max discount cap
   const calculateDiscount = () => {
@@ -129,7 +129,17 @@ export default function CartPage() {
           </h1>
 
           {cartItems.length === 0 ? (
-            <p>Your cart is empty.</p>
+            // <p>Your cart is empty.</p>
+            <div className="flex justify-center items-center min-h-[300px]">
+              {/* "Shop Now" Button shown only when cart is empty */}
+              <button
+                className="w-full sm:w-auto bg-pink-600 text-white font-bold text-lg sm:text-xl py-3 sm:py-4 px-6 sm:px-8 rounded-lg shadow-lg hover:bg-pink-700 transition duration-300 transform hover:scale-105 max-w-md"
+                onClick={() => navigate("/new-products")}
+              >
+                Shop Now
+              </button>
+            </div>
+
           ) : (
             cartItems.map((item) => (
               <div
@@ -273,32 +283,32 @@ export default function CartPage() {
                 <p>₹{(finalAmount * 0.05).toFixed(2)}</p>
               </div>
             </div>
-<button
-  onClick={() => {
-    if (!user) {
-      // If the user is not logged in, redirect to login page
-      navigate("/signin", {
-        state: { from: "/checkout" }, // Redirect back to checkout after login
-      });
-    } else {
-      // Proceed to checkout if the user is logged in
-      navigate("/checkout", {
-        state: {
-          cartItems, // Items in the cart
-          totalAmount, // Total amount before discount
-          totalQuantity: totalItems, // Total quantity of items
-          grandTotal: (finalAmount + (finalAmount * 0.05) + (finalAmount > 10 ? 23 : 0))
-            .toFixed(2), // Final amount after coupon (if applied)
-          appliedCoupon: coupon.applied ? coupon : null, // Coupon details (if any)
-          finalAmount, // Final amount after discount
-        },
-      });
-    }
-  }}
-  className="w-full bg-pink-100 text-pink-700 font-semibold py-2 rounded-lg mb-3 hover:bg-pink-200 transition"
->
-  PROCEED TO CHECKOUT
-</button>
+            <button
+              onClick={() => {
+                if (!user) {
+                  // If the user is not logged in, redirect to login page
+                  navigate("/signin", {
+                    state: { from: "/checkout" }, // Redirect back to checkout after login
+                  });
+                } else {
+                  // Proceed to checkout if the user is logged in
+                  navigate("/checkout", {
+                    state: {
+                      cartItems, // Items in the cart
+                      totalAmount, // Total amount before discount
+                      totalQuantity: totalItems, // Total quantity of items
+                      grandTotal: (finalAmount + (finalAmount * 0.05) + (finalAmount > 10 ? 23 : 0))
+                        .toFixed(2), // Final amount after coupon (if applied)
+                      appliedCoupon: coupon.applied ? coupon : null, // Coupon details (if any)
+                      finalAmount, // Final amount after discount
+                    },
+                  });
+                }
+              }}
+              className="w-full bg-pink-100 text-pink-700 font-semibold py-2 rounded-lg mb-3 hover:bg-pink-200 transition"
+            >
+              PROCEED TO CHECKOUT
+            </button>
 
 
 

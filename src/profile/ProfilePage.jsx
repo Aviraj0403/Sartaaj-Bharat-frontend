@@ -16,6 +16,7 @@ import Reviews from "./Reviews";
 import BeautyProfile from "./BeautyProfile";
 import Addresses from "./Addresses";
 import DeleteAccount from "./DeleteAccount";
+import SignInPage from "../pages/auth/SignInPage"; // Import SignInPage component
 
 export default function ProfilePage() {
   const { user, logout, loading } = useAuth(); // Get user and logout function from AuthContext
@@ -35,22 +36,10 @@ export default function ProfilePage() {
 
   // Loading state or user not logged in
   if (loading) return <div>Loading...</div>;
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="text-center p-6 bg-white rounded-lg shadow-md max-w-sm">
-          <h2 className="text-2xl font-bold text-pink-600 mb-4">Please Log In</h2>
-          <p className="text-gray-600 mb-4">You need to log in to access this page.</p>
-          <button
-            onClick={() => window.location.href = "/login"} // Redirect to login page
-            className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-6 rounded-lg transition"
-          >
-            Log In
-          </button>
-        </div>
-      </div>
-    );
-  }
+ if (!user) {
+  return <SignInPage />;
+}
+
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-white relative">
