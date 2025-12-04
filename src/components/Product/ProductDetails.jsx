@@ -8,6 +8,7 @@ import RelatedProduct from "../../pages/home/RelatedProduct";
 import { useCartActions } from "../../hooks/useCartActions";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import ReviewTab from "../Product/ReviewTab"; 
 
 export default function ProductDetails() {
   const { slug } = useParams();
@@ -288,7 +289,8 @@ export default function ProductDetails() {
           )}
           {activeTab === "review" && (
             <div className="text-gray-600 text-sm">
-              <p>No reviews yet. Be the first to review this product!</p>
+              {/* <p>No reviews yet. Be the first to review this product!</p> */}
+              <ReviewTab productId={product._id} reviews={product.reviews} setReviews={(newReviews) => product.reviews = newReviews} />
             </div>
           )}
         </div>
