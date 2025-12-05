@@ -80,9 +80,11 @@ export default function BestSellPC({ product, onProductClick }) {
       <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-1 text-left">
         {product.name}
       </h3>
-      <p className="text-gray-600 text-xs md:text-sm mb-2 text-left">
-        {product.description}
-      </p>
+   <p className="text-gray-600 text-xs md:text-sm mb-2">
+  {product.description.length > 60
+    ? product.description.substring(0, 60).split(" ").slice(0, -1).join(" ") + "..."
+    : product.description}
+</p>
 
       {/* 💰 Price and Rating */}
       <div className="flex justify-between items-center mb-2 px-1 text-sm">
