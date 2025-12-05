@@ -77,9 +77,9 @@ export default function OrderDetails() {
           </span>
         </div>
 
-        <p className="text-gray-500 text-sm mt-2">
+        {/* <p className="text-gray-500 text-sm mt-2">
           {order.description || "No description available."}
-        </p>
+        </p> */}
       </div>
 
       {/* Items Section */}
@@ -105,7 +105,7 @@ export default function OrderDetails() {
                   {item.product.name}
                 </h3>
                 <p className="text-gray-500 text-xs sm:text-sm">
-                  Seller: {item.product.seller}
+                  Seller: {item.product.seller || "Gurmeet Kaur Store"}
                 </p>
                 <p className="text-gray-500 text-xs sm:text-sm">
                   Size: {item.selectedVariant?.size || "N/A"}

@@ -1,6 +1,6 @@
 // src/pages/product/ProductDetails.jsx
-import React, { useState } from "react";
-import { useParams , useNavigate  } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getProductBySlug } from "../../services/productApi";
@@ -27,10 +27,20 @@ export default function ProductDetails() {
     enabled: !!slug,
   });
 
+  const product = data?.product;
+
+  // Reset state when product changes (slug changes)
+  useEffect(() => {
+    if (product?.pimages?.length > 0 && product?.variants?.length > 0) {
+      setMainImage(product.pimages[0]);
+      setSelectedVariant(product.variants[0]);
+      setQuantity(1);
+      setActiveTab("description");
+    }
+  }, [product]); // Re-run when product data changes
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading product details</div>;
-
-  const product = data?.product;
   if (!product) return <div>No product found</div>;
 
   const {
@@ -45,12 +55,6 @@ export default function ProductDetails() {
     tags,
     additionalInfo,
   } = product;
-
-  // Initialize main image & variant
-  if (!mainImage) {
-    setMainImage(pimages[0]);
-    setSelectedVariant(variants[0]);
-  }
 
   const handleSizeSelect = (variant) => {
     setSelectedVariant(variant);
@@ -83,7 +87,7 @@ export default function ProductDetails() {
     }
   };
 
-    const handleBuyNow = async () => {
+  const handleBuyNow = async () => {
     if (!selectedVariant) return;
 
     const response = await addToCart(
@@ -102,7 +106,7 @@ export default function ProductDetails() {
         position: "top-right",
         autoClose: 2000,
       });
-      navigate("/cart"); // Navigate to the cart page after adding to the cart
+      navigate("/cart");
     } else {
       toast.error(`Failed to add to cart: ${response.error}`, {
         position: "top-right",
@@ -200,22 +204,6 @@ export default function ProductDetails() {
 
             {/* Quantity + Buttons */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
-              {/* <div className="flex items-center border border-gray-300 rounded-md w-fit">
-                <button
-                  className="px-3 py-1 text-gray-600"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                >
-                  -
-                </button>
-                <span className="px-3 py-1">{quantity}</span>
-                <button
-                  className="px-3 py-1 text-gray-600"
-                  onClick={() => setQuantity(quantity + 1)}
-                >
-                  +
-                </button>
-              </div> */}
-
               <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <button
                   onClick={handleAddToCart}
@@ -224,7 +212,7 @@ export default function ProductDetails() {
                   Add to Cart
                 </button>
                 <button
-                  onClick={handleBuyNow} // Added Buy Now functionality
+                  onClick={handleBuyNow}
                   className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition"
                 >
                   Buy Now
@@ -289,7 +277,6 @@ export default function ProductDetails() {
           )}
           {activeTab === "review" && (
             <div className="text-gray-600 text-sm">
-              {/* <p>No reviews yet. Be the first to review this product!</p> */}
               <ReviewTab productId={product._id} reviews={product.reviews} setReviews={(newReviews) => product.reviews = newReviews} />
             </div>
           )}

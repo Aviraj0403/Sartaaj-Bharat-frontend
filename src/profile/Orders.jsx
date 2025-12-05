@@ -39,7 +39,7 @@ export default function Orders() {
 
   // 👉 Redirect user to Invoice page
   const handleDownloadInvoice = (orderId) => {
-    navigate(`/invoice/${orderId}`);
+    navigate(`/profile/invoice/${orderId}`);
   };
 
   if (loading) {

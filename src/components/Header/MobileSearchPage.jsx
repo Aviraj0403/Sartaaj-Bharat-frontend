@@ -113,44 +113,62 @@ export default function MobileSearchPage() {
 
       {/* 🔎 Search Results */}
       {query.length > 1 && (
-        <div className="mt-4">
-          {isLoading && <p className="text-gray-600">Loading search results...</p>} {/* Loading state */}
-          {isError && <p className="text-center text-red-600">Error fetching search results.</p>} {/* Error state */}
+       <div className="mt-4">
+  {isLoading && (
+    <div className="text-center text-gray-600 py-4">
+      <p>Loading search results...</p>
+    </div>
+  )}
 
-          {!isLoading && !isError && suggestions?.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {suggestions.map((item) => (
-                <div
-                  key={item._id} // Assuming each item has a unique _id
-                  onClick={() => navigate(`/product/${item.slug}`)} // Redirect to product page
-                  className="cursor-pointer rounded-lg shadow-lg border border-gray-100 p-4 bg-white"
-                  style={{
-                    transform: "perspective(1200px) rotateX(5deg) rotateY(5deg)", // 3D perspective for static 3D effect
-                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  <img
-                    src={item.pimages[0]} // Use the first image in the pimages array
-                    alt={item.name}
-                    className="w-full h-[200px] object-cover rounded-t-lg"
-                  />
-                  <div className="mt-3">
-                    <h3 className="text-gray-800 font-semibold text-lg">{item.name}</h3>
-                    <p className="text-sm text-gray-500 mt-1">{item.description}</p>
-                    <div className="mt-3 flex items-center justify-between">
-                      <span className="text-xl font-semibold text-gray-900">₹ {item.price}</span>
-                      <button className="text-sm text-pink-600 hover:text-pink-700 transition-colors">View</button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+  {isError && (
+    <div className="text-center text-red-600 py-4">
+      <p>Error fetching search results. Please try again.</p>
+    </div>
+  )}
+
+  {!isLoading && !isError && suggestions?.length > 0 && (
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+      {suggestions.map((item) => (
+        <div
+          key={item._id} // Assuming each item has a unique _id
+          onClick={() => navigate(`/product/${item.slug}`)} // Redirect to product page
+          className="cursor-pointer group rounded-lg shadow-lg border border-gray-200 p-4 bg-white transition-all hover:scale-105 hover:shadow-xl transform"
+          style={{
+            transform: "perspective(1200px) rotateX(5deg) rotateY(5deg)", // 3D perspective for static 3D effect
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          {/* Product Image */}
+          <div className="relative w-full h-[220px] mb-4 overflow-hidden rounded-lg">
+            <img
+              src={item.pimages[0]} // Use the first image in the pimages array
+              alt={item.name}
+              className="w-full h-full object-cover group-hover:scale-110 transition-all"
+            />
+          </div>
+          
+          {/* Product Details */}
+          <div className="mt-3">
+            <h3 className="text-gray-800 font-semibold text-lg line-clamp-2">{item.name}</h3>
+            <div className="mt-3 flex items-center justify-between">
+              <span className="text-xl font-semibold text-gray-900">₹ {item.price}</span>
+              <button className="text-sm text-pink-600 hover:text-pink-700 transition-colors">
+                View
+              </button>
             </div>
-          )}
-
-          {!isLoading && !isError && suggestions?.length === 0 && (
-            <p className="text-gray-500 px-2">No products found.</p>
-          )}
+          </div>
         </div>
+      ))}
+    </div>
+  )}
+
+  {!isLoading && !isError && suggestions?.length === 0 && (
+    <div className="text-center text-gray-500 px-2 py-4">
+      <p>No products found. Please try a different search.</p>
+    </div>
+  )}
+</div>
+
       )}
     </div>
   );

@@ -58,6 +58,7 @@ const router = createBrowserRouter([
        { path: "/faq", element: <FAQPage /> },
       //  <Route path="/invoice/:orderId" element={<Invoice />} />
        {path : "/invoice/:orderId", element: <Invoice1 />},
+       {path : "/profile/invoice/:orderId", element: <Invoice />},
        {path:"/new-products", element:<NewProducts />},
        {path :"/search", element:<MobileSearchPage />},
 

@@ -1,15 +1,61 @@
-// src/pages/Invoice.jsx
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Printer, Download } from "lucide-react";
 import logo from "../image/logo-cosmetic2.jpg";
-
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import Axios from "../utils/Axios"; // Axios for fetching order data
 
 export default function Invoice() {
   const { orderId } = useParams();
   const invoiceRef = useRef();
+  const [order, setOrder] = useState(null); // State to hold order data
+  const [loading, setLoading] = useState(true); // Loading state
+
+  useEffect(() => {
+    // Fetch the order details based on the orderId
+    const fetchOrderDetails = async () => {
+      try {
+        const response = await Axios.get(`/orders/getOrderById/${orderId}`);
+        setOrder(response.data.order);
+      } catch (error) {
+        console.error("Error fetching order details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOrderDetails();
+  }, [orderId]);
+
+  if (loading) return <div className="p-6 text-center">Loading...</div>;
+
+  if (!order) return <div className="p-6">Order not found</div>;
+
+  // Extracting order details for rendering
+  const customer = {
+    name: order.shippingAddress.name,
+    email: order.user.email,
+    phone: order.shippingAddress.phoneNumber,
+    address: order.shippingAddress.street,
+  };
+
+  const shippingAddress = {
+    name: order.shippingAddress.name,
+    address: order.shippingAddress.street,
+    phone: order.shippingAddress.phoneNumber,
+  };
+
+  const items = order.items.map(item => ({
+    name: item.product.name,
+    qty: item.quantity,
+    price: item.selectedVariant.price,
+  }));
+
+  const subtotal = items.reduce((acc, item) => acc + item.price * item.qty, 0);
+  const gst = subtotal * 0.18;
+  const couponDiscount = order.discountAmount;
+  const shipping = 0; // Free shipping or static value for simplicity
+  const total = subtotal + gst + shipping - couponDiscount;
 
   // PDF DOWNLOAD FUNCTION
   const handleDownload = async () => {
@@ -52,31 +98,6 @@ export default function Invoice() {
     document.title = originalTitle;
   };
 
-  // Customer & Order Data
-  const customer = {
-    name: "Abhishek Kumar",
-    email: "abhishek@example.com",
-    phone: "+91 98765 43210",
-    address: "123 Beauty Street, Cosmetic City, CC 12345",
-  };
-
-  const shippingAddress = {
-    name: "Abhishek Kumar",
-    address: "123 Beauty Street, Cosmetic City, CC 12345",
-    phone: "+91 98765 43210",
-  };
-
-  const items = [
-    { name: "Glow Radiance Face Cream", qty: 1, price: 799 },
-    { name: "Hydrating Lip Balm", qty: 2, price: 299 },
-  ];
-
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.qty, 0);
-  const gst = subtotal * 0.18;
-  const couponDiscount = 150;
-  const shipping = 0;
-  const total = subtotal + gst + shipping - couponDiscount;
-
   return (
     <div className="min-h-screen bg-pink-50 p-4 md:p-6 flex justify-center items-start relative">
 
@@ -111,7 +132,6 @@ export default function Invoice() {
 
           {/* DOWNLOAD + PRINT BUTTONS */}
           <div className="flex gap-2 w-full md:w-auto justify-center print:hidden">
-
             <button
               onClick={handleDownload}
               className="flex items-center gap-1 md:gap-2 bg-pink-500 hover:bg-pink-600 text-white px-3 md:px-4 py-2 rounded-lg shadow text-xs md:text-sm transition"
@@ -125,23 +145,23 @@ export default function Invoice() {
             >
               <Printer size={14} className="md:w-4" /> Print
             </button>
-
           </div>
         </div>
 
         {/* INVOICE INFO */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 text-xs md:text-sm text-gray-700 border-b border-pink-200 pb-4">
-
           <div className="space-y-2">
             <p><strong>Invoice #: </strong>{orderId}</p>
-            <p><strong>Date: </strong>05 Nov 2025</p>
-            <p><strong>Payment Method: </strong>Online</p>
+            <p><strong>Date: </strong>{new Date(order.placedAt).toLocaleDateString()}</p>
+            <p><strong>Payment Method: </strong>{order.paymentMethod}</p>
             <p>
               <strong>Order Status: </strong>
-              <span className="text-green-500 font-semibold">Paid</span>
+              <span className={`text-${order.orderStatus === "Pending" ? "gray" : order.orderStatus === "Shipped" ? "green" : "red"}-500 font-semibold`}>
+                {order.orderStatus}
+              </span>
             </p>
             <p><strong>Shipping Method: </strong>Standard Delivery</p>
-            <p><strong>Coupon Applied: </strong>Beauty150</p>
+            <p><strong>Coupon Applied: </strong>{order.discountCode}</p>
           </div>
 
           <div className="space-y-2">
@@ -184,42 +204,10 @@ export default function Invoice() {
           <p>GST (18%): ₹{gst.toFixed(2)}</p>
           <p>Coupon Discount: -₹{couponDiscount.toFixed(2)}</p>
           <p>Shipping: {shipping === 0 ? "Free" : `₹${shipping.toFixed(2)}`}</p>
-
-          <p className="text-lg text-pink-600 font-bold">
-            Grand Total: ₹{total.toFixed(2)}
-          </p>
+          <p className="border-t pt-2 text-lg font-bold">Total: ₹{total.toFixed(2)}</p>
         </div>
 
-        {/* FOOTER */}
-        <div className="mt-6 border-t border-pink-200 pt-3 text-xs md:text-sm text-gray-500 space-y-1">
-          <p><strong>Note:</strong> Thank you for shopping with Gurmeet Kaur Store.</p>
-          <p>
-            For any queries, contact{" "}
-            <span className="text-pink-600 font-semibold">
-              support@gurmeetkaurstore.com
-            </span>
-          </p>
-        </div>
-
-        <p className="text-center text-gray-400 text-[10px] md:text-xs mt-4">
-          ❤️ Made with love by Gurmeet Kaur Store
-        </p>
       </div>
-
-      {/* PRINT CSS */}
-      <style>
-        {`
-          @media print {
-            .print-hidden, .print\\:hidden {
-              display: none !important;
-            }
-            body {
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-            }
-          }
-        `}
-      </style>
     </div>
   );
 }
