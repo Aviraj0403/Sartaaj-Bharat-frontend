@@ -81,8 +81,8 @@ export default function BestSellPC({ product, onProductClick }) {
         {product.name}
       </h3>
    <p className="text-gray-600 text-xs md:text-sm mb-2">
-  {product.description.length > 60
-    ? product.description.substring(0, 60).split(" ").slice(0, -1).join(" ") + "..."
+  {product.description.length > 50
+    ? product.description.substring(0, 50).split(" ").slice(0, -1).join(" ") + "..."
     : product.description}
 </p>
 
