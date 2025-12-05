@@ -97,7 +97,7 @@ export default function NewArrivalPC({ product, onProductClick }) {
       <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-1">
         {product.name}
       </h3>
-      <p className="text-gray-600 text-xs md:text-sm mb-2">{product.description}</p>
+      {/* <p className="text-gray-600 text-xs md:text-sm mb-2">{product.description}</p> */}
 
       {/* 💰 Price and Rating */}
       <div className="flex justify-between items-center mb-3 px-1 text-sm">
