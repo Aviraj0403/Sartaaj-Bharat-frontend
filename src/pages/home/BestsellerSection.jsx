@@ -13,7 +13,7 @@ export default function BestsellerSection({ categorySlug }) {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["bestsellers", categorySlug],
     queryFn: () =>
-      getMiniProducts(1, 100, "", categorySlug, "", "true", ""), // Fetch bestseller products with category filter
+      getMiniProducts(1, 100, "", categorySlug, "", "true", "", "" ,""), // Fetch bestseller products with category filter
   });
 
   // Scroll functions

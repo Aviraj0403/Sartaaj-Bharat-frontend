@@ -48,8 +48,9 @@ export const getMiniProducts = async (
   search = '', 
   category = '', 
   isHotProduct = '', 
-  isBestSeller = 'true', // Default isBestSeller to 'true'
-  isFeatured = ''
+  isBestSeller = '', // Default isBestSeller to 'true'
+  isFeatured = '',
+  isCombo = '' // Ensure isCombo is passed in the request
 ) => {
   try {
     // Send GET request to fetch mini products with filters and pagination
@@ -61,7 +62,8 @@ export const getMiniProducts = async (
         category, 
         isHotProduct, 
         isBestSeller, // Filter by Best Seller by default
-        isFeatured 
+        isFeatured,
+        isCombo // Make sure isCombo is included in the request params
       },
     });
 
@@ -78,7 +80,6 @@ export const getMiniProducts = async (
     return { success: false, products: [], pagination: {} };
   }
 };
-
 
 export const getProductBySlug = async (slug) => {
   try {

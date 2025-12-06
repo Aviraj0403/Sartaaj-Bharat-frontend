@@ -6,6 +6,7 @@ import PromoSection from "./PromoSection";
 import HomeNewArrivals from "../HomeNewArrivals";
 import MobileCategorySection from "../category/MobileCategorySection";
 import BeautyBanner from "./BeautyDiscountBanner";
+import ComboSection from "./ComboSection";
 import BeautyHighlightSection from "./BeautyHighlightSection";
 import CosmeticTestimonials from "./CosmeticTestimonials";
 
@@ -17,6 +18,7 @@ function Home() {
       <MobileCategorySection />
       <BannerSlider />
       <CategorySlider />
+      <ComboSection  />
       <BestsellerSection />
       <PromoSection />
       <HomeNewArrivals />

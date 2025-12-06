@@ -9,7 +9,7 @@ export default function HomeNewArrivals() {
   const navigate = useNavigate();
 
 const { data: productsData, isLoading, isError, error } = useQuery({
-  queryKey: ["miniProducts", { page: 1, limit: 10, isBestSeller: true }],
+  queryKey: ["miniProducts", { page: 1, limit: 10, isBestSeller: false }],
   queryFn: getMiniProducts
 });
 

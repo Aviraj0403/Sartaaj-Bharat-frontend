@@ -55,6 +55,7 @@ export default function ProductDetails() {
     tags,
     additionalInfo,
   } = product;
+  
 
   const handleSizeSelect = (variant) => {
     setSelectedVariant(variant);
@@ -185,22 +186,42 @@ export default function ProductDetails() {
             <p className="text-gray-600 text-sm mb-4 leading-relaxed">{description}</p>
 
             {/* Variants */}
-            <div className="mb-5">
-              <p className="text-gray-700 font-medium mb-2">Variants</p>
-              <div className="flex gap-2">
-                {variants.map((variant, i) => (
-                  <button
-                    key={i}
-                    onClick={() => handleSizeSelect(variant)}
-                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${
-                      selectedVariant?.size === variant.size ? "bg-pink-100" : ""
-                    }`}
-                  >
-                    {variant.size}
-                  </button>
-                ))}
-              </div>
-            </div>
+           <div className="mb-5">
+  <p className="text-gray-700 font-medium mb-2">Variants</p>
+
+  {/* Size Selection */}
+  <div className="flex gap-2 mb-3">
+    {variants.map((variant, i) => (
+      <button
+        key={i}
+        onClick={() => handleSizeSelect(variant)}
+        className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${
+          selectedVariant?.size === variant.size ? "bg-pink-100" : ""
+        }`}
+      >
+        {variant.size}
+      </button>
+    ))}
+  </div>
+
+  {/* Color Selection */}
+  <p className="text-gray-700 font-medium mb-2">Color</p>
+  <div className="flex gap-2">
+    {variants.map((variant, i) => (
+      <button
+        key={i}
+        onClick={() => handleColorSelect(variant)}
+        className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${
+          selectedVariant?.color === variant.color ? "bg-pink-100" : ""
+        }`}
+        style={{ backgroundColor: variant.color }} // If you want to display color as background
+      >
+        {variant.color}
+      </button>
+    ))}
+  </div>
+</div>
+
 
             {/* Quantity + Buttons */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
