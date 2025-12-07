@@ -54,6 +54,7 @@ export default function ProductDetails() {
     productCode,
     tags,
     additionalInfo,
+    reviews
   } = product;
   
 
@@ -298,7 +299,7 @@ export default function ProductDetails() {
           )}
           {activeTab === "review" && (
             <div className="text-gray-600 text-sm">
-              <ReviewTab productId={product._id} reviews={product.reviews} setReviews={(newReviews) => product.reviews = newReviews} />
+              <ReviewTab productId={product._id} reviews={reviews} setReviews={(newReviews) => product.reviews = newReviews} />
             </div>
           )}
         </div>
