@@ -66,7 +66,6 @@ export const useCartActions = () => {
           image: product.pimage,
           size,
           price: product.variants?.price || 0,
-          // color: product.variants?.color || "N/A",
           quantity: 1,
         })
       );

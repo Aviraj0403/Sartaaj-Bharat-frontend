@@ -87,8 +87,8 @@ export default function Orders() {
               <div className="p-4 flex items-center gap-4 cursor-pointer">
                 <div className="relative flex-shrink-0">
                   <img
-                    src={mainItem.product.pimages[0]} // Assuming product images are in pimages array
-                    alt={mainItem.product.name}
+                    src={mainItem.product?.pimages[0]} // Assuming product images are in pimages array
+                    alt={mainItem.product?.name || "GK Store Product"}
                     className="w-24 h-24 object-cover rounded-xl border border-pink-100 shadow-sm"
                   />
                   {remainingCount > 0 && (
@@ -100,9 +100,9 @@ export default function Orders() {
 
                 <div className="flex-1">
                   <h3 className="text-gray-800 font-semibold text-sm sm:text-base">
-                    {mainItem.product.name}
+                    {mainItem.product?.name}
                   </h3>
-                  <p className="text-gray-500 text-sm">{mainItem.product.seller}</p>
+                  <p className="text-gray-500 text-sm">{mainItem.product?.seller}</p>
 
                   <p className="text-gray-800 font-semibold mt-2 text-sm sm:text-base">
                     Total:{" "}
