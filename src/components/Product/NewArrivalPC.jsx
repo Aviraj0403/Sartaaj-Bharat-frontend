@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useCartActions } from "../../hooks/useCartActions";
 
 export default function NewArrivalPC({ product, onProductClick }) {
@@ -12,6 +11,7 @@ export default function NewArrivalPC({ product, onProductClick }) {
   const size = activeVariant?.size;
 
   const [quantity, setQuantity] = useState(0);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     const item = cartItems.find(
@@ -31,25 +31,27 @@ export default function NewArrivalPC({ product, onProductClick }) {
     else navigate(`/product/${product.slug}`);
   };
 
+  // ⭐ Popup Trigger Function
+  const triggerPopup = () => {
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 2000);
+  };
+
   const handleAddToCart = async () => {
     const result = await addToCart(product, size, 1);
-    if (result.success) toast.success("Added to cart!");
-    else toast.error("Failed to add to cart");
+    if (result.success) triggerPopup();
   };
 
   const handleBuyNow = async () => {
     const result = await addToCart(product, size, 1);
     if (result.success) {
-      toast.success("Added to cart!");
-      navigate("/cart"); // Navigate to the cart page after adding the item
-    } else {
-      toast.error("Failed to add to cart");
+      triggerPopup();
+      navigate("/cart");
     }
   };
 
   const handleIncrement = async () => {
-    const newQty = quantity + 1;
-    await updateQuantity(product._id, size, newQty);
+    await updateQuantity(product._id, size, quantity + 1);
   };
 
   const handleDecrement = async () => {
@@ -57,12 +59,12 @@ export default function NewArrivalPC({ product, onProductClick }) {
       await removeFromCart(product._id, size);
       return;
     }
-    const newQty = quantity - 1;
-    await updateQuantity(product._id, size, newQty);
+    await updateQuantity(product._id, size, quantity - 1);
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 relative group p-3 md:p-4 flex flex-col justify-between overflow-hidden">
+  <div className="w-full max-w-[190px] sm:max-w-none mx-auto bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 relative group p-3 md:p-4 flex flex-col justify-between overflow-visible">
+
 
       {/* ❤️ Heart Icon */}
       <div className="absolute top-3 right-3 z-20 text-pink-500 cursor-pointer opacity-80 hover:opacity-100 transition text-lg">
@@ -77,9 +79,11 @@ export default function NewArrivalPC({ product, onProductClick }) {
       )}
 
       {/* Static New Arrival Badge */}
-      <div className="absolute -top-3 right-0 bg-pink-500 z-20 text-white px-3 py-1 rounded-tl-xl rounded-bl-xl text-xs font-bold">
-        New Arrival
-      </div>
+     <div className="absolute top-0 right-0 -translate-y-1/2 bg-pink-500 
+    z-20 text-white px-3 py-1 rounded-tl-xl rounded-bl-xl text-xs font-bold">
+  New Arrival
+</div>
+
 
       {/* 🖼️ Product Image */}
       <div
@@ -93,11 +97,10 @@ export default function NewArrivalPC({ product, onProductClick }) {
         />
       </div>
 
-      {/* 🏷️ Product Info */}
+      {/* 📝 Product Info */}
       <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-1">
         {product.name}
       </h3>
-      {/* <p className="text-gray-600 text-xs md:text-sm mb-2">{product.description}</p> */}
 
       {/* 💰 Price and Rating */}
       <div className="flex justify-between items-center mb-3 px-1 text-sm">
@@ -113,10 +116,26 @@ export default function NewArrivalPC({ product, onProductClick }) {
         </div>
       </div>
 
-      {/* 🛒 Action Buttons */}
+      {/* ⭐ SUCCESS POPUP */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[9999]">
+          <div className="bg-white rounded-2xl px-6 py-5 shadow-2xl flex flex-col items-center gap-2 text-center max-w-[90%] animate-bounce">
+            <div className="bg-green-100 text-green-600 w-14 h-14 rounded-full flex items-center justify-center text-2xl">
+              ✓
+            </div>
+
+            <p className="text-gray-800 text-sm font-semibold">{product.name}</p>
+
+            <p className="text-green-600 font-medium text-sm">
+              Added to cart successfully
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* 🛒 Button Area */}
       {quantity > 0 ? (
         <div className="flex flex-col md:flex-row gap-2">
-          {/* Quantity controls */}
           <div className="flex justify-between items-center border border-pink-500 rounded flex-1">
             <button
               onClick={handleDecrement}
@@ -133,28 +152,25 @@ export default function NewArrivalPC({ product, onProductClick }) {
             </button>
           </div>
 
-          {/* Buy Now */}
           <button
-            onClick={handleBuyNow} // Updated Buy Now logic
-            className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm md:py-2"
+            onClick={handleBuyNow}
+            className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm"
           >
             Buy Now
           </button>
         </div>
       ) : (
         <div className="flex flex-col md:flex-row gap-2">
-          {/* Add to Cart */}
           <button
             onClick={handleAddToCart}
-            className="flex-1 bg-pink-500 text-white font-semibold py-2 rounded-lg hover:bg-pink-600 transition text-sm md:py-2"
+            className="flex-1 bg-pink-500 text-white font-semibold py-2 rounded-lg hover:bg-pink-600 transition text-sm"
           >
             Add to Cart
           </button>
 
-          {/* Buy Now */}
           <button
-            onClick={handleBuyNow} // Updated Buy Now logic
-            className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm md:py-1"
+            onClick={handleBuyNow}
+            className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm"
           >
             Buy Now
           </button>
