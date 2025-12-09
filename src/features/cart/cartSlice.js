@@ -9,14 +9,16 @@ const initialState = {
 
 // Normalize cart item
 const normalizeItem = (item) => ({
+  
   id: item.id || item.productId,
   name: item.name,
   image: item.image,
   price: Number(item.price),
   quantity: Number(item.quantity),
-  size: item.size,
+  color: item.color,
+  size: item.size,  // Ensure color is included
 });
-
+console.log("cartSlice - normalizeItem:", normalizeItem);
 // Calculate totals for cart
 const calculateTotals = (items) => {
   const totalQuantity = items.reduce((sum, i) => sum + i.quantity, 0);
@@ -31,8 +33,9 @@ const cartSlice = createSlice({
     // Add item (optimistic update for local cart)
     addItem(state, action) {
       const newItem = normalizeItem(action.payload);
+      console.log(action.payload)
       const existing = state.items.find(
-        (i) => i.id === newItem.id && i.size === newItem.size
+        (i) => i.id === newItem.id && i.size === newItem.size && i.color === newItem.color  // Include color in the check
       );
 
       if (existing) {
@@ -48,8 +51,8 @@ const cartSlice = createSlice({
 
     // Update item quantity
     updateItemQuantity(state, action) {
-      const { id, size, quantity } = action.payload;
-      const item = state.items.find((i) => i.id === id && i.size === size);
+      const { id, size, color, quantity } = action.payload;
+      const item = state.items.find((i) => i.id === id && i.size === size && i.color === color);  // Include color in the check
       if (item) item.quantity = quantity;
 
       const totals = calculateTotals(state.items);
@@ -59,8 +62,8 @@ const cartSlice = createSlice({
 
     // Remove item
     removeItem(state, action) {
-      const { id, size } = action.payload;
-      state.items = state.items.filter((i) => !(i.id === id && i.size === size));
+      const { id, size, color } = action.payload;
+      state.items = state.items.filter((i) => !(i.id === id && i.size === size && i.color === color));  // Include color in the check
 
       const totals = calculateTotals(state.items);
       state.totalQuantity = totals.totalQuantity;
@@ -84,7 +87,7 @@ const cartSlice = createSlice({
 
       backendItems.forEach((backendItem) => {
         const existing = state.items.find(
-          (i) => i.id === backendItem.id && i.size === backendItem.size
+          (i) => i.id === backendItem.id && i.size === backendItem.size && i.color === backendItem.color  // Include color in the check
         );
 
         if (existing) {

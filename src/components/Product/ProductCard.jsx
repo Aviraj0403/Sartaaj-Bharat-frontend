@@ -9,22 +9,21 @@ export default function ProductCard({ product, onProductClick }) {
 
   const activeVariant = product?.variants;
   const size = activeVariant?.size;
+  const color = activeVariant?.color; // Add color to activeVariant
 
   const [quantity, setQuantity] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     const item = cartItems.find(
-      (i) => i.id === product._id && i.size === size
+      (i) => i.id === product._id && i.size === size && i.color === color // Including color in cart matching
     );
     setQuantity(item?.quantity || 0);
-  }, [cartItems, size, product._id]);
+  }, [cartItems, size, color, product._id]);
 
   const discount = activeVariant?.realPrice
     ? Math.round(
-        ((activeVariant.realPrice - activeVariant.price) /
-          activeVariant.realPrice) *
-          100
+        ((activeVariant.realPrice - activeVariant.price) / activeVariant.realPrice) * 100
       )
     : 0;
 
@@ -34,7 +33,7 @@ export default function ProductCard({ product, onProductClick }) {
   };
 
   const handleAddToCart = async () => {
-    const result = await addToCart(product, size, 1);
+    const result = await addToCart(product, size, color, 1); // Passing color with addToCart
     if (result.success) {
       setShowPopup(true);
       setTimeout(() => setShowPopup(false), 2000);
@@ -42,7 +41,7 @@ export default function ProductCard({ product, onProductClick }) {
   };
 
   const handleBuyNow = async () => {
-    const result = await addToCart(product, size, 1);
+    const result = await addToCart(product, size, color, 1); // Passing color with addToCart
     if (result.success) {
       navigate("/cart");
     }
@@ -50,16 +49,16 @@ export default function ProductCard({ product, onProductClick }) {
 
   const handleIncrement = async () => {
     const newQty = quantity + 1;
-    await updateQuantity(product._id, size, newQty);
+    await updateQuantity(product._id, size, color, newQty); // Passing color in updateQuantity
   };
 
   const handleDecrement = async () => {
     if (quantity <= 1) {
-      await removeFromCart(product._id, size);
+      await removeFromCart(product._id, size, color); // Passing color in removeFromCart
       return;
     }
     const newQty = quantity - 1;
-    await updateQuantity(product._id, size, newQty);
+    await updateQuantity(product._id, size, color, newQty); // Passing color in updateQuantity
   };
 
   return (
@@ -112,41 +111,18 @@ export default function ProductCard({ product, onProductClick }) {
         </div>
       </div>
 
-{showPopup && (
-  <div className="
-    fixed inset-0 
-    bg-black/50 
-    flex items-center justify-center 
-    z-[9999]
-  ">
-    <div className="
-      bg-white 
-      rounded-2xl 
-      px-6 py-5 
-      shadow-2xl 
-      flex flex-col 
-      items-center 
-      gap-2  
-      text-center 
-      max-w-[90%]
-      animate-bounce
-    ">
-      <div className="bg-green-100 text-green-600 w-14 h-14 rounded-full flex items-center justify-center text-2xl">
-        ✓
-      </div>
-
-      <p className="text-gray-800 text-sm font-semibold">
-        {product.name}
-      </p>
-
-      <p className="text-green-600 font-medium text-sm">
-        Added to cart successfully
-      </p>
-    </div>
-  </div>
-)}
-
-
+      {/* Popup when added to cart */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+          <div className="bg-white rounded-2xl px-6 py-5 shadow-2xl flex flex-col items-center gap-2 text-center max-w-[90%] animate-bounce">
+            <div className="bg-green-100 text-green-600 w-14 h-14 rounded-full flex items-center justify-center text-2xl">
+              ✓
+            </div>
+            <p className="text-gray-800 text-sm font-semibold">{product.name}</p>
+            <p className="text-green-600 font-medium text-sm">Added to cart successfully</p>
+          </div>
+        </div>
+      )}
 
       {/* 🛒 Buttons */}
       {quantity > 0 ? (
@@ -158,9 +134,7 @@ export default function ProductCard({ product, onProductClick }) {
             >
               –
             </button>
-            <span className="w-1/3 text-center font-medium">
-              {quantity}
-            </span>
+            <span className="w-1/3 text-center font-medium">{quantity}</span>
             <button
               onClick={handleIncrement}
               className="w-1/3 text-xl font-bold py-2 text-pink-500 hover:bg-pink-100"

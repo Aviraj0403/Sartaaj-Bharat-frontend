@@ -1,4 +1,3 @@
-// src/pages/product/ProductDetails.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaStar, FaHeart } from "react-icons/fa";
@@ -16,6 +15,7 @@ export default function ProductDetails() {
   const [mainImage, setMainImage] = useState(null);
   const [activeTab, setActiveTab] = useState("description");
   const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
   const { cartItems, addToCart } = useCartActions();
@@ -34,6 +34,7 @@ export default function ProductDetails() {
     if (product?.pimages?.length > 0 && product?.variants?.length > 0) {
       setMainImage(product.pimages[0]);
       setSelectedVariant(product.variants[0]);
+      setSelectedColor(product.variants[0]?.color[0]);  // Default to first color in variant
       setQuantity(1);
       setActiveTab("description");
     }
@@ -56,14 +57,18 @@ export default function ProductDetails() {
     additionalInfo,
     reviews
   } = product;
-  
 
-  const handleSizeSelect = (variant) => {
+  const handleVariantSelect = (variant) => {
     setSelectedVariant(variant);
+    setSelectedColor(variant.color[0]);  // Automatically select the first color of the new variant
+  };
+
+  const handleColorSelect = (color) => {
+    setSelectedColor(color);
   };
 
   const handleAddToCart = async () => {
-    if (!selectedVariant) return;
+    if (!selectedVariant || !selectedColor) return;
 
     const response = await addToCart(
       {
@@ -73,11 +78,12 @@ export default function ProductDetails() {
         variants: selectedVariant,
       },
       selectedVariant.size,
+      selectedColor, // Send single selected color as a string
       quantity
     );
 
     if (response.success) {
-      toast.success(`${name} (${selectedVariant.size}) added to cart!`, {
+      toast.success(`${name} (${selectedVariant.size}, ${selectedColor}) added to cart!`, {
         position: "top-right",
         autoClose: 2000,
       });
@@ -90,7 +96,7 @@ export default function ProductDetails() {
   };
 
   const handleBuyNow = async () => {
-    if (!selectedVariant) return;
+    if (!selectedVariant || !selectedColor) return;
 
     const response = await addToCart(
       {
@@ -100,11 +106,12 @@ export default function ProductDetails() {
         variants: selectedVariant,
       },
       selectedVariant.size,
+      selectedColor, // Send single selected color as a string
       quantity
     );
 
     if (response.success) {
-      toast.success(`${name} (${selectedVariant.size}) added to cart!`, {
+      toast.success(`${name} (${selectedVariant.size}, ${selectedColor}) added to cart!`, {
         position: "top-right",
         autoClose: 2000,
       });
@@ -187,42 +194,39 @@ export default function ProductDetails() {
             <p className="text-gray-600 text-sm mb-4 leading-relaxed">{description}</p>
 
             {/* Variants */}
-           <div className="mb-5">
-  <p className="text-gray-700 font-medium mb-2">Variants</p>
+            <div className="mb-5">
+              <p className="text-gray-700 font-medium mb-2">Variants</p>
 
-  {/* Size Selection */}
-  <div className="flex gap-2 mb-3">
-    {variants.map((variant, i) => (
-      <button
-        key={i}
-        onClick={() => handleSizeSelect(variant)}
-        className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${
-          selectedVariant?.size === variant.size ? "bg-pink-100" : ""
-        }`}
-      >
-        {variant.size}
-      </button>
-    ))}
-  </div>
+              {/* Size Selection */}
+              <div className="flex gap-2 mb-3">
+                {variants.map((variant, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleVariantSelect(variant)}
+                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${
+                      selectedVariant?.size === variant.size ? "bg-pink-100" : ""
+                    }`}
+                  >
+                    {variant.size}
+                  </button>
+                ))}
+              </div>
 
-  {/* Color Selection */}
-  <p className="text-gray-700 font-medium mb-2">Color</p>
-  <div className="flex gap-2">
-    {variants.map((variant, i) => (
-      <button
-        key={i}
-        onClick={() => handleColorSelect(variant)}
-        className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${
-          selectedVariant?.color === variant.color ? "bg-pink-100" : ""
-        }`}
-        style={{ backgroundColor: variant.color }} // If you want to display color as background
-      >
-        {variant.color}
-      </button>
-    ))}
-  </div>
-</div>
-
+              {/* Color Selection */}
+              <p className="text-gray-700 font-medium mb-2">Color</p>
+              <div className="flex gap-2">
+                {selectedVariant?.color.map((color, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleColorSelect(color)} // Select color
+                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${selectedColor === color ? "bg-pink-100" : ""}`}
+                    // style={{ backgroundColor: color }} // Display color as background
+                  >
+                    {color}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {/* Quantity + Buttons */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">

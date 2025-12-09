@@ -1,12 +1,13 @@
 import React from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useCartActions } from "../hooks/useCartActions"; // adjust path
+import { useCartActions } from "../hooks/useCartActions"; // Adjust path
 
 export default function BestSellPC({ product, onProductClick }) {
   const navigate = useNavigate();
   const { addToCart } = useCartActions();
 
+  // Handle product click (navigate to product page or call the onProductClick callback)
   const handleProductClick = () => {
     if (onProductClick) {
       onProductClick(product.slug);
@@ -15,20 +16,33 @@ export default function BestSellPC({ product, onProductClick }) {
     }
   };
 
+  // Add the product to cart
   const handleAddToCart = async () => {
     const variant = product?.variants;
 
     if (!variant) return;
 
-    await addToCart(product, variant.size || "default", variant.price, 1);
+    const selectedSize = variant.size || "default"; // Fallback size
+    const selectedColor = variant.color || "default"; // Fallback color
+
+    const result = await addToCart(product, selectedSize, selectedColor, 1);
+    if (result.success) {
+      // Optionally, notify the user about the success
+    } else {
+      // Handle error if the add to cart fails
+    }
   };
 
+  // Add the product to cart and navigate to the cart page
   const handleBuyNow = async () => {
     const variant = product?.variants;
 
     if (!variant) return;
 
-    const result = await addToCart(product, variant.size || "default", variant.price, 1);
+    const selectedSize = variant.size || "default"; // Fallback size
+    const selectedColor = variant.color || "default"; // Fallback color
+
+    const result = await addToCart(product, selectedSize, selectedColor, 1);
     if (result.success) {
       navigate("/cart"); // Navigate to the cart page after adding the product
     } else {
@@ -36,10 +50,12 @@ export default function BestSellPC({ product, onProductClick }) {
     }
   };
 
+  // Calculate discount if any
   const discount = product?.variants?.realPrice
     ? Math.round(
-        ((product?.variants?.realPrice - product?.variants?.price) / 
-        product?.variants?.realPrice) * 100
+        ((product?.variants?.realPrice - product?.variants?.price) /
+          product?.variants?.realPrice) *
+          100
       )
     : 0;
 
@@ -80,11 +96,6 @@ export default function BestSellPC({ product, onProductClick }) {
       <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-1 text-left">
         {product.name}
       </h3>
-   {/* <p className="text-gray-600 text-xs md:text-sm mb-2">
-  {product.description.length > 30
-    ? product.description.substring(0, 30).split(" ").slice(0, -1).join(" ") + "..."
-    : product.description}
-</p> */}
 
       {/* 💰 Price and Rating */}
       <div className="flex justify-between items-center mb-2 px-1 text-sm">

@@ -43,27 +43,27 @@ export default function CartPage() {
   // Calculate the final amount after applying the discount
   const finalAmount = totalAmount - calculateDiscount();
 
-  // Handle incrementing item quantity
-  const handleIncrement = (id, size) => {
-    const item = cartItems.find((i) => i.id === id && i.size === size);
-    if (item) updateQuantity(id, size, item.quantity + 1);
+  const handleIncrement = (id, size, color) => {
+    const item = cartItems.find((i) => i.id === id && i.size === size && i.color === color);
+    if (item) updateQuantity(id, size, color, item.quantity + 1);
   };
 
   // Handle decrementing item quantity
-  const handleDecrement = (id, size) => {
-    const item = cartItems.find((i) => i.id === id && i.size === size);
+  const handleDecrement = (id, size, color) => {
+    const item = cartItems.find((i) => i.id === id && i.size === size && i.color === color);
     if (!item) return;
 
     if (item.quantity <= 1) {
-      removeFromCart(id, size);
+      removeFromCart(id, size, color);
     } else {
-      updateQuantity(id, size, item.quantity - 1);
+      updateQuantity(id, size, color, item.quantity - 1);
     }
   };
 
   // Handle item removal from the cart
-  const handleRemoveItem = (id, size) => {
-    removeFromCart(id, size);
+  const handleRemoveItem = (id, size, color) => {
+    console.log("Removing item:", id, size, color);
+    removeFromCart(id, size, color);
   };
 
   // Handle clearing the cart
@@ -143,12 +143,12 @@ export default function CartPage() {
           ) : (
             cartItems.map((item) => (
               <div
-                key={item.id + item.size}
+                key={item.id + item.size + item.color} // Ensure that color is part of the key
                 className="relative bg-white shadow-md rounded-2xl p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between"
               >
                 <button
                   className="absolute top-2 right-2 md:hidden bg-pink-100 p-2 rounded-full text-pink-600 hover:bg-pink-200"
-                  onClick={() => handleRemoveItem(item.id, item.size)}
+                  onClick={() => handleRemoveItem(item.id, item.size, item.color)}
                 >
                   <X size={16} />
                 </button>
@@ -164,6 +164,7 @@ export default function CartPage() {
                       {item.name}
                     </h2>
                     <p className="text-sm text-gray-500">{item.size}</p>
+                    <p className="text-sm text-gray-500">{item.color}</p> {/* Display the color */}
                     <p className="text-pink-600 font-semibold mt-1">
                       ₹{item.price.toFixed(2)}
                     </p>
@@ -174,7 +175,7 @@ export default function CartPage() {
                   <div className="flex items-center bg-gray-100 rounded-full px-3 py-1">
                     <button
                       className="text-gray-600 hover:text-pink-600"
-                      onClick={() => handleDecrement(item.id, item.size)}
+                      onClick={() => handleDecrement(item.id, item.size, item.color)}
                       disabled={loading}
                     >
                       <Minus size={16} />
@@ -182,7 +183,7 @@ export default function CartPage() {
                     <span className="mx-2 font-medium">{item.quantity}</span>
                     <button
                       className="text-gray-600 hover:text-pink-600"
-                      onClick={() => handleIncrement(item.id, item.size)}
+                      onClick={() => handleIncrement(item.id, item.size, item.color)}
                       disabled={loading}
                     >
                       <Plus size={16} />
@@ -193,7 +194,7 @@ export default function CartPage() {
                   </p>
                   <button
                     className="hidden md:block bg-pink-100 p-2 rounded-full text-pink-600 hover:bg-pink-200"
-                    onClick={() => handleRemoveItem(item.id, item.size)}
+                    onClick={() => handleRemoveItem(item.id, item.size, item.color)}
                   >
                     <X size={16} />
                   </button>

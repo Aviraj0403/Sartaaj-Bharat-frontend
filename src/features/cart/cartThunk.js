@@ -21,19 +21,19 @@ export const syncCartOnLogin = createAsyncThunk(
       // STEP 2: Push local items to backend (only missing ones)
       const promises = [];
       for (const item of localCart) {
-        const productId = item.id;
-        const size = item.size;
+        const { id: productId, size, color, quantity } = item;  // Extract color here
 
         const exists = backendItems.find(
-          (i) => i.id === productId && i.size === size
+          (i) => i.id === productId && i.size === size && i.color === color  // Compare with color as well
         );
 
         if (!exists) {
-          // Push missing item to backend
+          // Push missing item to backend with color
           promises.push(
             addToCart({
               productId,
               size,
+              color,
               quantity: item.quantity,
             })
           );
@@ -52,6 +52,7 @@ export const syncCartOnLogin = createAsyncThunk(
   }
 );
 
+
 // Fetch backend cart (on refresh or token restore)
 export const fetchBackendCart = createAsyncThunk(
   "cart/fetchBackendCart",
@@ -69,14 +70,13 @@ export const fetchBackendCart = createAsyncThunk(
 // Add item to cart (backend sync after local update)
 export const addToCartThunk = createAsyncThunk(
   "cart/addToCart",
-  async ({ productId, size, quantity }, { dispatch }) => {
+  async ({ productId, size, color, quantity }, { dispatch }) => {
     try {
-      // Backend update
-      await addToCart({ productId, size, quantity });
+      // Backend update with color
+      await addToCart({ productId, size, color, quantity });
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
-      // console.log("Updated Cart after Add:", updatedCart);
       dispatch(setCart({ items: updatedCart.data.cartItems }));
     } catch (err) {
       console.error("❌ Add to cart failed:", err);
@@ -85,12 +85,13 @@ export const addToCartThunk = createAsyncThunk(
   }
 );
 
+
 // Update item quantity in cart (sync with backend)
 export const updateCartItemThunk = createAsyncThunk(
   "cart/updateCartItem",
-  async ({ productId, size, quantity }, { dispatch }) => {
+  async ({ productId, size, color, quantity }, { dispatch }) => {
     try {
-      await updateCartItem({ productId, size, quantity });
+      await updateCartItem({ productId, size, color, quantity });
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
@@ -102,12 +103,13 @@ export const updateCartItemThunk = createAsyncThunk(
   }
 );
 
+
 // Remove item from backend and update Redux
 export const removeFromCartThunk = createAsyncThunk(
   "cart/removeFromCart",
-  async ({ productId, size }, { dispatch }) => {
+  async ({ productId, size, color }, { dispatch }) => {
     try {
-      await removeCartItem({ productId, size });
+      await removeCartItem({ productId, size, color });
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
@@ -117,6 +119,7 @@ export const removeFromCartThunk = createAsyncThunk(
     }
   }
 );
+
 
 // Clear the entire cart from both Redux and backend
 export const clearCartThunk = createAsyncThunk(
@@ -130,3 +133,4 @@ export const clearCartThunk = createAsyncThunk(
     }
   }
 );
+

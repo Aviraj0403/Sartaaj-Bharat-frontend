@@ -12,9 +12,9 @@ export const updateCartItem = (payload) => {
   return Axios.put('/cart/updateCartItem', payload);
 };
 
-export const removeCartItem = ({ productId, size }) => {
+export const removeCartItem = ({ productId, size,color }) => {
   return Axios.delete('/cart/removeCartItem', {
-    params: { productId, size }, // ✅ send via query string
+    params: { productId, size ,color} // ✅ send via query string
   });
 };
 
