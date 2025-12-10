@@ -34,11 +34,11 @@ export default function ProductDetails() {
     if (product?.pimages?.length > 0 && product?.variants?.length > 0) {
       setMainImage(product.pimages[0]);
       setSelectedVariant(product.variants[0]);
-      setSelectedColor(product.variants[0]?.color[0]);  // Default to first color in variant
+      setSelectedColor(product.variants[0]?.color[0]);
       setQuantity(1);
       setActiveTab("description");
     }
-  }, [product]); // Re-run when product data changes
+  }, [product]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading product details</div>;
@@ -60,26 +60,44 @@ export default function ProductDetails() {
 
   const handleVariantSelect = (variant) => {
     setSelectedVariant(variant);
-    setSelectedColor(variant.color[0]);  // Automatically select the first color of the new variant
+    setSelectedColor(variant.color[0]);
   };
 
   const handleColorSelect = (color) => {
     setSelectedColor(color);
   };
 
+  // 🔧 FIX: Correct data structure for addToCart
   const handleAddToCart = async () => {
-    if (!selectedVariant || !selectedColor) return;
+    if (!selectedVariant || !selectedColor) {
+      toast.error("Please select size and color", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+      return;
+    }
+
+    console.log("🛒 Adding to cart:", {
+      productId: product._id,
+      size: selectedVariant.size,
+      color: selectedColor,
+      quantity: quantity
+    });
 
     const response = await addToCart(
       {
         _id: product._id,
         name: product.name,
-        pimage: selectedVariant.image || pimages[0],
-        variants: selectedVariant,
+        pimage: pimages[0],  // Use product images
+        variants: {
+          price: selectedVariant.price,  // ✅ Pass correct price
+          size: selectedVariant.size,
+          color: selectedColor
+        },
       },
-      selectedVariant.size,
-      selectedColor, // Send single selected color as a string
-      quantity
+      selectedVariant.size,      // ✅ Pass size as string
+      selectedColor,             // ✅ Pass color as string
+      quantity                   // ✅ Use actual quantity state
     );
 
     if (response.success) {
@@ -96,18 +114,28 @@ export default function ProductDetails() {
   };
 
   const handleBuyNow = async () => {
-    if (!selectedVariant || !selectedColor) return;
+    if (!selectedVariant || !selectedColor) {
+      toast.error("Please select size and color", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+      return;
+    }
 
     const response = await addToCart(
       {
         _id: product._id,
         name: product.name,
-        pimage: selectedVariant.image || pimages[0],
-        variants: selectedVariant,
+        pimage: pimages[0],
+        variants: {
+          price: selectedVariant.price,  // ✅ Pass correct price
+          size: selectedVariant.size,
+          color: selectedColor
+        },
       },
       selectedVariant.size,
-      selectedColor, // Send single selected color as a string
-      quantity
+      selectedColor,
+      quantity                   // ✅ Use actual quantity state
     );
 
     if (response.success) {
@@ -144,7 +172,6 @@ export default function ProductDetails() {
               ))}
             </div>
 
-            {/* Main Image */}
             <div className="relative w-full lg:w-[80%] flex justify-center mb-4 lg:mb-0 order-1 lg:order-2">
               <div className="w-full h-72 sm:h-80 lg:h-[22rem] flex justify-center items-center bg-gray-50 rounded-xl border border-gray-200 relative">
                 <FaHeart className="absolute top-4 right-4 text-pink-500 cursor-pointer text-xl" />
@@ -190,21 +217,18 @@ export default function ProductDetails() {
               </span>
             </div>
 
-            {/* Description */}
             <p className="text-gray-600 text-sm mb-4 leading-relaxed">{description}</p>
 
             {/* Variants */}
             <div className="mb-5">
-              <p className="text-gray-700 font-medium mb-2">Variants</p>
-
-              {/* Size Selection */}
+              <p className="text-gray-700 font-medium mb-2">Size</p>
               <div className="flex gap-2 mb-3">
                 {variants.map((variant, i) => (
                   <button
                     key={i}
                     onClick={() => handleVariantSelect(variant)}
                     className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${
-                      selectedVariant?.size === variant.size ? "bg-pink-100" : ""
+                      selectedVariant?.size === variant.size ? "bg-pink-100 border-pink-500" : ""
                     }`}
                   >
                     {variant.size}
@@ -212,15 +236,15 @@ export default function ProductDetails() {
                 ))}
               </div>
 
-              {/* Color Selection */}
               <p className="text-gray-700 font-medium mb-2">Color</p>
               <div className="flex gap-2">
                 {selectedVariant?.color.map((color, index) => (
                   <button
                     key={index}
-                    onClick={() => handleColorSelect(color)} // Select color
-                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${selectedColor === color ? "bg-pink-100" : ""}`}
-                    // style={{ backgroundColor: color }} // Display color as background
+                    onClick={() => handleColorSelect(color)}
+                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${
+                      selectedColor === color ? "bg-pink-100 border-pink-500" : ""
+                    }`}
                   >
                     {color}
                   </button>
@@ -228,7 +252,27 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            {/* Quantity + Buttons */}
+            {/* Quantity Selector - 🔧 NOW FUNCTIONAL */}
+            <div className="mb-4">
+              <p className="text-gray-700 font-medium mb-2">Quantity</p>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="border border-gray-300 rounded-md px-3 py-1 hover:bg-gray-100"
+                >
+                  -
+                </button>
+                <span className="text-lg font-semibold">{quantity}</span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="border border-gray-300 rounded-md px-3 py-1 hover:bg-gray-100"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Buttons */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
               <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <button

@@ -4,21 +4,20 @@ const initialState = {
   items: [],
   totalQuantity: 0,
   totalAmount: 0,
-  merged: false, // For tracking if the cart has been merged after guest login
+  merged: false,
 };
 
 // Normalize cart item
 const normalizeItem = (item) => ({
-  
   id: item.id || item.productId,
   name: item.name,
   image: item.image,
   price: Number(item.price),
   quantity: Number(item.quantity),
   color: item.color,
-  size: item.size,  // Ensure color is included
+  size: item.size,
 });
-console.log("cartSlice - normalizeItem:", normalizeItem);
+
 // Calculate totals for cart
 const calculateTotals = (items) => {
   const totalQuantity = items.reduce((sum, i) => sum + i.quantity, 0);
@@ -30,18 +29,32 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    // Add item (optimistic update for local cart)
+    // ✅ FINAL FIX: Add item - REPLACE quantity for both local and backend
     addItem(state, action) {
       const newItem = normalizeItem(action.payload);
-      console.log(action.payload)
+      
+      console.log("📦 CartSlice addItem:", {
+        newItem,
+        currentItems: state.items.map(i => ({
+          id: i.id,
+          size: i.size,
+          color: i.color,
+          qty: i.quantity
+        }))
+      });
+
       const existing = state.items.find(
-        (i) => i.id === newItem.id && i.size === newItem.size && i.color === newItem.color  // Include color in the check
+        (i) => i.id === newItem.id && i.size === newItem.size && i.color === newItem.color
       );
 
       if (existing) {
-        existing.quantity += newItem.quantity;
+        // ✅ CRITICAL FIX: REPLACE quantity (don't add)
+        // This ensures consistency between local and backend cart
+        existing.quantity = newItem.quantity;
+        console.log(`✅ Updated: ${newItem.color} - Qty: ${existing.quantity}`);
       } else {
         state.items.push(newItem);
+        console.log(`✅ Added NEW: ${newItem.color} - Qty: ${newItem.quantity}`);
       }
 
       const totals = calculateTotals(state.items);
@@ -52,8 +65,19 @@ const cartSlice = createSlice({
     // Update item quantity
     updateItemQuantity(state, action) {
       const { id, size, color, quantity } = action.payload;
-      const item = state.items.find((i) => i.id === id && i.size === size && i.color === color);  // Include color in the check
-      if (item) item.quantity = quantity;
+      
+      console.log("📝 CartSlice updateItemQuantity:", { id, size, color, quantity });
+      
+      const item = state.items.find(
+        (i) => i.id === id && i.size === size && i.color === color
+      );
+      
+      if (item) {
+        item.quantity = quantity;
+        console.log(`✅ Updated quantity: ${color} - Qty: ${quantity}`);
+      } else {
+        console.log(`❌ Item not found: ${id}, ${size}, ${color}`);
+      }
 
       const totals = calculateTotals(state.items);
       state.totalQuantity = totals.totalQuantity;
@@ -63,7 +87,12 @@ const cartSlice = createSlice({
     // Remove item
     removeItem(state, action) {
       const { id, size, color } = action.payload;
-      state.items = state.items.filter((i) => !(i.id === id && i.size === size && i.color === color));  // Include color in the check
+      
+      console.log("🗑️ CartSlice removeItem:", { id, size, color });
+      
+      state.items = state.items.filter(
+        (i) => !(i.id === id && i.size === size && i.color === color)
+      );
 
       const totals = calculateTotals(state.items);
       state.totalQuantity = totals.totalQuantity;
@@ -87,11 +116,12 @@ const cartSlice = createSlice({
 
       backendItems.forEach((backendItem) => {
         const existing = state.items.find(
-          (i) => i.id === backendItem.id && i.size === backendItem.size && i.color === backendItem.color  // Include color in the check
+          (i) => i.id === backendItem.id && i.size === backendItem.size && i.color === backendItem.color
         );
 
         if (existing) {
-          existing.quantity += backendItem.quantity;
+          // Update quantity with backend value (backend is source of truth after login)
+          existing.quantity = backendItem.quantity;
         } else {
           state.items.push(backendItem);
         }

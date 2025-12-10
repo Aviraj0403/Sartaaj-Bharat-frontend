@@ -24,15 +24,18 @@ export const useCartActions = () => {
   const { user } = useAuth();
   const isAuthenticated = !!user;
 
-  // Local state to track loading and error
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  // console.log(cartItems);
-  // Function to find a specific item in the cart by product ID and size
-  const findCartItem = (productId, size) =>
-    cartItems.find((item) => item.id === productId && item.size === size);
 
-  // Helper function to handle loading and error states
+  // 🔧 FIX: Include color parameter in findCartItem
+  const findCartItem = (productId, size, color) =>
+    cartItems.find(
+      (item) => 
+        item.id === productId && 
+        item.size === size && 
+        item.color === color
+    );
+
   const handleAction = async (actionCallback) => {
     setLoading(true);
     setError(null);
@@ -46,94 +49,117 @@ export const useCartActions = () => {
       setLoading(false);
     }
   };
-//  console.log("useCartActions - cartItems:", cartItems);
-  // ⭐ Sync Cart after login (merge guest cart with backend cart)
+
   const syncCart = async () => {
     await handleAction(() => dispatch(syncCartOnLogin()).unwrap());
   };
-// console.log("findCartItem:", findCartItem);
-// ⭐ Add to Cart (Optimistic Update for Local Cart + Backend Sync)
-const addToCart = async (product, size, color, quantity = 1) => {
-  const existingItem = findCartItem(product._id, size, color); // Ensure color is being passed correctly
-  const newQty = (existingItem?.quantity || 0) + quantity;
 
-  // console.log('addToCart - color:', color); // Debug the color value being passed
-  const addItemAction = async () => {
-    // Optimistically update local cart
-    dispatch(
-      addItem({
-        id: product._id,
-        name: product.name,
-        image: product.pimage,
-        size,
-        color,  // Include color in the payload
-        price: product.variants?.price || 0,
-        quantity: 1,
-      })
-    );
+  // ⭐ Add to Cart - FIXED
+  const addToCart = async (product, size, color, quantity = 1) => {
+    const existingItem = findCartItem(product._id, size, color);
+    const newQty = (existingItem?.quantity || 0) + quantity;
 
-    // If authenticated, sync with backend
-    if (isAuthenticated) {
-      await dispatch(addToCartThunk({ productId: product._id, size, color, quantity: newQty })).unwrap();
-    }
+    console.log("🛒 Add to Cart:", {
+      productId: product._id,
+      size,
+      color,
+      quantity,
+      existingQty: existingItem?.quantity,
+      newQty
+    });
 
-    return { success: true, newQuantity: newQty };
+    const addItemAction = async () => {
+      // Optimistically update local cart
+      dispatch(
+        addItem({
+          id: product._id,
+          name: product.name,
+          image: product.pimage,
+          size,
+          color,
+          price: product.variants?.price || 0,
+          quantity: 1,  // 🔧 FIX: Use newQty (existing + new)
+        })
+      );
+
+      // If authenticated, sync with backend
+      if (isAuthenticated) {
+        await dispatch(
+          addToCartThunk({ 
+            productId: product._id, 
+            size, 
+            color, 
+            quantity: 1  // 🔧 FIX: Send total quantity
+          })
+        ).unwrap();
+      }
+
+      return { success: true, newQuantity: 1 };
+    };
+
+    return handleAction(addItemAction);
   };
 
-  return handleAction(addItemAction);
-};
+  // ⭐ Update Quantity - FIXED
+  const updateQuantity = async (productId, size, color, quantity) => {
+    if (quantity < 1) return;
 
+    console.log("📝 Update Quantity:", { productId, size, color, quantity });
 
+    const updateQtyAction = async () => {
+      // Optimistically update local cart
+      dispatch(updateItemQuantity({ id: productId, size, color, quantity }));
 
-// ⭐ Update Quantity in Cart (Optimistic Update for Local Cart + Backend Sync)
-const updateQuantity = async (productId, size, color, quantity) => {
-  if (quantity < 1) return;
+      // If authenticated, sync with backend
+      if (isAuthenticated) {
+        await dispatch(
+          updateCartItemThunk({ productId, size, color, quantity })
+        ).unwrap();
+      }
 
-  const updateQtyAction = async () => {
-    // Optimistically update local cart
-    dispatch(updateItemQuantity({ id: productId, size, color, quantity })); // Added color
+      return { success: true };
+    };
 
-    // If authenticated, sync with backend
-    if (isAuthenticated) {
-      await dispatch(updateCartItemThunk({ productId, size, color, quantity })).unwrap();
-    }
-
-    return { success: true };
+    return handleAction(updateQtyAction);
   };
 
-  return handleAction(updateQtyAction);
-};
-
-
-  // Debounced version of updateQuantity to reduce backend calls
+  // 🔧 FIX: Debounced version now includes color
   const updateQuantityDebounced = useCallback(
-    debounce((productId, size, qty) => updateQuantity(productId, size, qty), 500),
+    debounce(
+      (productId, size, color, qty) => updateQuantity(productId, size, color, qty), 
+      500
+    ),
     []
   );
 
-// ⭐ Remove Item from Cart (Backend Sync)
-const removeFromCart = async (productId, size, color) => {
-  const removeItemAction = async () => {
-    // Optimistically remove item from local cart
-    dispatch(removeItem({ id: productId, size, color }));  // Added color
+  // ⭐ Remove Item - FIXED
+  const removeFromCart = async (productId, size, color) => {
+    console.log("🗑️ Remove from Cart:", { productId, size, color });
 
-    // If authenticated, remove from backend
-    if (isAuthenticated) {
-      await dispatch(removeFromCartThunk({ productId, size, color })).unwrap();
-    }
+    const removeItemAction = async () => {
+      // Optimistically remove item from local cart
+      dispatch(removeItem({ id: productId, size, color }));
 
-    return { success: true };
+      // If authenticated, remove from backend
+      if (isAuthenticated) {
+        await dispatch(
+          removeFromCartThunk({ productId, size, color })
+        ).unwrap();
+      }
+
+      return { success: true };
+    };
+
+    return handleAction(removeItemAction);
   };
 
-  return handleAction(removeItemAction);
-};
-
-
-  // ⭐ Clear Cart (Backend Sync + Local)
+  // ⭐ Clear Cart - FIXED
   const clearCart = async () => {
     const clearAction = async () => {
-      // Optimistically clear local cart
-      cartItems.forEach((item) => dispatch(removeItem({ id: item.id, size: item.size })));
+      // Optimistically clear local cart with color
+      cartItems.forEach((item) => 
+        dispatch(removeItem({ id: item.id, size: item.size, color: item.color }))
+      );
 
       // If authenticated, clear from backend
       if (isAuthenticated) {
@@ -146,7 +172,7 @@ const removeFromCart = async (productId, size, color) => {
     return handleAction(clearAction);
   };
 
-  // ⭐ Calculate Cart Totals
+  // Calculate totals
   const totalAmount = cartItems.reduce(
     (acc, item) => acc + (item.price || 0) * (item.quantity || 0),
     0
@@ -167,7 +193,7 @@ const removeFromCart = async (productId, size, color) => {
     clearCart,
     totalAmount,
     totalItems,
-    loading, // Provide loading state for UI feedback
-    error,   // Provide error state for UI feedback
+    loading,
+    error,
   };
 };

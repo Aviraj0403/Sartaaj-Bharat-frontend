@@ -21,14 +21,13 @@ export const syncCartOnLogin = createAsyncThunk(
       // STEP 2: Push local items to backend (only missing ones)
       const promises = [];
       for (const item of localCart) {
-        const { id: productId, size, color, quantity } = item;  // Extract color here
+        const { id: productId, size, color, quantity } = item;
 
         const exists = backendItems.find(
-          (i) => i.id === productId && i.size === size && i.color === color  // Compare with color as well
+          (i) => i.productId === productId && i.size === size && i.color === color
         );
 
         if (!exists) {
-          // Push missing item to backend with color
           promises.push(
             addToCart({
               productId,
@@ -40,18 +39,16 @@ export const syncCartOnLogin = createAsyncThunk(
         }
       }
 
-      // Wait for all missing items to be added to the backend
       await Promise.all(promises);
 
       // STEP 3: Fetch final cart from backend and merge
       const finalCart = await getUserCart();
-      dispatch(mergeCart({ items: finalCart.data.cartItems }));
+      dispatch(setCart({ items: finalCart.data.cartItems }));
     } catch (err) {
       console.error("❌ Failed to sync cart on login:", err);
     }
   }
 );
-
 
 // Fetch backend cart (on refresh or token restore)
 export const fetchBackendCart = createAsyncThunk(
@@ -59,7 +56,7 @@ export const fetchBackendCart = createAsyncThunk(
   async (_, { dispatch }) => {
     try {
       const response = await getUserCart();
-      // console.log("Fetched Backend Cart:", response);
+      console.log("📦 Fetched Backend Cart:", response.data.cartItems);
       dispatch(setCart({ items: response.data.cartItems }));
     } catch (err) {
       console.error("❌ Fetch backend cart error:", err);
@@ -72,11 +69,14 @@ export const addToCartThunk = createAsyncThunk(
   "cart/addToCart",
   async ({ productId, size, color, quantity }, { dispatch }) => {
     try {
-      // Backend update with color
+      console.log("🛒 Adding to backend:", { productId, size, color, quantity });
+      
       await addToCart({ productId, size, color, quantity });
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
+      console.log("✅ Backend response after add:", updatedCart.data.cartItems);
+      
       dispatch(setCart({ items: updatedCart.data.cartItems }));
     } catch (err) {
       console.error("❌ Add to cart failed:", err);
@@ -85,17 +85,24 @@ export const addToCartThunk = createAsyncThunk(
   }
 );
 
-
-// Update item quantity in cart (sync with backend)
+// 🔧 CRITICAL FIX: Update item quantity in cart
 export const updateCartItemThunk = createAsyncThunk(
   "cart/updateCartItem",
   async ({ productId, size, color, quantity }, { dispatch }) => {
     try {
+      console.log("📝 Updating backend:", { productId, size, color, quantity });
+      
+      // Update backend
       await updateCartItem({ productId, size, color, quantity });
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
+      console.log("✅ Backend response after update:", updatedCart.data.cartItems);
+      
+      // Update Redux state with backend data
       dispatch(setCart({ items: updatedCart.data.cartItems }));
+      
+      return { success: true };
     } catch (err) {
       console.error("❌ Update cart item failed:", err);
       throw err;
@@ -103,23 +110,25 @@ export const updateCartItemThunk = createAsyncThunk(
   }
 );
 
-
 // Remove item from backend and update Redux
 export const removeFromCartThunk = createAsyncThunk(
   "cart/removeFromCart",
   async ({ productId, size, color }, { dispatch }) => {
     try {
+      console.log("🗑️ Removing from backend:", { productId, size, color });
+      
       await removeCartItem({ productId, size, color });
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
+      console.log("✅ Backend response after remove:", updatedCart.data.cartItems);
+      
       dispatch(setCart({ items: updatedCart.data.cartItems }));
     } catch (err) {
       console.error("❌ Remove from cart failed:", err);
     }
   }
 );
-
 
 // Clear the entire cart from both Redux and backend
 export const clearCartThunk = createAsyncThunk(
@@ -133,4 +142,3 @@ export const clearCartThunk = createAsyncThunk(
     }
   }
 );
-

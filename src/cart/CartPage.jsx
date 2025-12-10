@@ -45,6 +45,7 @@ export default function CartPage() {
 
   const handleIncrement = (id, size, color) => {
     const item = cartItems.find((i) => i.id === id && i.size === size && i.color === color);
+    console.log("Incrementing item:", id, size, color, item);
     if (item) updateQuantity(id, size, color, item.quantity + 1);
   };
 
