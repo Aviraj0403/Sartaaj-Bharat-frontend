@@ -253,7 +253,7 @@ export default function ProductDetails() {
             </div>
 
             {/* Quantity Selector - 🔧 NOW FUNCTIONAL */}
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <p className="text-gray-700 font-medium mb-2">Quantity</p>
               <div className="flex items-center gap-3">
                 <button
@@ -270,7 +270,7 @@ export default function ProductDetails() {
                   +
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
