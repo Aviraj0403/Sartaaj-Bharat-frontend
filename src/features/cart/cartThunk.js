@@ -56,7 +56,7 @@ export const fetchBackendCart = createAsyncThunk(
   async (_, { dispatch }) => {
     try {
       const response = await getUserCart();
-      console.log("📦 Fetched Backend Cart:", response.data.cartItems);
+      // console.log("📦 Fetched Backend Cart:", response.data.cartItems);
       dispatch(setCart({ items: response.data.cartItems }));
     } catch (err) {
       console.error("❌ Fetch backend cart error:", err);
@@ -69,13 +69,13 @@ export const addToCartThunk = createAsyncThunk(
   "cart/addToCart",
   async ({ productId, size, color, quantity }, { dispatch }) => {
     try {
-      console.log("🛒 Adding to backend:", { productId, size, color, quantity });
+      // console.log("🛒 Adding to backend:", { productId, size, color, quantity });
       
       await addToCart({ productId, size, color, quantity });
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
-      console.log("✅ Backend response after add:", updatedCart.data.cartItems);
+      // console.log("✅ Backend response after add:", updatedCart.data.cartItems);
       
       dispatch(setCart({ items: updatedCart.data.cartItems }));
     } catch (err) {
@@ -90,14 +90,14 @@ export const updateCartItemThunk = createAsyncThunk(
   "cart/updateCartItem",
   async ({ productId, size, color, quantity }, { dispatch }) => {
     try {
-      console.log("📝 Updating backend:", { productId, size, color, quantity });
+      // console.log("📝 Updating backend:", { productId, size, color, quantity });
       
       // Update backend
       await updateCartItem({ productId, size, color, quantity });
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
-      console.log("✅ Backend response after update:", updatedCart.data.cartItems);
+      // console.log("✅ Backend response after update:", updatedCart.data.cartItems);
       
       // Update Redux state with backend data
       dispatch(setCart({ items: updatedCart.data.cartItems }));
@@ -115,13 +115,13 @@ export const removeFromCartThunk = createAsyncThunk(
   "cart/removeFromCart",
   async ({ productId, size, color }, { dispatch }) => {
     try {
-      console.log("🗑️ Removing from backend:", { productId, size, color });
+      // console.log("🗑️ Removing from backend:", { productId, size, color });
       
       await removeCartItem({ productId, size, color });
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
-      console.log("✅ Backend response after remove:", updatedCart.data.cartItems);
+      // console.log("✅ Backend response after remove:", updatedCart.data.cartItems);
       
       dispatch(setCart({ items: updatedCart.data.cartItems }));
     } catch (err) {

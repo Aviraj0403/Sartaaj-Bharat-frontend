@@ -33,7 +33,7 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
 
       try {
         const discountResult = await applyDiscount(totalAmount, code);
-        console.log("Discount Result:", discountResult); // Debugging the result
+        // console.log("Discount Result:", discountResult); // Debugging the result
         if (discountResult) {
           onApply(discountResult, code, offerName || code);
         } else {

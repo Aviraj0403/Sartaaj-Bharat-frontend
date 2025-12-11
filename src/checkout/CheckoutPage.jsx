@@ -67,14 +67,15 @@ export default function CheckoutPage() {
     if (!selectedAddress) return toast.warn("Please select a delivery address");
 
     setIsPlacingOrder(true);
-
+  //  console.log("cartItems:", cartItems);
     // FINAL PAYLOAD — WORKS 100% WITH YOUR BACKEND
     const payload = {
       items: cartItems.map(item => ({
         product: item.id, // Product ObjectId
         selectedVariant: {
           size: item.size,           // Must match DB exactly
-          price: Number(item.price)  // Must be number and match DB
+          price: Number(item.price), // Must be number and match DB
+          color: item.color || "standard" // Optional, depending on your product schema
         },
         quantity: item.quantity
       })),
@@ -152,6 +153,7 @@ export default function CheckoutPage() {
   };
 
   const submitOrder = async (payload) => {
+    // console.log("Submitting order with payload:", payload); // Debugging
     try {
       const res = await axios.post("/orders/createOrder", payload, { withCredentials: true });
       dispatch(clearCartThunk());
@@ -249,34 +251,40 @@ navigate(`/invoice/${orderId}`, { state: { order: res.data.order } });
         </div>
 
         {/* Right: Order Summary */}
-        <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Order Summary</h2>
-          <div className="space-y-3">
-            {cartItems.map(item => (
-              <div key={item.id + item.size} className="flex justify-between text-gray-700">
-                <span>{item.name} ({item.size}) × {item.quantity}</span>
-                <span className="font-medium">₹{(item.price * item.quantity).toFixed(2)}</span>
-              </div>
-            ))}
+     <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
+  <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Order Summary</h2>
+  <div className="space-y-3">
+    {cartItems.map(item => (
+      <div key={item.id + item.size + item.color} className="flex justify-between text-gray-700">
+        <span>
+          {item.name} 
+          ({item.size ? `${item.size}` : "N/A"}
+          {item.color ? `, ${item.color}` : ""} )
+          × {item.quantity}
+        </span>
+        <span className="font-medium">₹{(item.price * item.quantity).toFixed(2)}</span>
+      </div>
+    ))}
 
-            <div className="border-t pt-4">
-              <div className="flex justify-between">
-                <span>Total Items:</span>
-                <span className="font-semibold">{totalQuantity}</span>
-              </div>
-              {appliedCoupon && (
-                <div className="flex justify-between text-green-600">
-                  <span>Coupon: {appliedCoupon.code}</span>
-                  <span>{appliedCoupon.discountPercentage}%</span>
-                </div>
-              )}
-              <div className="flex justify-between text-xl font-bold text-gray-800 mt-4 border-t pt-4">
-                <span>Total Payable:</span>
-                <span className="text-pink-600">₹{Number(grandTotal).toFixed(2)}</span>
-              </div>
-            </div>
-          </div>
+    <div className="border-t pt-4">
+      <div className="flex justify-between">
+        <span>Total Items:</span>
+        <span className="font-semibold">{totalQuantity}</span>
+      </div>
+      {appliedCoupon && (
+        <div className="flex justify-between text-green-600">
+          <span>Coupon: {appliedCoupon.code}</span>
+          <span>{appliedCoupon.discountPercentage}%</span>
         </div>
+      )}
+      <div className="flex justify-between text-xl font-bold text-gray-800 mt-4 border-t pt-4">
+        <span>Total Payable:</span>
+        <span className="text-pink-600">₹{Number(grandTotal).toFixed(2)}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
       </div>
     </div>
   );

@@ -77,12 +77,12 @@ export default function ProductDetails() {
       return;
     }
 
-    console.log("🛒 Adding to cart:", {
-      productId: product._id,
-      size: selectedVariant.size,
-      color: selectedColor,
-      quantity: quantity
-    });
+    // console.log("🛒 Adding to cart:", {
+    //   productId: product._id,
+    //   size: selectedVariant.size,
+    //   color: selectedColor,
+    //   quantity: quantity
+    // });
 
     const response = await addToCart(
       {

@@ -59,14 +59,14 @@ export const useCartActions = () => {
     const existingItem = findCartItem(product._id, size, color);
     const newQty = (existingItem?.quantity || 0) + quantity;
 
-    console.log("🛒 Add to Cart:", {
-      productId: product._id,
-      size,
-      color,
-      quantity,
-      existingQty: existingItem?.quantity,
-      newQty
-    });
+    // console.log("🛒 Add to Cart:", {
+    //   productId: product._id,
+    //   size,
+    //   color,
+    //   quantity,
+    //   existingQty: existingItem?.quantity,
+    //   newQty
+    // });
 
     const addItemAction = async () => {
       // Optimistically update local cart

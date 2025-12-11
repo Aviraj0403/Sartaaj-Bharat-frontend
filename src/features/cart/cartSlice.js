@@ -33,15 +33,15 @@ const cartSlice = createSlice({
     addItem(state, action) {
       const newItem = normalizeItem(action.payload);
       
-      console.log("📦 CartSlice addItem:", {
-        newItem,
-        currentItems: state.items.map(i => ({
-          id: i.id,
-          size: i.size,
-          color: i.color,
-          qty: i.quantity
-        }))
-      });
+      // console.log("📦 CartSlice addItem:", {
+      //   newItem,
+      //   currentItems: state.items.map(i => ({
+      //     id: i.id,
+      //     size: i.size,
+      //     color: i.color,
+      //     qty: i.quantity
+      //   }))
+      // });
 
       const existing = state.items.find(
         (i) => i.id === newItem.id && i.size === newItem.size && i.color === newItem.color
@@ -51,10 +51,10 @@ const cartSlice = createSlice({
         // ✅ CRITICAL FIX: REPLACE quantity (don't add)
         // This ensures consistency between local and backend cart
         existing.quantity = newItem.quantity;
-        console.log(`✅ Updated: ${newItem.color} - Qty: ${existing.quantity}`);
+        // console.log(`✅ Updated: ${newItem.color} - Qty: ${existing.quantity}`);
       } else {
         state.items.push(newItem);
-        console.log(`✅ Added NEW: ${newItem.color} - Qty: ${newItem.quantity}`);
+        // console.log(`✅ Added NEW: ${newItem.color} - Qty: ${newItem.quantity}`);
       }
 
       const totals = calculateTotals(state.items);
@@ -66,7 +66,7 @@ const cartSlice = createSlice({
     updateItemQuantity(state, action) {
       const { id, size, color, quantity } = action.payload;
       
-      console.log("📝 CartSlice updateItemQuantity:", { id, size, color, quantity });
+      // console.log("📝 CartSlice updateItemQuantity:", { id, size, color, quantity });
       
       const item = state.items.find(
         (i) => i.id === id && i.size === size && i.color === color
@@ -74,7 +74,7 @@ const cartSlice = createSlice({
       
       if (item) {
         item.quantity = quantity;
-        console.log(`✅ Updated quantity: ${color} - Qty: ${quantity}`);
+        // console.log(`✅ Updated quantity: ${color} - Qty: ${quantity}`);
       } else {
         console.log(`❌ Item not found: ${id}, ${size}, ${color}`);
       }
@@ -88,7 +88,7 @@ const cartSlice = createSlice({
     removeItem(state, action) {
       const { id, size, color } = action.payload;
       
-      console.log("🗑️ CartSlice removeItem:", { id, size, color });
+      // console.log("🗑️ CartSlice removeItem:", { id, size, color });
       
       state.items = state.items.filter(
         (i) => !(i.id === id && i.size === size && i.color === color)

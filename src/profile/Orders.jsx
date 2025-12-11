@@ -55,6 +55,7 @@ export default function Orders() {
 
       <div className="flex flex-col gap-5">
         {orders.map((order) => {
+          // console.log("Order Data:", order); // Debugging
           const mainItem = order.items[0];
           const remainingCount = order.items.length - 1;
 
@@ -84,34 +85,41 @@ export default function Orders() {
 
 
               {/* Item */}
-              <div className="p-4 flex items-center gap-4 cursor-pointer">
-                <div className="relative flex-shrink-0">
-                  <img
-                    src={mainItem.product?.pimages[0]} // Assuming product images are in pimages array
-                    alt={mainItem.product?.name || "GK Store Product"}
-                    className="w-24 h-24 object-cover rounded-xl border border-pink-100 shadow-sm"
-                  />
-                  {remainingCount > 0 && (
-                    <div className="absolute bottom-1 right-1 bg-pink-600 text-white rounded-full px-1.5 py-0.5 text-xs flex items-center gap-0.5 shadow-md">
-                      <Plus size={12} /> {remainingCount}
-                    </div>
-                  )}
-                </div>
+             <div className="p-4 flex items-center gap-4 cursor-pointer">
+  <div className="relative flex-shrink-0">
+    <img
+      src={mainItem.product?.pimages[0]} // Assuming product images are in pimages array
+      alt={mainItem.product?.name || "GK Store Product"}
+      className="w-24 h-24 object-cover rounded-xl border border-pink-100 shadow-sm"
+    />
+    {remainingCount > 0 && (
+      <div className="absolute bottom-1 right-1 bg-pink-600 text-white rounded-full px-1.5 py-0.5 text-xs flex items-center gap-0.5 shadow-md">
+        <Plus size={12} /> {remainingCount}
+      </div>
+    )}
+  </div>
 
-                <div className="flex-1">
-                  <h3 className="text-gray-800 font-semibold text-sm sm:text-base">
-                    {mainItem.product?.name}
-                  </h3>
-                  <p className="text-gray-500 text-sm">{mainItem.product?.seller}</p>
+  <div className="flex-1">
+    <h3 className="text-gray-800 font-semibold text-sm sm:text-base">
+      {mainItem.product?.name}
+    </h3>
+    <p className="text-gray-500 text-sm">{mainItem.product?.seller}</p>
 
-                  <p className="text-gray-800 font-semibold mt-2 text-sm sm:text-base">
-                    Total:{" "}
-                    <span className="text-pink-500 font-bold">₹{order.totalAmount}</span> {/* Display total amount */}
-                  </p>
+    {/* Display selected color and size */}
+    <div className="text-sm text-gray-600 mt-1">
+      <p><strong>Color:</strong> {mainItem.selectedVariant?.color}</p>
+      <p><strong>Size:</strong> {mainItem.selectedVariant?.size}</p>
+    </div>
 
-                  <p className="text-gray-600 text-sm mt-1">{order.paymentStatus}</p>
-                </div>
-              </div>
+    <p className="text-gray-800 font-semibold mt-2 text-sm sm:text-base">
+      Total:{" "}
+      <span className="text-pink-500 font-bold">₹{order.totalAmount}</span> {/* Display total amount */}
+    </p>
+
+    <p className="text-gray-600 text-sm mt-1">{order.paymentStatus}</p>
+  </div>
+</div>
+
 
               {/* Footer */}
               <div className="px-4 py-3 border-t border-pink-100 flex justify-between items-center">

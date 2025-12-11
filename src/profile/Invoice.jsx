@@ -47,6 +47,8 @@ export default function Invoice() {
 
   const items = order.items.map(item => ({
     name: item.product.name,
+    size: item.selectedVariant.size,
+    color: item.selectedVariant.color,
     qty: item.quantity,
     price: item.selectedVariant.price,
   }));
@@ -187,8 +189,10 @@ export default function Invoice() {
             </thead>
             <tbody>
               {items.map((item, index) => (
+                // console.log("Invoice Item:", item) ||
                 <tr key={index} className="border-b border-pink-100">
-                  <td className="py-2 px-3">{item.name}</td>
+                  <td className="py-2 px-3">{/* Display name, size, and color with fallback for missing values */}
+                  {item.name } - ({item?.size}/{item?.color}) </td>
                   <td className="py-2 px-3 text-center">{item.qty}</td>
                   <td className="py-2 px-3 text-right">₹{item.price}</td>
                   <td className="py-2 px-3 text-right">₹{item.price * item.qty}</td>

@@ -149,16 +149,22 @@ export default function Invoice() {
                 <th className="py-2 px-3 text-right">Total</th>
               </tr>
             </thead>
-            <tbody>
-              {items?.map((item, index) => (
-                <tr key={index} className="border-b border-pink-100">
-                  <td className="py-2 px-3">{item?.selectedVariant?.name || "N/A"}</td>
-                  <td className="py-2 px-3 text-center">{item?.quantity || "N/A"}</td>
-                  <td className="py-2 px-3 text-right">₹{item?.selectedVariant?.price || "0.00"}</td>
-                  <td className="py-2 px-3 text-right">₹{(item?.selectedVariant?.price * item?.quantity) || "0.00"}</td>
-                </tr>
-              ))}
-            </tbody>
+           <tbody>
+  {items?.map((item, index) => (
+    <tr key={index} className="border-b border-pink-100">
+      <td className="py-2 px-3">
+        {/* Display name, size, and color with fallback for missing values */}
+        {item?.selectedVariant?.name 
+          ? `${item.selectedVariant.name} : (${item.selectedVariant.size || "N/A"} / ${item.selectedVariant.color || "N/A"})`
+          : "N/A"} 
+      </td>
+      <td className="py-2 px-3 text-center">{item?.quantity || "N/A"}</td>
+      <td className="py-2 px-3 text-right">₹{item?.selectedVariant?.price?.toFixed(2) || "0.00"}</td>
+      <td className="py-2 px-3 text-right">₹{(item?.selectedVariant?.price * item?.quantity)?.toFixed(2) || "0.00"}</td>
+    </tr>
+  ))}
+</tbody>
+
           </table>
         </div>
 

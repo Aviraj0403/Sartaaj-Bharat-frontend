@@ -27,6 +27,7 @@ export default function CartPage() {
     loading,
   } = useCartActions();
 
+  // console.log("Cart Items:", cartItems); // Debugging
   const { cartSyncing, user } = useAuth();
 
   // Calculate discount based on the coupon's discount percentage and max discount cap
@@ -45,7 +46,7 @@ export default function CartPage() {
 
   const handleIncrement = (id, size, color) => {
     const item = cartItems.find((i) => i.id === id && i.size === size && i.color === color);
-    console.log("Incrementing item:", id, size, color, item);
+    // console.log("Incrementing item:", id, size, color, item);
     if (item) updateQuantity(id, size, color, item.quantity + 1);
   };
 
@@ -63,7 +64,7 @@ export default function CartPage() {
 
   // Handle item removal from the cart
   const handleRemoveItem = (id, size, color) => {
-    console.log("Removing item:", id, size, color);
+    // console.log("Removing item:", id, size, color);
     removeFromCart(id, size, color);
   };
 
@@ -102,7 +103,7 @@ export default function CartPage() {
 
   // Use effect to ensure re-rendering when coupon is applied or removed
   useEffect(() => {
-    console.log("Updated finalAmount:", finalAmount); // Debugging
+    // console.log("Updated finalAmount:", finalAmount); // Debugging
   }, [coupon, totalAmount]);
 
   // Render the loading or main content based on the cart syncing state
