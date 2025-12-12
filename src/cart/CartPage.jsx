@@ -5,6 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { useCartActions } from "../hooks/useCartActions";
 import { useAuth } from "../context/AuthContext";
 
+const transformToSlug = (name) => {
+  return name
+    .toLowerCase()               
+    .replace(/[^\w\s-]/g, '')     
+    .replace(/\s+/g, '-')        
+    .replace(/-+/g, '-');       
+};
+
 export default function CartPage() {
   const [couponOpen, setCouponOpen] = useState(false);
   const [coupon, setCoupon] = useState({
@@ -160,6 +168,7 @@ export default function CartPage() {
                     src={item.image}
                     alt={item.name}
                     className="w-20 h-20 rounded-xl object-cover"
+                    onClick={() => navigate(`/product/${transformToSlug(item.name)}`)} 
                   />
                   <div>
                     <h2 className="text-lg font-semibold text-gray-800">
