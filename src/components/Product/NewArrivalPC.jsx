@@ -23,11 +23,12 @@ export default function NewArrivalPC({ product, onProductClick }) {
     setQuantity(item?.quantity || 0);
   }, [cartItems, size, color, product._id]);
 
-  const discount = activeVariant?.realPrice
-    ? Math.round(
-        ((activeVariant.realPrice - activeVariant.price) / activeVariant.realPrice) * 100
-      )
-    : 0;
+  // const discount = activeVariant?.realPrice
+  //   ? Math.round(
+  //       ((activeVariant.realPrice - activeVariant.price) / activeVariant.realPrice) * 100
+  //     )
+  //   : 0;
+  const discount = product?.discount || 0;
 
   // Handle product click
   const handleProductClick = () => {

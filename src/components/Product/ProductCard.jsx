@@ -10,7 +10,7 @@ export default function ProductCard({ product, onProductClick }) {
   const activeVariant = product?.variants;
   const size = activeVariant?.size;
   const color = activeVariant?.color; // Add color to activeVariant
-
+  // console.log("Active Variant Color:", product);
   const [quantity, setQuantity] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
 
@@ -21,11 +21,12 @@ export default function ProductCard({ product, onProductClick }) {
     setQuantity(item?.quantity || 0);
   }, [cartItems, size, color, product._id]);
 
-  const discount = activeVariant?.realPrice
-    ? Math.round(
-        ((activeVariant.realPrice - activeVariant.price) / activeVariant.realPrice) * 100
-      )
-    : 0;
+  // const discount = activeVariant?.realPrice
+  //   ? Math.round(
+  //       ((activeVariant.realPrice - activeVariant.price) / activeVariant.realPrice) * 100
+  //     )
+  //   : 0;
+  const discount = product?.discount || 0;
 
   const handleProductClick = () => {
     if (onProductClick) onProductClick(product.slug);

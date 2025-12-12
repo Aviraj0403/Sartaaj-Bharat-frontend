@@ -3,18 +3,16 @@ import { FaStar } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { createReview } from "../../services/reviewApi";
 import { useAuth } from "../../context/AuthContext";
-
-// Review Form Component for submitting a new review
-const ReviewForm = ({ productId, reviews , setReviews }) => {
+const ReviewForm = ({ productId, setReviews }) => {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { user } = useAuth();
-  const handleSiginin = () => {
+  const handleSignInClick = () => {
     window.location.href = "/signin";
-  }
+  };
   if (!user) {
     return (
       <div className="mt-8 text-center py-12 bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl border-2 border-dashed border-pink-200">
@@ -24,39 +22,9 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
           </div>
           <h3 className="text-xl font-semibold text-gray-800 mb-2">Share Your Experience</h3>
           <p className="text-gray-600 mb-4">Sign in to write a review and help others make informed decisions</p>
-          <button className="bg-pink-500 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-pink-600 transition-all hover:shadow-lg" onClick={handleSiginin}>
+          <button className="bg-pink-500 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-pink-600 transition-all hover:shadow-lg"    onClick={handleSignInClick}>
             Sign In to Review
           </button>
-        </div>
-      </div>
-    );
-  }
- const hasUserReviewed = reviews?.some(review => review.user._id === user?._id);
-  // If user has already reviewed, show a message
-  if (hasUserReviewed) {
-    return (
-      <div className="mt-8 text-center py-12 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200">
-        <div className="max-w-md mx-auto px-4">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-8 h-8 text-blue-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">You've Already Reviewed</h3>
-          <p className="text-gray-600">Thank you for sharing your feedback! You can only submit one review per product.</p>
-          <div className="mt-6">
-            <p className="text-sm text-gray-500">Want to update your review? Contact our support team.</p>
-          </div>
         </div>
       </div>
     );
@@ -85,10 +53,10 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
       if (newReview.success) {
         // Add the new review to the list immediately
         setReviews((prev) => [newReview.review, ...prev]);
-        
+
         // Show success state
         setIsSubmitted(true);
-        
+
         toast.success("Review submitted successfully!", {
           position: "top-right",
           autoClose: 2000,
@@ -142,7 +110,7 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
           <h3 className="text-2xl font-bold text-gray-800 mb-2">Thank You!</h3>
           <p className="text-gray-600 text-lg mb-1">Your review has been submitted successfully</p>
           <p className="text-sm text-gray-500">Your feedback helps others make better choices</p>
-          
+
           {/* Rating display */}
           <div className="mt-6 flex justify-center gap-1">
             {Array.from({ length: 5 }, (_, i) => (
@@ -164,7 +132,7 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
         <h3 className="text-xl font-bold text-white">Write Your Review</h3>
         <p className="text-pink-100 text-sm mt-1">Share your thoughts with other customers</p>
       </div>
-      
+
       <div className="p-6">
         {/* Rating Section */}
         <div className="mb-6">
@@ -183,11 +151,10 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
                 className="transition-all duration-200 hover:scale-110 disabled:opacity-50"
               >
                 <FaStar
-                  className={`${
-                    i < (hoveredRating || rating)
+                  className={`${i < (hoveredRating || rating)
                       ? "text-yellow-400"
                       : "text-gray-300"
-                  } text-4xl transition-colors cursor-pointer`}
+                    } text-4xl transition-colors cursor-pointer`}
                 />
               </button>
             ))}
@@ -260,87 +227,4 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
     </div>
   );
 };
-
-// Review List Component (Displays all reviews for the product)
-const ReviewList = ({ reviews }) => {
-  const safeReviews = Array.isArray(reviews) ? reviews : [];
-
-  if (safeReviews.length === 0) {
-    return (
-      <div className="text-center py-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-        <div className="max-w-md mx-auto px-4">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FaStar className="text-3xl text-gray-400" />
-          </div>
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">No Reviews Yet</h3>
-          <p className="text-gray-500">Be the first to share your experience with this product!</p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-4">
-      <h4 className="text-lg font-semibold text-gray-800 mb-4">
-        Customer Reviews ({safeReviews.length})
-      </h4>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {safeReviews.map((review) => (
-          <div
-            key={review._id}
-            className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all duration-200 hover:border-pink-200"
-          >
-            <div className="flex items-start gap-3 mb-3">
-              <img
-                src={review.user.avatar || "/logo-cosmetic2.jpg"}
-                alt={review.user.userName}
-                className="w-12 h-12 rounded-full object-cover border-2 border-pink-100"
-              />
-              <div className="flex-1 min-w-0">
-                <h5 className="font-semibold text-gray-800 truncate">
-                  {review.user.userName}
-                </h5>
-                <div className="flex items-center gap-2 mt-1">
-                  <div className="flex">
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <FaStar
-                        key={i}
-                        className={`${
-                          i < review.rating ? "text-yellow-400" : "text-gray-300"
-                        } text-sm`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-xs text-gray-500">
-                    {new Date(review.createdAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric"
-                    })}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <p className="text-gray-700 text-sm leading-relaxed">
-              {review.comment}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const ReviewTab = ({ productId, reviews, setReviews }) => {
-  return (
-    <div className="py-6">
-      {/* Review List */}
-      <ReviewList reviews={reviews} />
-
-      {/* Review Form */}
-      <ReviewForm productId={productId} setReviews={setReviews} reviews={reviews} />
-    </div>
-  );
-};
-
-export default ReviewTab;
+export default ReviewForm;

@@ -7,7 +7,7 @@ import RelatedProduct from "../../pages/home/RelatedProduct";
 import { useCartActions } from "../../hooks/useCartActions";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import ReviewTab from "../Product/ReviewTab"; 
+import ReviewTab from "../../pages/Review/ReviewTab"; 
 
 export default function ProductDetails() {
   const { slug } = useParams();

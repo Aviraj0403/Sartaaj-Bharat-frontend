@@ -51,13 +51,14 @@ export default function BestSellPC({ product, onProductClick }) {
   };
 
   // Calculate discount if any
-  const discount = product?.variants?.realPrice
-    ? Math.round(
-        ((product?.variants?.realPrice - product?.variants?.price) /
-          product?.variants?.realPrice) *
-          100
-      )
-    : 0;
+  // const discount = product?.variants?.realPrice
+  //   ? Math.round(
+  //       ((product?.variants?.realPrice - product?.variants?.price) /
+  //         product?.variants?.realPrice) *
+  //         100
+  //     )
+  //   : 0;
+  const discount = product?.discount || 0;
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 relative group p-3 flex flex-col justify-between overflow-hidden">
