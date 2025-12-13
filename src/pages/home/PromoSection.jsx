@@ -46,7 +46,7 @@ export default function PromoSection() {
               <img
                 src={product.image}
                 alt={product.brand}
-                className="w-full h-60 object-cover rounded-lg"
+                className="w-full h-60 object-fit rounded-lg"
               />
               <div className="bg-white w-full py-3">
                 <h3 className="font-bold text-lg text-gray-900">

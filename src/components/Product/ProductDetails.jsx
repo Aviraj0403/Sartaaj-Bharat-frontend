@@ -17,6 +17,18 @@ export default function ProductDetails() {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [showPopup, setShowPopup] = useState(false);
+const [popupMessage, setPopupMessage] = useState("");
+
+useEffect(() => {
+  if (showPopup) {
+    const timer = setTimeout(() => {
+      setShowPopup(false);
+    }, 1500); // 1.5 sec
+
+    return () => clearTimeout(timer);
+  }
+}, [showPopup]);
 
   const { cartItems, addToCart } = useCartActions();
 
@@ -68,89 +80,69 @@ export default function ProductDetails() {
   };
 
   // 🔧 FIX: Correct data structure for addToCart
-  const handleAddToCart = async () => {
-    if (!selectedVariant || !selectedColor) {
-      toast.error("Please select size and color", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-      return;
-    }
+ const handleAddToCart = async () => {
+  if (!selectedVariant || !selectedColor) {
+    alert("Please select size and color");
+    return;
+  }
 
-    // console.log("🛒 Adding to cart:", {
-    //   productId: product._id,
-    //   size: selectedVariant.size,
-    //   color: selectedColor,
-    //   quantity: quantity
-    // });
-
-    const response = await addToCart(
-      {
-        _id: product._id,
-        name: product.name,
-        pimage: pimages[0],  // Use product images
-        variants: {
-          price: selectedVariant.price,  // ✅ Pass correct price
-          size: selectedVariant.size,
-          color: selectedColor
-        },
+  const response = await addToCart(
+    {
+      _id: product._id,
+      name: product.name,
+      pimage: pimages[0],
+      variants: {
+        price: selectedVariant.price,
+        size: selectedVariant.size,
+        color: selectedColor
       },
-      selectedVariant.size,      // ✅ Pass size as string
-      selectedColor,             // ✅ Pass color as string
-      quantity                   // ✅ Use actual quantity state
-    );
+    },
+    selectedVariant.size,
+    selectedColor,
+    quantity
+  );
 
-    if (response.success) {
-      toast.success(`${name} (${selectedVariant.size}, ${selectedColor}) added to cart!`, {
-        position: "top-right",
-        autoClose: 2000,
-      });
-    } else {
-      toast.error(`Failed to add to cart: ${response.error}`, {
-        position: "top-right",
-        autoClose: 2000,
-      });
-    }
-  };
+  if (response.success) {
+    setPopupMessage(
+      `${name} (${selectedVariant.size}, ${selectedColor}) added to cart successfully!`
+    );
+    setShowPopup(true);
+  } else {
+    alert("Failed to add to cart");
+  }
+};
 
   const handleBuyNow = async () => {
-    if (!selectedVariant || !selectedColor) {
-      toast.error("Please select size and color", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-      return;
-    }
+  if (!selectedVariant || !selectedColor) {
+    alert("Please select size and color");
+    return;
+  }
 
-    const response = await addToCart(
-      {
-        _id: product._id,
-        name: product.name,
-        pimage: pimages[0],
-        variants: {
-          price: selectedVariant.price,  // ✅ Pass correct price
-          size: selectedVariant.size,
-          color: selectedColor
-        },
+  const response = await addToCart(
+    {
+      _id: product._id,
+      name: product.name,
+      pimage: pimages[0],
+      variants: {
+        price: selectedVariant.price,
+        size: selectedVariant.size,
+        color: selectedColor
       },
-      selectedVariant.size,
-      selectedColor,
-      quantity                   // ✅ Use actual quantity state
-    );
+    },
+    selectedVariant.size,
+    selectedColor,
+    quantity
+  );
 
-    if (response.success) {
-      toast.success(`${name} (${selectedVariant.size}, ${selectedColor}) added to cart!`, {
-        position: "top-right",
-        autoClose: 2000,
-      });
-      navigate("/cart");
-    } else {
-      toast.error(`Failed to add to cart: ${response.error}`, {
-        position: "top-right",
-        autoClose: 2000,
-      });
-    }
-  };
+  if (response.success) {
+    setPopupMessage("Product added to cart successfully!");
+    setShowPopup(true);
+    setTimeout(() => navigate("/cart"), 1200);
+  } else {
+    alert("Failed to add to cart");
+  }
+};
+
 
   return (
     <div className="bg-white min-h-screen py-5 px-4 sm:px-8">
@@ -351,6 +343,24 @@ export default function ProductDetails() {
             </div>
           )}
         </div>
+ {showPopup && (
+  <div className="fixed inset-0 flex items-center justify-center z-[9999] pointer-events-none">
+    <div className="bg-white rounded-2xl px-6 py-5 shadow-2xl flex flex-col items-center gap-2 text-center max-w-[90%] animate-bounce pointer-events-auto">
+      <div className="bg-green-100 text-green-600 w-14 h-14 rounded-full flex items-center justify-center text-2xl">
+        ✓
+      </div>
+
+      <p className="text-gray-800 text-sm font-semibold">
+        {product.name}
+      </p>
+
+      <p className="text-green-600 font-medium text-sm">
+        Added to cart successfully
+      </p>
+    </div>
+  </div>
+)}
+
 
         {/* Related Products */}
         <RelatedProduct categorySlug={category.slug} />

@@ -72,7 +72,23 @@ export default function NewArrivalPC({ product, onProductClick }) {
   };
 
   return (
-    <div className="w-full max-w-[190px] sm:max-w-none mx-auto bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 relative group p-3 md:p-4 flex flex-col justify-between overflow-visible">
+<div
+  className="
+    w-full 
+    max-w-[240px] sm:max-w-none 
+    min-h-[360px] sm:min-h-auto
+    mx-auto 
+    bg-white 
+    border border-gray-200 
+    rounded-xl 
+    shadow-md hover:shadow-xl 
+    transition-shadow duration-300 
+    relative group 
+    p-4 md:p-4 
+    flex flex-col justify-between 
+    overflow-visible
+  "
+>
       {/* ❤️ Heart Icon */}
       <div className="absolute top-3 right-3 z-20 text-pink-500 cursor-pointer opacity-80 hover:opacity-100 transition text-lg">
         <FaHeart />
@@ -92,7 +108,7 @@ export default function NewArrivalPC({ product, onProductClick }) {
 
       {/* 🖼️ Product Image */}
       <div
-        className="w-full h-24 md:h-36 flex justify-center items-center mb-3 cursor-pointer"
+       className="w-full h-32 md:h-36 flex justify-center items-center mb-4 cursor-pointer"
         onClick={handleProductClick}
       >
         <img
@@ -103,7 +119,8 @@ export default function NewArrivalPC({ product, onProductClick }) {
       </div>
 
       {/* 📝 Product Info */}
-      <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-1">
+     <h3 className="text-base md:text-base font-semibold text-gray-800 mb-2">
+
         {product.name}
       </h3>
 

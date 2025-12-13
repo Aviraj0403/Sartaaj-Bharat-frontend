@@ -63,7 +63,11 @@ export default function ProductCard({ product, onProductClick }) {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 relative p-3 md:p-4 flex flex-col justify-between overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 relative 
+p-5 md:p-4 
+min-h-[360px] md:min-h-[auto]
+flex flex-col justify-between overflow-hidden">
+
 
       {/* ❤️ Heart Icon */}
       <div className="absolute top-3 right-3 z-20 text-pink-500 cursor-pointer opacity-80 hover:opacity-100 transition text-lg">
@@ -79,7 +83,8 @@ export default function ProductCard({ product, onProductClick }) {
 
       {/* 🖼 Product Image */}
       <div
-        className="w-full h-24 md:h-36 flex justify-center items-center mb-3 cursor-pointer"
+       className="w-full h-36 md:h-36 flex justify-center items-center mb-4 cursor-pointer"
+
         onClick={handleProductClick}
       >
         <img
@@ -90,7 +95,8 @@ export default function ProductCard({ product, onProductClick }) {
       </div>
 
       {/* 📝 Product Title */}
-      <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-1">
+    <h3 className="text-base md:text-base font-semibold text-gray-800 mb-2">
+
         {product.name}
       </h3>
 

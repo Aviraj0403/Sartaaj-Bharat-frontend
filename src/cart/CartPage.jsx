@@ -317,10 +317,14 @@ export default function CartPage() {
                   });
                 }
               }}
-              className="w-full bg-pink-100 text-pink-700 font-semibold py-2 rounded-lg mb-3 hover:bg-pink-200 transition"
-            >
-              PROCEED TO CHECKOUT
-            </button>
+              className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold py-3 rounded-xl mb-3 
+             shadow-lg shadow-pink-300/40 
+             hover:from-pink-600 hover:to-rose-600 
+             hover:shadow-xl hover:shadow-pink-400/50 
+             active:scale-95 transition-all duration-200"
+>
+PLACE ORDER
+</button>
 
 
 
