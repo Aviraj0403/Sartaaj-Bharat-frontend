@@ -261,7 +261,7 @@ export default function CartPage() {
             {/* Apply Coupon Button */}
             {!coupon.applied && (
               <button
-                className="w-full bg-pink-500 hover:bg-pink-600 text-white font-medium py-2 rounded-lg transition mb-4"
+                className="w-full bg-white-100  text-pink-500 font-medium py-2 rounded-lg transition mb-4"
                 onClick={() => setCouponOpen(true)}
               >
                 Apply Coupon
