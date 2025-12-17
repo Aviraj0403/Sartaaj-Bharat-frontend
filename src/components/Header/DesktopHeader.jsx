@@ -179,22 +179,43 @@ export default function DesktopHeader() {
         {item.subcategories.length > 0 && <ChevronDown size={16} className="mt-0.5" />}
       </Link>
 
-  {item.subcategories.length > 0 && activeMenu === index && (
-  <div className="absolute top-full left-0 w-full bg-white border-t border-pink-100 shadow-lg z-50 px-8 py-6">
-    <div className="grid grid-cols-4 gap-6">
+ {item.subcategories.length > 0 && activeMenu === index && (
+  <div className="absolute top-9 left-0 z-50">
+    <ul
+      className="
+        bg-white
+        border border-pink-100
+        shadow-xl
+        rounded-lg
+        w-64
+        max-h-80
+        overflow-y-auto
+        py-2
+        scrollbar-thin
+        scrollbar-thumb-pink-300
+        scrollbar-track-pink-50
+      "
+    >
       {item.subcategories.map((sub, subIndex) => (
         <Link
           key={subIndex}
           to={`/${item.slug}/${sub.slug}`}
-          className="flex flex-col hover:text-pink-600 transition"
+          className="
+            block
+            px-5
+            py-2.5
+            text-sm
+            text-gray-700
+            hover:bg-pink-50
+            hover:text-pink-600
+            transition
+            whitespace-nowrap
+          "
         >
-          <span className="font-semibold text-gray-800">{sub.name}</span>
-          {sub.description && (
-            <span className="text-xs text-gray-500">{sub.description}</span>
-          )}
+          {sub.name}
         </Link>
       ))}
-    </div>
+    </ul>
   </div>
 )}
 
