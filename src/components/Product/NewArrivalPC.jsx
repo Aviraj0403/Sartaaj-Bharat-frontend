@@ -11,6 +11,11 @@ export default function NewArrivalPC({ product, onProductClick }) {
   const activeVariant = product?.variants;
   const size = activeVariant?.size;
   const color = activeVariant?.color;  // Ensure color is extracted from the variant
+  const price = activeVariant?.price;
+const image =
+  activeVariant?.images?.[0] ||
+  activeVariant?.image ||
+  product?.pimage;
 
   const [quantity, setQuantity] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
@@ -39,7 +44,7 @@ export default function NewArrivalPC({ product, onProductClick }) {
   // Popup trigger function
   const triggerPopup = () => {
     setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 2000);
+    setTimeout(() => setShowPopup(false), 10000);
   };
 
   // Handle adding product to the cart
@@ -139,22 +144,48 @@ export default function NewArrivalPC({ product, onProductClick }) {
       </div>
 
       {/* ⭐ SUCCESS POPUP */}
-      {showPopup && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[9999]">
-          <div className="bg-white rounded-2xl px-6 py-5 shadow-2xl flex flex-col items-center gap-2 text-center max-w-[90%] animate-bounce">
-            <div className="bg-green-100 text-green-600 w-14 h-14 rounded-full flex items-center justify-center text-2xl">
+ {showPopup && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+          <div className="bg-white rounded-xl p-5 w-[90%] max-w-sm text-center">
+
+            <div className="w-12 h-12 mx-auto rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xl">
               ✓
             </div>
 
-            <p className="text-gray-800 text-sm font-semibold">{product.name}</p>
+            <img
+              src={image}
+              alt={product.name}
+              className="w-20 h-20 mx-auto mt-3 object-contain"
+            />
 
-            <p className="text-green-600 font-medium text-sm">
+            <p className="font-semibold text-sm mt-2">{product.name}</p>
+            {color && <p className="text-xs">Color: {color}</p>}
+            {size && <p className="text-xs">Size: {size}</p>}
+            <p className="text-pink-500 text-sm font-semibold mt-1">
+              ₹{price}
+            </p>
+
+            <p className="text-green-600 text-sm mt-1">
               Added to cart successfully
             </p>
+
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={() => navigate("/cart")}
+                className="flex-1 bg-pink-500 text-white text-sm py-1.5 rounded"
+              >
+                Go to Cart
+              </button>
+              <button
+                onClick={() => setShowPopup(false)}
+                className="flex-1 border text-sm py-1.5 rounded"
+              >
+                Continue
+              </button>
+            </div>
           </div>
         </div>
       )}
-
       {/* 🛒 Button Area */}
       {quantity > 0 ? (
         <div className="flex flex-col md:flex-row gap-2">

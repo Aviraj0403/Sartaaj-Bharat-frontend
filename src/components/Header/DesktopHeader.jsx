@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getMenuCategories } from "../../services/categoryApi";
 import { useAuth } from "../../context/AuthContext";
 import { useSelector } from "react-redux";
+import { HiOutlinePhone } from "react-icons/hi";
 
 export default function DesktopHeader() {
   const navigate = useNavigate();
@@ -75,9 +76,10 @@ export default function DesktopHeader() {
           Welcome to <strong>Gurmeet Kaur Store</strong>
         </span>
         <div className="flex items-center gap-6 text-gray-700">
-          <span className="flex items-center gap-2">
-            <FaPhone className="text-pink-500" /> +91 9999161803
-          </span>
+         <span className="flex items-center gap-2 text-gray-700">
+  <HiOutlinePhone className="text-pink-500 text-lg" />
+  +91 9999161803
+</span>
           <span className="flex items-center gap-2">
             <FaMapMarkerAlt className="text-pink-500" /> 11021, 5A Block WEA, Sat Nagar, Karol Bagh, Delhi, 110005
           </span>
@@ -177,19 +179,25 @@ export default function DesktopHeader() {
         {item.subcategories.length > 0 && <ChevronDown size={16} className="mt-0.5" />}
       </Link>
 
-      {item.subcategories.length > 0 && activeMenu === index && (
-        <ul className="absolute top-8 left-0 bg-white border border-pink-100 shadow-lg rounded-md w-44 py-2">
-          {item.subcategories.map((sub, subIndex) => (
-            <Link
-              key={subIndex}
-              to={`/${item.slug}/${sub.slug}`}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600"
-            >
-              {sub.name}
-            </Link>
-          ))}
-        </ul>
-      )}
+  {item.subcategories.length > 0 && activeMenu === index && (
+  <div className="absolute top-full left-0 w-full bg-white border-t border-pink-100 shadow-lg z-50 px-8 py-6">
+    <div className="grid grid-cols-4 gap-6">
+      {item.subcategories.map((sub, subIndex) => (
+        <Link
+          key={subIndex}
+          to={`/${item.slug}/${sub.slug}`}
+          className="flex flex-col hover:text-pink-600 transition"
+        >
+          <span className="font-semibold text-gray-800">{sub.name}</span>
+          {sub.description && (
+            <span className="text-xs text-gray-500">{sub.description}</span>
+          )}
+        </Link>
+      ))}
+    </div>
+  </div>
+)}
+
     </li>
   ))}
 

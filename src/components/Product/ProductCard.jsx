@@ -37,7 +37,7 @@ export default function ProductCard({ product, onProductClick }) {
     const result = await addToCart(product, size, color, 1); // Passing color with addToCart
     if (result.success) {
       setShowPopup(true);
-      setTimeout(() => setShowPopup(false), 2000);
+      setTimeout(() => setShowPopup(false), 10000);
     }
   };
 
@@ -63,10 +63,12 @@ export default function ProductCard({ product, onProductClick }) {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 relative 
+   <div
+  className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 relative 
 p-5 md:p-4 
-min-h-[360px] md:min-h-[auto]
-flex flex-col justify-between overflow-hidden">
+flex flex-col justify-between overflow-hidden
+min-h-[420px] md:min-h-[auto]"
+>
 
 
       {/* ❤️ Heart Icon */}
@@ -119,17 +121,60 @@ flex flex-col justify-between overflow-hidden">
       </div>
 
       {/* Popup when added to cart */}
-      {showPopup && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
-          <div className="bg-white rounded-2xl px-6 py-5 shadow-2xl flex flex-col items-center gap-2 text-center max-w-[90%] animate-bounce">
-            <div className="bg-green-100 text-green-600 w-14 h-14 rounded-full flex items-center justify-center text-2xl">
-              ✓
-            </div>
-            <p className="text-gray-800 text-sm font-semibold">{product.name}</p>
-            <p className="text-green-600 font-medium text-sm">Added to cart successfully</p>
-          </div>
-        </div>
-      )}
+   {showPopup && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+    <div className="bg-white rounded-2xl px-6 py-5 shadow-2xl flex flex-col items-center gap-4 text-center max-w-[90%] md:max-w-md ">
+      
+      {/* ✅ Success Icon */}
+      <div className="bg-green-100 text-green-600 w-14 h-14 rounded-full flex items-center justify-center text-2xl">
+        ✓
+      </div>
+
+      {/* ✅ Product Image */}
+      <img
+        src={product.pimage}
+        alt={product.name}
+        className="w-24 h-24 object-contain rounded-md border border-gray-200"
+      />
+
+      {/* ✅ Product Details */}
+      <div className="text-left w-full px-4">
+        <p className="font-semibold text-gray-800 text-base">{product.name}</p>
+        {activeVariant?.color && (
+          <p className="text-sm text-gray-600">Color: {activeVariant.color}</p>
+        )}
+        {activeVariant?.size && (
+          <p className="text-sm text-gray-600">Size: {activeVariant.size}</p>
+        )}
+        <p className="text-pink-500 font-medium mt-1 text-sm">
+          ₹{activeVariant?.price}
+        </p>
+      </div>
+
+      {/* ✅ Success Message */}
+      <p className="text-green-600 font-medium text-sm">Added to cart successfully!</p>
+
+      {/* ✅ Buttons */}
+    {/* ✅ Buttons */}
+<div className="flex items-center gap-2 w-full px-4">
+  <button
+    onClick={() => navigate("/cart")}
+    className="flex-1 bg-pink-500 text-white py-1.5 text-sm rounded-md font-medium hover:bg-pink-600 transition"
+  >
+    Go to Cart
+  </button>
+
+  <button
+    onClick={() => setShowPopup(false)}
+    className="flex-1 border border-gray-300 py-1.5 text-sm rounded-md font-medium text-gray-700 hover:bg-gray-100 transition"
+  >
+    Continue 
+  </button>
+</div>
+
+    </div>
+  </div>
+)}
 
       {/* 🛒 Buttons */}
       {quantity > 0 ? (

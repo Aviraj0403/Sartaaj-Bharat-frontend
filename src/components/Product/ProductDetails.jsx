@@ -165,12 +165,12 @@ useEffect(() => {
             </div>
 
             <div className="relative w-full lg:w-[80%] flex justify-center mb-4 lg:mb-0 order-1 lg:order-2">
-              <div className="w-full h-72 sm:h-80 lg:h-[22rem] flex justify-center items-center bg-gray-50 rounded-xl border border-gray-200 relative">
+              <div className="w-full h-72 sm:h-80 lg:h-[22rem] flex justify-center items-center bg-white rounded-xl border border-gray-200 relative">
                 <FaHeart className="absolute top-4 right-4 text-pink-500 cursor-pointer text-xl" />
                 <img
                   src={mainImage}
                   alt="Product"
-                  className="h-full object-contain transition-transform duration-300 hover:scale-105"
+                  className="h-full object-cover transition-transform duration-300 hover:scale-105"
                 />
               </div>
             </div>
