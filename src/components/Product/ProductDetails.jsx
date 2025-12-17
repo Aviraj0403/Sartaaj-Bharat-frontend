@@ -24,7 +24,7 @@ useEffect(() => {
   if (showPopup) {
     const timer = setTimeout(() => {
       setShowPopup(false);
-    }, 1500); // 1.5 sec
+    }, 10000); // 1.5 sec
 
     return () => clearTimeout(timer);
   }
@@ -113,6 +113,13 @@ useEffect(() => {
 };
 
   const handleBuyNow = async () => {
+    // ✅ Popup helpers
+const popupImage =
+  selectedVariant?.images?.[0] ||
+  product?.pimages?.[0];
+
+const popupPrice = selectedVariant?.price;
+
   if (!selectedVariant || !selectedColor) {
     alert("Please select size and color");
     return;
@@ -343,23 +350,63 @@ useEffect(() => {
             </div>
           )}
         </div>
- {showPopup && (
-  <div className="fixed inset-0 flex items-center justify-center z-[9999] pointer-events-none">
-    <div className="bg-white rounded-2xl px-6 py-5 shadow-2xl flex flex-col items-center gap-2 text-center max-w-[90%] animate-bounce pointer-events-auto">
+{showPopup && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+    <div className="bg-white rounded-2xl px-6 py-5 shadow-2xl flex flex-col items-center gap-4 text-center max-w-[90%] md:max-w-md">
+
+      {/* Success Icon */}
       <div className="bg-green-100 text-green-600 w-14 h-14 rounded-full flex items-center justify-center text-2xl">
         ✓
       </div>
 
-      <p className="text-gray-800 text-sm font-semibold">
-        {product.name}
+      {/* Product Image */}
+      <img
+        src={mainImage}
+        alt={product.name}
+        className="w-24 h-24 object-contain rounded-md border"
+      />
+
+      {/* Product Details */}
+      <div className="text-left w-full px-4">
+        <p className="font-semibold text-gray-800 text-sm">
+          {product.name}
+        </p>
+        <p className="text-xs text-gray-600">
+          Size: {selectedVariant?.size}
+        </p>
+        <p className="text-xs text-gray-600">
+          Color: {selectedColor}
+        </p>
+        <p className="text-pink-500 font-semibold text-sm mt-1">
+          ₹{selectedVariant?.price}
+        </p>
+      </div>
+
+      {/* Message */}
+      <p className="text-green-600 font-medium text-sm">
+        Added to cart successfully!
       </p>
 
-      <p className="text-green-600 font-medium text-sm">
-        Added to cart successfully
-      </p>
+      {/* Buttons – SMALL TEXT + ONE LINE */}
+      <div className="flex gap-3 w-full px-4">
+        <button
+          onClick={() => navigate("/cart")}
+          className="flex-1 bg-pink-500 text-white py-2 rounded-lg text-sm font-medium"
+        >
+          Go to Cart
+        </button>
+
+        <button
+          onClick={() => setShowPopup(false)}
+          className="flex-1 border py-2 rounded-lg text-sm font-medium"
+        >
+          Continue
+        </button>
+      </div>
     </div>
   </div>
 )}
+
 
 
         {/* Related Products */}
