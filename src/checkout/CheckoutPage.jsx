@@ -230,7 +230,10 @@ navigate(`/invoice/${orderId}`, { state: { order: res.data.order } });
           </div>
 
           <div className="text-center mb-8">
-            <button onClick={() => setIsSidebarOpen(true)} className="text-pink-600 font-medium text-lg">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="bg-pink-500 text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-lg hover:bg-pink-600 shadow-md transition"
+            >
               + Add New Address
             </button>
           </div>

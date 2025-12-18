@@ -35,6 +35,7 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
 
   const [location, setLocation] = useState({ lat: null, lng: null });
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   // Function to sync location
   const handleSyncLocation = () => {
@@ -75,18 +76,31 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAddress((prev) => ({ ...prev, [name]: value }));
+    // Clear error for this field as user types
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   // Function to save the address
   const saveAddress = async (e) => {
     e.preventDefault();
-    if (!address.phone || !/^\d{10}$/.test(address.phone)) {
-      alert("⚠️ Enter a valid 10-digit phone number.");
-      return;
-    }
+    // Client-side validation
+    const newErrors = {};
+    // required fields: phone, pincode, street, city
+    if (!address.phone) newErrors.phone = "Phone number is required";
+    else if (!/^\d{10}$/.test(address.phone)) newErrors.phone = "Enter a valid 10-digit phone number";
 
-    if (!address.pincode || !/^\d{6}$/.test(address.pincode)) {
-      alert("⚠️ Enter a valid 6-digit pincode.");
+    if (!address.pincode) newErrors.pincode = "Pincode is required";
+    else if (!/^\d{6}$/.test(address.pincode)) newErrors.pincode = "Enter a valid 6-digit pincode";
+
+    if (!address.street) newErrors.street = "Street address is required";
+    if (!address.city) newErrors.city = "City is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      // focus first error field
+      const firstField = Object.keys(newErrors)[0];
+      const el = document.getElementsByName(firstField)[0];
+      if (el) el.focus();
       return;
     }
 
@@ -116,14 +130,14 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
   const fields = [
     { label: "User Name", field: "name", type: "text" },
     { label: "Email", field: "email", type: "email" },
-    { label: "Phone Number *", field: "phone", type: "tel", maxLength: 10 },
-    { label: "Street Address", field: "street", type: "text" },
+    { label: "Phone Number *", field: "phone", type: "tel", maxLength: 10, required: true },
+    { label: "Street Address *", field: "street", type: "text", required: true },
     { label: "Flat / House No.", field: "flat", type: "text" },
     { label: "Landmark (optional)", field: "landmark", type: "text" },
-    { label: "City", field: "city", type: "text" },
+    { label: "City *", field: "city", type: "text", required: true },
     { label: "State", field: "state", type: "text" },
     { label: "Country", field: "country", type: "text" },
-    { label: "Pincode", field: "pincode", type: "text", maxLength: 6 },
+    { label: "Pincode *", field: "pincode", type: "text", maxLength: 6, required: true },
   ];
 
   return (
@@ -168,7 +182,9 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
           <form onSubmit={saveAddress} className="space-y-4">
             {fields.map(({ label, field, type, maxLength }) => (
               <div key={field}>
-                <label className="block text-gray-700 font-medium mb-1">{label}</label>
+                <label className="block text-gray-700 font-medium mb-1">
+                  {label}
+                </label>
                 <input
                   type={type}
                   name={field}
@@ -176,8 +192,11 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
                   maxLength={maxLength}
                   onChange={handleChange}
                   placeholder={label}
-                  className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-pink-400"
+                  className={`w-full rounded-lg px-3 py-2 outline-none border ${errors[field] ? 'border-red-500 focus:ring-2 focus:ring-red-400' : 'border-gray-300 focus:ring-2 focus:ring-pink-400'}`}
                 />
+                {errors[field] && (
+                  <p className="text-red-500 text-sm mt-1">{errors[field]}</p>
+                )}
               </div>
             ))}
 
