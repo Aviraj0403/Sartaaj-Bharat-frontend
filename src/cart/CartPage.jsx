@@ -300,7 +300,8 @@ export default function CartPage() {
                 if (!user) {
                   // If the user is not logged in, redirect to login page
                   navigate("/signin", {
-                    state: { from: "/checkout" }, // Redirect back to checkout after login
+                    // Redirect back to cart after successful login
+                    state: { from: "/cart" },
                   });
                 } else {
                   // Proceed to checkout if the user is logged in

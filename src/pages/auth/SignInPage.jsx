@@ -21,7 +21,11 @@ const SignInPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const redirectTo = location.state?.from?.pathname || "/";
+  const redirectTo =
+  (location.state?.from && location.state.from.pathname) ||
+  location.state?.from || // in case it's a string
+  "/";
+
 
   /* ---------------- EMAIL LOGIN ---------------- */
   const handleCustomSignIn = async () => {

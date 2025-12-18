@@ -26,6 +26,7 @@ import NewProducts from "./pages/newProduct/NewProducts.jsx";
 import MobileSearchPage from "./components/Header/MobileSearchPage.jsx";
 // import Login from "./authentication/Login.jsx";
 // import Signup from "./authentication/Signup.jsx";
+import RequireAuth from "./components/RequireAuth.jsx";
 
 const router = createBrowserRouter([
   {
@@ -43,7 +44,12 @@ const router = createBrowserRouter([
       { path: "/order/:orderId", element: <OrderDetails /> },
 
       { path: "/cart", element: <CartPage /> },
-      { path: "/checkout", element: <CheckoutPage /> },
+      // { path: "/checkout", element: <CheckoutPage /> },
+       { path: "/checkout", element: (
+          <RequireAuth>
+            <CheckoutPage />
+          </RequireAuth>
+      ) },
       { path: "/new-product", element: <NewProductsPage /> },
       { path: "/product/:slug", element: <ProductDetails /> },
       { path: "/:categorySlug", element: <CategoryDetails /> },
