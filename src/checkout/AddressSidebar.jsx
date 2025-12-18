@@ -86,6 +86,8 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     // Client-side validation
     const newErrors = {};
     // required fields: phone, pincode, street, city
+    if(!address.name) newErrors.name = "Name is required";
+
     if (!address.phone) newErrors.phone = "Phone number is required";
     else if (!/^\d{10}$/.test(address.phone)) newErrors.phone = "Enter a valid 10-digit phone number";
 
@@ -128,12 +130,12 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
   if (!isOpen) return null;
 
   const fields = [
-    { label: "User Name", field: "name", type: "text" },
+    { label: "Name", field: "name", type: "text" },
     { label: "Email", field: "email", type: "email" },
     { label: "Phone Number *", field: "phone", type: "tel", maxLength: 10, required: true },
-    { label: "Street Address *", field: "street", type: "text", required: true },
-    { label: "Flat / House No.", field: "flat", type: "text" },
-    { label: "Landmark (optional)", field: "landmark", type: "text" },
+    { label: "Address *", field: "street", type: "text", required: true },
+    // { label: "Flat / House No.", field: "flat", type: "text" },
+    // { label: "Landmark (optional)", field: "landmark", type: "text" },
     { label: "City *", field: "city", type: "text", required: true },
     { label: "State", field: "state", type: "text" },
     { label: "Country", field: "country", type: "text" },
