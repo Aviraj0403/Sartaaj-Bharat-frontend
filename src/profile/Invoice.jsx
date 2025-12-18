@@ -55,10 +55,12 @@ export default function Invoice() {
 
   const subtotal = items.reduce((acc, item) => acc + item.price * item.qty, 0);
   const couponDiscount = order.discountAmount || 0;
-  const finalAmount = subtotal - couponDiscount;
-  // No GST as per new policy
-  const shipping = finalAmount > 10 ? 80 : 0; // Shipping ₹80 when final amount > 10
-  const total = subtotal + shipping - couponDiscount;
+    const finalAmount = subtotal - couponDiscount;
+     // No GST as per new policy
+     // Prefer backend shipping when available; otherwise use static ₹80
+     const shipping = order.shipping !== undefined ? order.shipping : 80;
+     // Prefer backend totalAmount when available; otherwise compute
+     const total = order.totalAmount !== undefined ? order.totalAmount : (subtotal - couponDiscount);
 
   // PDF DOWNLOAD FUNCTION
   const handleDownload = async () => {
@@ -205,10 +207,14 @@ export default function Invoice() {
 
         {/* TOTALS SECTION */}
         <div className="mt-6 flex flex-col items-end text-gray-800 font-semibold text-xs md:text-sm space-y-1">
-          <p>Subtotal: ₹{subtotal.toFixed(2)}</p>
+          {/* <p>Subtotal: ₹{subtotal.toFixed(2)}</p> */}
           <p>Coupon Discount: -₹{couponDiscount.toFixed(2)}</p>
-          <p>Shipping: {shipping === 0 ? "Free" : `₹${shipping.toFixed(2)}`}</p>
-          <p className="border-t pt-2 text-lg font-bold">Total: ₹{total.toFixed(2)}</p>
+          {/* <p>Shipping: {shipping === 0 ? "Free" : `₹${shipping.toFixed(2)}`}</p>
+           */}
+           <p>Shipping: ₹80 </p>
+                    <p>Shipping: {shipping === 0 ? "Free" : `₹${shipping.toFixed(2)}`}</p>
+          <p className="border-t pt-2 text-lg font-bold">Total: ₹{total.toFixed(2)} </p>
+                  <p className="border-t pt-2 text-lg font-bold">Total: ₹{total.toFixed(2)}</p>
         </div>
 
       </div>

@@ -23,6 +23,12 @@ export default function Invoice() {
   }
 
   const { customer, shippingAddress, items, appliedCoupon, finalAmount, subtotal, gst, shipping, paymentMethod, paymentStatus, id: id } = orderData;
+  // For this invoice: always show shipping as ₹80 in the UI, but do NOT modify the final amount
+  const shippingComputed = 80; // static display only
+  // Display the checkout's finalAmount as-is when available; otherwise compute a sensible fallback
+  const displayFinal = finalAmount !== undefined
+    ? Number(finalAmount)
+    : (Number(subtotal || 0) + shippingComputed - (appliedCoupon?.discountAmount || 0));
 
   // PDF DOWNLOAD FUNCTION
   const handleDownload = async () => {
@@ -176,10 +182,11 @@ export default function Invoice() {
           ) : appliedCoupon ? (
             <p>Coupon: {appliedCoupon.code}</p>
           ) : null}
-          <p>Shipping: {shipping === 0 ? "Free" : `₹${(shipping || 0).toFixed(2)}`}</p>
+          <p>Shipping: ₹{shippingComputed.toFixed(2)}</p>
+          <p className="text-sm text-gray-600">Your order will be delivered within 3-5 business days.</p>
 
           <p className="text-lg text-pink-600 font-bold">
-            Grand Total: ₹{finalAmount.toFixed(2) || "0.00"}
+            Grand Total: ₹{(displayFinal || 0).toFixed(2)}
           </p>
         </div>
 
