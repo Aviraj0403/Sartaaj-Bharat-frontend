@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "../utils/Axios"; // Your Axios instance
+import { addAddress, updateAddress } from "../services/userApi";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { toast } from 'react-toastify'; // Assuming you use react-toastify for notifications
 import { useAuth } from "../context/AuthContext";
 
-export default function AddressSidebar({ isOpen, onClose, refreshAddresses, userName, email }) {
+export default function AddressSidebar({ isOpen, onClose, refreshAddresses, userName, email, address: propAddress, embedded = false }) {
 
   const { user } = useAuth();
   const [address, setAddress] = useState({
@@ -17,10 +18,12 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     landmark: "",
     city: "",
     state: "",
-    country: "",
+    country: "India",
     pincode: "",
     addressType: "Home",
   });
+
+  const [formMode, setFormMode] = useState("add"); // 'add' or 'edit'
 
 
   useEffect(() => {
@@ -32,6 +35,34 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
       }));
     }
   }, [user]);
+
+  // If parent passes an address (for edit), populate form
+  useEffect(() => {
+    if (propAddress) {
+      setFormMode("edit");
+      // map incoming address fields to our local state shape
+      setAddress((prev) => ({
+        ...prev,
+        name: propAddress.name || propAddress.fullName || prev.name,
+        email: propAddress.email || prev.email,
+        phone: propAddress.phone || propAddress.phoneNumber || prev.phone,
+        street: propAddress.street || propAddress.flat || prev.street,
+        flat: propAddress.flat || "",
+        landmark: propAddress.landmark || "",
+        city: propAddress.city || prev.city,
+        state: propAddress.state || prev.state,
+        country: propAddress.country || prev.country || "India",
+        pincode: propAddress.pincode || propAddress.postalCode || prev.pincode,
+        addressType: propAddress.addressType || propAddress.type || prev.addressType,
+      }));
+      if (propAddress.location && propAddress.location.coordinates) {
+        const [lng, lat] = propAddress.location.coordinates;
+        setLocation({ lat, lng });
+      }
+    } else {
+      setFormMode("add");
+    }
+  }, [propAddress]);
 
   const [location, setLocation] = useState({ lat: null, lng: null });
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +85,7 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
               street: data.display_name,
               city: components.city || components.town,
               state: components.state || "",
-              country: components.country || "",
+              country: components.country || "India",
               pincode: components.postcode || "",
             }));
           } catch (err) {
@@ -114,8 +145,14 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     };
 
     try {
-      await axios.post("/users/address", addressPayload, { withCredentials: true });
-      toast.success("✅ Address saved!");
+      if (formMode === "edit" && propAddress) {
+        const id = propAddress._id || propAddress.id;
+        await updateAddress(id, addressPayload);
+        toast.success("✅ Address updated!");
+      } else {
+        await addAddress(addressPayload);
+        toast.success("✅ Address saved!");
+      }
       setIsLoading(false);
       onClose(); // Automatically close the sidebar after successful save
       if (refreshAddresses) refreshAddresses();
@@ -136,15 +173,15 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     { label: "Address *", field: "street", type: "text", required: true },
     // { label: "Flat / House No.", field: "flat", type: "text" },
     // { label: "Landmark (optional)", field: "landmark", type: "text" },
+    { label: "Pincode *", field: "pincode", type: "text", maxLength: 6, required: true },
     { label: "City *", field: "city", type: "text", required: true },
     { label: "State", field: "state", type: "text" },
-    { label: "Country", field: "country", type: "text" },
-    { label: "Pincode *", field: "pincode", type: "text", maxLength: 6, required: true },
+    // { label: "Country", field: "country", type: "text" },
+    
   ];
 
-  return (
-    <div className="fixed inset-0 flex justify-end z-[9999]">
-      <div className="w-full sm:w-[420px] bg-white h-full shadow-2xl p-0 overflow-y-auto relative">
+  const panel = (
+    <div className="w-full sm:w-[420px] bg-white h-full shadow-2xl p-0 overflow-y-auto relative">
         {/* Header Section */}
         <div className="sticky top-0 z-[10000] bg-white px-6 py-4 flex justify-between items-center border-b border-gray-200 shadow-sm">
           <h2 className="text-xl font-semibold text-gray-800">Add New Address</h2>
@@ -230,6 +267,15 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
           </form>
         </div>
       </div>
+  );
+
+  if (embedded) {
+    return panel;
+  }
+
+  return (
+    <div className="fixed inset-0 flex justify-end z-[9999]">
+      {panel}
     </div>
   );
 }

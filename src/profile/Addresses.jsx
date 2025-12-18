@@ -115,7 +115,7 @@ export default function Addresses() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {addresses.map((addr) => (
             <div
-              key={addr._id}
+              key={addr._id || addr.id}
               className={`relative p-6 border-2 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 ${
                 addr.isDefault
                   ? "border-pink-500 bg-pink-50"
@@ -141,15 +141,15 @@ export default function Addresses() {
                       )}
                     </h2>
                     <p className="text-gray-600 mt-1 leading-relaxed">
-                      {addr.flat && `${addr.flat}, `} 
-                      {addr.street},<br />
-                      {addr.landmark && `${addr.landmark}, `} 
-                      {addr.city}, {addr.state} - {addr.pincode}
+                      {addr.flat && `${addr.flat}, `}
+                      {addr.street || addr.flat},<br />
+                      {addr.landmark && `${addr.landmark}, `}
+                      {addr.city}, {addr.state} - {addr.pincode || addr.postalCode}
                       <br />
                       {addr.country}
                     </p>
-                    {addr.phone && (
-                      <p className="text-gray-500 text-sm mt-2">📞 {addr.phone}</p>
+                    {(addr.phone || addr.phoneNumber) && (
+                      <p className="text-gray-500 text-sm mt-2">📞 {addr.phone || addr.phoneNumber}</p>
                     )}
                   </div>
                 </div>
@@ -167,7 +167,7 @@ export default function Addresses() {
 
                 {!addr.isDefault && (
                   <button
-                    onClick={() => handleSetDefault(addr._id)}
+                    onClick={() => handleSetDefault(addr._id || addr.id)}
                     className="text-green-600 hover:bg-green-50 px-4 py-2 rounded-lg border border-green-200 transition text-sm"
                   >
                     Set Default
@@ -175,7 +175,7 @@ export default function Addresses() {
                 )}
 
                 <button
-                  onClick={() => handleDelete(addr._id)}
+                  onClick={() => handleDelete(addr._id || addr.id)}
                   className="flex items-center gap-1 text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg border border-red-200 transition"
                 >
                   <Trash2 size={16} />

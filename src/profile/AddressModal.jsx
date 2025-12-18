@@ -38,6 +38,7 @@ export default function AddressModal({ isOpen, onClose, address, onSuccess }) {
           onClose={onClose}
           address={currentAddress}
           refreshAddresses={handleSidebarSuccess}
+          embedded={true}
         />
 
         {/* Close Button */}
