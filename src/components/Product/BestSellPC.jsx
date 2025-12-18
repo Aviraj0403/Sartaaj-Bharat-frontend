@@ -95,7 +95,7 @@ export default function BestSellPC({ product, onProductClick }) {
 
       {/* 🏷️ Product Info */}
       <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-1 text-left">
-        {product.name}
+        <span className="block w-full line-clamp-2" title={product.name}>{product.name}</span>
       </h3>
 
       {/* 💰 Price and Rating */}

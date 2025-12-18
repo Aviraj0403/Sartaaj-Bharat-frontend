@@ -212,8 +212,8 @@ export default function Invoice() {
           {/* <p>Shipping: {shipping === 0 ? "Free" : `₹${shipping.toFixed(2)}`}</p>
            */}
            <p>Shipping: ₹80 </p>
-                    <p>Shipping: {shipping === 0 ? "Free" : `₹${shipping.toFixed(2)}`}</p>
-          <p className="border-t pt-2 text-lg font-bold">Total: ₹{total.toFixed(2)} </p>
+                    {/* <p>Shipping: {shipping === 0 ? "Free" : `₹${shipping.toFixed(2)}`}</p> */}
+          {/* <p className="border-t pt-2 text-lg font-bold">Total: ₹{total.toFixed(2)} </p> */}
                   <p className="border-t pt-2 text-lg font-bold">Total: ₹{total.toFixed(2)}</p>
         </div>
 

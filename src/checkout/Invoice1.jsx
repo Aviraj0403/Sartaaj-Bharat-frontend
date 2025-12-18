@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { Printer, Download } from "lucide-react";
+import { Printer, Download, Truck } from "lucide-react";
 import logo from "../image/logo-cosmetic2.jpg";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -183,7 +183,12 @@ export default function Invoice() {
             <p>Coupon: {appliedCoupon.code}</p>
           ) : null}
           <p>Shipping: ₹{shippingComputed.toFixed(2)}</p>
-          <p className="text-sm text-gray-600">Your order will be delivered within 3-5 business days.</p>
+          <div className="self-start md:self-center">
+            <div className="inline-flex items-center gap-2 bg-pink-50 border border-pink-100 text-pink-700 px-4 py-2 rounded-lg">
+              <Truck size={16} />
+              <span className="text-sm font-medium">Your order will be delivered within 3-5 business days.</span>
+            </div>
+          </div>
 
           <p className="text-lg text-pink-600 font-bold">
             Grand Total: ₹{(displayFinal || 0).toFixed(2)}

@@ -98,9 +98,8 @@ min-h-[420px] md:min-h-[auto]"
 
       {/* 📝 Product Title */}
     <h3 className="text-base md:text-base font-semibold text-gray-800 mb-2">
-
-        {product.name}
-      </h3>
+      <span className="block w-full line-clamp-2" title={product.name}>{product.name}</span>
+    </h3>
 
       {/* 💰 Price + ⭐ Rating */}
       <div className="flex justify-between items-center mb-3 px-1 text-sm">
@@ -139,7 +138,9 @@ min-h-[420px] md:min-h-[auto]"
 
       {/* ✅ Product Details */}
       <div className="text-left w-full px-4">
-        <p className="font-semibold text-gray-800 text-base">{product.name}</p>
+        <p className="font-semibold text-gray-800 text-base">
+          <span className="block w-full truncate" title={product.name}>{product.name}</span>
+        </p>
         {activeVariant?.color && (
           <p className="text-sm text-gray-600">Color: {activeVariant.color}</p>
         )}

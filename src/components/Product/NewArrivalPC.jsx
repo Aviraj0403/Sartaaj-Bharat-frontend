@@ -125,8 +125,7 @@ const image =
 
       {/* 📝 Product Info */}
      <h3 className="text-base md:text-base font-semibold text-gray-800 mb-2">
-
-        {product.name}
+        <span className="block w-full line-clamp-2" title={product.name}>{product.name}</span>
       </h3>
 
       {/* 💰 Price and Rating */}
