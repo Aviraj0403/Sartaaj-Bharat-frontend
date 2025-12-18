@@ -170,7 +170,13 @@ export default function Invoice() {
 
         {/* TOTALS SECTION */}
         <div className="mt-6 flex flex-col items-end text-gray-800 font-semibold text-xs md:text-sm space-y-1">
-          {/* <p>Shipping: {shipping === 0 ? "Free" : `₹${shipping?.toFixed(2) || "0.00"}`}</p> */}
+          <p>Subtotal: ₹{subtotal?.toFixed(2) || "0.00"}</p>
+          {appliedCoupon && appliedCoupon.discountAmount ? (
+            <p>Coupon Discount: -₹{(appliedCoupon.discountAmount).toFixed(2)}</p>
+          ) : appliedCoupon ? (
+            <p>Coupon: {appliedCoupon.code}</p>
+          ) : null}
+          <p>Shipping: {shipping === 0 ? "Free" : `₹${(shipping || 0).toFixed(2)}`}</p>
 
           <p className="text-lg text-pink-600 font-bold">
             Grand Total: ₹{finalAmount.toFixed(2) || "0.00"}

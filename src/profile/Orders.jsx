@@ -59,6 +59,12 @@ export default function Orders() {
           const mainItem = order.items[0];
           const remainingCount = order.items.length - 1;
 
+          // Compute subtotal and fallback shipping when backend doesn't provide it
+          const subtotal = order.items.reduce((acc, it) => acc + (it.selectedVariant?.price || 0) * (it.quantity || 0), 0);
+          const couponDiscount = order.discountAmount || 0;
+          const finalAmount = subtotal - couponDiscount;
+          const shippingAmount = order.shipping !== undefined ? order.shipping : (finalAmount > 10 ? 80 : 0);
+
           return (
             <div
               key={order._id} // Use _id from the database as key
@@ -111,10 +117,15 @@ export default function Orders() {
       <p><strong>Size:</strong> {mainItem.selectedVariant?.size}</p>
     </div>
 
-    <p className="text-gray-800 font-semibold mt-2 text-sm sm:text-base">
-      Total:{" "}
-      <span className="text-pink-500 font-bold">₹{order.totalAmount}</span> {/* Display total amount */}
-    </p>
+    <div className="text-gray-800 mt-2 text-sm sm:text-base">
+      {couponDiscount > 0 && (
+        <p className="text-gray-600 text-sm">Coupon: -₹{couponDiscount}</p>
+      )}
+      <p className="text-gray-600 text-sm">Shipping: ₹{shippingAmount}</p>
+      <p className="text-gray-800 font-semibold mt-1">
+        Total: <span className="text-pink-500 font-bold">₹{order.totalAmount}</span>
+      </p>
+    </div>
 
     <p className="text-gray-600 text-sm mt-1">{order.paymentStatus}</p>
   </div>

@@ -23,6 +23,9 @@ export default function CheckoutPage() {
     finalAmount = grandTotal,
   } = location.state || {};
 
+  // Display shipping on checkout page (same rule as Cart): ₹80 when finalAmount > 10
+  const displayShipping = (finalAmount && finalAmount > 10) ? 80 : 0;
+
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -68,6 +71,9 @@ export default function CheckoutPage() {
 
     setIsPlacingOrder(true);
   //  console.log("cartItems:", cartItems);
+    // Compute shipping (client-side rule): ₹80 when final amount > 10
+    const shipping = (finalAmount && finalAmount > 10) ? 80 : 0;
+
     // FINAL PAYLOAD — WORKS 100% WITH YOUR BACKEND
     const payload = {
       items: cartItems.map(item => ({
@@ -94,6 +100,8 @@ export default function CheckoutPage() {
       paymentMethod,
       discountCode: appliedCoupon?.code || null,
       totalAmount: Number(grandTotal),
+      shipping,
+      gst: 0,
     };
 
     if (paymentMethod === "Razorpay") {
@@ -271,6 +279,10 @@ navigate(`/invoice/${orderId}`, { state: { order: res.data.order } });
         <span>Total Items:</span>
         <span className="font-semibold">{totalQuantity}</span>
       </div>
+        <div className="flex justify-between text-gray-700">
+          <span>Shipping:</span>
+          <span>₹{displayShipping.toFixed(2)}</span>
+        </div>
       {appliedCoupon && (
         <div className="flex justify-between text-green-600">
           <span>Coupon: {appliedCoupon.code}</span>

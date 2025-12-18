@@ -231,8 +231,7 @@ export default function CartPage() {
               <p className="text-gray-600 text-sm">TOTAL AMOUNT</p>
               <p className="text-2xl font-bold text-pink-600 mt-1">
                 ₹{
-                  (finalAmount + (finalAmount * 0.05) + (finalAmount > 10 ? 23 : 0))
-                    .toFixed(2)
+                  (finalAmount + (finalAmount > 10 ? 80 : 0)).toFixed(2)
                 }
               </p>
             </div>
@@ -288,11 +287,7 @@ export default function CartPage() {
 
               <div className="flex justify-between">
                 <p>Delivery Fee</p>
-                <p>₹23.00</p>
-              </div>
-              <div className="flex justify-between">
-                <p>GST (5%)</p>
-                <p>₹{(finalAmount * 0.05).toFixed(2)}</p>
+                <p>₹{(finalAmount > 10 ? 80 : 0).toFixed(2)}</p>
               </div>
             </div>
             <button
@@ -310,8 +305,9 @@ export default function CartPage() {
                       cartItems, // Items in the cart
                       totalAmount, // Total amount before discount
                       totalQuantity: totalItems, // Total quantity of items
-                      grandTotal: (finalAmount + (finalAmount * 0.05) + (finalAmount > 10 ? 23 : 0))
+                      grandTotal: (finalAmount + (finalAmount > 10 ? 80 : 0))
                         .toFixed(2), // Final amount after coupon (if applied)
+                      // NOTE: GST removed and shipping updated to ₹80
                       appliedCoupon: coupon.applied ? coupon : null, // Coupon details (if any)
                       finalAmount, // Final amount after discount
                     },
