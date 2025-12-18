@@ -172,12 +172,12 @@ const popupPrice = selectedVariant?.price;
             </div>
 
             <div className="relative w-full lg:w-[80%] flex justify-center mb-4 lg:mb-0 order-1 lg:order-2">
-              <div className="w-full h-72 sm:h-80 lg:h-[22rem] flex justify-center items-center bg-white rounded-xl border border-gray-200 relative">
+              <div className="w-full max-h-[22rem] flex justify-center items-center bg-white rounded-xl border border-gray-200 relative overflow-hidden">
                 <FaHeart className="absolute top-4 right-4 text-pink-500 cursor-pointer text-xl" />
                 <img
                   src={mainImage}
                   alt="Product"
-                  className="h-full object-cover transition-transform duration-300 hover:scale-105"
+                  className="max-h-[22rem] w-auto max-w-full object-contain transition-transform duration-300 hover:scale-105"
                 />
               </div>
             </div>
@@ -221,7 +221,7 @@ const popupPrice = selectedVariant?.price;
             {/* Variants */}
             <div className="mb-5">
               <p className="text-gray-700 font-medium mb-2">Size</p>
-              <div className="flex gap-2 mb-3">
+              <div className="flex gap-2 flex-wrap mb-3">
                 {variants.map((variant, i) => (
                   <button
                     key={i}
@@ -236,16 +236,16 @@ const popupPrice = selectedVariant?.price;
               </div>
 
               <p className="text-gray-700 font-medium mb-2">Color</p>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 {selectedVariant?.color.map((color, index) => (
                   <button
                     key={index}
                     onClick={() => handleColorSelect(color)}
-                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition ${
-                      selectedColor === color ? "bg-pink-100 border-pink-500" : ""
+                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition text-left min-w-[64px] max-w-[200px] ${
+                      selectedColor === color ? "bg-pink-100 border-pink-500 text-pink-600 font-medium" : ""
                     }`}
                   >
-                    {color}
+                    <span className="block line-clamp-2 leading-tight">{color}</span>
                   </button>
                 ))}
               </div>
