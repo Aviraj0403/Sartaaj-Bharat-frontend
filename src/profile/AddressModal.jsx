@@ -26,29 +26,37 @@ export default function AddressModal({ isOpen, onClose, address, onSuccess }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-pink-600 mb-6 text-center">
-          {formMode === "edit" ? "Edit Address" : "Add New Address"}
-        </h2>
-
-        {/* Pass the appropriate props to AddressSidebar based on whether it's add or edit */}
-        <AddressSidebar
-          isOpen={isOpen}
-          onClose={onClose}
-          address={currentAddress}
-          refreshAddresses={handleSidebarSuccess}
-          embedded={true}
-        />
-
-        {/* Close Button */}
-        <div className="mt-4 text-center">
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-60"
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-lg shadow-md w-full max-w-2xl overflow-hidden mx-4"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div className="flex items-center justify-between px-5 py-3 border-b bg-white">
+          <h2 className="text-lg font-semibold text-gray-800">
+            {formMode === "edit" ? "Edit Address" : "Add New Address"}
+          </h2>
           <button
             onClick={onClose}
-            className="bg-gray-200 text-gray-600 py-2 px-4 rounded-lg hover:bg-gray-300 transition"
+            aria-label="Close address modal"
+            className="text-gray-500 hover:text-gray-700 px-2 py-1"
           >
-            Close
+            ✕
           </button>
+        </div>
+
+        <div className="p-0">
+          <AddressSidebar
+            isOpen={true}
+            onClose={onClose}
+            address={currentAddress}
+            refreshAddresses={handleSidebarSuccess}
+            embedded={true}
+          />
         </div>
       </div>
     </div>
