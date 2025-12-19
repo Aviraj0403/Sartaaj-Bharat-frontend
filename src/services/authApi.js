@@ -66,4 +66,14 @@ export const refreshToken = async () => {
   return res.data;
 };
 
+// phoneAuth
+export const sendPhoneOtp = async (phoneData) => {
+  const res = await Axios.post('/auth/phone/send-otp', phoneData);
+  return res.data;
+};
+export const verifyPhoneOtp = async (otpData) => {
+  const res = await Axios.post('/auth/phone/verify-otp', otpData);
+  return res.data;
+}
+
 

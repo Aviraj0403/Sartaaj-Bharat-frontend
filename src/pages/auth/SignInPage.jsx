@@ -17,7 +17,7 @@ const SignInPage = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { login, googleLogin } = useAuth();
+  const { login, googleLogin, requestPhoneOtp, verifyPhoneOtpAndLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -61,11 +61,11 @@ const SignInPage = () => {
 
     setIsSubmitting(true);
     try {
-      // 🔗 API call here
+      await requestPhoneOtp(mobile);
       setOtpSent(true);
       toast.success("OTP sent successfully");
-    } catch {
-      toast.error("Failed to send OTP");
+    } catch (err) {
+      toast.error(err?.message || "Failed to send OTP");
     } finally {
       setIsSubmitting(false);
     }
@@ -79,11 +79,11 @@ const SignInPage = () => {
 
     setIsSubmitting(true);
     try {
-      // 🔗 API call here
+      await verifyPhoneOtpAndLogin(mobile, otp);
       toast.success("Login successful");
       navigate(redirectTo, { replace: true });
-    } catch {
-      toast.error("Invalid OTP");
+    } catch (err) {
+      toast.error(err?.message || "Invalid OTP");
     } finally {
       setIsSubmitting(false);
     }

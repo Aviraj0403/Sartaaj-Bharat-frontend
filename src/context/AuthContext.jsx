@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { clearCart } from "../features/cart/cartSlice";
 import { fetchBackendCart, syncCartOnLogin } from "../features/cart/cartThunk";
 import Axios from "../utils/Axios";
+import { sendPhoneOtp, verifyPhoneOtp } from "../services/authApi";
 
 // Firebase imports
 import {
@@ -75,6 +76,24 @@ export const AuthProvider = ({ children }) => {
     setCartSyncing(false);
     return res.data.data;
   };
+  // ---------------- PHONE OTP (backend) ----------------
+  const requestPhoneOtp = async (phoneNumber) => {
+    // expects { phoneNumber }
+    const res = await sendPhoneOtp({ phoneNumber });
+    return res;
+  };
+
+  const verifyPhoneOtpAndLogin = async (phoneNumber, otp) => {
+    // verify otp with backend, then fetch auth/me to get user
+    await verifyPhoneOtp({ phoneNumber, otp });
+    const res = await Axios.get("/auth/me");
+    setUser(res.data.data);
+    setCartSyncing(true);
+    await dispatch(syncCartOnLogin()).unwrap();
+    dispatch(fetchBackendCart()).unwrap();
+    setCartSyncing(false);
+    return res.data.data;
+  };
   const sendOtp = async (phoneNumber) => {
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(
@@ -119,6 +138,8 @@ export const AuthProvider = ({ children }) => {
         cartSyncing,
         login,
         googleLogin,
+        requestPhoneOtp,
+        verifyPhoneOtpAndLogin,
         sendOtp,
         verifyOtp,
         logout,
