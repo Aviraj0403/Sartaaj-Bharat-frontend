@@ -9,8 +9,11 @@ export default function ProductCard({ product, onProductClick }) {
 
   const activeVariant = product?.variants;
   const size = activeVariant?.size;
-  const color = activeVariant?.color; // Add color to activeVariant
-  // console.log("Active Variant Color:", product);
+  // const color = activeVariant?.color; // Add color to activeVariant
+  const color = Array.isArray(activeVariant?.color)
+    ? activeVariant.color[0]
+    : activeVariant?.color;
+  console.log("Active Variant Color:", product);
   const [quantity, setQuantity] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
 
@@ -20,7 +23,8 @@ export default function ProductCard({ product, onProductClick }) {
     );
     setQuantity(item?.quantity || 0);
   }, [cartItems, size, color, product._id]);
-
+  console.log("cartItems:", cartItems);
+  console.log("ProductCard Color:", color);
   // const discount = activeVariant?.realPrice
   //   ? Math.round(
   //       ((activeVariant.realPrice - activeVariant.price) / activeVariant.realPrice) * 100
@@ -63,12 +67,12 @@ export default function ProductCard({ product, onProductClick }) {
   };
 
   return (
-   <div
-  className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 relative 
+    <div
+      className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 relative 
 p-5 md:p-4 
 flex flex-col justify-between overflow-hidden
 min-h-[420px] md:min-h-[auto]"
->
+    >
 
 
       {/* ❤️ Heart Icon */}
@@ -85,7 +89,7 @@ min-h-[420px] md:min-h-[auto]"
 
       {/* 🖼 Product Image */}
       <div
-       className="w-full h-36 md:h-36 flex justify-center items-center mb-4 cursor-pointer"
+        className="w-full h-36 md:h-36 flex justify-center items-center mb-4 cursor-pointer"
 
         onClick={handleProductClick}
       >
@@ -97,9 +101,9 @@ min-h-[420px] md:min-h-[auto]"
       </div>
 
       {/* 📝 Product Title */}
-    <h3 className="text-base md:text-base font-semibold text-gray-800 mb-2">
-      <span className="block w-full line-clamp-2" title={product.name}>{product.name}</span>
-    </h3>
+      <h3 className="text-base md:text-base font-semibold text-gray-800 mb-2">
+        <span className="block w-full line-clamp-2" title={product.name}>{product.name}</span>
+      </h3>
 
       {/* 💰 Price + ⭐ Rating */}
       <div className="flex justify-between items-center mb-3 px-1 text-sm">
@@ -120,62 +124,65 @@ min-h-[420px] md:min-h-[auto]"
       </div>
 
       {/* Popup when added to cart */}
-   {showPopup && (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
-    <div className="bg-white rounded-2xl px-6 py-5 shadow-2xl flex flex-col items-center gap-4 text-center max-w-[90%] md:max-w-md ">
-      
-      {/* ✅ Success Icon */}
-      <div className="bg-green-100 text-green-600 w-14 h-14 rounded-full flex items-center justify-center text-2xl">
-        ✓
-      </div>
+      {showPopup && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+          <div className="bg-white rounded-2xl px-6 py-5 shadow-2xl flex flex-col items-center gap-4 text-center max-w-[90%] md:max-w-md ">
 
-      {/* ✅ Product Image */}
-      <img
-        src={product.pimage}
-        alt={product.name}
-        className="w-24 h-24 object-contain rounded-md border border-gray-200"
-      />
+            {/* ✅ Success Icon */}
+            <div className="bg-green-100 text-green-600 w-14 h-14 rounded-full flex items-center justify-center text-2xl">
+              ✓
+            </div>
 
-      {/* ✅ Product Details */}
-      <div className="text-left w-full px-4">
-        <p className="font-semibold text-gray-800 text-base">
-          <span className="block w-full truncate" title={product.name}>{product.name}</span>
-        </p>
-        {activeVariant?.color && (
-          <p className="text-sm text-gray-600">Color: {activeVariant.color}</p>
-        )}
-        {activeVariant?.size && (
-          <p className="text-sm text-gray-600">Size: {activeVariant.size}</p>
-        )}
-        <p className="text-pink-500 font-medium mt-1 text-sm">
-          ₹{activeVariant?.price}
-        </p>
-      </div>
+            {/* ✅ Product Image */}
+            <img
+              src={product.pimage}
+              alt={product.name}
+              className="w-24 h-24 object-contain rounded-md border border-gray-200"
+            />
 
-      {/* ✅ Success Message */}
-      <p className="text-green-600 font-medium text-sm">Added to cart successfully!</p>
+            {/* ✅ Product Details */}
+            <div className="text-left w-full px-4">
+              <p className="font-semibold text-gray-800 text-base">
+                <span className="block w-full truncate" title={product.name}>{product.name}</span>
+              </p>
+              {color && (
+                <p className="text-sm text-gray-600">
+                  Color: {color}
+                </p>
+              )}
 
-      {/* ✅ Buttons */}
-    {/* ✅ Buttons */}
-<div className="flex items-center gap-2 w-full px-4">
-  <button
-    onClick={() => navigate("/cart")}
-    className="flex-1 bg-pink-500 text-white py-1.5 text-sm rounded-md font-medium hover:bg-pink-600 transition"
-  >
-    Go to Cart
-  </button>
+              {activeVariant?.size && (
+                <p className="text-sm text-gray-600">Size: {activeVariant.size}</p>
+              )}
+              <p className="text-pink-500 font-medium mt-1 text-sm">
+                ₹{activeVariant?.price}
+              </p>
+            </div>
 
-  <button
-    onClick={() => setShowPopup(false)}
-    className="flex-1 border border-gray-300 py-1.5 text-sm rounded-md font-medium text-gray-700 hover:bg-gray-100 transition"
-  >
-    Continue 
-  </button>
-</div>
+            {/* ✅ Success Message */}
+            <p className="text-green-600 font-medium text-sm">Added to cart successfully!</p>
 
-    </div>
-  </div>
-)}
+            {/* ✅ Buttons */}
+            {/* ✅ Buttons */}
+            <div className="flex items-center gap-2 w-full px-4">
+              <button
+                onClick={() => navigate("/cart")}
+                className="flex-1 bg-pink-500 text-white py-1.5 text-sm rounded-md font-medium hover:bg-pink-600 transition"
+              >
+                Go to Cart
+              </button>
+
+              <button
+                onClick={() => setShowPopup(false)}
+                className="flex-1 border border-gray-300 py-1.5 text-sm rounded-md font-medium text-gray-700 hover:bg-gray-100 transition"
+              >
+                Continue
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* 🛒 Buttons */}
       {quantity > 0 ? (
