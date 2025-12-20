@@ -10,7 +10,10 @@ export default function NewArrivalPC({ product, onProductClick }) {
   // Get the active variant for size and color
   const activeVariant = product?.variants;
   const size = activeVariant?.size;
-  const color = activeVariant?.color;  // Ensure color is extracted from the variant
+  // const color = activeVariant?.color;  // Ensure color is extracted from the variant
+  const color = Array.isArray(activeVariant?.color)
+  ? activeVariant.color[0]
+  : activeVariant?.color;
   const price = activeVariant?.price;
 const image =
   activeVariant?.images?.[0] ||
