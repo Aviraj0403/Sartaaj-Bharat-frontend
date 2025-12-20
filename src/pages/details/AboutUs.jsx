@@ -1,6 +1,7 @@
 // src/pages/AboutUs.jsx
 import React from "react";
 import { FaHeart, FaLeaf, FaGift, FaBullseye, FaUsers, FaStar, FaShoppingBag } from "react-icons/fa";
+import img from "../../image/about (1).png";
 
 export default function AboutUs() {
   return (
@@ -27,17 +28,17 @@ export default function AboutUs() {
         <div>
           <h2 className="text-4xl font-semibold text-pink-500 mb-6">Our Story</h2>
           <p className="text-gray-700 mb-4">
-            Gurmeet Kaur Store began with a vision to bring the finest beauty and lifestyle products to everyone. We believe in making every customer feel confident, elegant, and special.
+            At Gurmeet Kaur Store, we believe that beauty is not just skin deep—it’s an experience that empowers and elevates you. Our premium cosmetic collection is thoughtfully curated to enhance your natural radiance with products that are as luxurious as they are effective. Whether you’re looking for skincare essentials, makeup that stays all day, or beauty tools that give you that professional touch, we’ve got you covered.
           </p>
           <p className="text-gray-700 mb-4">
-            From curated skincare to lifestyle essentials, we guarantee quality, authenticity, and a personal touch in every product we offer.
+           Every product we offer is carefully selected with the highest standards in mind, ensuring that only the best ingredients and formulations make their way to you. We are committed to sustainability, cruelty-free practices, and promoting self-care rituals that make you feel confident and beautiful from the inside out. Join us on this journey to beauty—because you deserve to shine, effortlessly.
           </p>
           <p className="text-gray-700">
-            Our journey is fueled by creativity, passion, and a desire to make everyday moments beautiful.
+           At Gurmeet Kaur Store, we believe that beauty is not just skin deep—it’s an experience that empowers and elevates you. Our premium cosmetic collection is thoughtfully curated to enhance your natural radiance with products that are as luxurious as they are effective. Whether you’re looking for skincare essentials, makeup that stays all day, or beauty tools that give you that professional touch, we’ve got you covered.
           </p>
         </div>
         <img
-          src="https://images.unsplash.com/photo-1588776814546-6d6e9c489b27?auto=format&fit=crop&w=800&q=80"
+          src={img}
           alt="Our Journey"
           className="w-full rounded-xl shadow-lg object-cover"
         />

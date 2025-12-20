@@ -78,7 +78,7 @@ export default function DesktopHeader() {
         <div className="flex items-center gap-6 text-gray-700">
          <span className="flex items-center gap-2 text-gray-700">
   <HiOutlinePhone className="text-pink-500 text-lg" />
-  +91 9999161803
+  +91 9999398494
 </span>
           <span className="flex items-center gap-2">
             <FaMapMarkerAlt className="text-pink-500" /> 11021, 5A Block WEA, Sat Nagar, Karol Bagh, Delhi, 110005
