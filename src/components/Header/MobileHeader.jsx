@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   User,
   ShoppingBag,
@@ -58,6 +58,23 @@ const location = useLocation();
     setOpenSubMenu(openSubMenu === index ? null : index);
   };
 
+  // Active tab: click-settable and route-synced
+  const [activeTab, setActiveTab] = useState(() => {
+    const p = location.pathname || "";
+    if (p === "/" || p === "") return "home";
+    if (p.startsWith("/new-product") || p.startsWith("/new-products")) return "brands";
+    if (p.startsWith("/profile")) return "account";
+    return "";
+  });
+
+  useEffect(() => {
+    const p = location.pathname || "";
+    if (p === "/" || p === "") setActiveTab("home");
+    else if (p.startsWith("/new-product") || p.startsWith("/new-products")) setActiveTab("brands");
+    else if (p.startsWith("/profile")) setActiveTab("account");
+    else setActiveTab("");
+  }, [location.pathname]);
+
   return (
     <div className="w-full bg-white flex flex-col md:hidden">
       {/* 🔝 Sticky Header */}
@@ -65,8 +82,11 @@ const location = useLocation();
         <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
           {/* Menu Button */}
           <button
-            className="text-pink-500 hover:text-pink-600 transition"
-            onClick={() => setIsMenuOpen(true)}
+            className={`text-pink-500 hover:text-pink-600 transition ${activeTab === "menu" ? "text-pink-500" : "text-pink-500"}`}
+            onClick={() => {
+              setActiveTab("menu");
+              setIsMenuOpen(true);
+            }}
           >
             <Menu size={28} />
           </button>
@@ -128,32 +148,46 @@ const location = useLocation();
 
       {/* 📱 Bottom Navigation */}
       <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-2 z-50">
-        <Link to="/" className="flex flex-col items-center text-pink-500">
+        <Link
+          to="/"
+          onClick={() => setActiveTab("home")}
+          className={`flex flex-col items-center ${activeTab === "home" ? "text-pink-500" : "text-gray-700"}`}
+        >
           <Home size={22} />
           <span className="text-xs">Home</span>
         </Link>
 
         <button
-          onClick={() => setIsMenuOpen(true)}
-          className="flex flex-col items-center text-gray-700"
+          onClick={() => {
+            setActiveTab("menu");
+            setIsMenuOpen(true);
+          }}
+          className={`flex flex-col items-center ${activeTab === "menu" ? "text-pink-500" : "text-gray-700"}`}
         >
           <List size={22} />
           <span className="text-xs">Menu</span>
         </button>
 
-        <Link to="/brands" className="flex flex-col items-center text-gray-700">
+        <Link
+          to="/new-products"
+          onClick={() => setActiveTab("brands")}
+          className={`flex flex-col items-center ${activeTab === "brands" ? "text-pink-500" : "text-gray-700"}`}
+        >
           <Tag size={22} />
           <span className="text-xs">Brands</span>
         </Link>
 
-        <Link to="/offers" className="flex flex-col items-center text-gray-700">
+        {/* <Link to="/offers" className="flex flex-col items-center text-gray-700">
           <Percent size={22} />
           <span className="text-xs">Offers</span>
-        </Link>
+        </Link> */}
 
         <button
-          onClick={handleProfileClick}
-          className="flex flex-col items-center text-gray-700"
+          onClick={() => {
+            setActiveTab("account");
+            handleProfileClick();
+          }}
+          className={`flex flex-col items-center ${activeTab === "account" ? "text-pink-500" : "text-gray-700"}`}
         >
           <User size={22} />
           <span className="text-xs">Account</span>
