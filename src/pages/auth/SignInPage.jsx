@@ -69,6 +69,9 @@ const SignInPage = () => {
       await requestPhoneOtp(`+91${mobile}`);
       setOtpSent(true);
       setTimer(30);
+      // persist phone so we don't lose it if user is redirected
+      localStorage.setItem("otpPhone", mobile);
+      localStorage.setItem("otpSent", "1");
       toast.success("OTP sent");
     } catch (err) {
       toast.error(err?.message || "Failed to send OTP");
@@ -77,13 +80,37 @@ const SignInPage = () => {
     }
   };
 
-  const verifyOtp = async () => {
-    if (otp.length !== 6) return;
+  const resendOtp = async () => {
+    if (mobile.length !== 10) {
+      toast.error("Enter valid 10 digit mobile number");
+      return;
+    }
 
     setIsSubmitting(true);
     try {
-      await verifyPhoneOtpAndLogin(`+91${mobile}`, otp);
+      await requestPhoneOtp(`+91${mobile}`);
+      setTimer(30);
+      // re-persist in case it was cleared
+      localStorage.setItem("otpPhone", mobile);
+      localStorage.setItem("otpSent", "1");
+      toast.success("OTP resent");
+    } catch (err) {
+      toast.error(err?.message || "Failed to resend OTP");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const verifyOtp = async (phone) => {
+    if (!phone || otp.length !== 6) return;
+
+    setIsSubmitting(true);
+    try {
+      await verifyPhoneOtpAndLogin(phone, otp);
       toast.success("Login successful");
+      // clear persisted otp info on success
+      localStorage.removeItem("otpPhone");
+      localStorage.removeItem("otpSent");
       navigate(redirectTo, { replace: true });
     } catch (err) {
       toast.error(err?.message || "Invalid OTP");
@@ -92,10 +119,23 @@ const SignInPage = () => {
     }
   };
 
+  // restore phone/otp state if user was redirected back here
+  useEffect(() => {
+    const saved = localStorage.getItem("otpPhone");
+    const wasSent = localStorage.getItem("otpSent");
+    if (saved && wasSent) {
+      setMobile(saved);
+      setOtpSent(true);
+      setLoginType("mobile");
+    }
+  }, []);
+
   /* ---------------- AUTO SUBMIT OTP ---------------- */
   useEffect(() => {
-    if (otp.length === 6) verifyOtp();
-  }, [otp]);
+    if (otp.length === 6 && otpSent && mobile.length === 10) {
+      verifyOtp(`+91${mobile}`);
+    }
+  }, [otp, otpSent, mobile]);
 
   /* ---------------- RESEND TIMER ---------------- */
   useEffect(() => {
@@ -196,16 +236,26 @@ const SignInPage = () => {
             )}
 
             <button
-              onClick={otpSent ? verifyOtp : sendOtp}
+              onClick={otpSent ? () => verifyOtp(`+91${mobile}`) : sendOtp}
               className="w-full bg-pink-500 text-white py-3 rounded-xl mt-4"
             >
               {otpSent ? "Verify OTP" : "Continue"}
             </button>
 
-            {otpSent && timer > 0 && (
-              <p className="text-center text-sm text-gray-500 mt-2">
-                Resend OTP in {timer}s
-              </p>
+            {otpSent && (
+              <div className="text-center text-sm text-gray-500 mt-2">
+                {timer > 0 ? (
+                  <p>Resend OTP in {timer}s</p>
+                ) : (
+                  <button
+                    onClick={resendOtp}
+                    disabled={isSubmitting}
+                    className="text-pink-500 font-semibold"
+                  >
+                    Resend OTP
+                  </button>
+                )}
+              </div>
             )}
           </>
         )}
