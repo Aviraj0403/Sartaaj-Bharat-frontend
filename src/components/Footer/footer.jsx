@@ -137,7 +137,7 @@ export default function Footer() {
               <span>11021, 5A Block WEA, Sat Nagar, Karol Bagh, Delhi, 110005</span>
             </li>
             <li className="flex items-center gap-3">
-              <Phone className="text-pink-500" size={18} />  +91 9999161803
+              <Phone className="text-pink-500" size={18} />  +91 9999398494
             </li>
             <li className="flex items-center gap-3">
               <Mail className="text-pink-500" size={18} /> gurmeetkaurstore@gmail.com

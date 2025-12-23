@@ -3,7 +3,7 @@ import { Smile } from "lucide-react";
 
 export default function Support() {
   // Define the WhatsApp number and message
-  const whatsappNumber = "+919990777730"; // Remove any "+" sign and spaces
+  const whatsappNumber = "+919999398494"; // Remove any "+" sign and spaces
   const message = "How can I help you?";
 
   // Create the WhatsApp link
