@@ -201,7 +201,7 @@ export default function Invoice() {
           <p>
             For any queries, contact{" "}
             <span className="text-pink-600 font-semibold">
-              support@gurmeetkaurstore.com
+              gurmeetkaurstore@gmail.com
             </span>
           </p>
         </div>

@@ -17,19 +17,19 @@ export default function ContactUs() {
         <div className="bg-pink-50 shadow-lg hover:shadow-2xl transition rounded-xl p-6 text-center">
           <FaPhoneAlt className="text-pink-500 text-4xl mx-auto mb-4" />
           <h3 className="text-xl font-semibold mb-2">Phone</h3>
-          <p className="text-gray-600">+91 98765 43210</p>
+          <p className="text-gray-600">+91 9999398494</p>
         </div>
 
         <div className="bg-pink-50 shadow-lg hover:shadow-2xl transition rounded-xl p-6 text-center">
           <FaEnvelope className="text-yellow-500 text-4xl mx-auto mb-4" />
           <h3 className="text-xl font-semibold mb-2">Email</h3>
-          <p className="text-gray-600">support@gurmeetkaurstore.com</p>
+          <p className="text-gray-600">gurmeetkaurstore@gmail.com</p>
         </div>
 
         <div className="bg-pink-50 shadow-lg hover:shadow-2xl transition rounded-xl p-6 text-center">
           <FaMapMarkerAlt className="text-green-500 text-4xl mx-auto mb-4" />
           <h3 className="text-xl font-semibold mb-2">Address</h3>
-          <p className="text-gray-600">New Delhi, India</p>
+          <p className="text-gray-600">11021, 5A Block WEA, Sat Nagar, Karol Bagh, Delhi, 110005</p>
         </div>
 
         <div className="bg-pink-50 shadow-lg hover:shadow-2xl transition rounded-xl p-6 text-center">
