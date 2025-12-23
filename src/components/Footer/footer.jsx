@@ -18,12 +18,13 @@ import {
 import { SiRazorpay, SiPhonepe } from "react-icons/si";
 import { MapPin, Phone, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
+import logo from "../../image/logo-cosmetic2.jpg"
 
 export default function Footer() {
   return (
     <footer className="bg-gradient-to-b from-pink-50 to-white text-gray-700 pt-10 border-t border-pink-100">
       {/* Newsletter Section */}
-      <div className="text-center mb-10 px-4">
+      {/* <div className="text-center mb-10 px-4">
         <h2 className="text-2xl font-semibold text-pink-600 mb-2 flex justify-center items-center gap-2 flex-wrap">
           <FaHeart className="text-pink-500" /> Join Our Beauty Club{" "}
           <FaHeart className="text-pink-500" />
@@ -41,23 +42,36 @@ export default function Footer() {
             Subscribe
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Footer */}
       <div className="border-t border-gray-200 py-10 px-6 md:px-20 grid grid-cols-1 lg:grid-cols-4 gap-10">
         {/* Brand */}
         <div>
-          <h3 className="text-2xl font-bold text-pink-600 mb-3">
-            Beauty<span className="text-gray-800">Glow</span>
-          </h3>
+         <div className="flex items-center gap-2 mb-3">
+  <img
+    src= {logo}  // apna logo path yahan
+    alt="BeautyGlow Logo"
+    className="w-50 h-20 object-contain"
+  />
+
+ 
+</div>
+
           <p className="text-gray-600 mb-4 text-sm md:text-base">
             Discover your natural beauty with our premium collection of
             cosmetics and skincare products.
           </p>
           <div className="flex gap-3">
-            <a className="bg-pink-100 p-2 rounded-full text-pink-600 hover:bg-pink-200">
-              <FaInstagram />
-            </a>
+           <a
+  href="https://www.instagram.com/gurmeetkaur_store/?igsh=MWdqMmEzMHE4eXhoeA%3D%3D"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="bg-pink-100 p-2 rounded-full text-pink-600 hover:bg-pink-200 transition"
+>
+  <FaInstagram />
+</a>
+
             <a className="bg-pink-100 p-2 rounded-full text-pink-600 hover:bg-pink-200">
               <FaFacebookF />
             </a>

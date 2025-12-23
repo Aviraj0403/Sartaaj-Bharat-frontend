@@ -20,8 +20,8 @@ function Home() {
       <CategorySlider />
       <ComboSection  />
       <BestsellerSection />
-      <PromoSection />
       <HomeNewArrivals />
+      <PromoSection />
       <BeautyBanner />
       <BeautyHighlightSection />
       <CosmeticTestimonials />
