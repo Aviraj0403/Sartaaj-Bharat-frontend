@@ -7,7 +7,8 @@ import OtpInput from "../../components/OtpInput";
 import "react-toastify/dist/ReactToastify.css";
 
 const SignInPage = () => {
-  const [loginType, setLoginType] = useState("email");
+  // const [loginType, setLoginType] = useState("email");
+  const [loginType, setLoginType] = useState("mobile");
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -118,18 +119,18 @@ const SignInPage = () => {
       setIsSubmitting(false);
     }
   };
-const handleGoogleLogin = async () => {
-  setIsSubmitting(true);
-  try {
-    await googleLogin(); // wait for login to complete
-    toast.success("Signed in successfully");
-    navigate(redirectTo, { replace: true }); // redirect after login
-  } catch (err) {
-    toast.error(err?.message || "Google login failed");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  const handleGoogleLogin = async () => {
+    setIsSubmitting(true);
+    try {
+      await googleLogin(); // wait for login to complete
+      toast.success("Signed in successfully");
+      navigate(redirectTo, { replace: true }); // redirect after login
+    } catch (err) {
+      toast.error(err?.message || "Google login failed");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
 
 
@@ -166,7 +167,7 @@ const handleGoogleLogin = async () => {
       navigator.credentials
         .get({ otp: { transport: ["sms"] } })
         .then((otp) => otp?.code && setOtp(otp.code))
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [otpSent]);
 
@@ -182,14 +183,14 @@ const handleGoogleLogin = async () => {
           <FcGoogle size={24} /> Continue with Google
         </button> */}
         <button
-  onClick={handleGoogleLogin}
-  className="w-full flex items-center justify-center gap-3 border py-3 rounded-xl mb-4"
->
-  <FcGoogle size={24} /> Continue with Google
-</button>
+          onClick={handleGoogleLogin}
+          className="w-full flex items-center justify-center gap-3 border py-3 rounded-xl mb-4"
+        >
+          <FcGoogle size={24} /> Continue with Google
+        </button>
 
 
-        <div className="flex bg-pink-50 rounded-xl p-1 mb-4">
+        {/* <div className="flex bg-pink-50 rounded-xl p-1 mb-4">
           <button
             onClick={() => setLoginType("email")}
             className={`flex-1 py-2 rounded-lg ${
@@ -210,7 +211,28 @@ const handleGoogleLogin = async () => {
           >
             Phone
           </button>
+        </div> */}
+        <div className="flex bg-pink-50 rounded-xl p-1 mb-4">
+          <button
+            onClick={() => setLoginType("mobile")}
+            className={`flex-1 py-2 rounded-lg ${loginType === "mobile"
+                ? "bg-white shadow text-pink-600"
+                : "text-gray-500"
+              }`}
+          >
+            Phone
+          </button>
+          <button
+            onClick={() => setLoginType("email")}
+            className={`flex-1 py-2 rounded-lg ${loginType === "email"
+                ? "bg-white shadow text-pink-600"
+                : "text-gray-500"
+              }`}
+          >
+            Email
+          </button>
         </div>
+
 
         {/* EMAIL */}
         {loginType === "email" && (
