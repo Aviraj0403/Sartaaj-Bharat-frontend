@@ -118,6 +118,20 @@ const SignInPage = () => {
       setIsSubmitting(false);
     }
   };
+const handleGoogleLogin = async () => {
+  setIsSubmitting(true);
+  try {
+    await googleLogin(); // wait for login to complete
+    toast.success("Signed in successfully");
+    navigate(redirectTo, { replace: true }); // redirect after login
+  } catch (err) {
+    toast.error(err?.message || "Google login failed");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+
 
   // restore phone/otp state if user was redirected back here
   useEffect(() => {
@@ -161,12 +175,13 @@ const SignInPage = () => {
       <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-6">
         <h2 className="text-2xl font-bold text-center mb-4">Welcome Back</h2>
 
-        <button
+        {/* <button
           onClick={googleLogin}
           className="w-full flex items-center justify-center gap-3 border py-3 rounded-xl mb-4"
         >
           <FcGoogle size={24} /> Continue with Google
-        </button>
+        </button> */}
+        
 
         <div className="flex bg-pink-50 rounded-xl p-1 mb-4">
           <button
