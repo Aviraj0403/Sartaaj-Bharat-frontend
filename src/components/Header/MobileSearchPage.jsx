@@ -1,175 +1,296 @@
-import React, { useState } from "react";
-import { Search, X } from "lucide-react"; // Using icons from lucide-react
+import React, { useState, useEffect, useRef } from "react";
+import { Search, X, Clock, TrendingUp, Sparkles, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getMenuCategories, getSearchSuggestions } from "../../services/categoryApi"; // API functions for fetching categories and search suggestions
+import { getMenuCategories, getSearchSuggestions } from "../../services/categoryApi";
 
-// MobileSearchPage component with integrated CategorySlider
 export default function MobileSearchPage() {
-  const [query, setQuery] = useState(""); // Search query state
+  const [query, setQuery] = useState("");
+  const [recentSearches, setRecentSearches] = useState(() => {
+    const saved = localStorage.getItem('recentSearches');
+    return saved ? JSON.parse(saved) : [];
+  });
   const navigate = useNavigate();
+  const inputRef = useRef(null);
 
-  // Fetch categories using React Query
+  const trendingKeywords = [
+    "Shoes Craze Sale",
+    "Perfumes for Women",
+    "Trending Fashion",
+    "New Arrivals",
+    "Hot Deals"
+  ];
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  // Fetch categories
   const { data: menuItems, isLoading: isCategoriesLoading, isError: isCategoriesError } = useQuery({
     queryKey: ["categories"],
     queryFn: getMenuCategories,
-    onError: (err) => {
-      console.error("Error fetching categories:", err);
-    },
+    onError: (err) => console.error("Error fetching categories:", err),
   });
 
-  // Fetch search suggestions based on the query using React Query
+  // Fetch search suggestions
   const { data: suggestions, isLoading, isError } = useQuery({
     queryKey: ['searchSuggestions', query],
     queryFn: () => getSearchSuggestions(query),
-    enabled: query.length > 1, // Only run query if query length > 1
-    onError: (err) => {
-      console.error("Error fetching search suggestions:", err);
-    },
+    enabled: query.length > 1,
+    onError: (err) => console.error("Error fetching search suggestions:", err),
   });
 
+  const handleSearch = (searchTerm) => {
+    setQuery(searchTerm);
+    
+    // Add to recent searches
+    if (searchTerm && !recentSearches.includes(searchTerm)) {
+      const updated = [searchTerm, ...recentSearches.filter(s => s !== searchTerm)].slice(0, 5);
+      setRecentSearches(updated);
+      localStorage.setItem('recentSearches', JSON.stringify(updated));
+    }
+  };
+
+  const handleClearRecent = () => {
+    setRecentSearches([]);
+    localStorage.removeItem('recentSearches');
+  };
+
+  const handleProductClick = (slug) => {
+    if (query && !recentSearches.includes(query)) {
+      const updated = [query, ...recentSearches].slice(0, 5);
+      setRecentSearches(updated);
+      localStorage.setItem('recentSearches', JSON.stringify(updated));
+    }
+    navigate(`/product/${slug}`);
+  };
+
   return (
-    <div className="w-full min-h-screen bg-white px-4 pt-4 mt-0">
-      {/* 🔝 Top Search Header */}
-      <div className="flex gap-3 mb-4">
-        <div className="flex-1">
-          <div className="flex items-center bg-gray-100 border border-gray-300 rounded-full px-4 py-2">
-            <Search size={18} className="text-gray-500" />
-            <input
-              type="text"
-              autoFocus
-              placeholder="What are you looking for?"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="bg-transparent ml-2 outline-none text-gray-700 w-full"
-            />
+    <div className="w-full min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+      {/* 🎨 Sticky Search Header with Glass Effect */}
+      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-sm">
+        <div className="px-4 py-4">
+          <div className="flex gap-3 items-center">
+            <div className="flex-1 relative">
+              <div className="flex items-center bg-white rounded-2xl px-4 py-3 shadow-md border border-gray-200 transition-all focus-within:ring-2 focus-within:ring-pink-400 focus-within:border-transparent">
+                <Search size={20} className="text-gray-400" />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  placeholder="Search products, brands..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className="bg-transparent ml-3 outline-none text-gray-800 w-full text-base placeholder-gray-400"
+                />
+                {query.length > 0 && (
+                  <button 
+                    onClick={() => setQuery("")} 
+                    className="ml-2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <X size={18} className="text-gray-500" />
+                  </button>
+                )}
+              </div>
+            </div>
+            
             {query.length > 0 && (
-              <button onClick={() => setQuery("")} className="text-gray-600 text-lg">
-                <X size={18} />
+              <button 
+                onClick={() => setQuery("")} 
+                className="text-pink-600 font-semibold text-sm px-2"
+              >
+                Cancel
               </button>
             )}
           </div>
         </div>
-
-        {query.length > 0 && (
-          <button onClick={() => setQuery("")} className="text-gray-600 text-lg ml-2">
-            Cancel
-          </button>
-        )}
       </div>
 
-      {/* ⭐ Suggested Keywords */}
-      {query.length === 0 && (
-        <div className="mt-4">
-          <p className="text-gray-700 mb-3">Suggested Keywords:</p>
-          {["Shoes Craze Sale", "Perfumes for Women", "Trending Fashion", "New Arrivals", "Hot Deals"].map((item, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-3 px-2 py-3 text-gray-800 border-b cursor-pointer hover:bg-gray-100"
-              onClick={() => setQuery(item)}
-            >
-              <Search size={18} className="text-gray-400" />
-              {item}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* 🛒 CategorySlider when search query is empty */}
-      {query.length === 0 && (
-        <div className="mt-8">
-          <h2 className="text-2xl font-semibold text-pink-600">Shop by Categories</h2>
-          <div className="mt-4">
-            {/* Category Slider */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {isCategoriesLoading && <p className="w-full text-center text-pink-600">Loading categories...</p>}
-              {isCategoriesError && (
-                <div className="w-full text-center text-red-600">
-                  Error fetching categories. Please try again later.
+      <div className="px-4 pb-20">
+        {/* 🔎 Search Results - Show when query exists */}
+        {query.length > 1 && (
+          <div className="mt-6">
+            {isLoading && (
+              <div className="flex justify-center items-center py-16">
+                <div className="relative">
+                  <div className="w-16 h-16 border-4 border-pink-200 border-t-pink-600 rounded-full animate-spin"></div>
+                  <ShoppingBag className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-pink-600" size={24} />
                 </div>
-              )}
-              {!isCategoriesLoading && !isCategoriesError && menuItems?.map((cat) => (
-                <div
-                  key={cat._id}
-                  onClick={() => navigate(`/${cat.slug}`)}
-                  className="flex flex-col items-center justify-center cursor-pointer group relative"
-                >
-                  <div className="rounded-lg overflow-hidden shadow-md border border-gray-100">
-                    <img
-                      src={cat.image[0]} // Display first image in the array
-                      alt={cat.name}
-                      className="w-full h-[150px] sm:h-[180px] object-cover"
-                    />
+              </div>
+            )}
+
+            {isError && (
+              <div className="text-center py-16 px-4">
+                <div className="inline-block p-4 bg-red-50 rounded-2xl mb-4">
+                  <X size={48} className="text-red-500" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Oops! Something went wrong</h3>
+                <p className="text-gray-600 text-sm">Error fetching results. Please try again.</p>
+              </div>
+            )}
+
+            {!isLoading && !isError && suggestions?.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold text-gray-800">
+                    Found {suggestions.length} Results
+                  </h2>
+                  <Sparkles size={20} className="text-pink-500" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  {suggestions.map((item) => (
+                    <div
+                      key={item._id}
+                      onClick={() => handleProductClick(item.slug)}
+                      className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+                    >
+                      {/* Product Image */}
+                      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-pink-100 to-purple-100">
+                        <img
+                          src={item.pimages?.[0] || '/placeholder.jpg'}
+                          alt={item.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          onError={(e) => e.target.src = '/placeholder.jpg'}
+                        />
+                        {item.discount && (
+                          <div className="absolute top-2 right-2 bg-gradient-to-r from-pink-500 to-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                            -{item.discount}%
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Product Details */}
+                      <div className="p-3">
+                        <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 min-h-[40px]">
+                          {item.name}
+                        </h3>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="text-lg font-bold text-pink-600">
+                              ₹{item.price}
+                            </span>
+                            {item.originalPrice && (
+                              <span className="text-xs text-gray-400 line-through ml-2">
+                                ₹{item.originalPrice}
+                              </span>
+                            )}
+                          </div>
+                          <button className="text-pink-600 text-xs font-semibold group-hover:text-pink-700">
+                            View →
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {!isLoading && !isError && suggestions?.length === 0 && (
+              <div className="text-center py-16 px-4">
+                <div className="inline-block p-6 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full mb-4">
+                  <Search size={48} className="text-gray-400" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">No products found</h3>
+                <p className="text-gray-600 text-sm mb-6">Try different keywords or browse categories</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 🏠 Default View - Show when no query */}
+        {query.length === 0 && (
+          <div className="mt-6 space-y-8">
+            {/* Recent Searches */}
+            {recentSearches.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Clock size={18} className="text-gray-500" />
+                    <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">
+                      Recent Searches
+                    </h3>
                   </div>
-                  <h3 className="text-center mt-3 font-semibold text-gray-700 text-sm sm:text-base">
-                    {cat.name}
-                  </h3>
+                  <button 
+                    onClick={handleClearRecent}
+                    className="text-xs text-pink-600 font-semibold hover:text-pink-700"
+                  >
+                    Clear All
+                  </button>
                 </div>
-              ))}
+                <div className="flex flex-wrap gap-2">
+                  {recentSearches.map((search, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleSearch(search)}
+                      className="px-4 py-2 bg-white rounded-full text-sm text-gray-700 font-medium shadow-sm border border-gray-200 hover:border-pink-300 hover:shadow-md transition-all"
+                    >
+                      {search}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Trending Keywords */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <TrendingUp size={18} className="text-pink-500" />
+                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">
+                  Trending Searches
+                </h3>
+              </div>
+              <div className="space-y-2">
+                {trendingKeywords.map((item, i) => (
+                  <div
+                    key={i}
+                    onClick={() => handleSearch(item)}
+                    className="flex items-center gap-3 px-4 py-3 bg-white rounded-xl text-gray-800 border border-gray-200 cursor-pointer hover:border-pink-300 hover:shadow-md transition-all group"
+                  >
+                    <div className="p-2 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg group-hover:from-pink-200 group-hover:to-purple-200 transition-all">
+                      <Search size={16} className="text-pink-600" />
+                    </div>
+                    <span className="flex-1 font-medium">{item}</span>
+                    <span className="text-xs text-pink-600 font-semibold">🔥</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 🛒 Original CategorySlider */}
+            <div className="mt-8">
+              <h2 className="text-2xl font-semibold text-pink-600 mb-4">Shop by Categories</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                {isCategoriesLoading && (
+                  <p className="w-full text-center text-pink-600 col-span-full">Loading categories...</p>
+                )}
+                {isCategoriesError && (
+                  <div className="w-full text-center text-red-600 col-span-full">
+                    Error fetching categories. Please try again later.
+                  </div>
+                )}
+                {!isCategoriesLoading && !isCategoriesError && menuItems?.map((cat) => (
+                  <div
+                    key={cat._id}
+                    onClick={() => navigate(`/${cat.slug}`)}
+                    className="flex flex-col items-center justify-center cursor-pointer group relative"
+                  >
+                    <div className="rounded-lg overflow-hidden shadow-md border border-gray-100">
+                      <img
+                        src={cat.image[0]}
+                        alt={cat.name}
+                        className="w-full h-[150px] sm:h-[180px] object-cover"
+                      />
+                    </div>
+                    <h3 className="text-center mt-3 font-semibold text-gray-700 text-sm sm:text-base">
+                      {cat.name}
+                    </h3>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* 🔎 Search Results */}
-      {query.length > 1 && (
-       <div className="mt-4">
-  {isLoading && (
-    <div className="text-center text-gray-600 py-4">
-      <p>Loading search results...</p>
-    </div>
-  )}
-
-  {isError && (
-    <div className="text-center text-red-600 py-4">
-      <p>Error fetching search results. Please try again.</p>
-    </div>
-  )}
-
-  {!isLoading && !isError && suggestions?.length > 0 && (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-      {suggestions.map((item) => (
-        <div
-          key={item._id} // Assuming each item has a unique _id
-          onClick={() => navigate(`/product/${item.slug}`)} // Redirect to product page
-          className="cursor-pointer group rounded-lg shadow-lg border border-gray-200 p-4 bg-white transition-all hover:scale-105 hover:shadow-xl transform"
-          style={{
-            transform: "perspective(1200px) rotateX(5deg) rotateY(5deg)", // 3D perspective for static 3D effect
-            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          {/* Product Image */}
-          <div className="relative w-full h-[220px] mb-4 overflow-hidden rounded-lg">
-            <img
-              src={item.pimages[0]} // Use the first image in the pimages array
-              alt={item.name}
-              className="w-full h-full object-cover group-hover:scale-110 transition-all"
-            />
-          </div>
-          
-          {/* Product Details */}
-          <div className="mt-3">
-            <h3 className="text-gray-800 font-semibold text-lg line-clamp-2">{item.name}</h3>
-            <div className="mt-3 flex items-center justify-between">
-              <span className="text-xl font-semibold text-gray-900">₹ {item.price}</span>
-              <button className="text-sm text-pink-600 hover:text-pink-700 transition-colors">
-                View
-              </button>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  )}
-
-  {!isLoading && !isError && suggestions?.length === 0 && (
-    <div className="text-center text-gray-500 px-2 py-4">
-      <p>No products found. Please try a different search.</p>
-    </div>
-  )}
-</div>
-
-      )}
+        )}
+      </div>
     </div>
   );
 }
