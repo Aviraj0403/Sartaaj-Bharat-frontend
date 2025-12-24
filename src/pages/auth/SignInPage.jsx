@@ -181,7 +181,13 @@ const handleGoogleLogin = async () => {
         >
           <FcGoogle size={24} /> Continue with Google
         </button> */}
-        
+        <button
+  onClick={handleGoogleLogin}
+  className="w-full flex items-center justify-center gap-3 border py-3 rounded-xl mb-4"
+>
+  <FcGoogle size={24} /> Continue with Google
+</button>
+
 
         <div className="flex bg-pink-50 rounded-xl p-1 mb-4">
           <button
