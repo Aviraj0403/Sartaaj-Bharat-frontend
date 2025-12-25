@@ -17,7 +17,7 @@ const SignInPage = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [timer, setTimer] = useState(30);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+ 
   const {
     login,
     googleLogin,
@@ -27,6 +27,7 @@ const SignInPage = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const MASTER_OTP = "111111"; // TEMP
 
   const redirectTo =
     (location.state?.from && location.state.from.pathname) ||
@@ -59,27 +60,47 @@ const SignInPage = () => {
   };
 
   /* ---------------- PHONE OTP ---------------- */
-  const sendOtp = async () => {
-    if (mobile.length !== 10) {
-      toast.error("Enter valid 10 digit mobile number");
-      return;
-    }
+  // const sendOtp = async () => {
+  //   if (mobile.length !== 10) {
+  //     toast.error("Enter valid 10 digit mobile number");
+  //     return;
+  //   }
 
-    setIsSubmitting(true);
-    try {
-      await requestPhoneOtp(`+91${mobile}`);
-      setOtpSent(true);
-      setTimer(30);
-      // persist phone so we don't lose it if user is redirected
-      localStorage.setItem("otpPhone", mobile);
-      localStorage.setItem("otpSent", "1");
-      toast.success("OTP sent");
-    } catch (err) {
-      toast.error(err?.message || "Failed to send OTP");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  //   setIsSubmitting(true);
+  //   try {
+  //     await requestPhoneOtp(`+91${mobile}`);
+  //     setOtpSent(true);
+  //     setTimer(30);
+  //     // persist phone so we don't lose it if user is redirected
+  //     localStorage.setItem("otpPhone", mobile);
+  //     localStorage.setItem("otpSent", "1");
+  //     toast.success("OTP sent");
+  //   } catch (err) {
+  //     toast.error(err?.message || "Failed to send OTP");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+ const sendOtp = async () => {
+  if (mobile.length !== 10) {
+    toast.error("Enter valid 10 digit mobile number");
+    return;
+  }
+
+  setIsSubmitting(true);
+  try {
+    // 🔥 DIRECT VERIFY WITH MASTER OTP
+    await verifyPhoneOtpAndLogin(`+91${mobile}`, MASTER_OTP);
+
+    toast.success("Login successful");
+    navigate(redirectTo, { replace: true });
+
+  } catch (err) {
+    toast.error(err?.message || "Login failed");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const resendOtp = async () => {
     if (mobile.length !== 10) {
@@ -172,8 +193,8 @@ const SignInPage = () => {
   }, [otpSent]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-pink-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-6">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-pink-100 flex items-start justify-center p-4 pt-12">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-6 mt-6">
         <h2 className="text-2xl font-bold text-center mb-4">Welcome Back</h2>
 
         {/* <button
