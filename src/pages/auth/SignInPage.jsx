@@ -275,7 +275,16 @@ const SignInPage = () => {
                 />
               </div>
             ) : (
-              <OtpInput value={otp} onChange={setOtp} />
+              // <OtpInput value={otp} onChange={setOtp} />
+              <>
+        {/* OTP INPUT */}
+        <OtpInput value={otp} onChange={setOtp} />
+
+        {/* DEMO OTP TEXT */}
+        <p className="text-center text-sm text-gray-500 mt-2">
+          Your OTP is <span className="font-semibold text-pink-500">1 1 1 1 1 1</span>
+        </p>
+      </>
             )}
 
             <button

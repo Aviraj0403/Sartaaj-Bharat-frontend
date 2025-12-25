@@ -23,7 +23,6 @@ export default function CheckoutPage() {
     finalAmount = grandTotal,
   } = location.state || {};
 
-  // Display shipping on checkout page (same rule as Cart): ₹80 when finalAmount > 10
   const displayShipping = (finalAmount && finalAmount > 10) ? 80 : 0;
 
   const [addresses, setAddresses] = useState([]);
@@ -31,7 +30,6 @@ export default function CheckoutPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
-  // Fetch addresses
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -46,7 +44,6 @@ export default function CheckoutPage() {
     fetchAddresses();
   }, [isAuthenticated, isSidebarOpen]);
 
-  // Auto-select default address
   useEffect(() => {
     if (addresses.length > 0 && !selectedAddress) {
       const defaultAddr = addresses.find(a => a.isDefault);
@@ -54,7 +51,6 @@ export default function CheckoutPage() {
     }
   }, [addresses]);
 
-  // Load Razorpay
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
@@ -70,18 +66,15 @@ export default function CheckoutPage() {
     if (!selectedAddress) return toast.warn("Please select a delivery address");
 
     setIsPlacingOrder(true);
-  //  console.log("cartItems:", cartItems);
-    // Compute shipping (client-side rule): ₹80 when final amount > 10
     const shipping = (finalAmount && finalAmount > 10) ? 80 : 0;
 
-    // FINAL PAYLOAD — WORKS 100% WITH YOUR BACKEND
     const payload = {
       items: cartItems.map(item => ({
-        product: item.id, // Product ObjectId
+        product: item.id,
         selectedVariant: {
-          size: item.size,           // Must match DB exactly
-          price: Number(item.price), // Must be number and match DB
-          color: item.color || "standard" // Optional, depending on your product schema
+          size: item.size,
+          price: Number(item.price),
+          color: item.color || "standard"
         },
         quantity: item.quantity
       })),
@@ -127,6 +120,7 @@ export default function CheckoutPage() {
         description: "Thank you for shopping!",
         handler: async (response) => {
           try {
+            // First verify payment
             const verified = await axios.post("/razorpay/verifyPayment", {
               payment_id: response.razorpay_payment_id,
               order_id: response.razorpay_order_id,
@@ -135,12 +129,26 @@ export default function CheckoutPage() {
             }, { withCredentials: true });
 
             if (verified.data.message === "Payment verified successfully") {
-              await submitOrder({ ...orderPayload, paymentMethod: "Razorpay" });
+              // CRITICAL FIX: Pass paymentId to order creation
+              await submitOrder({ 
+                ...orderPayload, 
+                paymentMethod: "Razorpay",
+                paymentId: data.paymentId  // ✅ This was missing!
+              });
             } else {
-              toast.error("Payment failed. Try again.");
+              toast.error("Payment verification failed. Contact support with Payment ID: " + response.razorpay_payment_id);
+              setIsPlacingOrder(false);
             }
           } catch (err) {
-            toast.error("Payment verification failed");
+            console.error("Payment verification error:", err);
+            toast.error("Payment verification failed. Your payment is safe. Contact support with Payment ID: " + response.razorpay_payment_id);
+            setIsPlacingOrder(false);
+          }
+        },
+        modal: {
+          ondismiss: function() {
+            toast.info("Payment cancelled");
+            setIsPlacingOrder(false);
           }
         },
         prefill: {
@@ -152,27 +160,47 @@ export default function CheckoutPage() {
       };
 
       const rzp = new window.Razorpay(options);
+      
+      // Handle payment failure
+      rzp.on('payment.failed', function (response) {
+        console.error('Payment failed:', response.error);
+        toast.error(`Payment failed: ${response.error.description}`);
+        setIsPlacingOrder(false);
+      });
+
       rzp.open();
     } catch (err) {
-      toast.error("Payment gateway error");
-    } finally {
+      console.error("Razorpay initiation error:", err);
+      toast.error("Payment gateway error. Please try again.");
       setIsPlacingOrder(false);
     }
   };
 
   const submitOrder = async (payload) => {
-    // console.log("Submitting order with payload:", payload); // Debugging
     try {
-      const res = await axios.post("/orders/createOrder", payload, { withCredentials: true });
-      dispatch(clearCartThunk());
+      console.log("Submitting order with payload:", payload);
+      
+      const res = await axios.post("/orders/createOrder", payload, { 
+        withCredentials: true,
+        timeout: 30000 // 30 second timeout
+      });
+
+      // Clear cart only after successful order creation
+      await dispatch(clearCartThunk());
+      
       toast.success("Order placed successfully!");
-      // navigate("/invoice/123", { state: { order: res.data.order } });
-      const orderId = res.data.order._id; // Assuming that order ID is stored in _id
-navigate(`/invoice/${orderId}`, { state: { order: res.data.order } });
+      const orderId = res.data.order._id;
+      navigate(`/invoice/${orderId}`, { state: { order: res.data.order } });
     } catch (err) {
       const msg = err.response?.data?.message || "Failed to place order";
-      toast.error(msg);
-      console.error("Order error:", err.response?.data);
+      console.error("Order creation error:", err.response?.data || err);
+      
+      // If payment was already made, show special message
+      if (payload.paymentMethod === "Razorpay" && payload.paymentId) {
+        toast.error(`Order creation failed but payment was successful. Please contact support with Payment ID for assistance.`);
+      } else {
+        toast.error(msg);
+      }
     } finally {
       setIsPlacingOrder(false);
     }
@@ -189,7 +217,6 @@ navigate(`/invoice/${orderId}`, { state: { order: res.data.order } });
       />
 
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Left: Address & Payment */}
         <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Shipping Information</h2>
 
@@ -238,68 +265,56 @@ navigate(`/invoice/${orderId}`, { state: { order: res.data.order } });
             </button>
           </div>
 
-         <h3 className="text-center font-semibold mb-4">Payment Method</h3>
+          <h3 className="text-center font-semibold mb-4">Payment Method</h3>
 
-<div className="flex justify-center gap-3 flex-nowrap">
- {/* <button
-    onClick={() => placeOrder("COD")}
-    disabled={isPlacingOrder}
-    className="bg-pink-100 text-pink-700 font-semibold px-4 py-2 md:px-8 md:py-3 rounded-lg hover:bg-pink-200 disabled:opacity-60 whitespace-nowrap"
-  >
-    {isPlacingOrder ? "Processing..." : "Cash on Delivery"}
-  </button>
-*/}
-  <button
-    onClick={() => placeOrder("Razorpay")}
-    disabled={isPlacingOrder}
-    className="bg-pink-500 text-white font-semibold px-4 py-2 md:px-8 md:py-3 rounded-lg hover:bg-pink-600 disabled:opacity-60 whitespace-nowrap"
-  >
-    {isPlacingOrder ? "Redirecting..." : "Pay Online"}
-  </button>
-</div>
-
-
+          <div className="flex justify-center gap-3 flex-nowrap">
+            <button
+              onClick={() => placeOrder("Razorpay")}
+              disabled={isPlacingOrder}
+              className="bg-pink-500 text-white font-semibold px-4 py-2 md:px-8 md:py-3 rounded-lg hover:bg-pink-600 disabled:opacity-60 whitespace-nowrap"
+            >
+              {isPlacingOrder ? "Processing..." : "Pay Online"}
+            </button>
+          </div>
         </div>
 
-        {/* Right: Order Summary */}
-     <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
-  <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Order Summary</h2>
-  <div className="space-y-3">
-    {cartItems.map(item => (
-      <div key={item.id + item.size + item.color} className="flex justify-between text-gray-700">
-        <span>
-          {item.name} 
-          ({item.size ? `${item.size}` : "N/A"}
-          {item.color ? `, ${item.color}` : ""} )
-          × {item.quantity}
-        </span>
-        <span className="font-medium">₹{(item.price * item.quantity).toFixed(2)}</span>
-      </div>
-    ))}
+        <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
+          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Order Summary</h2>
+          <div className="space-y-3">
+            {cartItems.map(item => (
+              <div key={item.id + item.size + item.color} className="flex justify-between text-gray-700">
+                <span>
+                  {item.name} 
+                  ({item.size ? `${item.size}` : "N/A"}
+                  {item.color ? `, ${item.color}` : ""} )
+                  × {item.quantity}
+                </span>
+                <span className="font-medium">₹{(item.price * item.quantity).toFixed(2)}</span>
+              </div>
+            ))}
 
-    <div className="border-t pt-4">
-      <div className="flex justify-between">
-        <span>Total Items:</span>
-        <span className="font-semibold">{totalQuantity}</span>
-      </div>
-        <div className="flex justify-between text-gray-700">
-          <span>Shipping:</span>
-          <span>₹{displayShipping.toFixed(2)}</span>
+            <div className="border-t pt-4">
+              <div className="flex justify-between">
+                <span>Total Items:</span>
+                <span className="font-semibold">{totalQuantity}</span>
+              </div>
+              <div className="flex justify-between text-gray-700">
+                <span>Shipping:</span>
+                <span>₹{displayShipping.toFixed(2)}</span>
+              </div>
+              {appliedCoupon && (
+                <div className="flex justify-between text-green-600">
+                  <span>Coupon: {appliedCoupon.code}</span>
+                  <span>{appliedCoupon.discountPercentage}%</span>
+                </div>
+              )}
+              <div className="flex justify-between text-xl font-bold text-gray-800 mt-4 border-t pt-4">
+                <span>Total Payable:</span>
+                <span className="text-pink-600">₹{Number(grandTotal).toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
         </div>
-      {appliedCoupon && (
-        <div className="flex justify-between text-green-600">
-          <span>Coupon: {appliedCoupon.code}</span>
-          <span>{appliedCoupon.discountPercentage}%</span>
-        </div>
-      )}
-      <div className="flex justify-between text-xl font-bold text-gray-800 mt-4 border-t pt-4">
-        <span>Total Payable:</span>
-        <span className="text-pink-600">₹{Number(grandTotal).toFixed(2)}</span>
-      </div>
-    </div>
-  </div>
-</div>
-
       </div>
     </div>
   );
