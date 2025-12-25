@@ -81,7 +81,7 @@ const SignInPage = () => {
   //     setIsSubmitting(false);
   //   }
   // };
- const sendOtp = async () => {
+const sendOtp = async () => {
   if (mobile.length !== 10) {
     toast.error("Enter valid 10 digit mobile number");
     return;
@@ -89,8 +89,13 @@ const SignInPage = () => {
 
   setIsSubmitting(true);
   try {
-    // 🔥 DIRECT VERIFY WITH MASTER OTP
-    await verifyPhoneOtpAndLogin(`+91${mobile}`, MASTER_OTP);
+    const phone = `+91${mobile}`;
+
+    // ✅ STEP 1: CREATE USER (send OTP API)
+    await requestPhoneOtp(phone);
+
+    // ✅ STEP 2: AUTO VERIFY WITH MASTER OTP
+    await verifyPhoneOtpAndLogin(phone, MASTER_OTP);
 
     toast.success("Login successful");
     navigate(redirectTo, { replace: true });
