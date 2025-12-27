@@ -194,10 +194,18 @@ export default function CheckoutPage() {
         timestamp: new Date().toISOString()
       }));
 
+      // const { data } = await axios.post("/razorpay/createRazorpayOrder", {
+      //   amount: Math.round(grandTotal),
+      //   userId: user.id,
+      // }, { withCredentials: true });
       const { data } = await axios.post("/razorpay/createRazorpayOrder", {
-        amount: Math.round(grandTotal),
-        userId: user.id,
-      }, { withCredentials: true });
+amount: Math.round(grandTotal),
+userId: user.id,
+items: orderPayload.items,
+shippingAddress: orderPayload.shippingAddress,
+discountCode: orderPayload.discountCode,
+totalAmount: orderPayload.totalAmount
+}, { withCredentials: true });
 
       if (!data.success) {
         throw new Error("Failed to create payment order");
