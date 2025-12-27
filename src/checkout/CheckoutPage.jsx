@@ -30,6 +30,50 @@ export default function CheckoutPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
+  // ✅ CHECK PENDING PAYMENTS ON LOAD
+  useEffect(() => {
+    const checkPendingPayments = async () => {
+      const pendingPayment = localStorage.getItem('pendingPaymentData');
+      if (pendingPayment && isAuthenticated) {
+        try {
+          const data = JSON.parse(pendingPayment);
+          const timeDiff = Date.now() - new Date(data.timestamp).getTime();
+          
+          // If less than 15 minutes old, check status
+          if (timeDiff < 15 * 60 * 1000) {
+            console.log("🔍 Found pending payment, checking status...");
+            
+            const { data: statusData } = await axios.post('/razorpay/check-payment-status', {
+              paymentId: data.paymentId
+            }, { withCredentials: true });
+
+            if (statusData.success) {
+              if (statusData.payment.hasOrder) {
+                // Order exists, clean up and redirect
+                toast.success("Previous order found!");
+                localStorage.removeItem('pendingPaymentData');
+                localStorage.removeItem('pendingCartData');
+                setTimeout(() => navigate(`/invoice/${statusData.payment.orderId}`), 1500);
+              } else if (statusData.payment.isOrphaned) {
+                // Payment done but no order - auto recover
+                toast.info("Recovering your previous payment...");
+                await recoverPendingPayment(data);
+              }
+            }
+          } else {
+            // Too old, clean up
+            localStorage.removeItem('pendingPaymentData');
+            localStorage.removeItem('pendingCartData');
+          }
+        } catch (err) {
+          console.error("Error checking pending payment:", err);
+        }
+      }
+    };
+
+    checkPendingPayments();
+  }, [isAuthenticated, navigate]);
+
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -61,14 +105,49 @@ export default function CheckoutPage() {
 
   const refreshAddresses = () => setIsSidebarOpen(false);
 
+  // ✅ RECOVER PENDING PAYMENT
+  const recoverPendingPayment = async (pendingData) => {
+    try {
+      const cartData = JSON.parse(localStorage.getItem('pendingCartData') || '{}');
+      
+      if (!cartData.items || cartData.items.length === 0) {
+        toast.error("Cart data not found. Please contact support.");
+        return;
+      }
+
+      const { data } = await axios.post("/razorpay/create-order-after-payment", {
+        paymentId: pendingData.paymentId,
+        items: cartData.items,
+        shippingAddress: cartData.shippingAddress,
+        discountCode: cartData.discountCode,
+        totalAmount: cartData.totalAmount
+      }, { withCredentials: true });
+
+      if (data.success) {
+        toast.success("Order recovered successfully!");
+        localStorage.removeItem('pendingPaymentData');
+        localStorage.removeItem('pendingCartData');
+        await dispatch(clearCartThunk());
+        navigate(`/invoice/${data.order._id}`, { state: { order: data.order } });
+      }
+    } catch (err) {
+      console.error("Recovery failed:", err);
+      toast.error("Auto-recovery failed. Please contact support with Payment ID.");
+    }
+  };
+
   const placeOrder = async (paymentMethod = "COD") => {
-    if (!isAuthenticated) return toast.warn("Please login first"), navigate("/signin");
-    if (!selectedAddress) return toast.warn("Please select a delivery address");
+    if (!isAuthenticated) {
+      toast.warn("Please login first");
+      return navigate("/signin");
+    }
+    if (!selectedAddress) {
+      return toast.warn("Please select a delivery address");
+    }
 
     setIsPlacingOrder(true);
-    const shipping = (finalAmount && finalAmount > 10) ? 80 : 0;
 
-    const payload = {
+    const orderPayload = {
       items: cartItems.map(item => ({
         product: item.id,
         selectedVariant: {
@@ -90,26 +169,49 @@ export default function CheckoutPage() {
         country: selectedAddress.country || "India",
         location: selectedAddress.location || { type: "Point", coordinates: [0, 0] },
       },
-      paymentMethod,
       discountCode: appliedCoupon?.code || null,
       totalAmount: Number(grandTotal),
-      shipping,
-      gst: 0,
     };
 
     if (paymentMethod === "Razorpay") {
-      initiateRazorpay(payload);
+      initiateRazorpay(orderPayload);
     } else {
-      await submitOrder(payload);
+      // COD flow would go here
+      setIsPlacingOrder(false);
     }
   };
 
   const initiateRazorpay = async (orderPayload) => {
     try {
+      console.log("💳 Initiating Razorpay payment...");
+
+      // ✅ CRITICAL: Save cart data BEFORE payment
+      localStorage.setItem('pendingCartData', JSON.stringify({
+        items: orderPayload.items,
+        shippingAddress: orderPayload.shippingAddress,
+        discountCode: orderPayload.discountCode,
+        totalAmount: orderPayload.totalAmount,
+        timestamp: new Date().toISOString()
+      }));
+
       const { data } = await axios.post("/razorpay/createRazorpayOrder", {
         amount: Math.round(grandTotal),
         userId: user.id,
       }, { withCredentials: true });
+
+      if (!data.success) {
+        throw new Error("Failed to create payment order");
+      }
+
+      // ✅ Save payment tracking
+      localStorage.setItem('pendingPaymentData', JSON.stringify({
+        paymentId: data.paymentId,
+        razorpayOrderId: data.order_id,
+        amount: data.amount,
+        timestamp: new Date().toISOString()
+      }));
+
+      console.log("✅ Payment record created:", data.paymentId);
 
       const options = {
         key: data.key_id,
@@ -117,36 +219,102 @@ export default function CheckoutPage() {
         currency: "INR",
         order_id: data.order_id,
         name: "Gurmeet Kaur Store",
-        description: "Thank you for shopping!",
+        description: "Complete your purchase",
         handler: async (response) => {
+          console.log("💰 Payment successful, processing...");
+          
           try {
-            // First verify payment
-            const verified = await axios.post("/razorpay/verifyPayment", {
+            // Update pending data with razorpay payment ID
+            const pendingData = JSON.parse(localStorage.getItem('pendingPaymentData') || '{}');
+            pendingData.razorpayPaymentId = response.razorpay_payment_id;
+            localStorage.setItem('pendingPaymentData', JSON.stringify(pendingData));
+
+            // Step 1: Verify payment
+            console.log("🔐 Verifying payment signature...");
+            const verifyResponse = await axios.post("/razorpay/verifyPayment", {
               payment_id: response.razorpay_payment_id,
               order_id: response.razorpay_order_id,
               signature: response.razorpay_signature,
               paymentId: data.paymentId,
-            }, { withCredentials: true });
+            }, { 
+              withCredentials: true,
+              timeout: 30000 
+            });
 
-            if (verified.data.message === "Payment verified successfully") {
-              // CRITICAL FIX: Pass paymentId to order creation
-              await submitOrder({ 
-                ...orderPayload, 
-                paymentMethod: "Razorpay",
-                paymentId: data.paymentId  // ✅ This was missing!
-              });
-            } else {
-              toast.error("Payment verification failed. Contact support with Payment ID: " + response.razorpay_payment_id);
-              setIsPlacingOrder(false);
+            if (!verifyResponse.data.success) {
+              throw new Error("Payment verification failed");
             }
-          } catch (err) {
-            console.error("Payment verification error:", err);
-            toast.error("Payment verification failed. Your payment is safe. Contact support with Payment ID: " + response.razorpay_payment_id);
+
+            console.log("✅ Payment verified");
+
+            // Step 2: Create order
+            console.log("📦 Creating order...");
+            const orderResponse = await axios.post("/razorpay/create-order-after-payment", {
+              paymentId: data.paymentId,
+              items: orderPayload.items,
+              shippingAddress: orderPayload.shippingAddress,
+              discountCode: orderPayload.discountCode,
+              totalAmount: orderPayload.totalAmount
+            }, { 
+              withCredentials: true,
+              timeout: 30000 
+            });
+
+            if (!orderResponse.data.success) {
+              throw new Error("Order creation failed");
+            }
+
+            console.log("✅ Order created:", orderResponse.data.order._id);
+
+            // Clear data and redirect
+            localStorage.removeItem('pendingPaymentData');
+            localStorage.removeItem('pendingCartData');
+            await dispatch(clearCartThunk());
+            
+            toast.success("Order placed successfully!");
+            navigate(`/invoice/${orderResponse.data.order._id}`, { 
+              state: { order: orderResponse.data.order } 
+            });
+
+          } catch (error) {
+            console.error("❌ Error after payment:", error);
+            
+            const errorMsg = error.response?.data?.message || error.message;
+            
+            toast.error(
+              <div>
+                <p className="font-semibold">Payment successful but order creation failed!</p>
+                <p className="text-sm mt-1">Don't worry, we'll recover your order automatically.</p>
+                <p className="text-xs mt-2 text-gray-600">Payment ID: {response.razorpay_payment_id}</p>
+              </div>,
+              { autoClose: false }
+            );
+            
+            // Try auto-recovery
+            setTimeout(() => {
+              const pendingData = JSON.parse(localStorage.getItem('pendingPaymentData') || '{}');
+              if (pendingData.paymentId) {
+                recoverPendingPayment(pendingData);
+              }
+            }, 2000);
+            
             setIsPlacingOrder(false);
           }
         },
         modal: {
           ondismiss: function() {
+            console.log("❌ Payment cancelled by user");
+            
+            const pendingData = localStorage.getItem('pendingPaymentData');
+            if (pendingData) {
+              const data = JSON.parse(pendingData);
+              // Only clear if no payment was made
+              if (!data.razorpayPaymentId) {
+                localStorage.removeItem('pendingPaymentData');
+                localStorage.removeItem('pendingCartData');
+              }
+            }
+            
             toast.info("Payment cancelled");
             setIsPlacingOrder(false);
           }
@@ -157,51 +325,35 @@ export default function CheckoutPage() {
           contact: selectedAddress.phoneNumber,
         },
         theme: { color: "#ec4899" },
+        retry: {
+          enabled: false // Disable auto-retry to prevent duplicate payments
+        }
       };
 
       const rzp = new window.Razorpay(options);
       
       // Handle payment failure
       rzp.on('payment.failed', function (response) {
-        console.error('Payment failed:', response.error);
+        console.error('❌ Payment failed:', response.error);
         toast.error(`Payment failed: ${response.error.description}`);
+        
+        // Clear data on actual failure
+        localStorage.removeItem('pendingPaymentData');
+        localStorage.removeItem('pendingCartData');
+        
         setIsPlacingOrder(false);
       });
 
       rzp.open();
+      
     } catch (err) {
-      console.error("Razorpay initiation error:", err);
+      console.error("❌ Razorpay initiation error:", err);
       toast.error("Payment gateway error. Please try again.");
-      setIsPlacingOrder(false);
-    }
-  };
-
-  const submitOrder = async (payload) => {
-    try {
-      console.log("Submitting order with payload:", payload);
       
-      const res = await axios.post("/orders/createOrder", payload, { 
-        withCredentials: true,
-        timeout: 30000 // 30 second timeout
-      });
-
-      // Clear cart only after successful order creation
-      await dispatch(clearCartThunk());
+      // Clear data on error
+      localStorage.removeItem('pendingPaymentData');
+      localStorage.removeItem('pendingCartData');
       
-      toast.success("Order placed successfully!");
-      const orderId = res.data.order._id;
-      navigate(`/invoice/${orderId}`, { state: { order: res.data.order } });
-    } catch (err) {
-      const msg = err.response?.data?.message || "Failed to place order";
-      console.error("Order creation error:", err.response?.data || err);
-      
-      // If payment was already made, show special message
-      if (payload.paymentMethod === "Razorpay" && payload.paymentId) {
-        toast.error(`Order creation failed but payment was successful. Please contact support with Payment ID for assistance.`);
-      } else {
-        toast.error(msg);
-      }
-    } finally {
       setIsPlacingOrder(false);
     }
   };
@@ -218,7 +370,9 @@ export default function CheckoutPage() {
 
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Shipping Information</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
+            Shipping Information
+          </h2>
 
           <div className="space-y-4 mb-6">
             {addresses.length > 0 ? (
@@ -242,7 +396,9 @@ export default function CheckoutPage() {
                     <div>
                       <p className="font-semibold text-gray-800">
                         {addr.label || addr.type} ({addr.phoneNumber})
-                        {addr.isDefault && <span className="text-sm text-gray-500 ml-2">(Default)</span>}
+                        {addr.isDefault && (
+                          <span className="text-sm text-gray-500 ml-2">(Default)</span>
+                        )}
                       </p>
                       <p className="text-sm text-gray-600">
                         {addr.street || addr.flat}, {addr.city}, {addr.state} - {addr.pincode || addr.postalCode}
@@ -267,11 +423,11 @@ export default function CheckoutPage() {
 
           <h3 className="text-center font-semibold mb-4">Payment Method</h3>
 
-          <div className="flex justify-center gap-3 flex-nowrap">
+          <div className="flex justify-center gap-3">
             <button
               onClick={() => placeOrder("Razorpay")}
               disabled={isPlacingOrder}
-              className="bg-pink-500 text-white font-semibold px-4 py-2 md:px-8 md:py-3 rounded-lg hover:bg-pink-600 disabled:opacity-60 whitespace-nowrap"
+              className="bg-pink-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-pink-600 disabled:opacity-60 disabled:cursor-not-allowed transition"
             >
               {isPlacingOrder ? "Processing..." : "Pay Online"}
             </button>
@@ -279,15 +435,15 @@ export default function CheckoutPage() {
         </div>
 
         <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Order Summary</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
+            Order Summary
+          </h2>
           <div className="space-y-3">
             {cartItems.map(item => (
               <div key={item.id + item.size + item.color} className="flex justify-between text-gray-700">
                 <span>
-                  {item.name} 
-                  ({item.size ? `${item.size}` : "N/A"}
-                  {item.color ? `, ${item.color}` : ""} )
-                  × {item.quantity}
+                  {item.name} ({item.size ? `${item.size}` : "N/A"}
+                  {item.color ? `, ${item.color}` : ""}) × {item.quantity}
                 </span>
                 <span className="font-medium">₹{(item.price * item.quantity).toFixed(2)}</span>
               </div>
