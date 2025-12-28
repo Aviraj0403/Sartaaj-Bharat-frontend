@@ -39,7 +39,6 @@ export default function CheckoutPage() {
           const data = JSON.parse(pendingPayment);
           const timeDiff = Date.now() - new Date(data.timestamp).getTime();
           
-          // If less than 15 minutes old, check status
           if (timeDiff < 15 * 60 * 1000) {
             console.log("🔍 Found pending payment, checking status...");
             
@@ -49,19 +48,16 @@ export default function CheckoutPage() {
 
             if (statusData.success) {
               if (statusData.payment.hasOrder) {
-                // Order exists, clean up and redirect
                 toast.success("Previous order found!");
                 localStorage.removeItem('pendingPaymentData');
                 localStorage.removeItem('pendingCartData');
                 setTimeout(() => navigate(`/invoice/${statusData.payment.orderId}`), 1500);
               } else if (statusData.payment.isOrphaned) {
-                // Payment done but no order - auto recover
                 toast.info("Recovering your previous payment...");
                 await recoverPendingPayment(data);
               }
             }
           } else {
-            // Too old, clean up
             localStorage.removeItem('pendingPaymentData');
             localStorage.removeItem('pendingCartData');
           }
@@ -176,7 +172,6 @@ export default function CheckoutPage() {
     if (paymentMethod === "Razorpay") {
       initiateRazorpay(orderPayload);
     } else {
-      // COD flow would go here
       setIsPlacingOrder(false);
     }
   };
@@ -185,7 +180,7 @@ export default function CheckoutPage() {
     try {
       console.log("💳 Initiating Razorpay payment...");
 
-      // ✅ CRITICAL: Save cart data BEFORE payment
+      // ✅ Save cart data BEFORE payment
       localStorage.setItem('pendingCartData', JSON.stringify({
         items: orderPayload.items,
         shippingAddress: orderPayload.shippingAddress,
@@ -194,18 +189,15 @@ export default function CheckoutPage() {
         timestamp: new Date().toISOString()
       }));
 
-      // const { data } = await axios.post("/razorpay/createRazorpayOrder", {
-      //   amount: Math.round(grandTotal),
-      //   userId: user.id,
-      // }, { withCredentials: true });
+      // ✅ FIX: Send amount in rupees, backend converts to paise
       const { data } = await axios.post("/razorpay/createRazorpayOrder", {
-amount: Math.round(grandTotal),
-userId: user.id,
-items: orderPayload.items,
-shippingAddress: orderPayload.shippingAddress,
-discountCode: orderPayload.discountCode,
-totalAmount: orderPayload.totalAmount
-}, { withCredentials: true });
+        amount: Math.round(grandTotal), // In rupees
+        userId: user.id,
+        items: orderPayload.items,
+        shippingAddress: orderPayload.shippingAddress,
+        discountCode: orderPayload.discountCode,
+        totalAmount: orderPayload.totalAmount
+      }, { withCredentials: true });
 
       if (!data.success) {
         throw new Error("Failed to create payment order");
@@ -215,7 +207,7 @@ totalAmount: orderPayload.totalAmount
       localStorage.setItem('pendingPaymentData', JSON.stringify({
         paymentId: data.paymentId,
         razorpayOrderId: data.order_id,
-        amount: data.amount,
+        amount: Math.round(grandTotal),
         timestamp: new Date().toISOString()
       }));
 
@@ -223,21 +215,20 @@ totalAmount: orderPayload.totalAmount
 
       const options = {
         key: data.key_id,
-        amount: data.amount * 100,
+        amount: data.amount, // Already in paise from backend
         currency: "INR",
         order_id: data.order_id,
         name: "Gurmeet Kaur Store",
         description: "Complete your purchase",
+        timeout: 600, // ✅ NEW: 10 minute timeout
         handler: async (response) => {
           console.log("💰 Payment successful, processing...");
           
           try {
-            // Update pending data with razorpay payment ID
             const pendingData = JSON.parse(localStorage.getItem('pendingPaymentData') || '{}');
             pendingData.razorpayPaymentId = response.razorpay_payment_id;
             localStorage.setItem('pendingPaymentData', JSON.stringify(pendingData));
 
-            // Step 1: Verify payment
             console.log("🔐 Verifying payment signature...");
             const verifyResponse = await axios.post("/razorpay/verifyPayment", {
               payment_id: response.razorpay_payment_id,
@@ -255,7 +246,6 @@ totalAmount: orderPayload.totalAmount
 
             console.log("✅ Payment verified");
 
-            // Step 2: Create order
             console.log("📦 Creating order...");
             const orderResponse = await axios.post("/razorpay/create-order-after-payment", {
               paymentId: data.paymentId,
@@ -274,7 +264,6 @@ totalAmount: orderPayload.totalAmount
 
             console.log("✅ Order created:", orderResponse.data.order._id);
 
-            // Clear data and redirect
             localStorage.removeItem('pendingPaymentData');
             localStorage.removeItem('pendingCartData');
             await dispatch(clearCartThunk());
@@ -287,8 +276,6 @@ totalAmount: orderPayload.totalAmount
           } catch (error) {
             console.error("❌ Error after payment:", error);
             
-            const errorMsg = error.response?.data?.message || error.message;
-            
             toast.error(
               <div>
                 <p className="font-semibold">Payment successful but order creation failed!</p>
@@ -298,7 +285,6 @@ totalAmount: orderPayload.totalAmount
               { autoClose: false }
             );
             
-            // Try auto-recovery
             setTimeout(() => {
               const pendingData = JSON.parse(localStorage.getItem('pendingPaymentData') || '{}');
               if (pendingData.paymentId) {
@@ -310,22 +296,17 @@ totalAmount: orderPayload.totalAmount
           }
         },
         modal: {
-          ondismiss: function() {
-            console.log("❌ Payment cancelled by user");
-            
-            const pendingData = localStorage.getItem('pendingPaymentData');
-            if (pendingData) {
-              const data = JSON.parse(pendingData);
-              // Only clear if no payment was made
-              if (!data.razorpayPaymentId) {
-                localStorage.removeItem('pendingPaymentData');
-                localStorage.removeItem('pendingCartData');
-              }
-            }
-            
-            toast.info("Payment cancelled");
+          ondismiss: () => {
+            // ✅ NEW: Better messaging for timeouts
+            toast.info(
+              "Payment cancelled. If payment was completed, we'll recover it automatically.",
+              { autoClose: 5000 }
+            );
             setIsPlacingOrder(false);
-          }
+          },
+          // ✅ NEW: Handle timeout specifically
+          escape: false,
+          confirm_close: true
         },
         prefill: {
           name: user.userName || "Customer",
@@ -334,18 +315,30 @@ totalAmount: orderPayload.totalAmount
         },
         theme: { color: "#ec4899" },
         retry: {
-          enabled: false // Disable auto-retry to prevent duplicate payments
-        }
+          enabled: false
+        },
+        // ✅ NEW: Additional options
+        send_sms_hash: true,
+        remember_customer: false
       };
 
       const rzp = new window.Razorpay(options);
       
-      // Handle payment failure
+      // ✅ Handle payment failure
       rzp.on('payment.failed', function (response) {
         console.error('❌ Payment failed:', response.error);
-        toast.error(`Payment failed: ${response.error.description}`);
         
-        // Clear data on actual failure
+        // ✅ NEW: Better error messages
+        let errorMsg = "Payment failed. Please try again.";
+        
+        if (response.error.reason === 'payment_timed_out') {
+          errorMsg = "Payment timed out. The payment window expired after 10 minutes.";
+        } else if (response.error.description) {
+          errorMsg = response.error.description;
+        }
+        
+        toast.error(errorMsg, { autoClose: 8000 });
+        
         localStorage.removeItem('pendingPaymentData');
         localStorage.removeItem('pendingCartData');
         
@@ -358,7 +351,6 @@ totalAmount: orderPayload.totalAmount
       console.error("❌ Razorpay initiation error:", err);
       toast.error("Payment gateway error. Please try again.");
       
-      // Clear data on error
       localStorage.removeItem('pendingPaymentData');
       localStorage.removeItem('pendingCartData');
       
@@ -430,6 +422,12 @@ totalAmount: orderPayload.totalAmount
           </div>
 
           <h3 className="text-center font-semibold mb-4">Payment Method</h3>
+
+          {/* ✅ NEW: Payment info alert */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm text-gray-700">
+            <p className="font-medium mb-1">⏰ Important:</p>
+            <p>Complete payment within 10 minutes to avoid timeout.</p>
+          </div>
 
           <div className="flex justify-center gap-3">
             <button
