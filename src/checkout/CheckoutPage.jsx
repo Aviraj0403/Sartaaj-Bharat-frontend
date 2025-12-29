@@ -222,79 +222,108 @@ export default function CheckoutPage() {
         description: "Complete your purchase",
         timeout: 600, // ✅ NEW: 10 minute timeout
         handler: async (response) => {
-          console.log("💰 Payment successful, processing...");
-          
-          try {
-            const pendingData = JSON.parse(localStorage.getItem('pendingPaymentData') || '{}');
-            pendingData.razorpayPaymentId = response.razorpay_payment_id;
-            localStorage.setItem('pendingPaymentData', JSON.stringify(pendingData));
+  console.log("Payment successful, processing...");
 
-            console.log("🔐 Verifying payment signature...");
-            const verifyResponse = await axios.post("/razorpay/verifyPayment", {
-              payment_id: response.razorpay_payment_id,
-              order_id: response.razorpay_order_id,
-              signature: response.razorpay_signature,
-              paymentId: data.paymentId,
-            }, { 
-              withCredentials: true,
-              timeout: 30000 
-            });
+  try {
+    // Update pending data with Razorpay payment ID
+    const pendingData = JSON.parse(localStorage.getItem('pendingPaymentData') || '{}');
+    pendingData.razorpayPaymentId = response.razorpay_payment_id;
+    localStorage.setItem('pendingPaymentData', JSON.stringify(pendingData));
 
-            if (!verifyResponse.data.success) {
-              throw new Error("Payment verification failed");
-            }
+    // Step 1: Verify payment signature
+    console.log("Verifying payment signature...");
+    const verifyResponse = await axios.post("/razorpay/verifyPayment", {
+      payment_id: response.razorpay_payment_id,
+      order_id: response.razorpay_order_id,
+      signature: response.razorpay_signature,
+      paymentId: data.paymentId,
+    }, { withCredentials: true, timeout: 30000 });
 
-            console.log("✅ Payment verified");
+    if (!verifyResponse.data.success) {
+      throw new Error("Payment verification failed");
+    }
+    console.log("Payment verified");
 
-            console.log("📦 Creating order...");
-            const orderResponse = await axios.post("/razorpay/create-order-after-payment", {
-              paymentId: data.paymentId,
-              items: orderPayload.items,
-              shippingAddress: orderPayload.shippingAddress,
-              discountCode: orderPayload.discountCode,
-              totalAmount: orderPayload.totalAmount
-            }, { 
-              withCredentials: true,
-              timeout: 30000 
-            });
+    // Step 2: Try to create order (this might fail if webhook already did it)
+    console.log("Creating order...");
+    const orderResponse = await axios.post("/razorpay/create-order-after-payment", {
+      paymentId: data.paymentId,
+      items: orderPayload.items,
+      shippingAddress: orderPayload.shippingAddress,
+      discountCode: orderPayload.discountCode,
+      totalAmount: orderPayload.totalAmount
+    }, { withCredentials: true, timeout: 30000 });
 
-            if (!orderResponse.data.success) {
-              throw new Error("Order creation failed");
-            }
+    // Success from frontend call
+    if (orderResponse.data.success) {
+      console.log("Order created:", orderResponse.data.order._id);
+      finalizeSuccess(orderResponse.data.order);
+      return;
+    }
 
-            console.log("✅ Order created:", orderResponse.data.order._id);
+    // If not success, fall through to catch block (will handle gracefully below)
+    throw new Error("Order creation failed in response");
 
-            localStorage.removeItem('pendingPaymentData');
-            localStorage.removeItem('pendingCartData');
-            await dispatch(clearCartThunk());
-            
-            toast.success("Order placed successfully!");
-            navigate(`/invoice/${orderResponse.data.order._id}`, { 
-              state: { order: orderResponse.data.order } 
-            });
+  } catch (error) {
+    console.error("Error after payment:", error);
 
-          } catch (error) {
-            console.error("❌ Error after payment:", error);
-            
-            toast.error(
-              <div>
-                <p className="font-semibold">Payment successful but order creation failed!</p>
-                <p className="text-sm mt-1">Don't worry, we'll recover your order automatically.</p>
-                <p className="text-xs mt-2 text-gray-600">Payment ID: {response.razorpay_payment_id}</p>
-              </div>,
-              { autoClose: false }
-            );
-            
-            setTimeout(() => {
-              const pendingData = JSON.parse(localStorage.getItem('pendingPaymentData') || '{}');
-              if (pendingData.paymentId) {
-                recoverPendingPayment(pendingData);
-              }
-            }, 2000);
-            
-            setIsPlacingOrder(false);
-          }
-        },
+    const axiosError = error.response?.data;
+    const status = error.response?.status;
+
+    // BEST CASE: Webhook already created the order → backend returns info about existing order
+    if (
+      axiosError &&
+      (axiosError.message === "This payment has already been used" ||
+       axiosError.message.includes("already been used") ||
+       axiosError.orderId ||
+       axiosError.order)
+    ) {
+      console.log("Order already created by webhook — treating as success");
+
+      const existingOrderId = axiosError.orderId || axiosError.order?._id;
+
+      if (existingOrderId) {
+        // Optionally fetch full order details if needed
+        // Or just redirect
+        finalizeSuccess({ _id: existingOrderId });
+        toast.success("Order placed successfully! (Confirmed via secure server)");
+        return;
+      }
+    }
+
+    // WORST CASE: Real failure, but payment succeeded → show recovery message
+    toast.error(
+      <div>
+        <p className="font-semibold">Payment successful but order processing delayed!</p>
+        <p className="text-sm mt-1">No worries — we're recovering your order automatically.</p>
+        <p className="text-xs mt-2 text-gray-600">
+          Razorpay Payment ID: {response.razorpay_payment_id}
+        </p>
+      </div>,
+      { autoClose: false }
+    );
+
+    // Auto-recovery after 2 seconds
+    setTimeout(async () => {
+      const pendingData = JSON.parse(localStorage.getItem('pendingPaymentData') || '{}');
+      if (pendingData.paymentId) {
+        await recoverPendingPayment(pendingData);
+      }
+    }, 2000);
+
+    setIsPlacingOrder(false);
+  }
+
+  // Helper function to avoid code duplication
+  function finalizeSuccess(order) {
+    localStorage.removeItem('pendingPaymentData');
+    localStorage.removeItem('pendingCartData');
+    dispatch(clearCartThunk());
+    toast.success("Order placed successfully!");
+    navigate(`/invoice/${order._id}`, { state: { order } });
+    setIsPlacingOrder(false);
+  }
+},
         modal: {
           ondismiss: () => {
             // ✅ NEW: Better messaging for timeouts
