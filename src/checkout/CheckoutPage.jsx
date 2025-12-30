@@ -31,54 +31,70 @@ export default function CheckoutPage() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   // ✅ CHECK PENDING PAYMENTS ON LOAD
-  useEffect(() => {
-    const checkPendingPayments = async () => {
-      const pendingPayment = localStorage.getItem('pendingPaymentData');
-      if (pendingPayment && isAuthenticated) {
-        try {
-          const data = JSON.parse(pendingPayment);
-          const timeDiff = Date.now() - new Date(data.timestamp).getTime();
+//   useEffect(() => {
+//     const checkPendingPayments = async () => {
+//       const pendingPayment = localStorage.getItem('pendingPaymentData');
+//       if (pendingPayment && isAuthenticated) {
+//         try {
+//           const data = JSON.parse(pendingPayment);
+//           const timeDiff = Date.now() - new Date(data.timestamp).getTime();
           
-          if (timeDiff < 15 * 60 * 1000) {
-            console.log("🔍 Found pending payment, checking status...");
+//           if (timeDiff < 15 * 60 * 1000) {
+//             console.log("🔍 Found pending payment, checking status...");
             
-            // const { data: statusData } = await axios.post('/razorpay/check-payment-status', {
-            //   paymentId: data.paymentId
-            // }, { withCredentials: true });
+//             // const { data: statusData } = await axios.post('/razorpay/check-payment-status', {
+//             //   paymentId: data.paymentId
+//             // }, { withCredentials: true });
 
-const { data } = await axios.post(
-  "/razorpay/check-payment-status",
-  { paymentId: pendingData.paymentId },
-  { withCredentials: true }
-);
+// const { data } = await axios.post(
+//   "/razorpay/check-payment-status",
+//   { paymentId: pendingData.paymentId },
+//   { withCredentials: true }
+// );
 
-if (data.success && data.payment.hasOrder) {
-  finalizeSuccess({ _id: data.payment.orderId });
-}
+// if (data.success && data.payment.hasOrder) {
+//   finalizeSuccess({ _id: data.payment.orderId });
+// }
 
-            if (statusData.success) {
-              if (statusData.payment.hasOrder) {
-                toast.success("Previous order found!");
-                localStorage.removeItem('pendingPaymentData');
-                localStorage.removeItem('pendingCartData');
-                setTimeout(() => navigate(`/invoice/${statusData.payment.orderId}`), 1500);
-              } else if (statusData.payment.isOrphaned) {
-                toast.info("Recovering your previous payment...");
-                await recoverPendingPayment(data);
-              }
-            }
-          } else {
-            localStorage.removeItem('pendingPaymentData');
-            localStorage.removeItem('pendingCartData');
-          }
-        } catch (err) {
-          console.error("Error checking pending payment:", err);
-        }
-      }
-    };
+//             if (statusData.success) {
+//               if (statusData.payment.hasOrder) {
+//                 toast.success("Previous order found!");
+//                 localStorage.removeItem('pendingPaymentData');
+//                 localStorage.removeItem('pendingCartData');
+//                 setTimeout(() => navigate(`/invoice/${statusData.payment.orderId}`), 1500);
+//               } else if (statusData.payment.isOrphaned) {
+//                 toast.info("Recovering your previous payment...");
+//                 await recoverPendingPayment(data);
+//               }
+//             }
+//           } else {
+//             localStorage.removeItem('pendingPaymentData');
+//             localStorage.removeItem('pendingCartData');
+//           }
+//         } catch (err) {
+//           console.error("Error checking pending payment:", err);
+//         }
+//       }
+//     };
 
-    checkPendingPayments();
-  }, [isAuthenticated, navigate]);
+//     checkPendingPayments();
+//   }, [isAuthenticated, navigate]);
+useEffect(() => {
+  if (!isAuthenticated) return;
+  const pending = localStorage.getItem('pendingPaymentData');
+  if (!pending) return;
+
+  const data = JSON.parse(pending);
+  const age = Date.now() - new Date(data.timestamp).getTime();
+  if (age > 15 * 60 * 1000) {
+    localStorage.removeItem('pendingPaymentData');
+    localStorage.removeItem('pendingCartData');
+    return;
+  }
+
+  console.log("⚡ Recovering pending payment...");
+  recoverPendingPayment(data);
+}, [isAuthenticated]);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -101,13 +117,13 @@ if (data.success && data.payment.hasOrder) {
     }
   }, [addresses]);
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.async = true;
-    document.body.appendChild(script);
-    return () => document.body.removeChild(script);
-  }, []);
+  // useEffect(() => {
+  //   const script = document.createElement("script");
+  //   script.src = "https://checkout.razorpay.com/v1/checkout.js";
+  //   script.async = true;
+  //   document.body.appendChild(script);
+  //   return () => document.body.removeChild(script);
+  // }, []);
 
   const refreshAddresses = () => setIsSidebarOpen(false);
 
@@ -274,26 +290,29 @@ if (data.success && data.payment.hasOrder) {
 toast.info("Payment successful. Confirming your order...", { autoClose: false });
 
 let attempts = 0;
+const maxAttempts = 5;
 const interval = setInterval(async () => {
   attempts++;
+  try {
+    const { data: status } = await axios.post(
+      "/razorpay/check-payment-status",
+      { paymentId: data.paymentId },
+      { withCredentials: true }
+    );
 
-  const { data: statusData } = await axios.post(
-    "/razorpay/check-payment-status",
-    { paymentId: data.paymentId },
-    { withCredentials: true }
-  );
-
-  if (statusData.success && statusData.payment.hasOrder) {
-    clearInterval(interval);
-    finalizeSuccess({ _id: statusData.payment.orderId });
-  }
-
-  if (attempts >= 8) { // max 8 tries → 16 sec
-    clearInterval(interval);
-    toast.info("Order is being processed. You will see it shortly.");
-    setIsPlacingOrder(false);
+    if (status.success && status.payment.hasOrder) {
+      clearInterval(interval);
+      finalizeSuccess({ _id: status.payment.orderId });
+    } else if (attempts >= maxAttempts) {
+      clearInterval(interval);
+      toast.info("Order is being processed. You will see it shortly.");
+      setIsPlacingOrder(false);
+    }
+  } catch {
+    if (attempts >= maxAttempts) clearInterval(interval);
   }
 }, 2000);
+
 
     // If not success, fall through to catch block (will handle gracefully below)
     throw new Error("Order creation failed in response");
@@ -326,16 +345,16 @@ const interval = setInterval(async () => {
     }
 
     // WORST CASE: Real failure, but payment succeeded → show recovery message
-    toast.error(
-      <div>
-        <p className="font-semibold">Payment successful but order processing delayed!</p>
-        <p className="text-sm mt-1">No worries — we're recovering your order automatically.</p>
-        <p className="text-xs mt-2 text-gray-600">
-          Razorpay Payment ID: {response.razorpay_payment_id}
-        </p>
-      </div>,
-      { autoClose: false }
-    );
+    // toast.error(
+    //   <div>
+    //     <p className="font-semibold">Payment successful but order processing delayed!</p>
+    //     <p className="text-sm mt-1">No worries — we're recovering your order automatically.</p>
+    //     <p className="text-xs mt-2 text-gray-600">
+    //       Razorpay Payment ID: {response.razorpay_payment_id}
+    //     </p>
+    //   </div>,
+    //   { autoClose: false }
+    // );
 
     // Auto-recovery after 2 seconds
     setTimeout(async () => {
@@ -354,7 +373,7 @@ const interval = setInterval(async () => {
     localStorage.removeItem('pendingCartData');
     dispatch(clearCartThunk());
     toast.success("Order placed successfully!");
-    navigate(`/invoice/${order._id}`, { state: { order } });
+    navigate(`/invoice/${order._id}`, { state: { order: data.order } });
     setIsPlacingOrder(false);
   }
 },
