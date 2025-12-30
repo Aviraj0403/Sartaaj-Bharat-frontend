@@ -42,9 +42,19 @@ export default function CheckoutPage() {
           if (timeDiff < 15 * 60 * 1000) {
             console.log("🔍 Found pending payment, checking status...");
             
-            const { data: statusData } = await axios.post('/razorpay/check-payment-status', {
-              paymentId: data.paymentId
-            }, { withCredentials: true });
+            // const { data: statusData } = await axios.post('/razorpay/check-payment-status', {
+            //   paymentId: data.paymentId
+            // }, { withCredentials: true });
+
+const { data } = await axios.post(
+  "/razorpay/check-payment-status",
+  { paymentId: pendingData.paymentId },
+  { withCredentials: true }
+);
+
+if (data.success && data.payment.hasOrder) {
+  finalizeSuccess({ _id: data.payment.orderId });
+}
 
             if (statusData.success) {
               if (statusData.payment.hasOrder) {
@@ -246,20 +256,44 @@ export default function CheckoutPage() {
 
     // Step 2: Try to create order (this might fail if webhook already did it)
     console.log("Creating order...");
-    const orderResponse = await axios.post("/razorpay/create-order-after-payment", {
-      paymentId: data.paymentId,
-      items: orderPayload.items,
-      shippingAddress: orderPayload.shippingAddress,
-      discountCode: orderPayload.discountCode,
-      totalAmount: orderPayload.totalAmount
-    }, { withCredentials: true, timeout: 30000 });
+    // const orderResponse = await axios.post("/razorpay/create-order-after-payment", {
+    //   paymentId: data.paymentId,
+    //   items: orderPayload.items,
+    //   shippingAddress: orderPayload.shippingAddress,
+    //   discountCode: orderPayload.discountCode,
+    //   totalAmount: orderPayload.totalAmount
+    // }, { withCredentials: true, timeout: 30000 });
 
-    // Success from frontend call
-    if (orderResponse.data.success) {
-      console.log("Order created:", orderResponse.data.order._id);
-      finalizeSuccess(orderResponse.data.order);
-      return;
-    }
+    // // Success from frontend call
+    // if (orderResponse.data.success) {
+    //   console.log("Order created:", orderResponse.data.order._id);
+    //   finalizeSuccess(orderResponse.data.order);
+    //   return;
+    // }
+// ✅ NEW: Just verify payment & wait for webhook
+toast.info("Payment successful. Confirming your order...", { autoClose: false });
+
+let attempts = 0;
+const interval = setInterval(async () => {
+  attempts++;
+
+  const { data: statusData } = await axios.post(
+    "/razorpay/check-payment-status",
+    { paymentId: data.paymentId },
+    { withCredentials: true }
+  );
+
+  if (statusData.success && statusData.payment.hasOrder) {
+    clearInterval(interval);
+    finalizeSuccess({ _id: statusData.payment.orderId });
+  }
+
+  if (attempts >= 8) { // max 8 tries → 16 sec
+    clearInterval(interval);
+    toast.info("Order is being processed. You will see it shortly.");
+    setIsPlacingOrder(false);
+  }
+}, 2000);
 
     // If not success, fall through to catch block (will handle gracefully below)
     throw new Error("Order creation failed in response");
