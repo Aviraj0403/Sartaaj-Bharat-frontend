@@ -9,17 +9,20 @@ import BeautyBanner from "./BeautyDiscountBanner";
 import ComboSection from "./ComboSection";
 import BeautyHighlightSection from "./BeautyHighlightSection";
 import CosmeticTestimonials from "./CosmeticTestimonials";
+import FloatingNewArrival from "./FloatingNewArrival";
 
 
 
 function Home() {
   return (
     <div>
+      <FloatingNewArrival />
       <MobileCategorySection />
       <BannerSlider />
       <CategorySlider />
       <ComboSection  />
       <BestsellerSection />
+      <FloatingNewArrival/>
       <HomeNewArrivals />
       <PromoSection />
       <BeautyBanner />
