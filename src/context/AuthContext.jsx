@@ -1,23 +1,9 @@
-// src/context/AuthContext.jsx
-import React , { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../features/cart/cartSlice";
 import { fetchBackendCart, syncCartOnLogin } from "../features/cart/cartThunk";
 import Axios from "../utils/Axios";
-import { sendPhoneOtp, verifyPhoneOtp } from "../services/authApi";
-
-// Firebase imports
-import {
-  auth,
-  googleProvider,
-  signInWithPopup,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  PhoneAuthProvider,
-  signInWithCredential,
-} from "../pages/firebase/firebase";
-import { getIdToken } from "firebase/auth";
 
 const AuthContext = createContext();
 
@@ -25,11 +11,11 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [cartSyncing, setCartSyncing] = useState(false);
-  const [verificationId, setVerificationId] = useState(null);
 
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
 
+  // Validate session on mount
   useEffect(() => {
     const validateSession = async () => {
       try {
@@ -38,96 +24,164 @@ export const AuthProvider = ({ children }) => {
         
         setCartSyncing(true);
         await dispatch(fetchBackendCart()).unwrap();
-      } catch {
+      } catch (error) {
         setUser(null);
+        // Don't log 401 errors as they're expected when not logged in
+        if (error.response?.status !== 401) {
+          console.error("Session validation error:", error);
+        }
       } finally {
         setLoading(false);
         setCartSyncing(false);
       }
     };
+    
     validateSession();
   }, [dispatch]);
 
-  // ✅ Custom email/password login
-  const login = async (credentials) => {
-    await Axios.post("/auth/signIn", credentials, { withCredentials: true });
-    const res = await Axios.get("/auth/me");
-    setUser(res.data.data);
-    // dispatch(clearCart());
-    setCartSyncing(true);
-    await dispatch(syncCartOnLogin()).unwrap();
-    dispatch(fetchBackendCart()).unwrap();
-    setCartSyncing(false);
-    return res.data.data;
-  };
-
-  // ✅ Google login
-  const googleLogin = async () => {
-    const result = await signInWithPopup(auth, googleProvider);
-    const firebaseUser = result.user;
-    const idToken = await getIdToken(firebaseUser);
-
-    await Axios.post("/auth/googleSignIn", { idToken: idToken }, { withCredentials: true });
-    const res = await Axios.get("/auth/me");
-    setUser(res.data.data);
-    setCartSyncing(true);
-    await dispatch(syncCartOnLogin()).unwrap();
-    dispatch(fetchBackendCart()).unwrap();
-    setCartSyncing(false);
-    return res.data.data;
-  };
-  // ---------------- PHONE OTP (backend) ----------------
-  const requestPhoneOtp = async (phoneNumber) => {
-    // expects { phoneNumber }
-    const res = await sendPhoneOtp({ phoneNumber });
-    return res;
-  };
-
-  const verifyPhoneOtpAndLogin = async (phoneNumber, otp) => {
-    // verify otp with backend, then fetch auth/me to get user
-    await verifyPhoneOtp({ phoneNumber, otp });
-    const res = await Axios.get("/auth/me");
-    setUser(res.data.data);
-    setCartSyncing(true);
-    await dispatch(syncCartOnLogin()).unwrap();
-    dispatch(fetchBackendCart()).unwrap();
-    setCartSyncing(false);
-    return res.data.data;
-  };
-  const sendOtp = async (phoneNumber) => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        auth,
-        "sign-in-recaptcha-container",
-        { size: "invisible" }
-      );
+  // ✅ Phone OTP V2 - Send OTP
+  const sendPhoneOTP = async (phoneNumber, sessionId = null) => {
+    try {
+      const response = await Axios.post("/auth/phoneV2/send-otp", {
+        phoneNumber,
+        sessionId
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: "Failed to send OTP" };
     }
-    const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
-    setVerificationId(confirmationResult.verificationId);
-    return confirmationResult.verificationId;
   };
-  const verifyOtp = async (otp) => {
-    const credential = PhoneAuthProvider.credential(verificationId, otp);
-    const result = await signInWithCredential(auth, credential);
-    const firebaseUser = result.user;
-    const idToken = await getIdToken(firebaseUser);
 
-    await Axios.post("/auth/register/phone", { token: idToken }, { withCredentials: true });
-    const res = await Axios.get("/auth/me");
-    setUser(res.data.data);
-
-    setCartSyncing(true);
-    await dispatch(syncCartOnLogin()).unwrap();
-    setCartSyncing(false);
-    return res.data.data;
+  // ✅ Phone OTP V2 - Verify OTP & Login
+  const verifyPhoneOTP = async (sessionId, otp) => {
+    try {
+      const response = await Axios.post("/auth/phoneV2/verify-otp", {
+        sessionId,
+        otp
+      });
+      
+      // Fetch updated user data
+      const userRes = await Axios.get("/auth/me");
+      setUser(userRes.data.data);
+      
+      // Sync cart
+      setCartSyncing(true);
+      await dispatch(syncCartOnLogin()).unwrap();
+      await dispatch(fetchBackendCart()).unwrap();
+      setCartSyncing(false);
+      
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: "Failed to verify OTP" };
+    }
   };
+
+  // ✅ Email/Username login
+  const login = async (credentials) => {
+    try {
+      await Axios.post("/auth/signIn", credentials);
+      
+      const res = await Axios.get("/auth/me");
+      setUser(res.data.data);
+      
+      setCartSyncing(true);
+      await dispatch(syncCartOnLogin()).unwrap();
+      await dispatch(fetchBackendCart()).unwrap();
+      setCartSyncing(false);
+      
+      return res.data.data;
+    } catch (error) {
+      throw error.response?.data || { message: "Login failed" };
+    }
+  };
+
+  // ✅ Google Login with proper error handling
+  const googleLogin = async () => {
+    try {
+      console.log('🔐 Starting Google login...');
+      
+      // Dynamic import of Firebase
+      const { auth, googleProvider, signInWithPopup } = 
+        await import("../pages/firebase/firebase");
+      const { getIdToken } = await import("firebase/auth");
+      
+      console.log('🔐 Opening Google sign-in popup...');
+      const result = await signInWithPopup(auth, googleProvider);
+      
+      console.log('✅ Google popup successful');
+      const firebaseUser = result.user;
+      const idToken = await getIdToken(firebaseUser);
+      
+      // console.log('🔐 Sending token to backend...');
+      
+      // Send token to backend
+      const response = await Axios.post("/auth/googleSignIn", { 
+        idToken 
+      });
+      
+      console.log('✅ Backend authentication successful');
+      
+      // Fetch updated user data
+      const userRes = await Axios.get("/auth/me");
+      setUser(userRes.data.data);
+      
+      console.log('🛒 Syncing cart...');
+      
+      // Sync cart
+      setCartSyncing(true);
+      try {
+        await dispatch(syncCartOnLogin()).unwrap();
+        await dispatch(fetchBackendCart()).unwrap();
+      } catch (cartError) {
+        console.error("Cart sync error:", cartError);
+        // Don't fail login if cart sync fails
+      }
+      setCartSyncing(false);
+      
+      console.log('✅ Google login complete');
+      
+      return userRes.data.data;
+    } catch (error) {
+      console.error('❌ Google login error:', error);
+      
+      // Handle specific Firebase errors
+      if (error.code === 'auth/popup-closed-by-user') {
+        throw { message: "Sign-in cancelled" };
+      }
+      
+      if (error.code === 'auth/popup-blocked') {
+        throw { message: "Popup blocked. Please allow popups for this site." };
+      }
+      
+      if (error.code === 'auth/network-request-failed') {
+        throw { message: "Network error. Please check your connection." };
+      }
+      
+      // Backend errors
+      if (error.response?.data?.message) {
+        throw { message: error.response.data.message };
+      }
+      
+      throw { message: error.message || "Google login failed" };
+    }
+  };
+
+  // ✅ Logout
   const logout = async () => {
-    await Axios.post("/auth/user/logout", {}, { withCredentials: true });
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('jwt');
-    dispatch(clearCart());
-    setUser(null);
-    queryClient.clear();
+    try {
+      await Axios.post("/auth/user/logout");
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      // Clear everything regardless of API success
+      setUser(null);
+      dispatch(clearCart());
+      queryClient.clear();
+      
+      // Clear all storage
+      localStorage.clear();
+      sessionStorage.clear();
+    }
   };
 
   return (
@@ -136,12 +190,10 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         cartSyncing,
+        sendPhoneOTP,
+        verifyPhoneOTP,
         login,
         googleLogin,
-        requestPhoneOtp,
-        verifyPhoneOtpAndLogin,
-        sendOtp,
-        verifyOtp,
         logout,
       }}
     >
@@ -150,4 +202,10 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
+  return context;
+};
