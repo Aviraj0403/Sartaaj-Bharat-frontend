@@ -1,20 +1,20 @@
 import React, { useRef } from "react";
 
-const OtpInput = ({ length = 6, value, onChange }) => {
+const OtpInput = ({ length = 4, value, onChange }) => {
   const inputsRef = useRef([]);
 
-  const handleChange = (e, index) => {
-    const digit = e.target.value.replace(/\D/, "");
-    if (!digit) return;
+const handleChange = (e, index) => {
+  const digit = e.target.value.replace(/\D/, "");
+  const newValue = value.split("");
 
-    const newValue = value.split("");
-    newValue[index] = digit;
-    onChange(newValue.join(""));
+  newValue[index] = digit || "";
+  onChange(newValue.join(""));
 
-    if (index < length - 1) {
-      inputsRef.current[index + 1]?.focus();
-    }
-  };
+  if (digit && index < length - 1) {
+    inputsRef.current[index + 1]?.focus();
+  }
+};
+
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace") {
