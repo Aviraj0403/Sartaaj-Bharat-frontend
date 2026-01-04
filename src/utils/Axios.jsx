@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const baseURL =  'http://localhost:6005/v1/api';
-const baseURL = 'https://api.gurmeetkaurstore.com/v1/ap';
+const baseURL = 'https://api.gurmeetkaurstore.com/v1/api';
 
 const Axios = axios.create({
   baseURL,
