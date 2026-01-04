@@ -78,8 +78,8 @@ const SignInPage = () => {
   };
 
   const handleVerifyOTP = async () => {
-    if (!sessionId || otp.length !== 6) {
-      toast.error("Please enter 6 digit OTP");
+    if (!sessionId || otp.length !== 4) {
+      toast.error("Please enter 4 digit OTP");
       return;
     }
 
@@ -124,7 +124,7 @@ const SignInPage = () => {
 
   /* ---------------- AUTO SUBMIT OTP ---------------- */
   useEffect(() => {
-    if (otp.length === 6 && otpSent && sessionId) {
+    if (otp.length === 4 && otpSent && sessionId && !isSubmitting) {
       handleVerifyOTP();
     }
   }, [otp, otpSent, sessionId]);
@@ -280,11 +280,12 @@ const SignInPage = () => {
                   <OtpInput value={otp} onChange={setOtp} />
                 </div>
 
-                <button
-                  onClick={handleVerifyOTP}
-                  disabled={isSubmitting || otp.length !== 6}
-                  className="w-full bg-pink-500 text-white py-3 rounded-xl hover:bg-pink-600 transition disabled:opacity-50"
-                >
+               <button
+  onClick={handleVerifyOTP}
+  disabled={isSubmitting || otp.length !== 4}
+  className="w-full bg-pink-500 text-white py-3 rounded-xl hover:bg-pink-600 transition disabled:opacity-50"
+>
+
                   {isSubmitting ? "Verifying..." : "Verify OTP"}
                 </button>
 
