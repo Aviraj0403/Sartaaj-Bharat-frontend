@@ -31,7 +31,7 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     if (user) {
       setAddress((prev) => ({
         ...prev,
-        name: user.userName || "",
+        // name: user.userName || "",
         email: user.email || "",
       }));
     }
