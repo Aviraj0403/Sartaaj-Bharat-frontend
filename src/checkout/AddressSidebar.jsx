@@ -10,7 +10,8 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
 
   const { user } = useAuth();
   const [address, setAddress] = useState({
-    name: user?.userName || "",  // Prefill with userName from context
+    // name: user?.userName || "",  // Prefill with userName from context
+    name:  "",
     email: user?.email || "",
     phone: "",
     street: "",
@@ -117,6 +118,7 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     // Client-side validation
     const newErrors = {};
     // required fields: phone, pincode, street, city
+    if (!address.name) newErrors.name = "Name is required";
     if(!address.name) newErrors.name = "Name is required";
 
     if (!address.phone) newErrors.phone = "Phone number is required";
@@ -127,6 +129,7 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
 
     if (!address.street) newErrors.street = "Street address is required";
     if (!address.city) newErrors.city = "City is required";
+    if (!address.state) newErrors.state = "State is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
