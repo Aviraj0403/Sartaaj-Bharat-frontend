@@ -235,7 +235,7 @@ const location = useLocation();
             </Link>
 
             <Link
-              to="/new-product"
+              to="/new-products"
               onClick={() => setIsMenuOpen(false)}
               className="flex items-center gap-3 text-gray-800 hover:text-pink-600 transition"
             >

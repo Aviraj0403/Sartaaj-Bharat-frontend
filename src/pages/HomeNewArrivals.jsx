@@ -51,12 +51,29 @@ const { data: productsData, isLoading, isError, error } = useQuery({
         </div>
 
         <div className="text-center mt-6">
-          <button
-            onClick={() => navigate("/new-products")}
-            className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-lg hover:bg-pink-600 transition"
-          >
-            Explore New Arrivals
-          </button>
+         <button
+  onClick={() => navigate("/new-products")}
+  className="
+    bg-pink-700 text-white font-semibold px-6 py-2 rounded-lg
+    transform
+    animate-[zoom_1.5s_ease-in-out_infinite]
+  "
+>
+  Explore New Arrivals
+</button>
+<style>
+{`
+@keyframes zoom {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+`}
+</style>
+
         </div>
       </div>
     </section>
