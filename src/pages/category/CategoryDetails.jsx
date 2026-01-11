@@ -20,7 +20,7 @@ export default function CategoryDetails() {
     setError(null);
 
     try {
-      const data = await getProductsByCategorySlug(categorySlug, page, 20);
+      const data = await getProductsByCategorySlug(categorySlug, page, 100);
       if (data.success) {
         setProducts(data.products);
         setPagination(data.pagination);

@@ -1,7 +1,7 @@
 import Axios from '../utils/Axios';
 
 // API call to fetch products by category slug
-export const getProductsByCategorySlug = async (slug, page = 1, limit = 20) => {
+export const getProductsByCategorySlug = async (slug, page = 1, limit = 100) => {
   try {
     // Send GET request to the server to fetch products by category slug
     const response = await Axios.get(`/products/${slug}`, {
