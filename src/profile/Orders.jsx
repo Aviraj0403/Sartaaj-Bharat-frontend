@@ -63,7 +63,7 @@ export default function Orders() {
           const subtotal = order.items.reduce((acc, it) => acc + (it.selectedVariant?.price || 0) * (it.quantity || 0), 0);
           const couponDiscount = order.discountAmount || 0;
           const finalAmount = subtotal - couponDiscount;
-          const shippingAmount = order.shipping !== undefined ? order.shipping : (finalAmount > 10 ? 80 : 0);
+          const shippingAmount = order.shipping !== undefined ? order.shipping : 80;
 
           return (
             <div

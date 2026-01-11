@@ -145,7 +145,7 @@ export default function OrderDetails() {
             <p className="text-gray-700">Coupon Discount: -₹{order.discountAmount}</p>
           )}
 
-          <p className="text-gray-700">Shipping: ₹{order.shipping !== undefined ? order.shipping : (order.totalAmount ? (order.totalAmount - (order.discountAmount || 0) > 10 ? 80 : 0) : 0)}</p>
+          <p className="text-gray-700">Shipping: ₹{order.shipping !== undefined ? order.shipping : 80}</p>
 
           {order.gst > 0 && <p className="text-gray-700">GST: ₹{order.gst}</p>}
 

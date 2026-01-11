@@ -4,6 +4,7 @@ import ApplyCouponPanel from "./ApplyCouponPanel";
 import { useNavigate } from "react-router-dom";
 import { useCartActions } from "../hooks/useCartActions";
 import { useAuth } from "../context/AuthContext";
+import { getShippingAmount } from "../utils/shippingCalculator";
 
 const transformToSlug = (name) => {
   return name
@@ -38,6 +39,9 @@ export default function CartPage() {
   // console.log("Cart Items:", cartItems); // Debugging
   const { cartSyncing, user } = useAuth();
 
+  // Calculate dynamic shipping charges based on cart weight
+  const shippingCharges = getShippingAmount(cartItems);
+
   // Calculate discount based on the coupon's discount percentage and max discount cap
   const calculateDiscount = () => {
     if (!coupon.discountPercentage) return 0;
@@ -49,8 +53,8 @@ export default function CartPage() {
     return Math.min(discountAmount, coupon.maxDiscountAmount);
   };
 
-  // Calculate the final amount after applying the discount
-  const finalAmount = totalAmount - calculateDiscount();
+  // Calculate the final amount after applying the discount and shipping
+  const finalAmount = totalAmount - calculateDiscount() + shippingCharges;
 
   const handleIncrement = (id, size, color) => {
     const item = cartItems.find((i) => i.id === id && i.size === size && i.color === color);
@@ -230,9 +234,7 @@ export default function CartPage() {
             <div className="bg-pink-50 rounded-xl p-4 text-center mb-4">
               <p className="text-gray-600 text-sm">TOTAL AMOUNT</p>
               <p className="text-2xl font-bold text-pink-600 mt-1">
-                ₹{
-                  (finalAmount + (finalAmount > 10 ? 80 : 0)).toFixed(2)
-                }
+                ₹{finalAmount.toFixed(2)}
               </p>
             </div>
 
@@ -287,7 +289,7 @@ export default function CartPage() {
 
               <div className="flex justify-between">
                 <p>Delivery Fee</p>
-                <p>₹{(finalAmount > 10 ? 80 : 0).toFixed(2)}</p>
+                <p>₹{shippingCharges.toFixed(2)}</p>
               </div>
             </div>
             <button
@@ -305,11 +307,10 @@ export default function CartPage() {
                       cartItems, // Items in the cart
                       totalAmount, // Total amount before discount
                       totalQuantity: totalItems, // Total quantity of items
-                      grandTotal: (finalAmount + (finalAmount > 10 ? 80 : 0))
-                        .toFixed(2), // Final amount after coupon (if applied)
-                      // NOTE: GST removed and shipping updated to ₹80
+                      grandTotal: finalAmount.toFixed(2), // Final amount after coupon and shipping
+                      shippingCharges, // Dynamic shipping charges
                       appliedCoupon: coupon.applied ? coupon : null, // Coupon details (if any)
-                      finalAmount, // Final amount after discount
+                      finalAmount: totalAmount - calculateDiscount(), // Amount after discount, before shipping
                     },
                   });
                 }

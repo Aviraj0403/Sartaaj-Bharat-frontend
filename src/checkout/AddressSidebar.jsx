@@ -128,7 +128,7 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     else if (!/^\d{6}$/.test(address.pincode)) newErrors.pincode = "Enter a valid 6-digit pincode";
 
     if (!address.street) newErrors.street = "Street address is required";
-    if (!address.city) newErrors.city = "City is required";
+    if (!address.city) newErrors.city = "Area is required";
     if (!address.state) newErrors.state = "State is required";
 
     if (Object.keys(newErrors).length > 0) {
@@ -173,11 +173,12 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     { label: "Name", field: "name", type: "text" },
     { label: "Email", field: "email", type: "email" },
     { label: "Phone Number *", field: "phone", type: "tel", maxLength: 10, required: true },
+    { label: "Area *", field: "city", type: "text", required: true },
     { label: "Address *", field: "street", type: "text", required: true },
     // { label: "Flat / House No.", field: "flat", type: "text" },
     // { label: "Landmark (optional)", field: "landmark", type: "text" },
     { label: "Pincode *", field: "pincode", type: "text", maxLength: 6, required: true },
-    { label: "City *", field: "city", type: "text", required: true },
+    // { label: "City *", field: "city", type: "text", required: true },
     { label: "State", field: "state", type: "text" },
     // { label: "Country", field: "country", type: "text" },
     

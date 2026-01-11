@@ -6,6 +6,7 @@ import axios from "../utils/Axios";
 import { useDispatch } from "react-redux";
 import { clearCartThunk } from "../features/cart/cartThunk";
 import AddressSidebar from "./AddressSidebar";
+import { getShippingAmount } from "../utils/shippingCalculator";
 
 export default function CheckoutPage() {
   const { user } = useAuth();
@@ -21,9 +22,11 @@ export default function CheckoutPage() {
     grandTotal = 0,
     appliedCoupon = null,
     finalAmount = grandTotal,
+    shippingCharges = 0,
   } = location.state || {};
 
-  const displayShipping = (finalAmount && finalAmount > 10) ? 80 : 0;
+  // Calculate dynamic shipping if not provided from cart
+  const displayShipping = shippingCharges || getShippingAmount(cartItems);
 
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -543,9 +546,10 @@ const interval = setInterval(async () => {
                 <span className="font-semibold">{totalQuantity}</span>
               </div>
               <div className="flex justify-between text-gray-700">
-                <span>Shipping:</span>
+                <span>Delivery Fee:</span>
                 <span>₹{displayShipping.toFixed(2)}</span>
               </div>
+              
               {appliedCoupon && (
                 <div className="flex justify-between text-green-600">
                   <span>Coupon: {appliedCoupon.code}</span>

@@ -22,9 +22,11 @@ export default function Invoice() {
     return <div>Loading...</div>; // Display loading state while data is being fetched
   }
 
-  const { customer, shippingAddress, items, appliedCoupon, finalAmount, subtotal, gst, shipping, paymentMethod, paymentStatus, id: id } = orderData;
-  // For this invoice: always show shipping as ₹80 in the UI, but do NOT modify the final amount
-  const shippingComputed = 80; // static display only
+  const { customer, shippingAddress, items, appliedCoupon, finalAmount, subtotal, gst, shipping, paymentMethod, paymentStatus, id: orderIdFromData } = orderData;
+  
+  // Use dynamic shipping if available, otherwise fallback to static ₹80
+  const shippingComputed = shipping || 80;
+  
   // Display the checkout's finalAmount as-is when available; otherwise compute a sensible fallback
   const displayFinal = finalAmount !== undefined
     ? Number(finalAmount)
