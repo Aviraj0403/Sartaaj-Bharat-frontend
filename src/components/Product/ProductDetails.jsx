@@ -5,9 +5,78 @@ import { useQuery } from "@tanstack/react-query";
 import { getProductBySlug } from "../../services/productApi";
 import RelatedProduct from "../../pages/home/RelatedProduct";
 import { useCartActions } from "../../hooks/useCartActions";
-import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import ReviewTab from "../../pages/Review/ReviewTab"; 
+import ReviewTab from "../../pages/Review/ReviewTab";
+
+// Color mapping utility - maps color names to hex values
+const getColorHex = (colorName) => {
+  const colorMap = {
+    // Basic colors
+    'red': '#EF4444',
+    'blue': '#3B82F6',
+    'green': '#10B981',
+    'yellow': '#FBBF24',
+    'orange': '#F97316',
+    'purple': '#A855F7',
+    'pink': '#EC4899',
+    'black': '#000000',
+    'white': '#FFFFFF',
+    'gray': '#6B7280',
+    'grey': '#6B7280',
+    'brown': '#92400E',
+    'beige': '#F5F5DC',
+    'navy': '#1E3A8A',
+    'teal': '#14B8A6',
+    'cyan': '#06B6D4',
+    'lime': '#84CC16',
+    'indigo': '#6366F1',
+    'violet': '#8B5CF6',
+    'fuchsia': '#D946EF',
+    'rose': '#F43F5E',
+    'gold': '#FFD700',
+    'silver': '#C0C0C0',
+    'maroon': '#7F1D1D',
+    'olive': '#84CC16',
+    'coral': '#FF7F50',
+    'peach': '#FFDAB9',
+    'lavender': '#E6E6FA',
+    'mint': '#98FF98',
+    'cream': '#FFFDD0',
+    'ivory': '#FFFFF0',
+    'tan': '#D2B48C',
+    'khaki': '#F0E68C',
+    'burgundy': '#800020',
+    'crimson': '#DC143C',
+    'magenta': '#FF00FF',
+    'turquoise': '#40E0D0',
+    'aqua': '#00FFFF',
+    'sky blue': '#87CEEB',
+    'light blue': '#ADD8E6',
+    'dark blue': '#00008B',
+    'light green': '#90EE90',
+    'dark green': '#006400',
+    'light pink': '#FFB6C1',
+    'hot pink': '#FF69B4',
+    'light gray': '#D1D5DB',
+    'dark gray': '#374151',
+    'charcoal': '#36454F',
+    'nude': '#E3BC9A',
+    'champagne': '#F7E7CE',
+    'bronze': '#CD7F32',
+    'copper': '#B87333',
+    'mauve': '#E0B0FF',
+    'plum': '#DDA0DD',
+    'sage': '#9DC183',
+    'mustard': '#FFDB58',
+    'rust': '#B7410E',
+    'slate': '#708090',
+    'transparent': 'transparent',
+    'clear': 'transparent',
+  };
+
+  const normalized = colorName.toLowerCase().trim();
+  return colorMap[normalized] || null;
+}; 
 
 export default function ProductDetails() {
   const { slug } = useParams();
@@ -237,17 +306,29 @@ const popupPrice = selectedVariant?.price;
 
               <p className="text-gray-700 font-medium mb-2">Color</p>
               <div className="flex gap-2 flex-wrap">
-                {selectedVariant?.color.map((color, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleColorSelect(color)}
-                    className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition text-left min-w-[64px] max-w-[200px] ${
-                      selectedColor === color ? "bg-pink-100 border-pink-500 text-pink-600 font-medium" : ""
-                    }`}
-                  >
-                    <span className="block line-clamp-2 leading-tight">{color}</span>
-                  </button>
-                ))}
+                {selectedVariant?.color.map((color, index) => {
+                  const colorHex = getColorHex(color);
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handleColorSelect(color)}
+                      className={`border border-gray-300 rounded-md px-3 py-1 text-sm hover:border-pink-500 hover:text-pink-500 transition text-left min-w-[64px] max-w-[200px] flex items-center gap-2 ${
+                        selectedColor === color ? "bg-pink-100 border-pink-500 text-pink-600 font-medium" : ""
+                      }`}
+                    >
+                      {colorHex && (
+                        <span
+                          className="w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0"
+                          style={{
+                            backgroundColor: colorHex,
+                            borderColor: colorHex === '#FFFFFF' || colorHex === 'transparent' ? '#D1D5DB' : colorHex
+                          }}
+                        />
+                      )}
+                      <span className="block line-clamp-2 leading-tight">{color}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
