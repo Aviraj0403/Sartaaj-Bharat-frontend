@@ -16,7 +16,7 @@ export const getMenuCategories = async () => {
 export const getSearchSuggestions = async (query) => {
   try {
     const response = await Axios.get(`/products/suggestions`, {
-      params: { search: query, limit: 5 },
+      params: { search: query, limit: 30 },
     });
     if (response.data.success) {
       return response.data.suggestions;  // Return the suggestions list
