@@ -66,7 +66,8 @@ export default function MobileSearchPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+    <div className="w-full min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 mt-[65px] sm:mt-0">
+
       {/* 🎨 Sticky Search Header with Glass Effect */}
       <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-sm">
         <div className="px-4 py-4">

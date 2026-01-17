@@ -144,7 +144,7 @@ const location = useLocation();
       </div>
 
       {/* Spacer for sticky header */}
-      <div className="pt-[130px]"></div>
+     {!hideSearch && <div className="pt-[130px]"></div>}
 
       {/* 📱 Bottom Navigation */}
       <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-2 z-50">
