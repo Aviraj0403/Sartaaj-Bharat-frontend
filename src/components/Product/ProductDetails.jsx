@@ -285,7 +285,6 @@ const popupPrice = selectedVariant?.price;
               </span>
             </div>
 
-            <p className="text-gray-600 text-sm mb-4 leading-relaxed">{description}</p>
 
             {/* Variants */}
             <div className="mb-5">
@@ -369,6 +368,7 @@ const popupPrice = selectedVariant?.price;
                 </button>
               </div>
             </div>
+              <p className="text-gray-600 text-sm mb-4 leading-relaxed">{description}</p>
 
             {/* SKU + Tags */}
             <div className="text-sm text-gray-500 space-y-1">

@@ -2,7 +2,7 @@ import React from "react";
 import BannerSlider from "./BannerSlider";
 import CategorySlider from "./CategorySlider";
 import BestsellerSection from "./BestsellerSection";
-import PromoSection from "./PromoSection";
+import PromoBanner from "./PromoBanner";
 import HomeNewArrivals from "../HomeNewArrivals";
 import MobileCategorySection from "../category/MobileCategorySection";
 import BeautyBanner from "./BeautyDiscountBanner";
@@ -24,7 +24,7 @@ function Home() {
       <BestsellerSection />
       <FloatingNewArrival/>
       <HomeNewArrivals />
-      <PromoSection />
+      {/* <PromoBanner /> */}
       <BeautyBanner />
       <BeautyHighlightSection />
       <CosmeticTestimonials />
