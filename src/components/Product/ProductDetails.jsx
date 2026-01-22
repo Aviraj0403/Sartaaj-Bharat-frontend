@@ -82,7 +82,7 @@ export default function ProductDetails() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [mainImage, setMainImage] = useState(null);
-  const [activeTab, setActiveTab] = useState("description");
+  const [activeTab, setActiveTab] = useState("additional");
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -117,7 +117,7 @@ useEffect(() => {
       setSelectedVariant(product.variants[0]);
       setSelectedColor(product.variants[0]?.color[0]);
       setQuantity(1);
-      setActiveTab("description");
+      setActiveTab("additional");
     }
   }, [product]);
 
@@ -385,7 +385,7 @@ const popupPrice = selectedVariant?.price;
         {/* Tabs */}
         <div className="mt-10 border-t border-gray-200 pt-6">
           <div className="flex gap-8 border-b border-gray-200 pb-2 mb-6 overflow-x-auto">
-            {["description", "additional", "review"].map((tab) => (
+            {[ "additional", "review"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -399,10 +399,15 @@ const popupPrice = selectedVariant?.price;
               </button>
             ))}
           </div>
+{/* ❌ DESCRIPTION CONTENT REMOVED */}
+{/*
+{activeTab === "description" && (
+  <div className="text-gray-600 text-sm leading-relaxed">
+    {description}
+  </div>
+)}
+*/}
 
-          {activeTab === "description" && (
-            <div className="text-gray-600 text-sm leading-relaxed">{description}</div>
-          )}
           {activeTab === "additional" && (
             <table className="w-full text-sm text-gray-700 border">
               <tbody>
