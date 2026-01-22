@@ -44,7 +44,7 @@ export const getProductsByCategoryAndSubCategorySlug = async (categorySlug, subC
 
 export const getMiniProducts = async (
   page = 1, 
-  limit = 100, 
+  limit = 1000, 
   search = '', 
   category = '', 
   isHotProduct = '', 
