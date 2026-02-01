@@ -24,7 +24,7 @@ function Home() {
       <BestsellerSection />
       <FloatingNewArrival/>
       <HomeNewArrivals />
-      {/* <PromoBanner /> */}
+      <PromoBanner />
       <BeautyBanner />
       <BeautyHighlightSection />
       <CosmeticTestimonials />

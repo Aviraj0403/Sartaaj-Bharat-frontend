@@ -71,79 +71,84 @@ export default function PromoBanner() {
     );
   }
 
-  return (
-    <div className="relative w-full overflow-hidden m-0 p-0">
-      {/* Image Slides */}
-      <div
-        className="flex transition-transform duration-700 ease-in-out m-0 p-0"
-        style={{ transform: `translateX(-${current * 100}%)` }}
-      >
-        {promoBanners.map((banner, index) => (
-          <div
-            key={banner._id || index}
-            className="w-full flex-shrink-0 bg-white flex justify-center items-start m-0 p-0 relative"
-          >
-            <img
-              src={banner.bannerImage}
-              alt={banner.title || `Promo Banner ${index + 1}`}
-              className="w-full h-auto object-contain md:object-cover block m-0 p-0 align-top"
-              loading="lazy"
-            />
-            
-            {/* Overlay with banner details - Only show if there's content and not default banner */}
-            {(banner.title || banner.description) && banner._id !== 'default-banner' && (
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex items-end">
-                <div className="text-white p-4 md:p-6 w-full">
+return (
+  <div className="relative w-full overflow-hidden">
+    {/* Slider Container with Responsive Height */}
+    <div
+      className="flex transition-transform duration-700 ease-in-out"
+      style={{ transform: `translateX(-${current * 100}%)` }}
+    >
+      {promoBanners.map((banner, index) => (
+        <div
+          key={banner._id || index}
+          className="
+            relative w-full flex-shrink-0
+         h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px] xl:h-[340px]
+
+          "
+        >
+          {/* Banner Image */}
+          <img
+            src={banner.bannerImage}
+            alt={banner.title || `Promo Banner ${index + 1}`}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+
+          Overlay
+          {(banner.title || banner.description) &&
+            banner._id !== "default-banner" && (
+              <div className="absolute inset-0  flex items-end">
+                {/* <div className="p-4 md:p-8 text-white max-w-2xl">
                   {banner.title && (
-                    <h3 className="text-xl md:text-3xl font-bold mb-2 drop-shadow-lg">
+                    <h3 className="text-xl md:text-3xl lg:text-4xl font-bold mb-2">
                       {banner.title}
                     </h3>
                   )}
                   {banner.description && (
-                    <p className="text-sm md:text-lg opacity-95 drop-shadow-md">
+                    <p className="text-sm md:text-lg opacity-90">
                       {banner.description}
                     </p>
                   )}
-                </div>
+                </div> */}
               </div>
             )}
-          </div>
-        ))}
-      </div>
-
-      {/* Navigation Buttons (hidden on mobile, visible on md+) */}
-      {promoBanners.length > 1 && (
-        <>
-          <button
-            onClick={prevSlide}
-            className="hidden md:flex absolute top-1/2 left-2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200"
-            aria-label="Previous banner"
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="hidden md:flex absolute top-1/2 right-2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200"
-            aria-label="Next banner"
-          >
-            <ChevronRight size={20} />
-          </button>
-
-          {/* Dots Indicator */}
-          <div className="absolute bottom-3 w-full flex justify-center gap-2 z-10">
-            {promoBanners.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                className={`w-2.5 h-2.5 rounded-full cursor-pointer transition-all ${
-                  i === current ? "bg-white scale-110" : "bg-white/40 hover:bg-white/60"
-                }`}
-                aria-label={`Go to banner ${i + 1}`}
-              />
-            ))}
-          </div>
-        </>
-      )}
+        </div>
+      ))}
     </div>
-  );
+
+    {/* Navigation Arrows */}
+    {promoBanners.length > 1 && (
+      <>
+        <button
+          onClick={prevSlide}
+          className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full"
+        >
+          <ChevronLeft />
+        </button>
+
+        <button
+          onClick={nextSlide}
+          className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full"
+        >
+          <ChevronRight />
+        </button>
+
+        {/* Dots */}
+        <div className="absolute bottom-4 w-full flex justify-center gap-2">
+          {promoBanners.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`w-3 h-3 rounded-full transition ${
+                i === current ? "bg-white scale-110" : "bg-white/50"
+              }`}
+            />
+          ))}
+        </div>
+      </>
+    )}
+  </div>
+);
+
 }
