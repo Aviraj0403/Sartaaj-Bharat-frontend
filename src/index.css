@@ -14,7 +14,8 @@
   }
 
   .section-title {
-    @apply text-3xl font-bold text-gray-900 mb-8 relative inline-block font-heading;
+    @apply text-3xl font-bold text-gray-900 mb-8 relative inline-block;
+    font-family: 'Outfit', sans-serif;
   }
 
   .section-title::after {
