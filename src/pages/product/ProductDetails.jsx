@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Star, Heart, Share2, Truck, ShieldCheck, ArrowLeft, Minus, Plus, ShoppingCart, Check, Twitter, Facebook, Instagram, ChevronRight } from "lucide-react";
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
+import Header from "../../components/Header/header";
+import Footer from "../../components/Footer/footer";
 import { products } from "../../data/mockData";
 
 const ProductDetails = () => {
