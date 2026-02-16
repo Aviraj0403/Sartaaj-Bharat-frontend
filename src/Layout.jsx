@@ -3,8 +3,8 @@ import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-import Header from "./components/Header/header.jsx";
-import Footer from "./components/Footer/footer.jsx";
+import Header from "./components/Header/Header.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import ProgressBar from "./components/progressbar/ProgressBar.jsx";
 import { useWindowContext } from "./context/windowContext.jsx";
@@ -29,7 +29,7 @@ const Layout = () => {
         <ScrollToTop />
 
         {/* Render the nested routes here */}
-      <main className="w-full">
+        <main className="w-full">
 
           <Outlet />
         </main>
