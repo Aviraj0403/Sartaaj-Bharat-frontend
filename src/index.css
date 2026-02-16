@@ -2,43 +2,95 @@
 
 @layer components {
   .container-custom {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8;
   }
-  
+
   .btn-primary {
-    @apply bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300 font-medium;
+    @apply bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 font-medium tracking-wide;
   }
 
   .btn-secondary {
-    @apply bg-gray-100 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-200 transition-colors duration-300 font-medium;
+    @apply bg-white text-gray-900 border border-gray-200 px-6 py-3 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 font-medium;
   }
 
   .section-title {
-    @apply text-2xl font-bold text-gray-900 mb-6 relative pb-2;
+    @apply text-3xl font-bold text-gray-900 mb-8 relative inline-block font-heading;
   }
-  
+
   .section-title::after {
     content: '';
-    @apply absolute bottom-0 left-0 w-12 h-1 bg-blue-600;
+    @apply absolute -bottom-2 left-0 w-1/2 h-1 bg-blue-600 rounded-full;
+  }
+
+  /* Glassmorphism Card */
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+
+  /* Premium Hover Card */
+  .card-hover {
+    @apply transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 hover:border-blue-100;
   }
 }
 
 body {
   font-family: 'Inter', sans-serif;
-  @apply bg-gray-50 text-gray-800;
+  @apply bg-gray-50 text-gray-800 antialiased selection:bg-blue-100 selection:text-blue-900;
 }
 
-/* Custom scrollbar */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: #f8fafc;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #888; 
-  border-radius: 4px;
+  background: #cbd5e1;
+  border-radius: 5px;
+  border: 2px solid #f8fafc;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #94a3b8;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
 }
