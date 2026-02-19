@@ -25,7 +25,7 @@
   }
 
   .btn-premium {
-    @apply relative overflow-hidden bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 hover:shadow-[0_8px_30px_rgb(37, 99, 235, 0.4)] active:scale-95 transition-all duration-300 font-semibold tracking-wide flex items-center justify-center gap-2;
+    @apply relative overflow-hidden bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 hover:shadow-[0_8px_30px_rgba(37,99,235,0.4)] active:scale-95 transition-all duration-300 font-semibold tracking-wide flex items-center justify-center gap-2;
   }
 
   .btn-premium-outline {
@@ -34,12 +34,12 @@
 
   /* Glassmorphism Surface */
   .glass-surface {
-    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_0_rgba(31, 38, 135, 0.07)];
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
   }
 
   /* Premium Card */
   .premium-card {
-    @apply bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-[0_20px_50px_rgba(8, 112, 184, 0.1)] hover:-translate-y-2 transition-all duration-500 overflow-hidden;
+    @apply bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-[0_20px_50px_rgba(8,112,184,0.1)] hover:-translate-y-2 transition-all duration-500 overflow-hidden;
   }
 
   .section-heading {
