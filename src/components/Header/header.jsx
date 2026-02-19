@@ -15,6 +15,8 @@ const Header = () => {
   const { totalQuantity } = useSelector((state) => state.cart);
   const { data: categories, isLoading: categoriesLoading } = useCategories();
 
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -26,6 +28,7 @@ const Header = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      setIsSearchOpen(false);
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
@@ -80,12 +83,12 @@ const Header = () => {
           <form onSubmit={handleSearch} className="relative w-full group">
             <input
               type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              readOnly
+              onClick={() => setIsSearchOpen(true)}
               placeholder="Discover premium essentials..."
-              className="w-full pl-14 pr-32 py-4 bg-slate-100/50 border-2 border-transparent rounded-[1.5rem] outline-none text-slate-800 font-medium placeholder-slate-400 focus:bg-white focus:border-blue-600 focus:shadow-2xl focus:shadow-blue-200/20 transition-all duration-500"
+              className="w-full pl-14 pr-32 py-4 bg-slate-100/50 border-2 border-transparent rounded-[1.5rem] cursor-pointer outline-none text-slate-800 font-medium placeholder-slate-400 hover:bg-white hover:border-blue-200 focus:bg-white focus:border-blue-600 focus:shadow-2xl focus:shadow-blue-200/20 transition-all duration-500"
             />
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={22} />
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-600 transition-colors" size={22} />
             <button
               type="submit"
               className="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-900 text-white px-8 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-lg active:scale-95"
@@ -173,8 +176,108 @@ const Header = () => {
         )}
       </AnimatePresence>
 
-      {/* Mobile Navigation Sidebar */}
-      {/* Logic for mobile menu would go here... skipping for now to focus on Main UI as requested */}
+      {/* Mobile Navigation Drawer */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] lg:hidden"
+            />
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed right-0 top-0 h-screen w-[85%] max-w-sm bg-white z-[70] shadow-2xl lg:hidden flex flex-col"
+            >
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                <span className="text-xl font-black italic tracking-tighter">SARTAAJ<span className="text-blue-600">BHARAT</span></span>
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded-xl bg-slate-100"><X size={20} /></button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-8">
+                <nav className="flex flex-col gap-8">
+                  <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black italic tracking-tight text-blue-600">Home Lounge</Link>
+                  {categories?.map((cat) => (
+                    <Link
+                      key={cat._id}
+                      to={`/category/${cat.slug}`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="text-2xl font-black italic tracking-tight text-slate-900 hover:text-blue-600 transition-colors"
+                    >
+                      {cat.name}
+                    </Link>
+                  ))}
+                  <div className="h-px bg-slate-100 my-4" />
+                  <Link to="/exclusive" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-black text-orange-500 italic">Elite Collections</Link>
+                  <Link to="/track-order" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-slate-500">Track Order</Link>
+                </nav>
+              </div>
+              <div className="p-8 bg-slate-50 border-t border-slate-100">
+                <div className="flex items-center gap-4 text-slate-400 mb-6">
+                  <Phone size={18} /> <span className="text-xs font-black tracking-widest">+91 98765 43210</span>
+                </div>
+                <button className="btn-premium w-full">Member Portal</button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Global Search Overlay */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="fixed inset-0 bg-white z-[100] p-6 flex flex-col"
+          >
+            <div className="container-custom flex items-center justify-between gap-8 mb-12">
+              <div className="flex-1">
+                <form onSubmit={handleSearch} className="relative">
+                  <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-blue-600" size={32} />
+                  <input
+                    autoFocus
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search the archive..."
+                    className="w-full bg-transparent border-none outline-none text-4xl md:text-6xl font-black italic tracking-tighter text-slate-900 pl-16 py-8"
+                  />
+                </form>
+              </div>
+              <button onClick={() => setIsSearchOpen(false)} className="p-4 rounded-full bg-slate-100 hover:bg-slate-200 transition-all">
+                <X size={32} />
+              </button>
+            </div>
+
+            <div className="container-custom flex-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+                <div>
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-8 italic">Quick Access</h4>
+                  <div className="flex flex-col gap-6">
+                    {categories?.slice(0, 5).map(cat => (
+                      <Link key={cat._id} to={`/category/${cat.slug}`} onClick={() => setIsSearchOpen(false)} className="text-2xl font-black italic hover:text-blue-600 transition-colors">{cat.name}</Link>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-8 italic">Popular Curator Picks</h4>
+                  <div className="flex flex-wrap gap-4">
+                    {['Headphones', 'MacBook Pro', 'iPhone 15', 'Smart Watch', 'Gaming'].map(tag => (
+                      <button key={tag} onClick={() => { setSearchQuery(tag); }} className="px-6 py-3 bg-slate-100 rounded-full text-xs font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all italic">{tag}</button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
