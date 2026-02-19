@@ -1,111 +1,192 @@
 import React, { useState } from 'react';
-import { X, Star, Check, ShoppingCart, Heart, RefreshCw } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { X, Star, Check, ShoppingCart, Heart, RefreshCw, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { addToCartThunk } from '../../features/cart/cartThunk';
 
 const QuickViewModal = ({ product, onClose }) => {
     const [quantity, setQuantity] = useState(1);
-    const [selectedColor, setSelectedColor] = useState(product.colors ? product.colors[0] : null);
+    const [activeImage, setActiveImage] = useState(0);
+    const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] || null);
+    const [isWishlisted, setIsWishlisted] = useState(false);
+    const dispatch = useDispatch();
 
     if (!product) return null;
 
+    const images = product.images?.length > 0 ? product.images : [product.image];
+
+    const handleAddToCart = async () => {
+        try {
+            const payload = {
+                productId: product._id || product.id,
+                quantity,
+                size: selectedVariant?.size || 'Standard',
+                color: selectedVariant?.color || 'Default'
+            };
+            await dispatch(addToCartThunk(payload)).unwrap();
+            toast.success(`Exquisite ${product.name} reserved in your lounge`);
+            onClose();
+        } catch (err) {
+            toast.error(err.message || 'Acquisition error');
+        }
+    };
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
-            <div className="bg-white w-full max-w-4xl rounded-lg shadow-2xl overflow-hidden relative flex flex-col md:flex-row animate-slideUp max-h-[90vh] md:max-h-none overflow-y-auto md:overflow-visible">
-
-                {/* Close Button */}
-                <button
+        <AnimatePresence>
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+                {/* Backdrop Area */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 z-10 p-1 bg-white rounded-full hover:bg-gray-100 transition"
+                    className="absolute inset-0 bg-slate-900/40 backdrop-blur-xl"
+                />
+
+                {/* Content Matrix */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                    className="bg-white/95 backdrop-blur-md w-full max-w-6xl rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden relative flex flex-col lg:flex-row border border-white max-h-[90vh]"
                 >
-                    <X size={24} />
-                </button>
+                    {/* Interaction Exit */}
+                    <button
+                        onClick={onClose}
+                        className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 z-50 p-2 bg-slate-100/50 hover:bg-white rounded-2xl transition-all duration-300 active:scale-90"
+                    >
+                        <X size={24} strokeWidth={2.5} />
+                    </button>
 
-                {/* Left: Image */}
-                <div className="w-full md:w-1/2 bg-gray-50 flex items-center justify-center p-8 relative">
-                    <img
-                        src={product.image}
-                        alt={product.name}
-                        className="max-h-[300px] md:max-h-[400px] object-contain mix-blend-multiply"
-                    />
-                </div>
+                    {/* Visual Core (Left) */}
+                    <div className="w-full lg:w-1/2 bg-slate-50 flex flex-col items-center justify-center p-12 relative overflow-hidden group">
+                        <motion.img
+                            key={activeImage}
+                            initial={{ opacity: 0, scale: 1.1 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            src={images[activeImage]}
+                            alt={product.name}
+                            className="max-h-[350px] lg:max-h-[500px] object-contain mix-blend-multiply drop-shadow-2xl"
+                        />
 
-                {/* Right: Details */}
-                <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2 uppercase">{product.name}</h2>
-
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="text-3xl font-bold text-blue-600">₹{product.price.toFixed(2)}</div>
-                        {product.oldPrice && (
-                            <div className="text-gray-400 line-through text-lg">₹{product.oldPrice.toFixed(2)}</div>
-                        )}
-                    </div>
-
-                    <div className="flex items-center gap-2 mb-4">
-                        <div className="flex text-yellow-500 text-xs">
-                            {'★'.repeat(Math.round(product.rating))}
-                            <span className="text-gray-300">{'★'.repeat(5 - Math.round(product.rating))}</span>
-                        </div>
-                        <span className="text-gray-500 text-sm">(2 Reviews)</span>
-                    </div>
-
-                    <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-                        {product.description}
-                    </p>
-
-                    <div className="space-y-4 mb-8">
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <Check size={16} className="text-green-500" /> In Stock
-                        </div>
-
-                        {product.colors && (
-                            <div className="flex items-center gap-3">
-                                <span className="text-sm font-bold text-gray-900">Color:</span>
-                                <div className="flex gap-2">
-                                    {product.colors.map((color, idx) => (
-                                        <button
-                                            key={idx}
-                                            onClick={() => setSelectedColor(color)}
-                                            className={`w-6 h-6 rounded-full border border-gray-300 ${selectedColor?.name === color.name ? 'ring-2 ring-blue-600 ring-offset-2' : ''}`}
-                                            style={{ backgroundColor: color.hex }}
-                                            title={color.name}
-                                        />
-                                    ))}
-                                </div>
+                        {/* Image Navigation Nodes */}
+                        {images.length > 1 && (
+                            <div className="flex gap-3 mt-10">
+                                {images.map((img, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setActiveImage(idx)}
+                                        className={`w-16 h-16 rounded-2xl border-2 transition-all p-2 bg-white ${activeImage === idx ? 'border-blue-600 scale-110 shadow-lg' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                                    >
+                                        <img src={img} className="w-full h-full object-contain" />
+                                    </button>
+                                ))}
                             </div>
                         )}
                     </div>
 
-                    <div className="flex items-center gap-4 border-t border-gray-100 pt-6">
-                        <div className="flex items-center border border-gray-300 rounded overflow-hidden">
-                            <button
-                                onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                                className="px-3 py-2 hover:bg-gray-100 text-gray-600"
-                            >-</button>
-                            <input
-                                type="text"
-                                value={quantity}
-                                readOnly
-                                className="w-12 text-center text-sm font-medium focus:outline-none"
-                            />
-                            <button
-                                onClick={() => setQuantity(q => q + 1)}
-                                className="px-3 py-2 hover:bg-gray-100 text-gray-600"
-                            >+</button>
+                    {/* Intelligence Core (Right) */}
+                    <div className="w-full lg:w-1/2 p-12 lg:p-20 flex flex-col overflow-y-auto no-scrollbar">
+                        <div className="mb-10">
+                            <motion.span
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="text-blue-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block"
+                            >
+                                {product.brand || 'Elite Selection'}
+                            </motion.span>
+                            <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-6 leading-tight italic tracking-tighter">
+                                {product.name}
+                            </h2>
+                            <div className="flex items-center gap-6">
+                                <div className="text-5xl font-black text-blue-600 tracking-tighter italic">
+                                    ₹{(selectedVariant?.price || product.price || 0).toLocaleString()}
+                                </div>
+                                {(selectedVariant?.compareAtPrice || product.oldPrice) && (
+                                    <div className="text-slate-300 line-through text-2xl font-bold">
+                                        ₹{(selectedVariant?.compareAtPrice || product.oldPrice).toLocaleString()}
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-                        <button className="flex-1 bg-blue-600 text-white px-6 py-3 rounded font-bold text-sm hover:bg-blue-700 transition flex items-center justify-center gap-2">
-                            <ShoppingCart size={18} /> ADD TO CART
-                        </button>
-                    </div>
+                        <div className="flex items-center gap-4 mb-10 pb-10 border-b border-slate-100">
+                            <div className="flex items-center gap-1.5 bg-slate-900 text-white px-4 py-1.5 rounded-full">
+                                <Star size={12} className="fill-blue-400 text-blue-400" />
+                                <span className="text-xs font-black">{product.rating || '4.9'}</span>
+                            </div>
+                            <span className="text-slate-400 text-xs font-black uppercase tracking-widest italic">21 Private Reviews</span>
+                        </div>
 
-                    <div className="flex gap-6 mt-6 text-xs text-gray-500 font-medium">
-                        <button className="flex items-center gap-2 hover:text-blue-600 transition"><Heart size={14} /> Add to Wishlist</button>
-                        <button className="flex items-center gap-2 hover:text-blue-600 transition"><RefreshCw size={14} /> Add to Compare</button>
-                    </div>
+                        <p className="text-slate-600 text-lg font-medium mb-12 leading-relaxed">
+                            {product.description || "Experience the pinnacle of technology and design with our most refined collection yet. Engineered for those who demand excellence."}
+                        </p>
 
-                </div>
+                        <div className="space-y-10 mb-12">
+                            <div className="flex items-center gap-3 text-sm font-black text-slate-900 group">
+                                <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
+                                    <Check size={14} strokeWidth={3} />
+                                </div>
+                                <span className="uppercase tracking-widest">In Stock / Sartaaj Prime</span>
+                            </div>
+
+                            {product.variants && product.variants.length > 0 && (
+                                <div className="space-y-4">
+                                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest block">Select Your Configuration</span>
+                                    <div className="flex flex-wrap gap-3">
+                                        {product.variants.map((variant, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={() => setSelectedVariant(variant)}
+                                                className={`px-6 py-3 rounded-2xl border-2 text-xs font-black tracking-widest transition-all ${selectedVariant === variant ? 'border-blue-600 bg-blue-50/50 text-blue-600 shadow-xl shadow-blue-100 scale-105' : 'border-slate-100 text-slate-400 hover:border-slate-200 hover:text-slate-600'}`}
+                                            >
+                                                {variant.size} {variant.color !== 'Default' ? `- ${variant.color}` : ''}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex items-center gap-6 pt-10 border-t border-slate-100 mt-auto">
+                            <div className="flex items-center bg-slate-100 rounded-2xl p-2 gap-4">
+                                <button
+                                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                                    className="w-10 h-10 rounded-xl hover:bg-white text-slate-900 font-black transition-all shadow-sm flex items-center justify-center"
+                                >-</button>
+                                <span className="w-8 text-center text-sm font-black">{quantity}</span>
+                                <button
+                                    onClick={() => setQuantity(q => q + 1)}
+                                    className="w-10 h-10 rounded-xl hover:bg-white text-slate-900 font-black transition-all shadow-sm flex items-center justify-center"
+                                >+</button>
+                            </div>
+
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={handleAddToCart}
+                                className="flex-1 bg-slate-900 text-white px-10 py-5 rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-2xl shadow-slate-200 flex items-center justify-center gap-4 group"
+                            >
+                                <ShoppingCart size={20} strokeWidth={2.5} /> Reserve Access
+                            </motion.button>
+                        </div>
+
+                        <div className="flex gap-10 mt-10">
+                            <button
+                                onClick={() => setIsWishlisted(!isWishlisted)}
+                                className={`flex items-center gap-3 text-[10px] font-black uppercase tracking-widest transition-colors ${isWishlisted ? 'text-red-500' : 'text-slate-400 hover:text-slate-900'}`}
+                            >
+                                <Heart size={16} strokeWidth={2.5} fill={isWishlisted ? "currentColor" : "none"} /> Add to Private Favorites
+                            </button>
+                            <button className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors">
+                                <RefreshCw size={16} strokeWidth={2.5} /> Compare Specs
+                            </button>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
-        </div>
+        </AnimatePresence>
     );
 };
 

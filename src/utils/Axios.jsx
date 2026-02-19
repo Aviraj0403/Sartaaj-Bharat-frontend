@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const baseURL =  'http://localhost:6005/v1/api';
-const baseURL = 'https://api.gurmeetkaurstore.com/v1/api';
+const baseURL = 'http://localhost:6005/v1/api';
+// const baseURL = 'https://api.gurmeetkaurstore.com/v1/api';
 
 const Axios = axios.create({
   baseURL,
@@ -70,7 +70,7 @@ Axios.interceptors.response.use(
 
       try {
         await axios.post(
-          `${baseURL}/auth/phoneV2/refresh-token`,
+          `${baseURL}/auth/refresh-token`,
           {},
           { withCredentials: true }
         );
