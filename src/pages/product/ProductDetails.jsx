@@ -140,7 +140,7 @@ const ProductDetails = () => {
 
     return (
         <div className="bg-white min-h-screen font-sans selection:bg-blue-600 selection:text-white">
-            <Header />
+            {/* <Header /> */}
 
             {/* Breadcrumb - Elite Essence */}
             <div className="bg-slate-50/50 border-b border-slate-100 py-6">
@@ -483,7 +483,7 @@ const ProductDetails = () => {
                 onWishlist={() => setIsWishlisted(!isWishlisted)}
             />
 
-            <Footer />
+            {/* <Footer /> */}
         </div>
     );
 };

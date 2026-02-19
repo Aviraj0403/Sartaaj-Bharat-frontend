@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useProducts, useCategories } from '../../hooks';
-import Header from '../../components/Header/header.jsx';
-import Footer from '../../components/Footer/footer.jsx';
+// import Header from '../../components/Header/header.jsx';
+// import Footer from '../../components/Footer/footer.jsx';
 import EliteHeroSlider from '../../components/home/EliteHeroSlider.jsx';
 import ProductCard from '../../components/Product/ProductCard.jsx';
 import { ArrowRight, LayoutGrid, Sparkles, TrendingUp, Zap, Globe } from 'lucide-react';
@@ -147,7 +147,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 selection:bg-blue-600 selection:text-white">
-      <Header />
+      {/* <Header /> */}
 
       <main className="flex-1 pb-32 overflow-hidden">
         <EliteHeroSlider />
@@ -278,7 +278,7 @@ const Home = () => {
         </section>
       </main>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };
