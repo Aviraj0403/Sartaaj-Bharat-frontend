@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+const FM = motion;
 import { ArrowRight, Sparkles, Star, Zap, Shield } from 'lucide-react';
 import { useBanners } from '../../hooks';
 import { sliders as mockSliders } from '../../data/mockData';
@@ -34,7 +35,7 @@ const EliteHeroSlider = () => {
     return (
         <section className="relative overflow-hidden pt-4 md:pt-8 pb-12 md:pb-16">
             <div className="container-custom">
-                <div className="relative h-[450px] sm:h-[550px] md:h-[750px] rounded-[2.5rem] sm:rounded-[4rem] md:rounded-[5rem] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900">
+                <div className="relative h-[380px] sm:h-[480px] md:h-[650px] lg:h-[720px] rounded-[2.5rem] sm:rounded-[4rem] md:rounded-[5rem] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900">
 
                     {/* Background Layers with Parallax */}
                     <AnimatePresence mode="wait">
@@ -51,8 +52,8 @@ const EliteHeroSlider = () => {
                                 alt={currentSlide.title}
                                 className="w-full h-full object-cover"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/60 to-transparent"></div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                            <div className="absolute inset-0 bg-linear-to-r from-slate-950 via-slate-900/60 to-transparent"></div>
+                            <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-transparent to-transparent"></div>
                         </motion.div>
                     </AnimatePresence>
 
@@ -82,7 +83,7 @@ const EliteHeroSlider = () => {
                                         initial={{ opacity: 0, y: 30 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.3, duration: 0.8 }}
-                                        className="text-4xl sm:text-5xl md:text-9xl font-black text-white leading-[0.9] tracking-tighter italic"
+                                        className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter italic"
                                     >
                                         {currentSlide.title.split(' ').map((word, i) => (
                                             <span key={i} className={i % 2 !== 0 ? 'text-blue-500 block md:inline md:ml-4' : 'block'}>
@@ -111,7 +112,7 @@ const EliteHeroSlider = () => {
                                                 Discover Selection <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform duration-500" />
                                             </span>
                                             <motion.div
-                                                className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                                                className="absolute inset-0 bg-linear-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                                             />
                                         </button>
 
@@ -158,8 +159,8 @@ const EliteHeroSlider = () => {
                     </div>
                 </div>
 
-                {/* Luxury Advantage Strip */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-[-60px] relative z-30 px-4">
+                {/* Luxury Advantage Strip - Professional Design */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-12 md:mt-16 relative z-30 px-2 sm:px-4">
                     {[
                         { title: 'Global Warranty', desc: 'Secure Coverage', icon: Shield, color: 'blue' },
                         { title: 'Nexus Shipping', desc: 'Ultra-fast Delivery', icon: Zap, color: 'orange' },
@@ -168,17 +169,26 @@ const EliteHeroSlider = () => {
                     ].map((item, idx) => (
                         <motion.div
                             key={idx}
-                            initial={{ opacity: 0, y: 30 }}
+                            initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ delay: idx * 0.1 }}
-                            whileHover={{ y: -10, scale: 1.02 }}
-                            className="glass-surface p-6 md:p-8 rounded-[2.5rem] border border-white/40 shadow-2xl group cursor-default"
+                            viewport={{ once: true }}
+                            transition={{ delay: idx * 0.08, duration: 0.5 }}
+                            whileHover={{ y: -6, scale: 1.02 }}
+                            className="bg-white/95 backdrop-blur-xl p-5 sm:p-6 md:p-7 rounded-3xl border border-slate-200/60 shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] group cursor-default transition-all duration-300"
                         >
-                            <div className={`p-4 rounded-2xl mb-4 inline-block ${item.color === 'blue' ? 'bg-blue-600/10 text-blue-600' : 'bg-orange-500/10 text-orange-600'} group-hover:bg-slate-900 group-hover:text-white transition-smooth shadow-sm`}>
-                                <item.icon size={28} />
+                            <div className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-14 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 ${
+                                item.color === 'blue' 
+                                    ? 'bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' 
+                                    : 'bg-orange-50 text-orange-600 group-hover:bg-orange-600 group-hover:text-white'
+                            } shadow-sm group-hover:shadow-lg`}>
+                                <item.icon size={20} strokeWidth={2.5} className="sm:w-6 sm:h-6 md:w-7 md:h-7" />
                             </div>
-                            <h4 className="font-black text-slate-850 group-hover:text-blue-600 transition-smooth text-sm md:text-lg italic uppercase tracking-tighter mb-1">{item.title}</h4>
-                            <p className="text-[10px] md:text-sm text-slate-500 font-bold uppercase tracking-widest">{item.desc}</p>
+                            <h4 className="font-black text-slate-900 group-hover:text-blue-600 transition-colors text-xs sm:text-sm md:text-base italic uppercase tracking-tight mb-1.5 leading-tight">
+                                {item.title}
+                            </h4>
+                            <p className="text-[9px] sm:text-[10px] md:text-xs text-slate-500 font-semibold uppercase tracking-[0.15em] leading-tight">
+                                {item.desc}
+                            </p>
                         </motion.div>
                     ))}
                 </div>

@@ -62,7 +62,7 @@ const ProductCard = ({ product }) => {
       className="flex flex-col h-full bg-white rounded-[2.5rem] overflow-hidden group shadow-sm hover:shadow-2xl transition-all duration-700 border border-slate-100/50"
     >
       {/* Discovery Core (Image Area) */}
-      <div className="relative aspect-[1/1] overflow-hidden bg-slate-50 p-4 sm:p-6 md:p-10">
+      <div className="relative aspect-square overflow-hidden bg-slate-50 p-4 sm:p-6 md:p-10">
         {/* Status Indicators */}
         <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex flex-col gap-2">
           {product.isFeatured && (
@@ -145,11 +145,21 @@ const ProductCard = ({ product }) => {
           </div>
         </div>
 
-        <h3 className="text-slate-900 font-black text-xl mb-6 leading-[1.2] tracking-tight hover:text-blue-600 transition-colors duration-300">
+        <h3 className="text-slate-900 font-black text-xl mb-4 leading-[1.2] tracking-tight hover:text-blue-600 transition-colors duration-300">
           <Link to={`/product/${product.slug || product._id || product.id}`} className="line-clamp-2 italic">{product.name}</Link>
         </h3>
 
-        <div className="mt-auto flex items-end justify-between pt-6 border-t border-slate-100/50">
+        {/* Always-visible Quick View trigger */}
+        <div className="mb-4 flex justify-between items-center text-[10px]">
+          <button
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowQuickView(true); }}
+            className="inline-flex items-center gap-1 text-slate-500 hover:text-blue-600 font-black uppercase tracking-[0.25em] transition-colors"
+          >
+            <Eye size={14} strokeWidth={2.2} /> Quick View
+          </button>
+        </div>
+
+        <div className="mt-auto flex items-end justify-between pt-4 border-t border-slate-100/50">
           <div className="flex flex-col">
             {displayOldPrice && (
               <span className="text-slate-300 text-xs line-through font-bold mb-1 tracking-widest uppercase">

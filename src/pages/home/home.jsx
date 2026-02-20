@@ -26,9 +26,9 @@ const itemVariants = {
 };
 
 const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "blue" }) => (
-  <section className="container-custom mb-32">
-    <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-      <div className="max-w-xl">
+  <section className="container-custom mb-24 md:mb-32">
+    <div className="flex flex-col md:flex-row md:justify-between md:items-end items-start mb-12 gap-6">
+      <div className="max-w-xl w-full">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -49,7 +49,7 @@ const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "b
           {title}
         </motion.h2>
       </div>
-      <Link to={linkTo} className="btn-premium-outline group min-w-[180px]">
+      <Link to={linkTo} className="btn-premium-outline group min-w-[180px] md:ml-auto">
         Explore All <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-500" />
       </Link>
     </div>
@@ -63,7 +63,7 @@ const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "b
     >
       {loading ? (
         [...Array(4)].map((_, i) => (
-          <div key={i} className="aspect-[3/4] bg-slate-200/50 animate-pulse rounded-[2.5rem] border border-slate-100"></div>
+          <div key={i} className="aspect-3/4 bg-slate-200/50 animate-pulse rounded-[2.5rem] border border-slate-100"></div>
         ))
       ) : (
         products?.map(product => (
@@ -119,7 +119,7 @@ const CategorySection = ({ categories, loading }) => (
           >
             <Link to={`/category/${cat.slug}`} className="flex flex-col items-center">
               <div className="w-full aspect-square glass-surface rounded-[2.5rem] p-6 flex items-center justify-center mb-4 group-hover:shadow-[0_20px_40px_rgba(37,99,235,0.15)] group-hover:border-blue-200 transition-all duration-500 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <img
                   src={cat.image || 'https://prestashop.codezeel.com/PRS23/PRS230560/default/img/c/1-category_default.jpg'}
                   alt={cat.name}
@@ -147,15 +147,15 @@ const Home = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 selection:bg-blue-600 selection:text-white">
-      <main className="flex-1 pb-32 overflow-hidden">
+      <main className="flex-1 pb-8 md:pb-12 overflow-hidden">
         <EliteHeroSlider />
 
         <CategorySection categories={categories} loading={catsLoading} />
 
         {/* Global Stats Strip */}
-        <section className="container-custom mb-32">
+        <section className="container-custom mb-24 md:mb-32">
           <div className="bg-slate-900 rounded-[3rem] md:rounded-[5rem] p-12 md:p-20 relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,_#2563eb33_0%,_transparent_50%)]"></div>
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#2563eb33_0%,transparent_50%)]"></div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10 text-center">
               {[
                 { label: 'Global Reach', value: '45+', sub: 'Countries Served', icon: Globe },
@@ -201,7 +201,7 @@ const Home = () => {
               alt="Elite Promo"
               className="w-full h-full object-cover opacity-60 transition-transform duration-[15s] group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/40 to-transparent flex items-center p-8 md:p-32">
+            <div className="absolute inset-0 bg-linear-to-r from-slate-950 via-slate-900/40 to-transparent flex items-center p-8 md:p-32">
               <div className="max-w-2xl space-y-6 md:space-y-10">
                 <motion.div
                   initial={{ opacity: 0, x: -30 }}
@@ -232,7 +232,7 @@ const Home = () => {
         />
 
         {/* Elite Hall of Fame (Bestsellers) */}
-        <section className="bg-slate-950 py-32 md:py-48 overflow-hidden relative">
+        <section className="bg-slate-950 py-28 md:py-40 overflow-hidden relative">
           <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600/5 blur-[150px] rounded-full translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-1/2 h-full bg-indigo-600/5 blur-[150px] rounded-full -translate-x-1/2"></div>
 
@@ -253,7 +253,7 @@ const Home = () => {
                 TITANS <span className="text-blue-600">'26</span>
               </motion.h2>
               <p className="text-slate-500 text-sm sm:text-lg md:text-xl font-medium max-w-lg mb-12">The most sought-after masterpieces in our global repository.</p>
-              <div className="w-48 h-1.5 bg-gradient-to-r from-transparent via-blue-600 to-transparent rounded-full"></div>
+              <div className="w-48 h-1.5 bg-linear-to-r from-transparent via-blue-600 to-transparent rounded-full"></div>
             </div>
 
             <motion.div
@@ -263,7 +263,7 @@ const Home = () => {
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10"
             >
               {bestLoading ? (
-                [...Array(4)].map((_, i) => <div key={i} className="aspect-[3/4] bg-slate-900 animate-pulse rounded-[3rem]"></div>)
+                [...Array(4)].map((_, i) => <div key={i} className="aspect-3/4 bg-slate-900 animate-pulse rounded-[3rem]"></div>)
               ) : (
                 bestData?.products?.map(product => (
                   <motion.div key={product.id || product._id} variants={itemVariants}>
@@ -272,6 +272,40 @@ const Home = () => {
                 ))
               )}
             </motion.div>
+          </div>
+        </section>
+
+        {/* Accessories / Finish Strip to fill space before footer */}
+        <section className="container-custom pt-8 md:pt-12 pb-4 md:pb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <div>
+              <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em]">
+                Elite Accessories
+              </span>
+              <h3 className="mt-1.5 text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight italic">
+                Complete your setup
+              </h3>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-500 max-w-sm hidden sm:block">
+              Add finishing touches with cases, audio, and chargers designed to match your elite collection.
+            </p>
+          </div>
+
+          <div className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar pb-2">
+            {[
+              'Premium Cases & Covers',
+              'Chargers & Cables',
+              'Audio & Headsets',
+              'Stands & Docks',
+              'Screen Protectors'
+            ].map((label) => (
+              <button
+                key={label}
+                className="whitespace-nowrap px-4 py-2.5 rounded-2xl border border-slate-200 bg-white text-[11px] font-black uppercase tracking-[0.2em] text-slate-700 hover:border-blue-500 hover:text-blue-600 hover:shadow-md active:scale-95 transition-all"
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </section>
       </main>
