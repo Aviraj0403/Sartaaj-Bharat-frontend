@@ -19,7 +19,7 @@ const SearchPage = () => {
 
     return (
         <div className="bg-white min-h-screen font-sans selection:bg-blue-100 selection:text-blue-900">
-            {/* <Header /> */}
+            <Header />
 
             {/* Elite Search Header */}
             <div className="bg-slate-50 border-b border-slate-100 py-16 md:py-24">
@@ -126,7 +126,7 @@ const SearchPage = () => {
                 </div>
             </main>
 
-            {/* <Footer /> */}
+            <Footer />
         </div>
     );
 };
