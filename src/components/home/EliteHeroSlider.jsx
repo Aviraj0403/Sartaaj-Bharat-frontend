@@ -33,9 +33,10 @@ const EliteHeroSlider = () => {
     const currentSlide = slides[currentIndex];
 
     return (
-        <section className="relative overflow-hidden pt-4 md:pt-8 pb-12 md:pb-16">
-            <div className="container-custom">
-                <div className="relative h-[380px] sm:h-[480px] md:h-[650px] lg:h-[720px] rounded-[2.5rem] sm:rounded-[4rem] md:rounded-[5rem] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900">
+        <section className="relative overflow-hidden pb-12 md:pb-16">
+            <div className="w-full">
+                {/* <div className="relative h-[380px] sm:h-[480px] md:h-[650px] lg:h-screen overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900"> */}
+<div className="relative h-[380px] sm:h-[480px] md:h-[650px] lg:h-screen overflow-hidden rounded-[2rem] md:rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900">
 
                     {/* Background Layers with Parallax */}
                     <AnimatePresence mode="wait">
@@ -152,7 +153,9 @@ const EliteHeroSlider = () => {
                     </div>
 
                     {/* Floating Side Note */}
-                    <div className="absolute top-24 right-[-50px] rotate-90 hidden xl:block">
+                    {/* <div className="absolute top-1/2 -translate-y-1/2 right-12 hidden xl:block"> */}
+                    <div className="absolute inset-0 flex items-center justify-center hidden xl:flex pointer-events-none">
+
                         <span className="text-white/10 text-9xl font-black italic tracking-tighter select-none whitespace-nowrap">
                             SARTAAJ BHARAT
                         </span>
@@ -160,7 +163,8 @@ const EliteHeroSlider = () => {
                 </div>
 
                 {/* Luxury Advantage Strip - Professional Design */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-12 md:mt-16 relative z-30 px-2 sm:px-4">
+                <div className="container-custom">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-12 md:mt-16 relative z-30 px-2 sm:px-4">
                     {[
                         { title: 'Global Warranty', desc: 'Secure Coverage', icon: Shield, color: 'blue' },
                         { title: 'Nexus Shipping', desc: 'Ultra-fast Delivery', icon: Zap, color: 'orange' },
@@ -191,6 +195,7 @@ const EliteHeroSlider = () => {
                             </p>
                         </motion.div>
                     ))}
+                    </div>
                 </div>
             </div>
         </section>
