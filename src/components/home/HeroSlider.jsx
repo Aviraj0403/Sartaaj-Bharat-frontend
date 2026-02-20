@@ -43,7 +43,7 @@ const HeroSlider = () => {
                         nextEl: '.swiper-button-next-custom',
                         prevEl: '.swiper-button-prev-custom',
                     }}
-                    className="h-[450px] md:h-[600px]"
+                    className="h-[400px] sm:h-[450px] md:h-[600px]"
                 >
                     {slides.map((slide, index) => (
                         <SwiperSlide key={slide.id || slide._id}>
@@ -61,26 +61,26 @@ const HeroSlider = () => {
                                 <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/40 to-transparent"></div>
 
                                 {/* Content with Framer Motion */}
-                                <div className="relative h-full container-custom flex items-center">
-                                    <div className="max-w-2xl space-y-6">
+                                <div className="relative h-full container-custom flex items-center px-4">
+                                    <div className="max-w-2xl space-y-4 md:space-y-6">
                                         <motion.div
                                             initial={{ opacity: 0, y: 30 }}
                                             whileInView={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.6, delay: 0.2 }}
                                         >
-                                            <span className="inline-block px-4 py-1.5 rounded-full bg-blue-600/20 backdrop-blur-md border border-blue-600/30 text-blue-400 text-xs font-black uppercase tracking-widest mb-4">
+                                            <span className="inline-block px-4 py-1.5 rounded-full bg-blue-600/20 backdrop-blur-md border border-blue-600/30 text-blue-400 text-[10px] md:text-xs font-black uppercase tracking-widest mb-4">
                                                 {slide.subtitle || 'Exclusive Collection'}
                                             </span>
-                                            <h2 className="text-4xl md:text-7xl font-black text-white leading-[1.1] mb-6 drop-shadow-2xl">
+                                            <h2 className="text-3xl sm:text-4xl md:text-7xl font-black text-white leading-[1.1] mb-4 md:mb-6 drop-shadow-2xl">
                                                 {slide.title}
                                             </h2>
-                                            <p className="text-slate-300 text-lg md:text-xl font-medium max-w-lg leading-relaxed mb-8">
+                                            <p className="text-slate-300 text-sm sm:text-lg md:text-xl font-medium max-w-lg leading-relaxed mb-6 md:mb-8 line-clamp-2 md:line-clamp-none">
                                                 {slide.description}
                                             </p>
                                             <motion.button
                                                 whileHover={{ scale: 1.05 }}
                                                 whileTap={{ scale: 0.95 }}
-                                                className="btn-premium px-10 py-4 text-lg group"
+                                                className="btn-premium px-8 md:px-10 py-3 md:py-4 text-sm md:text-lg group"
                                             >
                                                 {slide.btnText || 'Explore Now'}
                                                 <ArrowRight className="group-hover:translate-x-1 transition-transform" />

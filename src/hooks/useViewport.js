@@ -1,64 +1,28 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
- * Custom hook to track viewport dimensions and breakpoints
- * @returns {Object} Viewport dimensions and breakpoint booleans
+ * Custom hook to track viewport width and determine if it's mobile.
+ * Default breakpoint for mobile is < 1024px (LG in Tailwind).
  */
-function useViewport() {
-  const [dimensions, setDimensions] = useState(() => {
-    // SSR safety check
-    if (typeof window === 'undefined') {
-      return {
-        width: 1024,
-        height: 768,
-      };
-    }
+export const useViewport = (breakpoint = 1024) => {
+    const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1440);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+
+        // Initial check
+        handleResize();
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return {
-      width: window.innerWidth,
-      height: window.innerHeight,
+        width,
+        isMobile: width < breakpoint,
+        isTablet: width >= 768 && width < 1024,
+        isDesktop: width >= 1024
     };
-  });
-
-  useEffect(() => {
-    // SSR safety check
-    if (typeof window === 'undefined') return;
-
-    let timeoutId = null;
-
-    const handleResize = () => {
-      // Debounce resize events (150ms delay)
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-
-      timeoutId = setTimeout(() => {
-        setDimensions({
-          width: window.innerWidth,
-          height: window.innerHeight,
-        });
-      }, 150);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  // Memoize the return object to prevent unnecessary re-renders
-  const viewport = useMemo(() => ({
-    width: dimensions.width,
-    height: dimensions.height,
-    isMobile: dimensions.width < 768,
-    isTablet: dimensions.width >= 768 && dimensions.width < 1024,
-    isDesktop: dimensions.width >= 1024,
-  }), [dimensions.width, dimensions.height]);
-
-  return viewport;
-}
-
-export default useViewport;
+};

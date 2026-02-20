@@ -4,8 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
 import { FaUser, FaEnvelope, FaLock, FaPhone } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import Axios from "../../utils/Axios"; // Your Axios instance
 
 const SignupPage = () => {
@@ -194,18 +193,6 @@ const SignupPage = () => {
           </p>
         </div>
       </div>
-
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </div>
   );
 };

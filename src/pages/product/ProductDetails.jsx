@@ -9,8 +9,6 @@ import {
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import Header from "../../components/Header/header";
-import Footer from "../../components/Footer/footer";
 import ProductCard from "../../components/Product/ProductCard";
 import { useProduct, useProducts } from "../../hooks";
 import { addToCartThunk } from "../../features/cart/cartThunk";
@@ -483,7 +481,6 @@ const ProductDetails = () => {
                 onWishlist={() => setIsWishlisted(!isWishlisted)}
             />
 
-            <Footer />
         </div>
     );
 };

@@ -2,15 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import OtpInput from "../../components/OtpInput";
-import "react-toastify/dist/ReactToastify.css";
 
 const SignInPage = () => {
   const [loginType, setLoginType] = useState("mobile");
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [sessionId, setSessionId] = useState(null);
@@ -28,10 +27,10 @@ const SignInPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const redirectTo = location.state?.from?.pathname || 
-                     location.state?.from || 
-                     new URLSearchParams(location.search).get('redirect') || 
-                     "/";
+  const redirectTo = location.state?.from?.pathname ||
+    location.state?.from ||
+    new URLSearchParams(location.search).get('redirect') ||
+    "/";
 
   /* ---------------- EMAIL LOGIN ---------------- */
   const handleCustomSignIn = async () => {
@@ -87,16 +86,16 @@ const SignInPage = () => {
     try {
       await verifyPhoneOTP(sessionId, otp);
       toast.success("Login successful");
-      
+
       // Clear OTP state
       setOtp("");
       setOtpSent(false);
       setSessionId(null);
-      
+
       navigate(redirectTo, { replace: true });
     } catch (err) {
       toast.error(err?.message || "Invalid OTP");
-      
+
       // If session expired, reset OTP flow
       if (err?.message?.includes("expired")) {
         setOtpSent(false);
@@ -142,11 +141,11 @@ const SignInPage = () => {
 
     if ("OTPCredential" in window) {
       const abortController = new AbortController();
-      
+
       navigator.credentials
-        .get({ 
+        .get({
           otp: { transport: ["sms"] },
-          signal: abortController.signal 
+          signal: abortController.signal
         })
         .then((otpCred) => {
           if (otpCred?.code) {
@@ -191,21 +190,19 @@ const SignInPage = () => {
               setOtpSent(false);
               setOtp("");
             }}
-            className={`flex-1 py-2 rounded-lg transition ${
-              loginType === "mobile"
-                ? "bg-white shadow text-pink-600"
-                : "text-gray-500"
-            }`}
+            className={`flex-1 py-2 rounded-lg transition ${loginType === "mobile"
+              ? "bg-white shadow text-pink-600"
+              : "text-gray-500"
+              }`}
           >
             Phone
           </button>
           <button
             onClick={() => setLoginType("email")}
-            className={`flex-1 py-2 rounded-lg transition ${
-              loginType === "email"
-                ? "bg-white shadow text-pink-600"
-                : "text-gray-500"
-            }`}
+            className={`flex-1 py-2 rounded-lg transition ${loginType === "email"
+              ? "bg-white shadow text-pink-600"
+              : "text-gray-500"
+              }`}
           >
             Email
           </button>
@@ -236,7 +233,7 @@ const SignInPage = () => {
             >
               {isSubmitting ? "Signing in..." : "Sign In"}
             </button>
-            
+
             <div className="text-center mt-3">
               <Link to="/forgot-password" className="text-sm text-pink-500 hover:underline">
                 Forgot Password?
@@ -262,7 +259,7 @@ const SignInPage = () => {
                     onKeyPress={(e) => e.key === 'Enter' && handleSendOTP()}
                   />
                 </div>
-                
+
                 <button
                   onClick={handleSendOTP}
                   disabled={isSubmitting || mobile.length !== 10}
@@ -280,11 +277,11 @@ const SignInPage = () => {
                   <OtpInput value={otp} onChange={setOtp} />
                 </div>
 
-               <button
-  onClick={handleVerifyOTP}
-  disabled={isSubmitting || otp.length !== 4}
-  className="w-full bg-pink-500 text-white py-3 rounded-xl hover:bg-pink-600 transition disabled:opacity-50"
->
+                <button
+                  onClick={handleVerifyOTP}
+                  disabled={isSubmitting || otp.length !== 4}
+                  className="w-full bg-pink-500 text-white py-3 rounded-xl hover:bg-pink-600 transition disabled:opacity-50"
+                >
 
                   {isSubmitting ? "Verifying..." : "Verify OTP"}
                 </button>
@@ -327,7 +324,6 @@ const SignInPage = () => {
       </div>
 
       <div id="sign-in-recaptcha-container"></div>
-      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

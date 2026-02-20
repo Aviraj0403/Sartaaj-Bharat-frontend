@@ -2,8 +2,6 @@ import React from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Filter, SlidersHorizontal, ArrowLeft, Loader2, Sparkles } from "lucide-react";
-import Header from "../../components/Header/header";
-import Footer from "../../components/Footer/footer";
 import ProductCard from "../../components/Product/ProductCard";
 import { useProducts } from "../../hooks";
 
@@ -19,8 +17,6 @@ const SearchPage = () => {
 
     return (
         <div className="bg-white min-h-screen font-sans selection:bg-blue-100 selection:text-blue-900">
-            <Header />
-
             {/* Elite Search Header */}
             <div className="bg-slate-50 border-b border-slate-100 py-16 md:py-24">
                 <div className="container-custom">

@@ -1,18 +1,19 @@
 import React from "react";
 import { FaShoppingBag, FaMobileAlt } from "react-icons/fa";
+import { useViewport } from "../../hooks/useViewport";
 
 export default function BeautyDiscountBanner() {
+  const { isMobile } = useViewport();
   return (
-    <section className="bg-pink-100 rounded-3xl py-12 px-6 md:px-16 flex flex-col md:flex-row items-center justify-between gap-10 overflow-hidden relative">
+    <section className="bg-pink-100 rounded-[2rem] md:rounded-[3rem] py-10 md:py-16 px-6 md:px-16 flex flex-col md:flex-row items-center justify-between gap-10 overflow-hidden relative">
       {/* Left Content */}
-      <div className="flex-1 text-center md:text-left space-y-5 z-10">
-        <h2 className="text-4xl md:text-5xl font-extrabold text-pink-600">
-          Get 20% Off 💕
+      <div className="flex-1 text-center md:text-left space-y-4 md:space-y-6 z-10">
+        <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-pink-600 leading-tight">
+          Get 20% Off <span className="inline-block animate-bounce">💕</span>
         </h2>
-        <p className="text-lg text-gray-700 max-w-md mx-auto md:mx-0">
-          Enjoy a flat <span className="font-semibold">20% discount</span> on
-          your first order through the{" "}
-          <span className="text-pink-500 font-semibold">Glow & Grace App</span>!
+        <p className="text-sm sm:text-base md:text-lg text-gray-700 max-w-md mx-auto md:mx-0 leading-relaxed">
+          Enjoy a flat <span className="font-bold underline decoration-pink-300">20% discount</span> on
+          your {isMobile ? "first order via app" : "first order through our exclusive app"}!
         </p>
 
         {/* Fancy Gradient Buttons */}

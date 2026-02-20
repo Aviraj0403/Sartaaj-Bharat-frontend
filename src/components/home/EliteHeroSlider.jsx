@@ -32,9 +32,9 @@ const EliteHeroSlider = () => {
     const currentSlide = slides[currentIndex];
 
     return (
-        <section className="relative overflow-hidden pt-8 pb-16">
+        <section className="relative overflow-hidden pt-4 md:pt-8 pb-12 md:pb-16">
             <div className="container-custom">
-                <div className="relative h-[550px] md:h-[750px] rounded-[4rem] md:rounded-[5rem] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900">
+                <div className="relative h-[450px] sm:h-[550px] md:h-[750px] rounded-[2.5rem] sm:rounded-[4rem] md:rounded-[5rem] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900">
 
                     {/* Background Layers with Parallax */}
                     <AnimatePresence mode="wait">
@@ -58,7 +58,7 @@ const EliteHeroSlider = () => {
 
                     {/* Content Overlay */}
                     <div className="absolute inset-0 z-10 flex items-center">
-                        <div className="container-custom px-8 md:px-24">
+                        <div className="container-custom px-6 sm:px-8 md:px-24">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={currentIndex}
@@ -66,13 +66,13 @@ const EliteHeroSlider = () => {
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: 20 }}
                                     transition={{ duration: 0.8, ease: "easeOut" }}
-                                    className="max-w-3xl space-y-8"
+                                    className="max-w-3xl space-y-6 md:space-y-8"
                                 >
                                     <motion.div
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.2 }}
-                                        className="flex items-center gap-3 bg-blue-600/20 backdrop-blur-xl border border-blue-500/30 text-blue-400 text-[10px] md:text-xs font-black px-6 py-2.5 rounded-full uppercase tracking-[0.3em] w-fit"
+                                        className="flex items-center gap-3 bg-blue-600/20 backdrop-blur-xl border border-blue-500/30 text-blue-400 text-[9px] md:text-xs font-black px-4 md:px-6 py-2 md:py-2.5 rounded-full uppercase tracking-[0.3em] w-fit"
                                     >
                                         <Sparkles size={14} className="animate-pulse" />
                                         {currentSlide.subtitle || 'Elite Global Collection'}
@@ -82,7 +82,7 @@ const EliteHeroSlider = () => {
                                         initial={{ opacity: 0, y: 30 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.3, duration: 0.8 }}
-                                        className="text-5xl md:text-9xl font-black text-white leading-[0.9] tracking-tighter italic"
+                                        className="text-4xl sm:text-5xl md:text-9xl font-black text-white leading-[0.9] tracking-tighter italic"
                                     >
                                         {currentSlide.title.split(' ').map((word, i) => (
                                             <span key={i} className={i % 2 !== 0 ? 'text-blue-500 block md:inline md:ml-4' : 'block'}>
@@ -95,7 +95,7 @@ const EliteHeroSlider = () => {
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         transition={{ delay: 0.5 }}
-                                        className="text-slate-400 text-lg md:text-2xl font-medium max-w-xl leading-relaxed"
+                                        className="text-slate-400 text-sm sm:text-lg md:text-2xl font-medium max-w-xl leading-relaxed line-clamp-2 md:line-clamp-none"
                                     >
                                         {currentSlide.description || "Experience the pinnacle of technology and luxury craftsmanship."}
                                     </motion.p>

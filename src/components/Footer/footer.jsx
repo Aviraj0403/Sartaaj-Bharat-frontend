@@ -4,12 +4,12 @@ import { Facebook, Twitter, Instagram, Youtube, MapPin, Phone, Mail, Heart, Arro
 
 const Footer = () => {
   return (
-    <footer className="relative bg-[#0f172a] text-slate-400 pt-12 sm:pt-16 md:pt-20 lg:pt-24 pb-8 sm:pb-10 md:pb-12 mt-12 sm:mt-16 md:mt-20 lg:mt-24 overflow-hidden">
+    <footer className="relative bg-[#0f172a] text-slate-400 pt-24 pb-12 mt-24 overflow-hidden">
       {/* Background Decorative Element */}
       <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-orange-500 to-blue-600"></div>
       <div className="absolute top-0 right-0 w-1/4 h-1/4 bg-blue-600/5 blur-[100px] rounded-full"></div>
 
-      <div className="container-custom grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12 lg:gap-16 mb-12 sm:mb-16 md:mb-20 relative z-10">
+      <div className="container-custom grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20 relative z-10">
         {/* Column 1: Brand & Contact */}
         <div className="space-y-8">
           <Link to="/" className="inline-block group">
@@ -23,12 +23,12 @@ const Footer = () => {
             Redefining the digital shopping experience with premium technology and lifestyle essentials curated for the modern world.
           </p>
 
-          <div className="flex gap-3 sm:gap-4">
+          <div className="flex gap-4">
             {[Facebook, Twitter, Instagram, Youtube].map((Icon, idx) => (
               <a
                 key={idx}
                 href="#"
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-slate-800/50 flex items-center justify-center text-slate-400 hover:bg-blue-600 hover:text-white hover:-translate-y-1 transition-smooth border border-slate-700/50"
+                className="w-10 h-10 rounded-xl bg-slate-800/50 flex items-center justify-center text-slate-400 hover:bg-blue-600 hover:text-white hover:-translate-y-1 transition-smooth border border-slate-700/50"
               >
                 <Icon size={18} />
               </a>
@@ -38,11 +38,11 @@ const Footer = () => {
 
         {/* Column 2: Experience */}
         <div>
-          <h3 className="text-white text-xs font-black uppercase tracking-[0.3em] mb-6 sm:mb-8">Experience</h3>
-          <ul className="space-y-2 sm:space-y-3 md:space-y-4 text-sm font-semibold">
+          <h3 className="text-white text-xs font-black uppercase tracking-[0.3em] mb-8">Experience</h3>
+          <ul className="space-y-4 text-sm font-semibold">
             {['Latest Drops', 'Exclusive Collections', 'Hot Deals', 'Store Locator', 'Elite Membership'].map((item) => (
               <li key={item}>
-                <a href="#" className="hover:text-blue-400 transition-colors flex items-center gap-2 group py-2 sm:py-3 min-h-[44px]">
+                <a href="#" className="hover:text-blue-400 transition-colors flex items-center gap-2 group">
                   {item} <ArrowUpRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
               </li>
@@ -52,11 +52,11 @@ const Footer = () => {
 
         {/* Column 3: Corporate */}
         <div>
-          <h3 className="text-white text-xs font-black uppercase tracking-[0.3em] mb-6 sm:mb-8">Corporate</h3>
-          <ul className="space-y-2 sm:space-y-3 md:space-y-4 text-sm font-semibold">
+          <h3 className="text-white text-xs font-black uppercase tracking-[0.3em] mb-8">Corporate</h3>
+          <ul className="space-y-4 text-sm font-semibold">
             {['Our Story', 'Careers at Sartaaj', 'Sustainability', 'Investors', 'Wholesale'].map((item) => (
               <li key={item}>
-                <a href="#" className="hover:text-blue-400 transition-colors flex items-center gap-2 group py-2 sm:py-3 min-h-[44px]">
+                <a href="#" className="hover:text-blue-400 transition-colors flex items-center gap-2 group">
                   {item} <ArrowUpRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
               </li>
@@ -67,10 +67,10 @@ const Footer = () => {
         {/* Column 4: Concierge */}
         <div className="space-y-8">
           <div>
-            <h3 className="text-white text-xs font-black uppercase tracking-[0.3em] mb-6 sm:mb-8">Concierge</h3>
-            <ul className="space-y-3 sm:space-y-4">
-              <li className="flex items-center gap-3 sm:gap-4 group">
-                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-slate-800/50 flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-smooth border border-slate-700/50 flex-shrink-0">
+            <h3 className="text-white text-xs font-black uppercase tracking-[0.3em] mb-8">Concierge</h3>
+            <ul className="space-y-4">
+              <li className="flex items-center gap-4 group">
+                <div className="w-10 h-10 rounded-xl bg-slate-800/50 flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-smooth border border-slate-700/50">
                   <Phone size={18} />
                 </div>
                 <div>
@@ -78,8 +78,8 @@ const Footer = () => {
                   <p className="text-white text-sm font-bold">+91 98765 43210</p>
                 </div>
               </li>
-              <li className="flex items-center gap-3 sm:gap-4 group">
-                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-slate-800/50 flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-smooth border border-slate-700/50 flex-shrink-0">
+              <li className="flex items-center gap-4 group">
+                <div className="w-10 h-10 rounded-xl bg-slate-800/50 flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-smooth border border-slate-700/50">
                   <Mail size={18} />
                 </div>
                 <div>
