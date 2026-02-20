@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Star, Check, ShoppingCart, Heart, RefreshCw, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+const FM = motion;
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { addToCartThunk } from '../../features/cart/cartThunk';
@@ -34,7 +35,7 @@ const QuickViewModal = ({ product, onClose }) => {
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+            <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6 md:p-8">
                 {/* Backdrop Area */}
                 <motion.div
                     initial={{ opacity: 0 }}
@@ -49,7 +50,7 @@ const QuickViewModal = ({ product, onClose }) => {
                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                    className="bg-white/95 backdrop-blur-md w-full max-w-6xl rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden relative flex flex-col lg:flex-row border border-white max-h-[90vh]"
+                    className="bg-white/95 backdrop-blur-md w-full max-w-6xl rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden relative flex flex-col lg:flex-row border border-white max-h-[90vh] h-[90vh] sm:h-auto"
                 >
                     {/* Interaction Exit */}
                     <button
@@ -60,7 +61,7 @@ const QuickViewModal = ({ product, onClose }) => {
                     </button>
 
                     {/* Visual Core (Left) */}
-                    <div className="w-full lg:w-1/2 bg-slate-50 flex flex-col items-center justify-center p-12 relative overflow-hidden group">
+                    <div className="w-full lg:w-1/2 bg-slate-50 flex flex-col items-center justify-center p-8 sm:p-10 lg:p-12 relative overflow-hidden group">
                         <motion.img
                             key={activeImage}
                             initial={{ opacity: 0, scale: 1.1 }}
@@ -87,7 +88,7 @@ const QuickViewModal = ({ product, onClose }) => {
                     </div>
 
                     {/* Intelligence Core (Right) */}
-                    <div className="w-full lg:w-1/2 p-12 lg:p-20 flex flex-col overflow-y-auto no-scrollbar">
+                    <div className="w-full lg:w-1/2 p-6 sm:p-10 lg:p-20 flex flex-col overflow-y-auto no-scrollbar">
                         <div className="mb-10">
                             <motion.span
                                 initial={{ opacity: 0, x: -10 }}
@@ -150,7 +151,7 @@ const QuickViewModal = ({ product, onClose }) => {
                         </div>
 
                         <div className="flex items-center gap-6 pt-10 border-t border-slate-100 mt-auto">
-                            <div className="flex items-center bg-slate-100 rounded-2xl p-2 gap-4">
+                            <div className="flex items-center bg-slate-100 rounded-4xl p-2 gap-4">
                                 <button
                                     onClick={() => setQuantity(q => Math.max(1, q - 1))}
                                     className="w-10 h-10 rounded-xl hover:bg-white text-slate-900 font-black transition-all shadow-sm flex items-center justify-center"
@@ -166,7 +167,7 @@ const QuickViewModal = ({ product, onClose }) => {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={handleAddToCart}
-                                className="flex-1 bg-slate-900 text-white px-10 py-5 rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-2xl shadow-slate-200 flex items-center justify-center gap-4 group"
+                                className="flex-1 bg-slate-900 text-white px-10 py-5 rounded-4xl font-black text-xs uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-2xl shadow-slate-200 flex items-center justify-center gap-4 group"
                             >
                                 <ShoppingCart size={20} strokeWidth={2.5} /> Reserve Access
                             </motion.button>

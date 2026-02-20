@@ -17,7 +17,7 @@ const MobileBuyBar = ({ product, onAcquire, selectedVariant, isWishlisted, onWis
     <motion.div
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        className="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-xl border-t border-slate-100 p-4 z-50 md:hidden flex items-center gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]"
+        className="fixed bottom-16 left-0 w-full bg-white/95 backdrop-blur-xl border-t border-slate-100 p-4 z-50 md:hidden flex items-center gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]"
     >
         <div className="flex-1 flex flex-col justify-center">
             <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Elite Artifact</span>
@@ -138,8 +138,6 @@ const ProductDetails = () => {
 
     return (
         <div className="bg-white min-h-screen font-sans selection:bg-blue-600 selection:text-white">
-            <Header />
-
             {/* Breadcrumb - Elite Essence */}
             <div className="bg-slate-50/50 border-b border-slate-100 py-6">
                 <div className="container-custom flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
@@ -164,11 +162,11 @@ const ProductDetails = () => {
                         {/* Thumbnails Spectrum */}
                         <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-y-auto no-scrollbar md:w-24">
                             {images.map((img, idx) => (
-                                <motion.button
+                                    <motion.button
                                     key={idx}
                                     whileHover={{ y: -5, scale: 1.05 }}
-                                    onClick={() => setActiveImage(idx)}
-                                    className={`relative aspect-square rounded-[1.5rem] overflow-hidden border transition-all p-3 bg-white ${activeImage === idx ? 'border-blue-600 shadow-2xl shadow-blue-100' : 'border-slate-100 hover:border-slate-300'}`}
+                                        onClick={() => setActiveImage(idx)}
+                                        className={`relative aspect-square rounded-3xl overflow-hidden border transition-all p-3 bg-white ${activeImage === idx ? 'border-blue-600 shadow-2xl shadow-blue-100' : 'border-slate-100 hover:border-slate-300'}`}
                                 >
                                     <img src={img} className="w-full h-full object-contain mix-blend-multiply" alt={`View ${idx + 1}`} />
                                 </motion.button>
@@ -180,7 +178,7 @@ const ProductDetails = () => {
                             ref={containerRef}
                             onMouseMove={handleMouseMove}
                             onMouseLeave={handleMouseLeave}
-                            className="flex-1 aspect-square rounded-[3.5rem] bg-slate-50 border border-slate-100 p-8 md:p-16 relative overflow-hidden group perspective-1000"
+                            className="flex-1 aspect-square rounded-[3.5rem] bg-slate-50 border border-slate-100 p-6 md:p-12 relative overflow-hidden group perspective-1000"
                         >
                             <AnimatePresence mode="wait">
                                 <motion.div
@@ -202,7 +200,7 @@ const ProductDetails = () => {
                                         alt={product.name}
                                     />
                                     {/* Subtle Glass Glare */}
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="absolute inset-0 bg-linear-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </motion.div>
                             </AnimatePresence>
 
@@ -310,9 +308,9 @@ const ProductDetails = () => {
                                     whileHover={{ scale: 1.02, y: -2 }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={handleAddToCart}
-                                    className="flex-1 bg-slate-900 text-white px-10 py-5 rounded-2xl font-black text-[12px] uppercase tracking-[0.4em] hover:bg-blue-600 transition-all shadow-3xl shadow-slate-200 flex items-center justify-center gap-5 italic relative overflow-hidden group"
+                                    className="flex-1 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.35em] hover:bg-blue-600 transition-all shadow-3xl shadow-slate-200 flex items-center justify-center gap-4 italic relative overflow-hidden group"
                                 >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="absolute inset-0 bg-linear-to-r from-blue-700 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     <ShoppingCart size={22} strokeWidth={2.5} className="relative z-10" />
                                     <span className="relative z-10">Acquire Artifact</span>
                                 </motion.button>
@@ -422,7 +420,7 @@ const ProductDetails = () => {
                             )}
                             {activeTab === 'reviews' && (
                                 <div className="text-center py-24 glass-surface rounded-[4rem] border border-slate-100 relative overflow-hidden">
-                                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                                <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-blue-600 to-indigo-600"></div>
                                     <div className="flex justify-center gap-3 text-blue-600 mb-10">
                                         {[...Array(5)].map((_, i) => <Star key={i} size={32} fill="currentColor" strokeWidth={0} />)}
                                     </div>

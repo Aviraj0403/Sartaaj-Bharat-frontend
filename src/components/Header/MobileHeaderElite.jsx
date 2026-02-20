@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingBag, User, Heart, Menu, X, Home, Tag, List } from 'lucide-react';
+import { Search, ShoppingCart, ShoppingBag, User, Heart, Menu, X, Home, Tag, List } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCategories } from '../../hooks';
@@ -43,7 +43,7 @@ const MobileHeaderElite = () => {
     return (
         <div className="lg:hidden">
             {/* Top Sticky Bar */}
-            <header className={`fixed top-0 left-0 w-full z-[70] transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-xl shadow-md py-3' : 'bg-white py-4'}`}>
+            <header className={`fixed top-0 left-0 w-full z-70 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-xl shadow-md py-3' : 'bg-white py-4'}`}>
                 <div className="container-custom flex justify-between items-center px-4">
                     {/* Menu Trigger */}
                     <button
@@ -63,7 +63,7 @@ const MobileHeaderElite = () => {
                         </h1>
                     </Link>
 
-                    {/* Quick Profile/Search */}
+                    {/* Quick Profile/Search/Cart */}
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setIsSearchOpen(true)}
@@ -71,10 +71,13 @@ const MobileHeaderElite = () => {
                         >
                             <Search size={22} />
                         </button>
-                        <Link to="/cart" className="relative p-2 rounded-xl text-slate-600">
-                            <ShoppingBag size={22} />
+                        <Link
+                            to="/cart"
+                            className="relative p-2.5 rounded-2xl bg-slate-900 text-white shadow-lg shadow-slate-900/20 active:scale-95 transition-all"
+                        >
+                            <ShoppingCart size={20} strokeWidth={2.5} />
                             {totalQuantity > 0 && (
-                                <span className="absolute top-1 right-1 w-5 h-5 bg-blue-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white">
+                                <span className="absolute -top-2 -right-2 w-4 h-4 bg-blue-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-slate-900">
                                     {totalQuantity}
                                 </span>
                             )}
@@ -84,7 +87,7 @@ const MobileHeaderElite = () => {
             </header>
 
             {/* Bottom Navigation */}
-            <nav className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl border-t border-slate-100 px-6 py-3 z-[60] flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+            <nav className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl border-t border-slate-100 px-6 py-3 z-60 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
                 <Link to="/" className="flex flex-col items-center gap-1 text-blue-600">
                     <Home size={20} />
                     <span className="text-[10px] font-black uppercase tracking-widest">Home</span>
@@ -112,14 +115,14 @@ const MobileHeaderElite = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsMenuOpen(false)}
-                            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[80]"
+                            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-80"
                         />
                         <motion.div
                             initial={{ x: '-100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="fixed left-0 top-0 h-screen w-[85%] max-w-sm bg-white z-[90] shadow-2xl flex flex-col"
+                            className="fixed left-0 top-0 h-screen w-[85%] max-w-sm bg-white z-90 shadow-2xl flex flex-col"
                         >
                             <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
                                 <div className="flex items-center gap-3">
@@ -195,7 +198,7 @@ const MobileHeaderElite = () => {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="fixed inset-0 bg-white z-[100] p-6 flex flex-col"
+                        className="fixed inset-0 bg-white z-100 p-6 flex flex-col"
                     >
                         <div className="flex items-center justify-between gap-4 mb-8">
                             <button onClick={() => setIsSearchOpen(false)} className="p-2 rounded-xl bg-slate-100">

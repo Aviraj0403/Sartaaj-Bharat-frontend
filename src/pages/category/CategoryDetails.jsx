@@ -39,7 +39,7 @@ const CategoryDetails = () => {
               {categoryName}
             </h1>
             <p className="text-slate-400 font-black text-[10px] uppercase tracking-[0.3em] flex items-center gap-3">
-              {data?.products?.length || 0} Artifacts Indexed <span className="w-12 h-[1px] bg-slate-200"></span> Lounge Standard
+              {data?.products?.length || 0} Artifacts Indexed <span className="w-12 h-px bg-slate-200"></span> Lounge Standard
             </p>
           </motion.div>
         </div>
@@ -48,8 +48,8 @@ const CategoryDetails = () => {
       <main className="container-custom py-16">
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Refinement Sidebar */}
-          <aside className="lg:w-64">
-            <div className="sticky top-32">
+          <aside className="w-full lg:w-64 mb-10 lg:mb-0">
+            <div className="lg:sticky lg:top-32">
               <button className="w-full flex items-center justify-between p-6 bg-slate-900 text-white rounded-3xl font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-slate-200 italic mb-8 group hover:bg-blue-600 transition-all">
                 <span className="flex items-center gap-3">
                   <SlidersHorizontal size={14} className="group-hover:rotate-180 transition-transform duration-500" /> Filter Specs
@@ -123,8 +123,6 @@ const CategoryDetails = () => {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };

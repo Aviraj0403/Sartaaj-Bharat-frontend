@@ -41,8 +41,8 @@ const SearchPage = () => {
             <main className="container-custom py-16">
                 <div className="flex flex-col lg:flex-row gap-12">
                     {/* Minimal Sidebar / Filter Toggle */}
-                    <aside className="lg:w-64 space-y-12">
-                        <div className="sticky top-32">
+                    <aside className="w-full lg:w-64 space-y-12 mb-10 lg:mb-0">
+                        <div className="lg:sticky lg:top-32">
                             <button className="w-full flex items-center justify-between p-6 bg-slate-900 text-white rounded-3xl font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-slate-200 italic mb-8 group hover:bg-blue-600 transition-all">
                                 <span className="flex items-center gap-3">
                                     <SlidersHorizontal size={14} className="group-hover:rotate-180 transition-transform duration-500" /> Refine Intel
@@ -121,8 +121,6 @@ const SearchPage = () => {
                     </div>
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 };
