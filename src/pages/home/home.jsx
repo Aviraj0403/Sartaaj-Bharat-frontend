@@ -152,11 +152,14 @@ const Home = () => {
 
         <CategorySection categories={categories} loading={catsLoading} />
 
-        {/* Global Stats Strip */}
-        <section className="container-custom mb-24 md:mb-32">
-          <div className="bg-slate-900 rounded-[3rem] md:rounded-[5rem] p-12 md:p-20 relative overflow-hidden shadow-2xl">
+        {/* Global Stats Strip - Full Width */}
+        <section className="mb-24 md:mb-32">
+         <div className="bg-slate-900 rounded-[2rem] md:rounded-[2rem] p-12 md:p-20 relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#2563eb33_0%,transparent_50%)]"></div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10 text-center">
+            <div className="absolute bottom-0 right-0 w-1/2 h-full bg-blue-600/5 blur-[150px] rounded-full translate-x-1/2"></div>
+            
+            <div className="container-custom relative z-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
               {[
                 { label: 'Global Reach', value: '45+', sub: 'Countries Served', icon: Globe },
                 { label: 'Market Trust', value: '99.9%', sub: 'Customer Satisfaction', icon: Sparkles },
@@ -175,6 +178,7 @@ const Home = () => {
                   <p className="text-slate-500 text-xs md:text-sm font-medium">{stat.sub}</p>
                 </motion.div>
               ))}
+              </div>
             </div>
           </div>
         </section>
@@ -188,38 +192,35 @@ const Home = () => {
         />
 
         {/* Cinematic Promo Banner */}
-        <section className="container-custom mb-32">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="group relative rounded-[2.5rem] md:rounded-[5rem] overflow-hidden h-[450px] md:h-[600px] shadow-3xl bg-slate-900"
-          >
+        <section className="mb-24 md:mb-32">
+          <div className="bg-slate-900 rounded-[2rem] md:rounded-[2rem] relative overflow-hidden shadow-2xl h-[450px] md:h-[600px]">
             <div className="absolute inset-0 bg-dark-elite"></div>
             <img
               src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=2000&auto=format&fit=crop"
               alt="Elite Promo"
-              className="w-full h-full object-cover opacity-60 transition-transform duration-[15s] group-hover:scale-110"
+              className="w-full h-full object-cover opacity-60 transition-transform duration-[15s] hover:scale-110"
             />
-            <div className="absolute inset-0 bg-linear-to-r from-slate-950 via-slate-900/40 to-transparent flex items-center p-8 md:p-32">
-              <div className="max-w-2xl space-y-6 md:space-y-10">
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  className="inline-flex items-center gap-3 bg-blue-600/10 backdrop-blur-xl border border-blue-500/20 text-blue-400 text-[9px] md:text-[10px] font-black px-5 md:px-6 py-2.5 md:py-3 rounded-full uppercase tracking-[0.4em]"
-                >
-                  <TrendingUp size={16} /> Seasonal Milestone
-                </motion.div>
-                <h3 className="text-4xl sm:text-6xl md:text-[10rem] font-black text-white leading-[0.85] tracking-tighter italic">
-                  ELITE<br /><span className="text-blue-600 md:ml-20">PRIME</span>
-                </h3>
-                <p className="text-slate-400 text-sm sm:text-xl md:text-2xl font-medium max-w-md leading-relaxed line-clamp-2 md:line-clamp-none">Redefining the boundaries of premium e-commerce performance.</p>
-                <Link to="/products" className="btn-premium px-8 md:px-12 py-3.5 md:py-5 text-sm md:text-xl group w-fit flex items-center gap-3">
-                  Start Experience <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform duration-500" />
-                </Link>
+            <div className="absolute inset-0 bg-linear-to-r from-slate-950 via-slate-900/40 to-transparent flex items-center">
+              <div className="container-custom">
+                <div className="max-w-2xl space-y-6 md:space-y-10">
+                  <motion.div
+                    initial={{ opacity: 0, x: -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    className="inline-flex items-center gap-3 bg-blue-600/10 backdrop-blur-xl border border-blue-500/20 text-blue-400 text-[9px] md:text-[10px] font-black px-5 md:px-6 py-2.5 md:py-3 rounded-full uppercase tracking-[0.4em]"
+                  >
+                    <TrendingUp size={16} /> Seasonal Milestone
+                  </motion.div>
+                  <h3 className="text-4xl sm:text-6xl md:text-[10rem] font-black text-white leading-[0.85] tracking-tighter italic">
+                    ELITE<br /><span className="text-blue-600 md:ml-20">PRIME</span>
+                  </h3>
+                  <p className="text-slate-400 text-sm sm:text-xl md:text-2xl font-medium max-w-md leading-relaxed line-clamp-2 md:line-clamp-none">Redefining the boundaries of premium e-commerce performance.</p>
+                  <Link to="/products" className="btn-premium px-8 md:px-12 py-3.5 md:py-5 text-sm md:text-xl group w-fit flex items-center gap-3">
+                    Start Experience <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform duration-500" />
+                  </Link>
+                </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </section>
 
         <ProductSection
