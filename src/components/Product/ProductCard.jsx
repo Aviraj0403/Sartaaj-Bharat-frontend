@@ -62,7 +62,7 @@ const ProductCard = ({ product }) => {
       className="flex flex-col h-full bg-white rounded-[2.5rem] overflow-hidden group shadow-sm hover:shadow-2xl transition-all duration-700 border border-slate-100/50"
     >
       {/* Discovery Core (Image Area) */}
-      <div className="relative aspect-[1/1] overflow-hidden bg-white p-6 md:p-10">
+      <div className="relative aspect-[1/1] overflow-hidden bg-white p-3 sm:p-6 md:p-8 lg:p-10">
         {/* Status Indicators */}
         <div className="absolute top-6 left-6 z-20 flex flex-col gap-2">
           {product.isFeatured && (
@@ -106,13 +106,13 @@ const ProductCard = ({ product }) => {
             >
               <button
                 onClick={handleAddToCart}
-                className="flex-[3] bg-slate-900 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-2xl shadow-slate-900/40 flex items-center justify-center gap-3 active:scale-95"
+                className="flex-[3] bg-slate-900 text-white py-3 sm:py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-2xl shadow-slate-900/40 flex items-center justify-center gap-2 sm:gap-3 active:scale-95 min-h-[44px]"
               >
                 <ShoppingCart size={16} strokeWidth={2.5} /> Acquire
               </button>
               <button
                 onClick={(e) => { e.preventDefault(); setShowQuickView(true); }}
-                className="flex-1 bg-white/80 backdrop-blur-xl text-slate-900 border border-white p-4 rounded-2xl flex items-center justify-center hover:bg-white transition-all shadow-xl active:scale-90"
+                className="flex-1 bg-white/80 backdrop-blur-xl text-slate-900 border border-white p-3 sm:p-4 rounded-2xl flex items-center justify-center hover:bg-white transition-all shadow-xl active:scale-90 min-w-[44px] min-h-[44px]"
               >
                 <Eye size={18} strokeWidth={2.5} />
               </button>
@@ -125,45 +125,45 @@ const ProductCard = ({ product }) => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={toggleWishlist}
-          className={`absolute top-6 right-6 z-20 p-3 rounded-2xl transition-all duration-500 shadow-xl ${inWishlist ? 'bg-red-50 text-red-500' : 'bg-white/80 backdrop-blur-md text-slate-400 hover:text-slate-900'}`}
+          className={`absolute top-3 sm:top-6 right-3 sm:right-6 z-20 p-2 sm:p-3 rounded-2xl transition-all duration-500 shadow-xl min-w-[44px] min-h-[44px] flex items-center justify-center ${inWishlist ? 'bg-red-50 text-red-500' : 'bg-white/80 backdrop-blur-md text-slate-400 hover:text-slate-900'}`}
         >
           <Heart size={20} strokeWidth={2.5} fill={inWishlist ? "currentColor" : "none"} />
         </motion.button>
       </div>
 
       {/* Insight Area (Content) */}
-      <div className="px-8 pb-8 pt-2 flex flex-col flex-1">
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
+      <div className="px-3 sm:px-6 md:px-8 pb-3 sm:pb-6 md:pb-8 pt-2 flex flex-col flex-1">
+        <div className="flex justify-between items-center mb-2 sm:mb-4">
+          <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
             {product.brand || 'Elite Series'}
           </span>
-          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 px-3 py-1 rounded-full">
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 px-2 sm:px-3 py-1 rounded-full">
             <Star size={10} className="fill-blue-500 text-blue-500" />
             <span className="text-[10px] font-black text-slate-700 tracking-tighter">{product.rating || '4.9'}</span>
           </div>
         </div>
 
-        <h3 className="text-slate-900 font-black text-xl mb-6 leading-[1.2] tracking-tight hover:text-blue-600 transition-colors duration-300">
+        <h3 className="text-slate-900 font-black text-base sm:text-lg md:text-xl lg:text-2xl mb-3 sm:mb-6 leading-[1.2] tracking-tight hover:text-blue-600 transition-colors duration-300">
           <Link to={`/product/${product.slug || product._id || product.id}`} className="line-clamp-2 italic">{product.name}</Link>
         </h3>
 
-        <div className="mt-auto flex items-end justify-between pt-6 border-t border-slate-100/50">
+        <div className="mt-auto flex items-end justify-between pt-3 sm:pt-6 border-t border-slate-100/50">
           <div className="flex flex-col">
             {displayOldPrice && (
               <span className="text-slate-300 text-xs line-through font-bold mb-1 tracking-widest uppercase">
                 ₹{displayOldPrice.toLocaleString()}
               </span>
             )}
-            <span className="text-blue-600 font-black text-3xl tracking-tighter italic">
+            <span className="text-blue-600 font-black text-xl sm:text-2xl md:text-3xl tracking-tighter italic">
               ₹{displayPrice.toLocaleString()}
             </span>
           </div>
 
           <motion.div
             whileHover={{ x: 5 }}
-            className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 text-slate-300 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-500 transition-all duration-500 shadow-sm"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 text-slate-300 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-500 transition-all duration-500 shadow-sm"
           >
-            <ArrowRight size={20} strokeWidth={3} />
+            <ArrowRight size={18} strokeWidth={3} />
           </motion.div>
         </div>
       </div>

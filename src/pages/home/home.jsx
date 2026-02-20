@@ -27,7 +27,7 @@ const itemVariants = {
 };
 
 const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "blue" }) => (
-  <section className="container-custom mb-32">
+  <section className="container-custom mb-12 sm:mb-16 md:mb-24 lg:mb-32">
     <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
       <div className="max-w-xl">
         <motion.div
@@ -45,7 +45,7 @@ const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "b
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter italic leading-tight"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tighter italic leading-tight"
         >
           {title}
         </motion.h2>
@@ -60,7 +60,7 @@ const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "b
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-100px" }}
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10"
+      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10"
     >
       {loading ? (
         [...Array(4)].map((_, i) => (
@@ -78,7 +78,7 @@ const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "b
 );
 
 const CategorySection = ({ categories, loading }) => (
-  <section className="container-custom mb-32 relative">
+  <section className="container-custom mb-12 sm:mb-16 md:mb-24 lg:mb-32 relative">
     <div className="absolute top-[-100px] left-0 w-64 h-64 bg-blue-100/30 blur-[100px] rounded-full -z-10"></div>
     <div className="flex flex-col items-center text-center mb-16">
       <motion.span
@@ -93,7 +93,7 @@ const CategorySection = ({ categories, loading }) => (
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter italic mb-8"
+        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-slate-900 tracking-tighter italic mb-8"
       >
         SHOP BY <span className="text-blue-600">UNIVERSE</span>
       </motion.h2>
@@ -102,7 +102,7 @@ const CategorySection = ({ categories, loading }) => (
       </Link>
     </div>
 
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6 px-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4 md:gap-6 px-2">
       {loading ? (
         [...Array(8)].map((_, i) => (
           <div key={i} className="aspect-square bg-slate-100 animate-pulse rounded-3xl"></div>
@@ -149,14 +149,14 @@ const Home = () => {
     <div className="flex flex-col min-h-screen bg-slate-50 selection:bg-blue-600 selection:text-white">
       {/* <Header /> */}
 
-      <main className="flex-1 pb-32 overflow-hidden">
+      <main className="flex-1 pb-12 sm:pb-16 md:pb-24 lg:pb-32 overflow-hidden">
         <EliteHeroSlider />
 
         <CategorySection categories={categories} loading={catsLoading} />
 
         {/* Global Stats Strip */}
-        <section className="container-custom mb-32">
-          <div className="bg-slate-900 rounded-[3rem] md:rounded-[5rem] p-12 md:p-20 relative overflow-hidden shadow-2xl">
+        <section className="container-custom mb-12 sm:mb-16 md:mb-24 lg:mb-32">
+          <div className="bg-slate-900 rounded-[2rem] sm:rounded-[3rem] md:rounded-[5rem] p-6 sm:p-12 md:p-16 lg:p-20 relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,_#2563eb33_0%,_transparent_50%)]"></div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10 text-center">
               {[
@@ -172,7 +172,7 @@ const Home = () => {
                   className="flex flex-col items-center"
                 >
                   <stat.icon className="text-blue-500 mb-6" size={40} />
-                  <span className="text-5xl md:text-7xl font-black text-white italic tracking-tighter mb-2">{stat.value}</span>
+                  <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white italic tracking-tighter mb-2">{stat.value}</span>
                   <span className="text-blue-400 font-bold uppercase tracking-[0.3em] text-xs mb-1">{stat.label}</span>
                   <p className="text-slate-500 text-sm font-medium">{stat.sub}</p>
                 </motion.div>
@@ -190,7 +190,7 @@ const Home = () => {
         />
 
         {/* Cinematic Promo Banner */}
-        <section className="container-custom mb-32">
+        <section className="container-custom mb-12 sm:mb-16 md:mb-24 lg:mb-32">
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -203,7 +203,7 @@ const Home = () => {
               alt="Elite Promo"
               className="w-full h-full object-cover opacity-60 transition-transform duration-[15s] group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/40 to-transparent flex items-center p-12 md:p-32">
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/40 to-transparent flex items-center p-6 sm:p-12 md:p-20 lg:p-32">
               <div className="max-w-2xl space-y-10">
                 <motion.div
                   initial={{ opacity: 0, x: -30 }}
@@ -212,10 +212,10 @@ const Home = () => {
                 >
                   <TrendingUp size={16} /> Seasonal Milestone
                 </motion.div>
-                <h3 className="text-6xl md:text-[10rem] font-black text-white leading-[0.85] tracking-tighter italic">
+                <h3 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl xl:text-[10rem] font-black text-white leading-[0.85] tracking-tighter italic">
                   ELITE<br /><span className="text-blue-600 md:ml-20">PRIME</span>
                 </h3>
-                <p className="text-slate-400 text-xl md:text-2xl font-medium max-w-md leading-relaxed">Redefining the boundaries of premium e-commerce performance.</p>
+                <p className="text-slate-400 text-base sm:text-lg md:text-xl lg:text-2xl font-medium max-w-md leading-relaxed">Redefining the boundaries of premium e-commerce performance.</p>
                 <button className="btn-premium px-12 py-5 text-xl group">
                   Start Experience <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform duration-500" />
                 </button>
@@ -234,7 +234,7 @@ const Home = () => {
         />
 
         {/* Elite Hall of Fame (Bestsellers) */}
-        <section className="bg-slate-950 py-32 md:py-48 overflow-hidden relative">
+        <section className="bg-slate-950 py-12 sm:py-16 md:py-24 lg:py-32 xl:py-48 overflow-hidden relative">
           <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600/5 blur-[150px] rounded-full translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-1/2 h-full bg-indigo-600/5 blur-[150px] rounded-full -translate-x-1/2"></div>
 
@@ -250,11 +250,11 @@ const Home = () => {
               <motion.h2
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                className="text-white text-6xl md:text-[8rem] font-black italic tracking-tighter leading-none mb-4"
+                className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[8rem] font-black italic tracking-tighter leading-none mb-4"
               >
                 TITANS <span className="text-blue-600">'26</span>
               </motion.h2>
-              <p className="text-slate-500 text-lg md:text-xl font-medium max-w-lg mb-12">The most sought-after masterpieces in our global repository.</p>
+              <p className="text-slate-500 text-base sm:text-lg md:text-xl font-medium max-w-lg mb-12">The most sought-after masterpieces in our global repository.</p>
               <div className="w-48 h-1.5 bg-gradient-to-r from-transparent via-blue-600 to-transparent rounded-full"></div>
             </div>
 

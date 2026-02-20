@@ -75,14 +75,28 @@ const location = useLocation();
     else setActiveTab("");
   }, [location.pathname]);
 
+  // Body scroll lock when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMenuOpen]);
+
   return (
-    <div className="w-full bg-white flex flex-col md:hidden">
+    <div className="w-full bg-white flex flex-col" data-testid="mobile-header">
       {/* 🔝 Sticky Header */}
       <div className="fixed top-0 left-0 w-full z-[90] bg-white shadow-md">
         <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
           {/* Menu Button */}
           <button
-            className={`text-pink-500 hover:text-pink-600 transition ${activeTab === "menu" ? "text-pink-500" : "text-pink-500"}`}
+            className={`text-pink-500 hover:text-pink-600 transition min-w-[44px] min-h-[44px] flex items-center justify-center ${activeTab === "menu" ? "text-pink-500" : "text-pink-500"}`}
             onClick={() => {
               setActiveTab("menu");
               setIsMenuOpen(true);
@@ -97,28 +111,28 @@ const location = useLocation();
           </Link>
 
           {/* Profile + Cart */}
-          <div className="flex items-center gap-4 text-gray-700">
+          <div className="flex items-center gap-2 text-gray-700">
             {/* Profile */}
             <button
               onClick={handleProfileClick}
-              className="relative flex flex-col items-center text-xs hover:text-pink-500 transition"
+              className="relative flex flex-col items-center text-xs hover:text-pink-500 transition min-w-[44px] min-h-[44px] justify-center"
             >
               <User size={22} />
-              <span>Profile</span>
+              <span className="text-[10px]">Profile</span>
             </button>
 
             {/* Cart */}
             <Link
               to="/cart"
-              className="relative flex flex-col items-center text-xs hover:text-pink-500 transition"
+              className="relative flex flex-col items-center text-xs hover:text-pink-500 transition min-w-[44px] min-h-[44px] justify-center"
             >
               <ShoppingBag size={22} />
               {totalQuantity > 0 && (
-                <span className="absolute -top-1 -right-2 text-[10px] bg-pink-600 text-white rounded-full px-1.5 py-0.5">
+                <span className="absolute top-0 right-0 text-[10px] bg-pink-600 text-white rounded-full px-1.5 py-0.5">
                   {totalQuantity}
                 </span>
               )}
-              <span>Cart</span>
+              <span className="text-[10px]">Cart</span>
             </Link>
           </div>
         </div>
@@ -127,10 +141,10 @@ const location = useLocation();
        {/* Search Bar (Hide on /search page) */}
 {!hideSearch && (
   <div className="px-4 py-2 border-b border-gray-200 bg-white">
-    <div className="flex items-center gap-2 bg-pink-50 rounded-full px-3 py-2 border border-pink-200">
+    <div className="flex items-center gap-2 bg-pink-50 rounded-full px-3 py-2 border border-pink-200 min-h-[44px]">
       <Search className="text-pink-300" size={18} />
       <div
-        className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder-pink-300"
+        className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder-pink-300 cursor-pointer"
         onClick={() => navigate("/search")}
       >
         <span className="text-gray-500">Search for products...</span>
@@ -151,7 +165,7 @@ const location = useLocation();
         <Link
           to="/"
           onClick={() => setActiveTab("home")}
-          className={`flex flex-col items-center ${activeTab === "home" ? "text-pink-500" : "text-gray-700"}`}
+          className={`flex flex-col items-center min-w-[44px] min-h-[44px] justify-center ${activeTab === "home" ? "text-pink-500" : "text-gray-700"}`}
         >
           <Home size={22} />
           <span className="text-xs">Home</span>
@@ -162,7 +176,7 @@ const location = useLocation();
             setActiveTab("menu");
             setIsMenuOpen(true);
           }}
-          className={`flex flex-col items-center ${activeTab === "menu" ? "text-pink-500" : "text-gray-700"}`}
+          className={`flex flex-col items-center min-w-[44px] min-h-[44px] justify-center ${activeTab === "menu" ? "text-pink-500" : "text-gray-700"}`}
         >
           <List size={22} />
           <span className="text-xs">Menu</span>
@@ -171,13 +185,13 @@ const location = useLocation();
         <Link
           to="/new-products"
           onClick={() => setActiveTab("brands")}
-          className={`flex flex-col items-center ${activeTab === "brands" ? "text-pink-500" : "text-gray-700"}`}
+          className={`flex flex-col items-center min-w-[44px] min-h-[44px] justify-center ${activeTab === "brands" ? "text-pink-500" : "text-gray-700"}`}
         >
           <Tag size={22} />
           <span className="text-xs">Brands</span>
         </Link>
 
-        {/* <Link to="/offers" className="flex flex-col items-center text-gray-700">
+        {/* <Link to="/offers" className="flex flex-col items-center text-gray-700 min-w-[44px] min-h-[44px] justify-center">
           <Percent size={22} />
           <span className="text-xs">Offers</span>
         </Link> */}
@@ -187,7 +201,7 @@ const location = useLocation();
             setActiveTab("account");
             handleProfileClick();
           }}
-          className={`flex flex-col items-center ${activeTab === "account" ? "text-pink-500" : "text-gray-700"}`}
+          className={`flex flex-col items-center min-w-[44px] min-h-[44px] justify-center ${activeTab === "account" ? "text-pink-500" : "text-gray-700"}`}
         >
           <User size={22} />
           <span className="text-xs">Account</span>

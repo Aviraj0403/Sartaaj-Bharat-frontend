@@ -25,6 +25,19 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Body scroll lock when mobile menu or search is open
+  useEffect(() => {
+    if (isMobileMenuOpen || isSearchOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen, isSearchOpen]);
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -35,9 +48,9 @@ const Header = () => {
 
   return (
     <header className={`w-full z-50 transition-all duration-500 ${isScrolled ? 'sticky top-0 bg-white/80 backdrop-blur-xl border-b border-slate-200 shadow-lg shadow-slate-200/20' : 'relative bg-white'}`}>
-      {/* Top Bar - Elite Branding */}
+      {/* Top Bar - Elite Branding - Hidden on mobile */}
       {!isScrolled && (
-        <div className="bg-[#0f172a] text-slate-400 text-[10px] py-2 hidden md:block border-b border-slate-800">
+        <div className="bg-[#0f172a] text-slate-400 text-[10px] py-2 hidden lg:block border-b border-slate-800">
           <div className="container-custom flex justify-between items-center">
             <div className="flex space-x-8 font-black uppercase tracking-[0.2em]">
               <span className="flex items-center gap-2 hover:text-white cursor-pointer transition-colors group">
@@ -59,26 +72,26 @@ const Header = () => {
       )}
 
       {/* Main Navigation Hub */}
-      <div className="container-custom py-4 md:py-6 flex items-center justify-between gap-12">
+      <div className="container-custom py-3 md:py-4 lg:py-6 flex items-center justify-between gap-4 md:gap-8 lg:gap-12">
         {/* Brand Identity */}
         <Link to="/" className="flex-shrink-0 group relative">
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="flex items-center gap-3"
+            className="flex items-center gap-2 md:gap-3"
           >
-            <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-slate-200 group-hover:bg-blue-600 transition-colors duration-500">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white font-black text-xl md:text-2xl shadow-xl shadow-slate-200 group-hover:bg-blue-600 transition-colors duration-500">
               S
             </div>
             <div className="flex flex-col">
-              <h1 className="text-2xl md:text-3xl font-black text-slate-900 leading-none tracking-tighter italic">
+              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black text-slate-900 leading-none tracking-tighter italic">
                 SARTAAJ<span className="text-blue-600">BHARAT</span>
               </h1>
-              <span className="text-[10px] font-black text-slate-400 tracking-[0.4em] uppercase mt-1">Prime Excellence</span>
+              <span className="text-[8px] md:text-[10px] font-black text-slate-400 tracking-[0.3em] md:tracking-[0.4em] uppercase mt-1">Prime Excellence</span>
             </div>
           </motion.div>
         </Link>
 
-        {/* Advanced Search Engine */}
+        {/* Advanced Search Engine - Hidden on mobile, shown on desktop */}
         <div className="hidden lg:flex flex-1 max-w-2xl">
           <form onSubmit={handleSearch} className="relative w-full group">
             <input
@@ -98,24 +111,35 @@ const Header = () => {
           </form>
         </div>
 
+        {/* Mobile Search Icon - Shown only on mobile */}
+        <button
+          onClick={() => setIsSearchOpen(true)}
+          className="lg:hidden p-2 md:p-3 rounded-2xl hover:bg-slate-100 text-slate-600 hover:text-blue-600 transition-all min-w-[44px] min-h-[44px] flex items-center justify-center"
+        >
+          <Search size={22} strokeWidth={2.5} />
+        </button>
+
         {/* Exclusive Actions */}
-        <div className="flex items-center gap-2 md:gap-5">
+        <div className="flex items-center gap-1 md:gap-2 lg:gap-5">
           <div className="flex items-center gap-1">
-            <Link to="/wishlist" className="p-3 rounded-2xl hover:bg-slate-100 text-slate-600 hover:text-blue-600 transition-all relative group">
-              <Heart size={24} strokeWidth={2.5} />
-              <span className="absolute top-2 right-2 w-5 h-5 bg-orange-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-md group-hover:scale-110 transition-transform">0</span>
+            {/* Wishlist - Hidden on small mobile */}
+            <Link to="/wishlist" className="hidden sm:flex p-2 md:p-3 rounded-2xl hover:bg-slate-100 text-slate-600 hover:text-blue-600 transition-all relative group min-w-[44px] min-h-[44px] items-center justify-center">
+              <Heart size={20} md:size={24} strokeWidth={2.5} />
+              <span className="absolute top-1 md:top-2 right-1 md:right-2 w-4 h-4 md:w-5 md:h-5 bg-orange-500 text-white text-[9px] md:text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-md group-hover:scale-110 transition-transform">0</span>
             </Link>
 
-            <Link to={isAuthenticated ? "/profile" : "/auth"} className="p-3 rounded-2xl hover:bg-slate-100 text-slate-600 hover:text-blue-600 transition-all group">
-              <User size={24} strokeWidth={2.5} />
+            {/* User Icon */}
+            <Link to={isAuthenticated ? "/profile" : "/auth"} className="p-2 md:p-3 rounded-2xl hover:bg-slate-100 text-slate-600 hover:text-blue-600 transition-all group min-w-[44px] min-h-[44px] flex items-center justify-center">
+              <User size={20} md:size={24} strokeWidth={2.5} />
             </Link>
 
-            <div className="h-10 w-[2px] bg-slate-100 mx-2 hidden lg:block"></div>
+            <div className="h-8 md:h-10 w-[2px] bg-slate-100 mx-1 md:mx-2 hidden lg:block"></div>
 
-            <Link to="/cart" className="flex items-center gap-4 px-4 py-3 bg-slate-900 hover:bg-blue-600 rounded-[1.5rem] text-white transition-all shadow-xl shadow-slate-200 hover:shadow-blue-200 active:scale-95 group">
+            {/* Cart */}
+            <Link to="/cart" className="flex items-center gap-2 md:gap-4 px-3 md:px-4 py-2 md:py-3 bg-slate-900 hover:bg-blue-600 rounded-[1.5rem] text-white transition-all shadow-xl shadow-slate-200 hover:shadow-blue-200 active:scale-95 group min-w-[44px] min-h-[44px]">
               <div className="relative">
-                <ShoppingCart size={22} strokeWidth={2.5} />
-                <span className="absolute -top-3 -right-3 w-6 h-6 bg-blue-500 text-white text-[11px] font-black rounded-full flex items-center justify-center border-2 border-slate-900 group-hover:border-blue-600 transition-colors shadow-lg">
+                <ShoppingCart size={18} md:size={22} strokeWidth={2.5} />
+                <span className="absolute -top-2 md:-top-3 -right-2 md:-right-3 w-5 h-5 md:w-6 md:h-6 bg-blue-500 text-white text-[10px] md:text-[11px] font-black rounded-full flex items-center justify-center border-2 border-slate-900 group-hover:border-blue-600 transition-colors shadow-lg">
                   {totalQuantity}
                 </span>
               </div>
@@ -123,11 +147,12 @@ const Header = () => {
             </Link>
           </div>
 
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-3 rounded-2xl bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors"
+            className="lg:hidden p-2 md:p-3 rounded-2xl bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
@@ -194,33 +219,33 @@ const Header = () => {
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               className="fixed right-0 top-0 h-screen w-[85%] max-w-sm bg-white z-[70] shadow-2xl lg:hidden flex flex-col"
             >
-              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-                <span className="text-xl font-black italic tracking-tighter">SARTAAJ<span className="text-blue-600">BHARAT</span></span>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded-xl bg-slate-100"><X size={20} /></button>
+              <div className="p-4 md:p-6 border-b border-slate-100 flex items-center justify-between">
+                <span className="text-lg md:text-xl font-black italic tracking-tighter">SARTAAJ<span className="text-blue-600">BHARAT</span></span>
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded-xl bg-slate-100 min-w-[44px] min-h-[44px] flex items-center justify-center"><X size={20} /></button>
               </div>
-              <div className="flex-1 overflow-y-auto p-8">
-                <nav className="flex flex-col gap-8">
-                  <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black italic tracking-tight text-blue-600">Home Lounge</Link>
+              <div className="flex-1 overflow-y-auto p-4 md:p-8">
+                <nav className="flex flex-col gap-4 md:gap-8">
+                  <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-xl md:text-2xl font-black italic tracking-tight text-blue-600 min-h-[44px] flex items-center">Home Lounge</Link>
                   {categories?.map((cat) => (
                     <Link
                       key={cat._id}
                       to={`/category/${cat.slug}`}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="text-2xl font-black italic tracking-tight text-slate-900 hover:text-blue-600 transition-colors"
+                      className="text-xl md:text-2xl font-black italic tracking-tight text-slate-900 hover:text-blue-600 transition-colors min-h-[44px] flex items-center"
                     >
                       {cat.name}
                     </Link>
                   ))}
-                  <div className="h-px bg-slate-100 my-4" />
-                  <Link to="/exclusive" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-black text-orange-500 italic">Elite Collections</Link>
-                  <Link to="/track-order" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-slate-500">Track Order</Link>
+                  <div className="h-px bg-slate-100 my-2 md:my-4" />
+                  <Link to="/exclusive" onClick={() => setIsMobileMenuOpen(false)} className="text-lg md:text-xl font-black text-orange-500 italic min-h-[44px] flex items-center">Elite Collections</Link>
+                  <Link to="/track-order" onClick={() => setIsMobileMenuOpen(false)} className="text-base md:text-lg font-bold text-slate-500 min-h-[44px] flex items-center">Track Order</Link>
                 </nav>
               </div>
-              <div className="p-8 bg-slate-50 border-t border-slate-100">
-                <div className="flex items-center gap-4 text-slate-400 mb-6">
-                  <Phone size={18} /> <span className="text-xs font-black tracking-widest">+91 98765 43210</span>
+              <div className="p-4 md:p-8 bg-slate-50 border-t border-slate-100">
+                <div className="flex items-center gap-3 md:gap-4 text-slate-400 mb-4 md:mb-6">
+                  <Phone size={16} md:size={18} /> <span className="text-xs font-black tracking-widest">+91 98765 43210</span>
                 </div>
-                <button className="btn-premium w-full">Member Portal</button>
+                <button className="btn-premium w-full min-h-[44px]">Member Portal</button>
               </div>
             </motion.div>
           </>
@@ -234,42 +259,42 @@ const Header = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="fixed inset-0 bg-white z-[100] p-6 flex flex-col"
+            className="fixed inset-0 bg-white z-[100] p-4 md:p-6 flex flex-col"
           >
-            <div className="container-custom flex items-center justify-between gap-8 mb-12">
+            <div className="container-custom flex items-center justify-between gap-4 md:gap-8 mb-6 md:mb-12">
               <div className="flex-1">
                 <form onSubmit={handleSearch} className="relative">
-                  <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-blue-600" size={32} />
+                  <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-blue-600" size={24} md:size={32} />
                   <input
                     autoFocus
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search the archive..."
-                    className="w-full bg-transparent border-none outline-none text-4xl md:text-6xl font-black italic tracking-tighter text-slate-900 pl-16 py-8"
+                    className="w-full bg-transparent border-none outline-none text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black italic tracking-tighter text-slate-900 pl-10 md:pl-16 py-4 md:py-8"
                   />
                 </form>
               </div>
-              <button onClick={() => setIsSearchOpen(false)} className="p-4 rounded-full bg-slate-100 hover:bg-slate-200 transition-all">
-                <X size={32} />
+              <button onClick={() => setIsSearchOpen(false)} className="p-3 md:p-4 rounded-full bg-slate-100 hover:bg-slate-200 transition-all min-w-[44px] min-h-[44px] flex items-center justify-center">
+                <X size={24} md:size={32} />
               </button>
             </div>
 
-            <div className="container-custom flex-1">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+            <div className="container-custom flex-1 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-16">
                 <div>
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-8 italic">Quick Access</h4>
-                  <div className="flex flex-col gap-6">
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-4 md:mb-8 italic">Quick Access</h4>
+                  <div className="flex flex-col gap-3 md:gap-6">
                     {categories?.slice(0, 5).map(cat => (
-                      <Link key={cat._id} to={`/category/${cat.slug}`} onClick={() => setIsSearchOpen(false)} className="text-2xl font-black italic hover:text-blue-600 transition-colors">{cat.name}</Link>
+                      <Link key={cat._id} to={`/category/${cat.slug}`} onClick={() => setIsSearchOpen(false)} className="text-lg md:text-2xl font-black italic hover:text-blue-600 transition-colors min-h-[44px] flex items-center">{cat.name}</Link>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-8 italic">Popular Curator Picks</h4>
-                  <div className="flex flex-wrap gap-4">
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-4 md:mb-8 italic">Popular Curator Picks</h4>
+                  <div className="flex flex-wrap gap-2 md:gap-4">
                     {['Headphones', 'MacBook Pro', 'iPhone 15', 'Smart Watch', 'Gaming'].map(tag => (
-                      <button key={tag} onClick={() => { setSearchQuery(tag); }} className="px-6 py-3 bg-slate-100 rounded-full text-xs font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all italic">{tag}</button>
+                      <button key={tag} onClick={() => { setSearchQuery(tag); }} className="px-4 md:px-6 py-2 md:py-3 bg-slate-100 rounded-full text-xs font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all italic min-h-[44px] flex items-center">{tag}</button>
                     ))}
                   </div>
                 </div>

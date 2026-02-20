@@ -65,7 +65,7 @@ export default function DesktopHeader() {
   }
 
   return (
-    <header className="w-full z-[999]">
+    <header className="w-full z-[999]" data-testid="desktop-header">
       {/* 🟣 TOP BAR */}
       <div
         className={`fixed top-0 left-0 w-full bg-[#ffe6ee] text-gray-800 text-sm flex justify-between items-center px-8 py-3 shadow transition-transform duration-300 z-[999] ${
