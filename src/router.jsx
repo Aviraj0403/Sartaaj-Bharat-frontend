@@ -9,6 +9,11 @@ import SignupPage from "./pages/auth/SignupPage.jsx";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 import CartPage from "./cart/CartPage.jsx";
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy.jsx";
+import TermsAndConditions from "./pages/legal/TermsAndConditions.jsx";
+import CookiePolicy from "./pages/legal/CookiePolicy.jsx";
+import ShippingPolicy from "./pages/legal/ShippingPolicy.jsx";
+import RefundPolicy from "./pages/legal/RefundPolicy.jsx";
 import NotFoundPage from "./pages/PNF/NotFoundPage.jsx";
 import Layout from "./Layout.jsx";
 
@@ -61,6 +66,26 @@ const router = createBrowserRouter([
       {
         path: "auth", // Legacy support
         element: <SignInPage />
+      },
+      {
+        path: "privacy-policy",
+        element: <PrivacyPolicy />
+      },
+      {
+        path: "terms-conditions",
+        element: <TermsAndConditions />
+      },
+      {
+        path: "cookie-policy",
+        element: <CookiePolicy />
+      },
+      {
+        path: "shipping-policy",
+        element: <ShippingPolicy />
+      },
+      {
+        path: "refund-policy",
+        element: <RefundPolicy />
       },
     ]
   },

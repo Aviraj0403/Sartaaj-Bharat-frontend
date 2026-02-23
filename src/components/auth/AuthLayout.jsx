@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate, Link } from "react-router-dom";
 import { ShieldCheck, Sparkles } from 'lucide-react';
 
 const AuthLayout = ({ children, title, subtitle }) => {
@@ -71,9 +72,9 @@ const AuthLayout = ({ children, title, subtitle }) => {
 
                 {/* Floating Support Info */}
                 <div className="mt-8 flex justify-center gap-8">
-                    <button className="text-[10px] font-black text-slate-500 uppercase tracking-widest hover:text-blue-500 transition-colors">Digital Privacy</button>
-                    <button className="text-[10px] font-black text-slate-500 uppercase tracking-widest hover:text-blue-500 transition-colors">Protocols</button>
-                    <button className="text-[10px] font-black text-slate-500 uppercase tracking-widest hover:text-blue-500 transition-colors">Elite Support</button>
+                    <Link to="/privacy-policy" className="text-[10px] font-black text-slate-500 uppercase tracking-widest hover:text-blue-500 transition-colors">Privacy</Link>
+                    <Link to="/terms-conditions" className="text-[10px] font-black text-slate-500 uppercase tracking-widest hover:text-blue-500 transition-colors">Terms</Link>
+                    <Link to="/cookie-policy" className="text-[10px] font-black text-slate-500 uppercase tracking-widest hover:text-blue-500 transition-colors">Cookies</Link>
                 </div>
             </motion.div>
         </div>

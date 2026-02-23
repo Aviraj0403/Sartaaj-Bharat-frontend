@@ -118,9 +118,9 @@ const Footer = () => {
         <div className="container-custom flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold uppercase tracking-[0.2em]">
           <p>&copy; 2026 SARTAAJ BHARAT. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-8">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-white transition-colors">Cookies</a>
+            <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to="/terms-conditions" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link to="/cookie-policy" className="hover:text-white transition-colors">Cookies</Link>
           </div>
           <p className="flex items-center gap-1">
             Engineered with <Heart size={10} className="text-blue-600 fill-current" /> by Sartaaj Prime
