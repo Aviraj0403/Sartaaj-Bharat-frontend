@@ -4,7 +4,10 @@ import Home from "./pages/home/home.jsx";
 import ProductDetails from "./pages/product/ProductDetails.jsx";
 import CategoryDetails from "./pages/category/CategoryDetails.jsx";
 import SearchPage from "./pages/search/SearchPage.jsx";
-import AuthPage from "./pages/auth/SignInPage.jsx";
+import SignInPage from "./pages/auth/SignInPage.jsx";
+import SignupPage from "./pages/auth/SignupPage.jsx";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage.jsx";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 import CartPage from "./cart/CartPage.jsx";
 import NotFoundPage from "./pages/PNF/NotFoundPage.jsx";
 import Layout from "./Layout.jsx";
@@ -40,8 +43,24 @@ const router = createBrowserRouter([
         element: <CartPage />
       },
       {
-        path: "auth",
-        element: <AuthPage />
+        path: "signin",
+        element: <SignInPage />
+      },
+      {
+        path: "signup",
+        element: <SignupPage />
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPasswordPage />
+      },
+      {
+        path: "reset-password",
+        element: <ResetPasswordPage />
+      },
+      {
+        path: "auth", // Legacy support
+        element: <SignInPage />
       },
     ]
   },

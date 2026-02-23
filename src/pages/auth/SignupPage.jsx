@@ -1,11 +1,12 @@
-// src/pages/SignupPage.jsx
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
-import { FaUser, FaEnvelope, FaLock, FaPhone } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaPhone, FaArrowRight, FaFacebook } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import Axios from "../../utils/Axios"; // Your Axios instance
+import { motion } from "framer-motion";
+import AuthLayout from "../../components/auth/AuthLayout";
+import Axios from "../../utils/Axios";
 
 const SignupPage = () => {
   const [form, setForm] = useState({
@@ -17,7 +18,7 @@ const SignupPage = () => {
     phoneNumber: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { googleLogin } = useAuth();
+  const { googleLogin, facebookLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -27,173 +28,171 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.email || !form.password || !form.userName) {
-      toast.error("Email, username and password are required");
+      toast.error("Username, Email, and Password are required for registration.");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      await Axios.post("/auth/register", form, { withCredentials: true });
-      toast.success("Account created successfully!");
+      await Axios.post("/auth/register", form);
+      toast.success("Account created. Welcome to the elite tier.");
       navigate("/", { replace: true });
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Registration failed");
+      toast.error(err?.response?.data?.message || "Registration sequence failed.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleGoogle = async () => {
+  const handleSocialRegister = async (provider) => {
     setIsSubmitting(true);
     try {
-      await googleLogin();
-      toast.success("Google signup successful");
+      if (provider === 'google') await googleLogin();
+      if (provider === 'facebook') await facebookLogin();
+      toast.success("Identity Synchronized.");
       navigate("/", { replace: true });
     } catch (err) {
-      toast.error(err?.message || "Google signup failed");
+      toast.error(err?.message || `${provider} synchronization failed`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-pink-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-pink-100 overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-pink-500 to-pink-400 text-white text-center py-6">
-          <h2 className="text-3xl font-bold tracking-wide">Join Us Today</h2>
-          <p className="text-sm opacity-90 mt-1">Create your account and explore exclusive offers!</p>
+    <AuthLayout
+      title="Create Identity"
+      subtitle="Establish your profile in the Sartaaj Bharat global matrix."
+    >
+      <div className="space-y-8">
+        {/* Social Matrix */}
+        <div className="grid grid-cols-2 gap-4">
+          <motion.button
+            whileHover={{ y: -4, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => handleSocialRegister('google')}
+            disabled={isSubmitting}
+            className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-3.5 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+          >
+            <FcGoogle size={20} />
+            <span className="text-white text-[10px] font-black uppercase tracking-widest">Google Sync</span>
+          </motion.button>
+          <motion.button
+            whileHover={{ y: -4, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => handleSocialRegister('facebook')}
+            disabled={isSubmitting}
+            className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-3.5 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+          >
+            <FaFacebook size={20} className="text-[#1877F2]" />
+            <span className="text-white text-[10px] font-black uppercase tracking-widest">Facebook Sync</span>
+          </motion.button>
         </div>
 
-        {/* Body */}
-        <div className="p-6 space-y-5">
-          {/* Google Button */}
-          <button
-            onClick={handleGoogle}
-            disabled={isSubmitting}
-            className="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-xl hover:bg-gray-50 transition disabled:opacity-70"
-          >
-            <FcGoogle size={24} />
-            <span className="text-gray-700 font-medium">Continue with Google</span>
-          </button>
+        {/* Divider Node */}
+        <div className="flex items-center gap-4">
+          <div className="flex-1 h-px bg-white/5"></div>
+          <span className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em]">Direct Protocol</span>
+          <div className="flex-1 h-px bg-white/5"></div>
+        </div>
 
-          {/* Divider */}
-          <div className="flex items-center">
-            <div className="flex-1 h-px bg-gray-300"></div>
-            <span className="px-3 text-sm text-gray-500">or</span>
-            <div className="flex-1 h-px bg-gray-300"></div>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Username */}
-              <div className="relative">
-                <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  name="userName"
-                  type="text"
-                  placeholder="Username"
-                  value={form.userName}
-                  onChange={handleChange}
-                  required
-                  disabled={isSubmitting}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition"
-                />
-              </div>
-
-              {/* First Name */}
-              <div className="relative">
-                <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  name="firstName"
-                  type="text"
-                  placeholder="First Name"
-                  value={form.firstName}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition"
-                />
-              </div>
-
-              {/* Last Name */}
-              <div className="relative">
-                <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  name="lastName"
-                  type="text"
-                  placeholder="Last Name"
-                  value={form.lastName}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition"
-                />
-              </div>
-
-              {/* Email */}
-              <div className="relative">
-                <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  name="email"
-                  type="email"
-                  placeholder="Email"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                  disabled={isSubmitting}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition"
-                />
-              </div>
-
-              {/* Password */}
-              <div className="relative">
-                <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  name="password"
-                  type="password"
-                  placeholder="Password"
-                  value={form.password}
-                  onChange={handleChange}
-                  required
-                  disabled={isSubmitting}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition"
-                />
-              </div>
-
-              {/* Phone */}
-              <div className="relative">
-                <FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  name="phoneNumber"
-                  type="text"
-                  placeholder="Phone Number"
-                  value={form.phoneNumber}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition"
-                />
-              </div>
+        {/* Form Module */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Username */}
+            <div className="relative group col-span-1 md:col-span-2">
+              <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={14} />
+              <input
+                name="userName"
+                placeholder="UNIQUE USERNAME"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
+                value={form.userName}
+                onChange={handleChange}
+                required
+              />
             </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-pink-500 to-pink-400 text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg transition disabled:opacity-70"
-            >
-              {isSubmitting ? "Creating…" : "Sign Up"}
-            </button>
-          </form>
+            {/* First Name */}
+            <div className="relative group">
+              <input
+                name="firstName"
+                placeholder="FIRST NAME"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
+                value={form.firstName}
+                onChange={handleChange}
+              />
+            </div>
 
-          {/* Login Link */}
-          <p className="text-center text-gray-600">
-            Already have an account?{" "}
-            <Link to="/signin" className="text-pink-500 font-semibold hover:text-pink-600">
-              Log in
-            </Link>
-          </p>
-        </div>
+            {/* Last Name */}
+            <div className="relative group">
+              <input
+                name="lastName"
+                placeholder="LAST NAME"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
+                value={form.lastName}
+                onChange={handleChange}
+              />
+            </div>
+
+            {/* Email */}
+            <div className="relative group col-span-1 md:col-span-2">
+              <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={14} />
+              <input
+                name="email"
+                type="email"
+                placeholder="SECURE EMAIL"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Password */}
+            <div className="relative group">
+              <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={14} />
+              <input
+                name="password"
+                type="password"
+                placeholder="PASSWORD"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Phone */}
+            <div className="relative group">
+              <FaPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={14} />
+              <input
+                name="phoneNumber"
+                placeholder="MOBILE"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
+                value={form.phoneNumber}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-blue-500 transition-all shadow-[0_15px_30px_rgba(37,99,235,0.2)] disabled:opacity-50 flex items-center justify-center gap-3 group"
+          >
+            {isSubmitting ? "Processing..." : "Establish Identity"}
+            <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+        </form>
+
+        {/* Redirect */}
+        <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+          Already established?{" "}
+          <Link to="/signin" className="text-blue-500 font-black hover:text-blue-400 underline decoration-2 underline-offset-4">
+            Initialize Login
+          </Link>
+        </p>
       </div>
-    </div>
+    </AuthLayout>
   );
 };
 

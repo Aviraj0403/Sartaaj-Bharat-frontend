@@ -4,7 +4,7 @@ import { Facebook, Twitter, Instagram, Youtube, MapPin, Phone, Mail, Heart, Arro
 
 const Footer = () => {
   return (
-    <footer className="relative bg-[#0f172a] text-slate-400 pt-24 pb-12 mt-24 overflow-hidden">
+    <footer className="relative bg-[#0f172a] text-slate-400 pt-24 pb-12 overflow-hidden">
       {/* Background Decorative Element */}
       <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-orange-500 to-blue-600"></div>
       <div className="absolute top-0 right-0 w-1/4 h-1/4 bg-blue-600/5 blur-[100px] rounded-full"></div>

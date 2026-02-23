@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import {
   getAuth,
   GoogleAuthProvider,
+  FacebookAuthProvider,
   signInWithPopup,
   RecaptchaVerifier,
   signInWithPhoneNumber,
@@ -25,11 +26,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
 
 // Export Firebase services
 export {
   auth,
   googleProvider,
+  facebookProvider,
   signInWithPopup,
   RecaptchaVerifier,
   signInWithPhoneNumber,

@@ -7,8 +7,8 @@ export const customRegister = async (userData) => {
   return res.data;
 };
 
-export const registerViaGoogle = async (googleToken) => {
-  const res = await Axios.post('/auth/google', { token: googleToken });
+export const registerViaGoogle = async (idToken) => {
+  const res = await Axios.post('/auth/google', { idToken });
   return res.data;
 };
 
@@ -49,7 +49,7 @@ export const verifyOtp = async (otpData) => {
 
 export const getProfile = async () => {
   const res = await Axios.get('/auth/profile');
-  return res.data.user;
+  return res.data.data;
 };
 
 // Assuming updateProfile and uploadAvatar might need corresponding backend routes or using general profile update
@@ -59,7 +59,7 @@ export const updateProfile = async (updateData) => {
 };
 
 export const authMe = async () => {
-  const res = await Axios.get('/auth/profile'); // Using /profile as /me alternative if not exists
+  const res = await Axios.get('/auth/profile');
   return res.data;
 };
 

@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
+import { FaFacebook, FaEnvelope, FaPhone, FaArrowRight, FaLock, FaUser } from "react-icons/fa";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { motion, AnimatePresence } from "framer-motion";
+import AuthLayout from "../../components/auth/AuthLayout";
 import OtpInput from "../../components/OtpInput";
 
 const SignInPage = () => {
-  const [loginType, setLoginType] = useState("mobile");
+  const [loginType, setLoginType] = useState("mobile"); // 'mobile' or 'email'
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
-  const [sessionId, setSessionId] = useState(null);
   const [otpSent, setOtpSent] = useState(false);
   const [timer, setTimer] = useState(30);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,6 +22,7 @@ const SignInPage = () => {
   const {
     login,
     googleLogin,
+    facebookLogin,
     sendPhoneOTP,
     verifyPhoneOTP,
   } = useAuth();
@@ -32,8 +35,10 @@ const SignInPage = () => {
     new URLSearchParams(location.search).get('redirect') ||
     "/";
 
-  /* ---------------- EMAIL LOGIN ---------------- */
-  const handleCustomSignIn = async () => {
+  /* ---------------- LOGIC HANDLERS ---------------- */
+
+  const handleCustomSignIn = async (e) => {
+    e?.preventDefault();
     if (!emailOrUsername || !password) {
       toast.error("Please fill all fields");
       return;
@@ -46,7 +51,7 @@ const SignInPage = () => {
         userName: !emailOrUsername.includes("@") ? emailOrUsername : undefined,
         password,
       });
-      toast.success("Signed in successfully");
+      toast.success("Identity Verified. Welcome back.");
       navigate(redirectTo, { replace: true });
     } catch (err) {
       toast.error(err?.message || "Invalid credentials");
@@ -55,276 +60,266 @@ const SignInPage = () => {
     }
   };
 
-  /* ---------------- PHONE OTP V2 ---------------- */
   const handleSendOTP = async () => {
     if (mobile.length !== 10) {
-      toast.error("Enter valid 10 digit mobile number");
+      toast.error("Valid 10-digit mobile required");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const response = await sendPhoneOTP(`+91${mobile}`, sessionId);
-      setSessionId(response.sessionId);
+      await sendPhoneOTP(`+91${mobile}`);
       setOtpSent(true);
       setTimer(30);
-      toast.success(response.message || "OTP sent successfully");
+      toast.success("Nexus Access Key (OTP) sent.");
     } catch (err) {
-      toast.error(err?.message || "Failed to send OTP");
+      toast.error(err?.message || "OTP initialization failed");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleVerifyOTP = async () => {
-    if (!sessionId || otp.length !== 4) {
-      toast.error("Please enter 4 digit OTP");
+    if (otp.length !== 6) {
+      toast.error("Enter 6-digit Access Key");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      await verifyPhoneOTP(sessionId, otp);
-      toast.success("Login successful");
-
-      // Clear OTP state
-      setOtp("");
-      setOtpSent(false);
-      setSessionId(null);
-
+      await verifyPhoneOTP(`+91${mobile}`, otp);
+      toast.success("Access Granted.");
       navigate(redirectTo, { replace: true });
     } catch (err) {
-      toast.error(err?.message || "Invalid OTP");
-
-      // If session expired, reset OTP flow
-      if (err?.message?.includes("expired")) {
-        setOtpSent(false);
-        setSessionId(null);
-        setOtp("");
-      }
+      toast.error(err?.message || "Invalid Access Key");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  /* ---------------- GOOGLE LOGIN ---------------- */
-  const handleGoogleLogin = async () => {
+  const handleSocialLogin = async (provider) => {
     setIsSubmitting(true);
     try {
-      await googleLogin();
-      toast.success("Signed in successfully");
+      if (provider === 'google') await googleLogin();
+      if (provider === 'facebook') await facebookLogin();
+      toast.success("Synchronized successfully.");
       navigate(redirectTo, { replace: true });
     } catch (err) {
-      toast.error(err?.message || "Google login failed");
+      toast.error(err?.message || `${provider} authentication failed`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  /* ---------------- AUTO SUBMIT OTP ---------------- */
+  /* ---------------- AUTO EFFECTS ---------------- */
+
   useEffect(() => {
-    if (otp.length === 4 && otpSent && sessionId && !isSubmitting) {
+    if (otp.length === 6 && otpSent && !isSubmitting) {
       handleVerifyOTP();
     }
-  }, [otp, otpSent, sessionId]);
+  }, [otp]);
 
-  /* ---------------- RESEND TIMER ---------------- */
   useEffect(() => {
     if (!otpSent || timer === 0) return;
     const interval = setInterval(() => setTimer((t) => t - 1), 1000);
     return () => clearInterval(interval);
   }, [otpSent, timer]);
 
-  /* ---------------- SMS AUTO READ ---------------- */
-  useEffect(() => {
-    if (!otpSent) return;
-
-    if ("OTPCredential" in window) {
-      const abortController = new AbortController();
-
-      navigator.credentials
-        .get({
-          otp: { transport: ["sms"] },
-          signal: abortController.signal
-        })
-        .then((otpCred) => {
-          if (otpCred?.code) {
-            setOtp(otpCred.code);
-          }
-        })
-        .catch((err) => {
-          if (err.name !== 'AbortError') {
-            console.log("OTP auto-read not available:", err);
-          }
-        });
-
-      return () => abortController.abort();
-    }
-  }, [otpSent]);
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-pink-100 flex items-start justify-center p-4 pt-12">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-6 mt-6">
-        <h2 className="text-2xl font-bold text-center mb-4">Welcome Back</h2>
-
-        {/* Google Sign In */}
-        <button
-          onClick={handleGoogleLogin}
-          disabled={isSubmitting}
-          className="w-full flex items-center justify-center gap-3 border py-3 rounded-xl mb-4 hover:bg-gray-50 transition disabled:opacity-50"
-        >
-          <FcGoogle size={24} /> Continue with Google
-        </button>
-
-        <div className="flex items-center gap-4 mb-4">
-          <div className="flex-1 border-t"></div>
-          <span className="text-gray-400 text-sm">OR</span>
-          <div className="flex-1 border-t"></div>
+    <AuthLayout
+      title="Elite Authentication"
+      subtitle="Verify your identity to access the Sartaaj Repository."
+    >
+      <div className="space-y-8">
+        {/* Social Authentication Matrix */}
+        <div className="grid grid-cols-2 gap-4">
+          <motion.button
+            whileHover={{ y: -4, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => handleSocialLogin('google')}
+            disabled={isSubmitting}
+            className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-3.5 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+          >
+            <FcGoogle size={20} />
+            <span className="text-white text-[10px] font-black uppercase tracking-widest">Google</span>
+          </motion.button>
+          <motion.button
+            whileHover={{ y: -4, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => handleSocialLogin('facebook')}
+            disabled={isSubmitting}
+            className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-3.5 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+          >
+            <FaFacebook size={20} className="text-[#1877F2]" />
+            <span className="text-white text-[10px] font-black uppercase tracking-widest">Facebook</span>
+          </motion.button>
         </div>
 
-        {/* Login Type Toggle */}
-        <div className="flex bg-pink-50 rounded-xl p-1 mb-4">
+        {/* Divider Node */}
+        <div className="flex items-center gap-4">
+          <div className="flex-1 h-px bg-white/5"></div>
+          <span className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em]">Identity Matrix</span>
+          <div className="flex-1 h-px bg-white/5"></div>
+        </div>
+
+        {/* Protocol Selection Toggle */}
+        <div className="flex bg-slate-950/50 p-1.5 rounded-2xl border border-white/5 relative overflow-hidden">
+          <motion.div
+            layoutId="active-toggle"
+            className="absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-blue-600 rounded-xl"
+            animate={{ x: loginType === 'mobile' ? 0 : '100%' }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          />
           <button
-            onClick={() => {
-              setLoginType("mobile");
-              setOtpSent(false);
-              setOtp("");
-            }}
-            className={`flex-1 py-2 rounded-lg transition ${loginType === "mobile"
-              ? "bg-white shadow text-pink-600"
-              : "text-gray-500"
-              }`}
+            onClick={() => { setLoginType("mobile"); setOtpSent(false); }}
+            className={`flex-1 py-2.5 rounded-xl z-10 text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${loginType === "mobile" ? "text-white" : "text-slate-500 hover:text-slate-300"}`}
           >
-            Phone
+            Neural Phone
           </button>
           <button
             onClick={() => setLoginType("email")}
-            className={`flex-1 py-2 rounded-lg transition ${loginType === "email"
-              ? "bg-white shadow text-pink-600"
-              : "text-gray-500"
-              }`}
+            className={`flex-1 py-2.5 rounded-xl z-10 text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${loginType === "email" ? "text-white" : "text-slate-500 hover:text-slate-300"}`}
           >
-            Email
+            Secure Email
           </button>
         </div>
 
-        {/* EMAIL LOGIN */}
-        {loginType === "email" && (
-          <>
-            <input
-              placeholder="Email or Username"
-              className="w-full mb-3 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 outline-none"
-              value={emailOrUsername}
-              onChange={(e) => setEmailOrUsername(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleCustomSignIn()}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full mb-4 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 outline-none"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleCustomSignIn()}
-            />
-            <button
-              onClick={handleCustomSignIn}
-              disabled={isSubmitting}
-              className="w-full bg-pink-500 text-white py-3 rounded-xl hover:bg-pink-600 transition disabled:opacity-50"
-            >
-              {isSubmitting ? "Signing in..." : "Sign In"}
-            </button>
-
-            <div className="text-center mt-3">
-              <Link to="/forgot-password" className="text-sm text-pink-500 hover:underline">
-                Forgot Password?
-              </Link>
-            </div>
-          </>
-        )}
-
-        {/* PHONE OTP LOGIN */}
-        {loginType === "mobile" && (
-          <>
-            {!otpSent ? (
-              <>
-                <div className="flex items-center border rounded-xl px-3 focus-within:ring-2 focus-within:ring-pink-500">
-                  <span className="font-semibold text-gray-700">+91</span>
+        {/* Dynamic Form Module */}
+        <div className="min-h-[220px]">
+          <AnimatePresence mode="wait">
+            {loginType === "email" ? (
+              <motion.div
+                key="email-form"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-4"
+              >
+                <div className="relative group">
+                  <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={14} />
                   <input
-                    autoFocus
-                    maxLength="10"
-                    className="flex-1 px-3 py-3 outline-none"
-                    placeholder="Mobile number"
-                    value={mobile}
-                    onChange={(e) => setMobile(e.target.value.replace(/\D/g, ""))}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendOTP()}
+                    placeholder="EMAIL OR NEURAL ID"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
+                    value={emailOrUsername}
+                    onChange={(e) => setEmailOrUsername(e.target.value)}
                   />
                 </div>
-
-                <button
-                  onClick={handleSendOTP}
-                  disabled={isSubmitting || mobile.length !== 10}
-                  className="w-full bg-pink-500 text-white py-3 rounded-xl mt-4 hover:bg-pink-600 transition disabled:opacity-50"
-                >
-                  {isSubmitting ? "Sending OTP..." : "Send OTP"}
-                </button>
-              </>
-            ) : (
-              <>
-                <div className="mb-4">
-                  <p className="text-sm text-gray-600 mb-2">
-                    Enter OTP sent to +91{mobile}
-                  </p>
-                  <OtpInput value={otp} onChange={setOtp} />
+                <div className="relative group">
+                  <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={14} />
+                  <input
+                    type="password"
+                    placeholder="ACCESS PASSWORD"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                 </div>
-
                 <button
-                  onClick={handleVerifyOTP}
-                  disabled={isSubmitting || otp.length !== 4}
-                  className="w-full bg-pink-500 text-white py-3 rounded-xl hover:bg-pink-600 transition disabled:opacity-50"
+                  onClick={handleCustomSignIn}
+                  disabled={isSubmitting}
+                  className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-blue-500 transition-all shadow-[0_15px_30px_rgba(37,99,235,0.2)] disabled:opacity-50 flex items-center justify-center gap-3 group"
                 >
-
-                  {isSubmitting ? "Verifying..." : "Verify OTP"}
+                  {isSubmitting ? "Authenticating..." : "Initialize Access"}
+                  <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
                 </button>
-
-                <div className="text-center text-sm text-gray-500 mt-3">
-                  {timer > 0 ? (
-                    <p>Resend OTP in {timer}s</p>
-                  ) : (
+              </motion.div>
+            ) : (
+              <motion.div
+                key="mobile-form"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                {!otpSent ? (
+                  <div className="space-y-4">
+                    <div className="relative group">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 border-r border-white/10 pr-3">
+                        <FaPhone className="text-slate-500 group-focus-within:text-blue-500 transition-colors" size={12} />
+                        <span className="text-white text-[10px] font-black tracking-widest">+91</span>
+                      </div>
+                      <input
+                        maxLength="10"
+                        placeholder="ENTER NEURAL PHONE"
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-20 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
+                        value={mobile}
+                        onChange={(e) => setMobile(e.target.value.replace(/\D/g, ""))}
+                      />
+                    </div>
                     <button
                       onClick={handleSendOTP}
-                      disabled={isSubmitting}
-                      className="text-pink-500 font-semibold hover:underline"
+                      disabled={isSubmitting || mobile.length !== 10}
+                      className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-blue-500 transition-all shadow-[0_15px_30px_rgba(37,99,235,0.2)] disabled:opacity-50 flex items-center justify-center gap-3 group"
                     >
-                      Resend OTP
+                      {isSubmitting ? "Requesting..." : "Request Access Key"}
+                      <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
                     </button>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="space-y-6"
+                  >
+                    <div className="text-center">
+                      <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-4">
+                        Key sent to Neural ID +91{mobile}
+                      </p>
+                      <OtpInput value={otp} onChange={setOtp} />
+                    </div>
 
-                <button
-                  onClick={() => {
-                    setOtpSent(false);
-                    setOtp("");
-                    setSessionId(null);
-                  }}
-                  className="w-full text-gray-500 text-sm mt-2 hover:text-gray-700"
-                >
-                  Change Number
-                </button>
-              </>
+                    <button
+                      onClick={handleVerifyOTP}
+                      disabled={isSubmitting || otp.length !== 6}
+                      className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-blue-500 transition-all shadow-[0_15px_30px_rgba(37,99,235,0.2)] disabled:opacity-50 flex items-center justify-center gap-3 group"
+                    >
+                      {isSubmitting ? "Verifying..." : "Verify Access Key"}
+                      <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+
+                    <div className="flex flex-col items-center gap-4">
+                      {timer > 0 ? (
+                        <span className="text-[9px] text-slate-600 font-bold uppercase tracking-widest italic">
+                          New Key available in {timer}s
+                        </span>
+                      ) : (
+                        <button
+                          onClick={handleSendOTP}
+                          className="text-[9px] text-blue-500 font-black uppercase tracking-widest underline hover:text-blue-400"
+                        >
+                          Request New Access Key
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setOtpSent(false)}
+                        className="text-[9px] text-slate-500 font-black uppercase tracking-widest hover:text-slate-300 transition-colors"
+                      >
+                        Change Identification ID
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </motion.div>
             )}
-          </>
-        )}
+          </AnimatePresence>
+        </div>
 
-        <p className="text-center text-sm mt-6">
-          Don't have an account?{" "}
-          <Link to="/signup" className="text-pink-500 font-semibold hover:underline">
-            Register
-          </Link>
-        </p>
+        {/* Global Redirect Strip */}
+        <div className="text-center">
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+            New to the Matrix?{" "}
+            <Link to="/signup" className="text-blue-500 font-black hover:text-blue-400 underline decoration-2 underline-offset-4">
+              Register Account
+            </Link>
+          </p>
+          <div className="mt-4">
+            <Link to="/forgot-password" className="text-[9px] text-slate-600 font-bold uppercase tracking-widest hover:text-blue-500 transition-colors">
+              Loss of Access Permission?
+            </Link>
+          </div>
+        </div>
       </div>
-
-      <div id="sign-in-recaptcha-container"></div>
-    </div>
+    </AuthLayout>
   );
 };
 
