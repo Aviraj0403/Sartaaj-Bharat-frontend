@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
     Star, Heart, Share2, Truck, ShieldCheck, ArrowLeft, ChevronDown,
-    Minus, Plus, ShoppingCart, Check, ChevronRight, Sparkles, 
+    Minus, Plus, ShoppingCart, Check, ChevronRight, Sparkles,
     RefreshCw, Award, Zap, Package, Clock, MapPin, Phone, Mail
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -99,7 +99,7 @@ const ProductDetails = () => {
 
             <div className="container-custom py-6 md:py-10">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-                    
+
                     {/* Left: Image Gallery */}
                     <div className="space-y-4">
                         {/* Main Image */}
@@ -116,7 +116,7 @@ const ProductDetails = () => {
                                     className="w-full h-full object-contain p-8"
                                 />
                             </AnimatePresence>
-                            
+
                             {/* Badges */}
                             <div className="absolute top-4 left-4 flex flex-col gap-2">
                                 {discount > 0 && (
@@ -135,9 +135,8 @@ const ProductDetails = () => {
                             <div className="absolute top-4 right-4 flex gap-2">
                                 <button
                                     onClick={() => setIsWishlisted(!isWishlisted)}
-                                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-lg ${
-                                        isWishlisted ? 'bg-red-500 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-600 hover:bg-white'
-                                    }`}
+                                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-lg ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-600 hover:bg-white'
+                                        }`}
                                 >
                                     <Heart size={20} fill={isWishlisted ? "currentColor" : "none"} />
                                 </button>
@@ -153,9 +152,8 @@ const ProductDetails = () => {
                                 <button
                                     key={idx}
                                     onClick={() => setActiveImage(idx)}
-                                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                                        activeImage === idx ? 'border-blue-600' : 'border-slate-200 hover:border-slate-300'
-                                    }`}
+                                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${activeImage === idx ? 'border-blue-600' : 'border-slate-200 hover:border-slate-300'
+                                        }`}
                                 >
                                     <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-contain p-2 bg-slate-50" />
                                 </button>
@@ -217,11 +215,10 @@ const ProductDetails = () => {
                                         <button
                                             key={idx}
                                             onClick={() => setSelectedVariant(v)}
-                                            className={`px-6 py-3 rounded-xl border-2 font-black text-xs uppercase tracking-wider transition-all ${
-                                                selectedVariant === v
+                                            className={`px-6 py-3 rounded-xl border-2 font-black text-xs uppercase tracking-wider transition-all ${selectedVariant === v
                                                     ? 'border-blue-600 bg-blue-50 text-blue-600 shadow-lg'
                                                     : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white'
-                                            }`}
+                                                }`}
                                         >
                                             {v.size} {v.color !== 'Default' ? `- ${v.color}` : ''}
                                         </button>
@@ -332,9 +329,8 @@ const ProductDetails = () => {
                                 <button
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
-                                    className={`pb-4 px-2 font-semibold capitalize whitespace-nowrap transition-colors relative ${
-                                        activeTab === tab ? 'text-blue-600' : 'text-slate-600 hover:text-slate-900'
-                                    }`}
+                                    className={`pb-4 px-2 font-semibold capitalize whitespace-nowrap transition-colors relative ${activeTab === tab ? 'text-blue-600' : 'text-slate-600 hover:text-slate-900'
+                                        }`}
                                 >
                                     {tab}
                                     {activeTab === tab && (
@@ -399,9 +395,8 @@ const ProductDetails = () => {
                                                 {Object.entries(product.details).map(([key, value], idx) => (
                                                     <div
                                                         key={key}
-                                                        className={`grid grid-cols-1 md:grid-cols-3 gap-4 p-4 ${
-                                                            idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'
-                                                        }`}
+                                                        className={`grid grid-cols-1 md:grid-cols-3 gap-4 p-4 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'
+                                                            }`}
                                                     >
                                                         <div className="font-semibold text-slate-900">{key}</div>
                                                         <div className="md:col-span-2 text-slate-700">{value}</div>
@@ -534,9 +529,8 @@ const ProductDetails = () => {
                     </div>
                     <button
                         onClick={() => setIsWishlisted(!isWishlisted)}
-                        className={`w-12 h-12 rounded-xl flex items-center justify-center border-2 transition-all ${
-                            isWishlisted ? 'bg-red-50 border-red-500 text-red-500' : 'border-slate-200 text-slate-400'
-                        }`}
+                        className={`w-12 h-12 rounded-xl flex items-center justify-center border-2 transition-all ${isWishlisted ? 'bg-red-50 border-red-500 text-red-500' : 'border-slate-200 text-slate-400'
+                            }`}
                     >
                         <Heart size={18} fill={isWishlisted ? "currentColor" : "none"} />
                     </button>
