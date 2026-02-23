@@ -3,6 +3,7 @@ import { X, Star, Check, ShoppingCart, Heart, RefreshCw, Sparkles, ChevronLeft, 
 import { motion, AnimatePresence } from 'framer-motion';
 const FM = motion;
 import { useDispatch } from 'react-redux';
+import { createPortal } from 'react-dom';
 import { toast } from 'react-toastify';
 import { addToCartThunk } from '../../features/cart/cartThunk';
 
@@ -15,7 +16,9 @@ const QuickViewModal = ({ product, onClose }) => {
 
     if (!product) return null;
 
-    const images = product.images?.length > 0 ? product.images : [product.image];
+    const images = product.images?.length > 0
+        ? product.images
+        : (product.pimages?.length > 0 ? product.pimages : [product.pimage || product.image]);
 
     const handleAddToCart = async () => {
         try {
@@ -33,16 +36,16 @@ const QuickViewModal = ({ product, onClose }) => {
         }
     };
 
-    return (
+    return createPortal(
         <AnimatePresence>
-            <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6 md:p-8">
+            <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 md:p-8">
                 {/* Backdrop Area */}
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={onClose}
-                    className="absolute inset-0 bg-slate-900/40 backdrop-blur-xl"
+                    className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl"
                 />
 
                 {/* Content Matrix */}
@@ -50,14 +53,14 @@ const QuickViewModal = ({ product, onClose }) => {
                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                    className="bg-white/95 backdrop-blur-md w-full max-w-6xl rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden relative flex flex-col lg:flex-row border border-white max-h-[90vh] h-[90vh] sm:h-auto"
+                    className="bg-white/95 backdrop-blur-md w-full max-w-6xl rounded-3xl sm:rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden relative flex flex-col lg:flex-row border border-white max-h-[95vh] h-auto"
                 >
                     {/* Interaction Exit */}
                     <button
                         onClick={onClose}
-                        className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 z-50 p-2 bg-slate-100/50 hover:bg-white rounded-2xl transition-all duration-300 active:scale-90"
+                        className="absolute top-4 right-4 sm:top-8 sm:right-8 text-slate-400 hover:text-slate-900 z-50 p-2 bg-slate-100/50 hover:bg-white rounded-xl transition-all duration-300 active:scale-90"
                     >
-                        <X size={24} strokeWidth={2.5} />
+                        <X size={20} className="sm:w-6 sm:h-6" strokeWidth={2.5} />
                     </button>
 
                     {/* Visual Core (Left) */}
@@ -88,24 +91,24 @@ const QuickViewModal = ({ product, onClose }) => {
                     </div>
 
                     {/* Intelligence Core (Right) */}
-                    <div className="w-full lg:w-1/2 p-6 sm:p-10 lg:p-20 flex flex-col overflow-y-auto no-scrollbar">
-                        <div className="mb-10">
+                    <div className="w-full lg:w-1/2 p-6 sm:p-10 lg:p-16 flex flex-col overflow-y-auto no-scrollbar">
+                        <div className="mb-6 lg:mb-10">
                             <motion.span
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className="text-blue-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block"
+                                className="text-blue-600 font-bold text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-2 sm:mb-4 block"
                             >
                                 {product.brand || 'Elite Selection'}
                             </motion.span>
-                            <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-6 leading-tight italic tracking-tighter">
+                            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-black text-slate-900 mb-4 sm:mb-6 leading-tight italic tracking-tighter">
                                 {product.name}
                             </h2>
-                            <div className="flex items-center gap-6">
-                                <div className="text-5xl font-black text-blue-600 tracking-tighter italic">
+                            <div className="flex items-center gap-4 sm:gap-6">
+                                <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-blue-600 tracking-tighter italic">
                                     ₹{(selectedVariant?.price || product.price || 0).toLocaleString()}
                                 </div>
                                 {(selectedVariant?.compareAtPrice || product.oldPrice) && (
-                                    <div className="text-slate-300 line-through text-2xl font-bold">
+                                    <div className="text-slate-300 line-through text-lg sm:text-2xl font-bold">
                                         ₹{(selectedVariant?.compareAtPrice || product.oldPrice).toLocaleString()}
                                     </div>
                                 )}
@@ -150,16 +153,16 @@ const QuickViewModal = ({ product, onClose }) => {
                             )}
                         </div>
 
-                        <div className="flex items-center gap-6 pt-10 border-t border-slate-100 mt-auto">
-                            <div className="flex items-center bg-slate-100 rounded-4xl p-2 gap-4">
+                        <div className="flex items-center gap-4 sm:gap-6 pt-6 sm:pt-10 border-t border-slate-100 mt-auto">
+                            <div className="flex items-center bg-slate-100 rounded-2xl sm:rounded-4xl p-1 sm:p-2 gap-2 sm:gap-4">
                                 <button
                                     onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                                    className="w-10 h-10 rounded-xl hover:bg-white text-slate-900 font-black transition-all shadow-sm flex items-center justify-center"
+                                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl hover:bg-white text-slate-900 font-black transition-all shadow-sm flex items-center justify-center"
                                 >-</button>
-                                <span className="w-8 text-center text-sm font-black">{quantity}</span>
+                                <span className="w-6 sm:w-8 text-center text-xs sm:text-sm font-black">{quantity}</span>
                                 <button
                                     onClick={() => setQuantity(q => q + 1)}
-                                    className="w-10 h-10 rounded-xl hover:bg-white text-slate-900 font-black transition-all shadow-sm flex items-center justify-center"
+                                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl hover:bg-white text-slate-900 font-black transition-all shadow-sm flex items-center justify-center"
                                 >+</button>
                             </div>
 
@@ -167,9 +170,9 @@ const QuickViewModal = ({ product, onClose }) => {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={handleAddToCart}
-                                className="flex-1 bg-slate-900 text-white px-10 py-5 rounded-4xl font-black text-xs uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-2xl shadow-slate-200 flex items-center justify-center gap-4 group"
+                                className="flex-1 bg-slate-900 text-white px-4 sm:px-10 py-3 sm:py-5 rounded-2xl sm:rounded-4xl font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-xl flex items-center justify-center gap-2 sm:gap-4 group"
                             >
-                                <ShoppingCart size={20} strokeWidth={2.5} /> Reserve Access
+                                <ShoppingCart size={18} strokeWidth={2.5} /> Reserve Access
                             </motion.button>
                         </div>
 
@@ -187,7 +190,8 @@ const QuickViewModal = ({ product, onClose }) => {
                     </div>
                 </motion.div>
             </div>
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };
 

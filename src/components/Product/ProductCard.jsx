@@ -59,13 +59,13 @@ const ProductCard = ({ product }) => {
       viewport={{ once: true }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="flex flex-col h-full bg-white rounded-[2.5rem] overflow-hidden group shadow-sm hover:shadow-2xl transition-all duration-700 border border-slate-100/50"
+      className="flex flex-col h-full bg-white rounded-2xl md:rounded-[2rem] overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-700 border border-slate-100/50"
     >
       {/* Discovery Core (Image Area) */}
       <div className="relative aspect-square overflow-hidden bg-slate-50 p-4 sm:p-6 md:p-10">
         {/* Status Indicators */}
         <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex flex-col gap-2">
-          {product.isFeatured && (
+          {(product.isFeatured || product.isBestSeller) && (
             <motion.span
               initial={{ x: -10, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -84,7 +84,7 @@ const ProductCard = ({ product }) => {
         {/* Main Visual */}
         <Link to={`/product/${product.slug || product._id || product.id}`} className="block w-full h-full relative cursor-pointer">
           <motion.img
-            src={product.images?.[0] || product.image || 'https://via.placeholder.com/400'}
+            src={product.images?.[0] || product.pimage || product.image || 'https://via.placeholder.com/400'}
             alt={product.name}
             loading="lazy"
             onError={(e) => { e.target.src = 'https://via.placeholder.com/400?text=Premium+Collection'; }}
@@ -145,17 +145,20 @@ const ProductCard = ({ product }) => {
           </div>
         </div>
 
-        <h3 className="text-slate-900 font-black text-xl mb-4 leading-[1.2] tracking-tight hover:text-blue-600 transition-colors duration-300">
+        <h3 className="text-slate-900 font-bold text-sm sm:text-lg mb-2 sm:mb-4 leading-tight tracking-tight hover:text-blue-600 transition-colors duration-300">
           <Link to={`/product/${product.slug || product._id || product.id}`} className="line-clamp-2 italic">{product.name}</Link>
         </h3>
 
         {/* Always-visible Quick View trigger */}
-        <div className="mb-4 flex justify-between items-center text-[10px]">
+        <div className="mb-4 flex justify-between items-center">
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowQuickView(true); }}
-            className="inline-flex items-center gap-1 text-slate-500 hover:text-blue-600 font-black uppercase tracking-[0.25em] transition-colors"
+            className="inline-flex items-center gap-2 text-slate-400 hover:text-blue-600 font-bold uppercase tracking-[0.2em] text-[10px] transition-all duration-300 py-1"
           >
-            <Eye size={14} strokeWidth={2.2} /> Quick View
+            <div className="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-white transition-colors">
+              <Eye size={12} strokeWidth={2.5} />
+            </div>
+            Quick View
           </button>
         </div>
 
@@ -166,16 +169,16 @@ const ProductCard = ({ product }) => {
                 ₹{displayOldPrice.toLocaleString()}
               </span>
             )}
-            <span className="text-blue-600 font-black text-3xl tracking-tighter italic">
+            <span className="text-blue-600 font-black text-lg sm:text-2xl tracking-tighter italic">
               ₹{displayPrice.toLocaleString()}
             </span>
           </div>
 
           <motion.div
             whileHover={{ x: 5 }}
-            className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 text-slate-300 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-500 transition-all duration-500 shadow-sm"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 text-slate-300 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-500 transition-all duration-500 shadow-sm"
           >
-            <ArrowRight size={20} strokeWidth={3} />
+            <ArrowRight size={16} strokeWidth={3} />
           </motion.div>
         </div>
       </div>

@@ -23,7 +23,7 @@ const EliteHeroSlider = () => {
     if (isLoading) {
         return (
             <div className="container-custom mt-8">
-                <div className="w-full h-[500px] md:h-[700px] bg-slate-900/10 animate-pulse rounded-[4rem] flex items-center justify-center border border-slate-200">
+                <div className="w-full h-[500px] md:h-[700px] bg-slate-900/10 animate-pulse rounded-3xl md:rounded-[2rem] flex items-center justify-center border border-slate-200">
                     <Sparkles className="text-slate-300 animate-spin-slow" size={48} />
                 </div>
             </div>
@@ -36,7 +36,7 @@ const EliteHeroSlider = () => {
         <section className="relative overflow-hidden pb-12 md:pb-16">
             <div className="w-full">
                 {/* <div className="relative h-[380px] sm:h-[480px] md:h-[650px] lg:h-screen overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900"> */}
-<div className="relative h-[380px] sm:h-[480px] md:h-[650px] lg:h-screen overflow-hidden rounded-[2rem] md:rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900">
+                <div className="relative h-[380px] sm:h-[480px] md:h-[650px] lg:h-screen overflow-hidden rounded-[2rem] md:rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900">
 
                     {/* Background Layers with Parallax */}
                     <AnimatePresence mode="wait">
@@ -84,7 +84,7 @@ const EliteHeroSlider = () => {
                                         initial={{ opacity: 0, y: 30 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.3, duration: 0.8 }}
-                                        className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter italic"
+                                        className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[0.9] tracking-tighter italic"
                                     >
                                         {currentSlide.title.split(' ').map((word, i) => (
                                             <span key={i} className={i % 2 !== 0 ? 'text-blue-500 block md:inline md:ml-4' : 'block'}>
@@ -154,9 +154,8 @@ const EliteHeroSlider = () => {
 
                     {/* Floating Side Note */}
                     {/* <div className="absolute top-1/2 -translate-y-1/2 right-12 hidden xl:block"> */}
-                    <div className="absolute inset-0 flex items-center justify-center hidden xl:flex pointer-events-none">
-
-                        <span className="text-white/10 text-9xl font-black italic tracking-tighter select-none whitespace-nowrap">
+                    <div className="absolute inset-0 flex items-center justify-center hidden xl:flex pointer-events-none opacity-20">
+                        <span className="text-white/5 text-6xl lg:text-8xl font-black italic tracking-tighter select-none whitespace-nowrap">
                             SARTAAJ BHARAT
                         </span>
                     </div>
@@ -165,36 +164,35 @@ const EliteHeroSlider = () => {
                 {/* Luxury Advantage Strip - Professional Design */}
                 <div className="container-custom">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-12 md:mt-16 relative z-30 px-2 sm:px-4">
-                    {[
-                        { title: 'Global Warranty', desc: 'Secure Coverage', icon: Shield, color: 'blue' },
-                        { title: 'Nexus Shipping', desc: 'Ultra-fast Delivery', icon: Zap, color: 'orange' },
-                        { title: 'High Fidelity', desc: 'Curated Quality', icon: Star, color: 'blue' },
-                        { title: 'Expert Consult', desc: 'Elite Assistance', icon: Sparkles, color: 'orange' }
-                    ].map((item, idx) => (
-                        <motion.div
-                            key={idx}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: idx * 0.08, duration: 0.5 }}
-                            whileHover={{ y: -6, scale: 1.02 }}
-                            className="bg-white/95 backdrop-blur-xl p-5 sm:p-6 md:p-7 rounded-3xl border border-slate-200/60 shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] group cursor-default transition-all duration-300"
-                        >
-                            <div className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-14 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 ${
-                                item.color === 'blue' 
-                                    ? 'bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' 
+                        {[
+                            { title: 'Global Warranty', desc: 'Secure Coverage', icon: Shield, color: 'blue' },
+                            { title: 'Nexus Shipping', desc: 'Ultra-fast Delivery', icon: Zap, color: 'orange' },
+                            { title: 'High Fidelity', desc: 'Curated Quality', icon: Star, color: 'blue' },
+                            { title: 'Expert Consult', desc: 'Elite Assistance', icon: Sparkles, color: 'orange' }
+                        ].map((item, idx) => (
+                            <motion.div
+                                key={idx}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: idx * 0.08, duration: 0.5 }}
+                                whileHover={{ y: -6, scale: 1.02 }}
+                                className="bg-white/95 backdrop-blur-xl p-5 sm:p-6 md:p-7 rounded-3xl border border-slate-200/60 shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] group cursor-default transition-all duration-300"
+                            >
+                                <div className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-14 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 ${item.color === 'blue'
+                                    ? 'bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white'
                                     : 'bg-orange-50 text-orange-600 group-hover:bg-orange-600 group-hover:text-white'
-                            } shadow-sm group-hover:shadow-lg`}>
-                                <item.icon size={20} strokeWidth={2.5} className="sm:w-6 sm:h-6 md:w-7 md:h-7" />
-                            </div>
-                            <h4 className="font-black text-slate-900 group-hover:text-blue-600 transition-colors text-xs sm:text-sm md:text-base italic uppercase tracking-tight mb-1.5 leading-tight">
-                                {item.title}
-                            </h4>
-                            <p className="text-[9px] sm:text-[10px] md:text-xs text-slate-500 font-semibold uppercase tracking-[0.15em] leading-tight">
-                                {item.desc}
-                            </p>
-                        </motion.div>
-                    ))}
+                                    } shadow-sm group-hover:shadow-lg`}>
+                                    <item.icon size={20} strokeWidth={2.5} className="sm:w-6 sm:h-6 md:w-7 md:h-7" />
+                                </div>
+                                <h4 className="font-black text-slate-900 group-hover:text-blue-600 transition-colors text-xs sm:text-sm md:text-base italic uppercase tracking-tight mb-1.5 leading-tight">
+                                    {item.title}
+                                </h4>
+                                <p className="text-[9px] sm:text-[10px] md:text-xs text-slate-500 font-semibold uppercase tracking-[0.15em] leading-tight">
+                                    {item.desc}
+                                </p>
+                            </motion.div>
+                        ))}
                     </div>
                 </div>
             </div>

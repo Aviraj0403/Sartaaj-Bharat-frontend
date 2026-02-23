@@ -59,14 +59,14 @@ export const getMiniProducts = async (
   search = '',
   category = '',
   isHotProduct = '',
-  isBestSeller = '',
+  isBestseller = '',
   isFeatured = '',
   isCombo = ''
 ) => {
   try {
     const params = { page, limit, search, category };
     if (isHotProduct !== '') params.isHotProduct = isHotProduct;
-    if (isBestSeller !== '') params.isBestSeller = isBestSeller;
+    if (isBestseller !== '') params.isBestseller = isBestseller;
     if (isFeatured !== '') params.isFeatured = isFeatured;
     if (isCombo !== '') params.isCombo = isCombo;
 

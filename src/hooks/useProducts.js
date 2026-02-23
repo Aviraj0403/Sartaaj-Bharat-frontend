@@ -10,7 +10,7 @@ export const useProducts = (params = {}) => {
             params.search || '',
             params.category || '',
             params.isHotProduct || '',
-            params.isBestSeller || '',
+            params.isBestseller || '',
             params.isFeatured || '',
             params.isCombo || ''
         ),

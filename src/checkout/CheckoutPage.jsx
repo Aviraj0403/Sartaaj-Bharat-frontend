@@ -34,70 +34,70 @@ export default function CheckoutPage() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   // ✅ CHECK PENDING PAYMENTS ON LOAD
-//   useEffect(() => {
-//     const checkPendingPayments = async () => {
-//       const pendingPayment = localStorage.getItem('pendingPaymentData');
-//       if (pendingPayment && isAuthenticated) {
-//         try {
-//           const data = JSON.parse(pendingPayment);
-//           const timeDiff = Date.now() - new Date(data.timestamp).getTime();
-          
-//           if (timeDiff < 15 * 60 * 1000) {
-//             console.log("🔍 Found pending payment, checking status...");
-            
-//             // const { data: statusData } = await axios.post('/razorpay/check-payment-status', {
-//             //   paymentId: data.paymentId
-//             // }, { withCredentials: true });
+  //   useEffect(() => {
+  //     const checkPendingPayments = async () => {
+  //       const pendingPayment = localStorage.getItem('pendingPaymentData');
+  //       if (pendingPayment && isAuthenticated) {
+  //         try {
+  //           const data = JSON.parse(pendingPayment);
+  //           const timeDiff = Date.now() - new Date(data.timestamp).getTime();
 
-// const { data } = await axios.post(
-//   "/razorpay/check-payment-status",
-//   { paymentId: pendingData.paymentId },
-//   { withCredentials: true }
-// );
+  //           if (timeDiff < 15 * 60 * 1000) {
+  //             console.log("🔍 Found pending payment, checking status...");
 
-// if (data.success && data.payment.hasOrder) {
-//   finalizeSuccess({ _id: data.payment.orderId });
-// }
+  //             // const { data: statusData } = await axios.post('/razorpay/check-payment-status', {
+  //             //   paymentId: data.paymentId
+  //             // }, { withCredentials: true });
 
-//             if (statusData.success) {
-//               if (statusData.payment.hasOrder) {
-//                 toast.success("Previous order found!");
-//                 localStorage.removeItem('pendingPaymentData');
-//                 localStorage.removeItem('pendingCartData');
-//                 setTimeout(() => navigate(`/invoice/${statusData.payment.orderId}`), 1500);
-//               } else if (statusData.payment.isOrphaned) {
-//                 toast.info("Recovering your previous payment...");
-//                 await recoverPendingPayment(data);
-//               }
-//             }
-//           } else {
-//             localStorage.removeItem('pendingPaymentData');
-//             localStorage.removeItem('pendingCartData');
-//           }
-//         } catch (err) {
-//           console.error("Error checking pending payment:", err);
-//         }
-//       }
-//     };
+  // const { data } = await axios.post(
+  //   "/razorpay/check-payment-status",
+  //   { paymentId: pendingData.paymentId },
+  //   { withCredentials: true }
+  // );
 
-//     checkPendingPayments();
-//   }, [isAuthenticated, navigate]);
-useEffect(() => {
-  if (!isAuthenticated) return;
-  const pending = localStorage.getItem('pendingPaymentData');
-  if (!pending) return;
+  // if (data.success && data.payment.hasOrder) {
+  //   finalizeSuccess({ _id: data.payment.orderId });
+  // }
 
-  const data = JSON.parse(pending);
-  const age = Date.now() - new Date(data.timestamp).getTime();
-  if (age > 15 * 60 * 1000) {
-    localStorage.removeItem('pendingPaymentData');
-    localStorage.removeItem('pendingCartData');
-    return;
-  }
+  //             if (statusData.success) {
+  //               if (statusData.payment.hasOrder) {
+  //                 toast.success("Previous order found!");
+  //                 localStorage.removeItem('pendingPaymentData');
+  //                 localStorage.removeItem('pendingCartData');
+  //                 setTimeout(() => navigate(`/invoice/${statusData.payment.orderId}`), 1500);
+  //               } else if (statusData.payment.isOrphaned) {
+  //                 toast.info("Recovering your previous payment...");
+  //                 await recoverPendingPayment(data);
+  //               }
+  //             }
+  //           } else {
+  //             localStorage.removeItem('pendingPaymentData');
+  //             localStorage.removeItem('pendingCartData');
+  //           }
+  //         } catch (err) {
+  //           console.error("Error checking pending payment:", err);
+  //         }
+  //       }
+  //     };
 
-  console.log("⚡ Recovering pending payment...");
-  recoverPendingPayment(data);
-}, [isAuthenticated]);
+  //     checkPendingPayments();
+  //   }, [isAuthenticated, navigate]);
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const pending = localStorage.getItem('pendingPaymentData');
+    if (!pending) return;
+
+    const data = JSON.parse(pending);
+    const age = Date.now() - new Date(data.timestamp).getTime();
+    if (age > 15 * 60 * 1000) {
+      localStorage.removeItem('pendingPaymentData');
+      localStorage.removeItem('pendingCartData');
+      return;
+    }
+
+    console.log("⚡ Recovering pending payment...");
+    recoverPendingPayment(data);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -134,7 +134,7 @@ useEffect(() => {
   const recoverPendingPayment = async (pendingData) => {
     try {
       const cartData = JSON.parse(localStorage.getItem('pendingCartData') || '{}');
-      
+
       if (!cartData.items || cartData.items.length === 0) {
         toast.error("Cart data not found. Please contact support.");
         return;
@@ -251,135 +251,135 @@ useEffect(() => {
         description: "Complete your purchase",
         timeout: 600, // ✅ NEW: 10 minute timeout
         handler: async (response) => {
-  console.log("Payment successful, processing...");
+          console.log("Payment successful, processing...");
 
-  try {
-    // Update pending data with Razorpay payment ID
-    const pendingData = JSON.parse(localStorage.getItem('pendingPaymentData') || '{}');
-    pendingData.razorpayPaymentId = response.razorpay_payment_id;
-    localStorage.setItem('pendingPaymentData', JSON.stringify(pendingData));
+          try {
+            // Update pending data with Razorpay payment ID
+            const pendingData = JSON.parse(localStorage.getItem('pendingPaymentData') || '{}');
+            pendingData.razorpayPaymentId = response.razorpay_payment_id;
+            localStorage.setItem('pendingPaymentData', JSON.stringify(pendingData));
 
-    // Step 1: Verify payment signature
-    console.log("Verifying payment signature...");
-    const verifyResponse = await axios.post("/razorpay/verifyPayment", {
-      payment_id: response.razorpay_payment_id,
-      order_id: response.razorpay_order_id,
-      signature: response.razorpay_signature,
-      paymentId: data.paymentId,
-    }, { withCredentials: true, timeout: 30000 });
+            // Step 1: Verify payment signature
+            console.log("Verifying payment signature...");
+            const verifyResponse = await axios.post("/razorpay/verifyPayment", {
+              payment_id: response.razorpay_payment_id,
+              order_id: response.razorpay_order_id,
+              signature: response.razorpay_signature,
+              paymentId: data.paymentId,
+            }, { withCredentials: true, timeout: 30000 });
 
-    if (!verifyResponse.data.success) {
-      throw new Error("Payment verification failed");
-    }
-    console.log("Payment verified");
+            if (!verifyResponse.data.success) {
+              throw new Error("Payment verification failed");
+            }
+            console.log("Payment verified");
 
-    // Step 2: Try to create order (this might fail if webhook already did it)
-    console.log("Creating order...");
-    // const orderResponse = await axios.post("/razorpay/create-order-after-payment", {
-    //   paymentId: data.paymentId,
-    //   items: orderPayload.items,
-    //   shippingAddress: orderPayload.shippingAddress,
-    //   discountCode: orderPayload.discountCode,
-    //   totalAmount: orderPayload.totalAmount
-    // }, { withCredentials: true, timeout: 30000 });
+            // Step 2: Try to create order (this might fail if webhook already did it)
+            console.log("Creating order...");
+            // const orderResponse = await axios.post("/razorpay/create-order-after-payment", {
+            //   paymentId: data.paymentId,
+            //   items: orderPayload.items,
+            //   shippingAddress: orderPayload.shippingAddress,
+            //   discountCode: orderPayload.discountCode,
+            //   totalAmount: orderPayload.totalAmount
+            // }, { withCredentials: true, timeout: 30000 });
 
-    // // Success from frontend call
-    // if (orderResponse.data.success) {
-    //   console.log("Order created:", orderResponse.data.order._id);
-    //   finalizeSuccess(orderResponse.data.order);
-    //   return;
-    // }
-// ✅ NEW: Just verify payment & wait for webhook
-toast.info("Payment successful. Confirming your order...", { autoClose: false });
+            // // Success from frontend call
+            // if (orderResponse.data.success) {
+            //   console.log("Order created:", orderResponse.data.order._id);
+            //   finalizeSuccess(orderResponse.data.order);
+            //   return;
+            // }
+            // ✅ NEW: Just verify payment & wait for webhook
+            toast.info("Payment successful. Confirming your order...", { autoClose: false });
 
-let attempts = 0;
-const maxAttempts = 5;
-const interval = setInterval(async () => {
-  attempts++;
-  try {
-    const { data: status } = await axios.post(
-      "/razorpay/check-payment-status",
-      { paymentId: data.paymentId },
-      { withCredentials: true }
-    );
+            let attempts = 0;
+            const maxAttempts = 5;
+            const interval = setInterval(async () => {
+              attempts++;
+              try {
+                const { data: status } = await axios.post(
+                  "/razorpay/check-payment-status",
+                  { paymentId: data.paymentId },
+                  { withCredentials: true }
+                );
 
-    if (status.success && status.payment.hasOrder) {
-      clearInterval(interval);
-      finalizeSuccess({ _id: status.payment.orderId });
-    } else if (attempts >= maxAttempts) {
-      clearInterval(interval);
-      toast.info("Order is being processed. You will see it shortly.");
-      setIsPlacingOrder(false);
-    }
-  } catch {
-    if (attempts >= maxAttempts) clearInterval(interval);
-  }
-}, 2000);
+                if (status.success && status.payment.hasOrder) {
+                  clearInterval(interval);
+                  finalizeSuccess({ _id: status.payment.orderId });
+                } else if (attempts >= maxAttempts) {
+                  clearInterval(interval);
+                  toast.info("Order is being processed. You will see it shortly.");
+                  setIsPlacingOrder(false);
+                }
+              } catch {
+                if (attempts >= maxAttempts) clearInterval(interval);
+              }
+            }, 2000);
 
 
-    // If not success, fall through to catch block (will handle gracefully below)
-    throw new Error("Order creation failed in response");
+            // If not success, fall through to catch block (will handle gracefully below)
+            throw new Error("Order creation failed in response");
 
-  } catch (error) {
-    console.error("Error after payment:", error);
+          } catch (error) {
+            console.error("Error after payment:", error);
 
-    const axiosError = error.response?.data;
-    const status = error.response?.status;
+            const axiosError = error.response?.data;
+            const status = error.response?.status;
 
-    // BEST CASE: Webhook already created the order → backend returns info about existing order
-    if (
-      axiosError &&
-      (axiosError.message === "This payment has already been used" ||
-       axiosError.message.includes("already been used") ||
-       axiosError.orderId ||
-       axiosError.order)
-    ) {
-      console.log("Order already created by webhook — treating as success");
+            // BEST CASE: Webhook already created the order → backend returns info about existing order
+            if (
+              axiosError &&
+              (axiosError.message === "This payment has already been used" ||
+                axiosError.message.includes("already been used") ||
+                axiosError.orderId ||
+                axiosError.order)
+            ) {
+              console.log("Order already created by webhook — treating as success");
 
-      const existingOrderId = axiosError.orderId || axiosError.order?._id;
+              const existingOrderId = axiosError.orderId || axiosError.order?._id;
 
-      if (existingOrderId) {
-        // Optionally fetch full order details if needed
-        // Or just redirect
-        finalizeSuccess({ _id: existingOrderId });
-        toast.success("Order placed successfully! (Confirmed via secure server)");
-        return;
-      }
-    }
+              if (existingOrderId) {
+                // Optionally fetch full order details if needed
+                // Or just redirect
+                finalizeSuccess({ _id: existingOrderId });
+                toast.success("Order placed successfully! (Confirmed via secure server)");
+                return;
+              }
+            }
 
-    // WORST CASE: Real failure, but payment succeeded → show recovery message
-    // toast.error(
-    //   <div>
-    //     <p className="font-semibold">Payment successful but order processing delayed!</p>
-    //     <p className="text-sm mt-1">No worries — we're recovering your order automatically.</p>
-    //     <p className="text-xs mt-2 text-gray-600">
-    //       Razorpay Payment ID: {response.razorpay_payment_id}
-    //     </p>
-    //   </div>,
-    //   { autoClose: false }
-    // );
+            // WORST CASE: Real failure, but payment succeeded → show recovery message
+            // toast.error(
+            //   <div>
+            //     <p className="font-semibold">Payment successful but order processing delayed!</p>
+            //     <p className="text-sm mt-1">No worries — we're recovering your order automatically.</p>
+            //     <p className="text-xs mt-2 text-gray-600">
+            //       Razorpay Payment ID: {response.razorpay_payment_id}
+            //     </p>
+            //   </div>,
+            //   { autoClose: false }
+            // );
 
-    // Auto-recovery after 2 seconds
-    setTimeout(async () => {
-      const pendingData = JSON.parse(localStorage.getItem('pendingPaymentData') || '{}');
-      if (pendingData.paymentId) {
-        await recoverPendingPayment(pendingData);
-      }
-    }, 2000);
+            // Auto-recovery after 2 seconds
+            setTimeout(async () => {
+              const pendingData = JSON.parse(localStorage.getItem('pendingPaymentData') || '{}');
+              if (pendingData.paymentId) {
+                await recoverPendingPayment(pendingData);
+              }
+            }, 2000);
 
-    setIsPlacingOrder(false);
-  }
+            setIsPlacingOrder(false);
+          }
 
-  // Helper function to avoid code duplication
-  function finalizeSuccess(order) {
-    localStorage.removeItem('pendingPaymentData');
-    localStorage.removeItem('pendingCartData');
-    dispatch(clearCartThunk());
-    toast.success("Order placed successfully!");
-    navigate(`/invoice/${order._id}`, { state: { order: data.order } });
-    setIsPlacingOrder(false);
-  }
-},
+          // Helper function to avoid code duplication
+          function finalizeSuccess(order) {
+            localStorage.removeItem('pendingPaymentData');
+            localStorage.removeItem('pendingCartData');
+            dispatch(clearCartThunk());
+            toast.success("Order placed successfully!");
+            navigate(`/invoice/${order._id}`, { state: { order: data.order } });
+            setIsPlacingOrder(false);
+          }
+        },
         modal: {
           ondismiss: () => {
             // ✅ NEW: Better messaging for timeouts
@@ -398,7 +398,7 @@ const interval = setInterval(async () => {
           email: user.email,
           contact: selectedAddress.phoneNumber,
         },
-        theme: { color: "#ec4899" },
+        theme: { color: "#2563eb" },
         retry: {
           enabled: false
         },
@@ -408,43 +408,43 @@ const interval = setInterval(async () => {
       };
 
       const rzp = new window.Razorpay(options);
-      
+
       // ✅ Handle payment failure
       rzp.on('payment.failed', function (response) {
         console.error('❌ Payment failed:', response.error);
-        
+
         // ✅ NEW: Better error messages
         let errorMsg = "Payment failed. Please try again.";
-        
+
         if (response.error.reason === 'payment_timed_out') {
           errorMsg = "Payment timed out. The payment window expired after 10 minutes.";
         } else if (response.error.description) {
           errorMsg = response.error.description;
         }
-        
+
         toast.error(errorMsg, { autoClose: 8000 });
-        
+
         localStorage.removeItem('pendingPaymentData');
         localStorage.removeItem('pendingCartData');
-        
+
         setIsPlacingOrder(false);
       });
 
       rzp.open();
-      
+
     } catch (err) {
       console.error("❌ Razorpay initiation error:", err);
       toast.error("Payment gateway error. Please try again.");
-      
+
       localStorage.removeItem('pendingPaymentData');
       localStorage.removeItem('pendingCartData');
-      
+
       setIsPlacingOrder(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-pink-50 flex justify-center items-start p-4 sm:p-8">
+    <div className="min-h-screen bg-slate-50 flex justify-center items-start p-4 sm:p-8">
       <AddressSidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
@@ -464,11 +464,10 @@ const interval = setInterval(async () => {
               addresses.map(addr => (
                 <label
                   key={addr._id}
-                  className={`block border-2 rounded-xl p-4 cursor-pointer transition ${
-                    selectedAddress?._id === addr._id
-                      ? "border-pink-500 bg-pink-50"
+                  className={`block border-2 rounded-xl p-4 cursor-pointer transition ${selectedAddress?._id === addr._id
+                      ? "border-blue-500 bg-blue-50"
                       : "border-gray-300 hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-start gap-3">
                     <input
@@ -476,7 +475,7 @@ const interval = setInterval(async () => {
                       name="address"
                       checked={selectedAddress?._id === addr._id}
                       onChange={() => setSelectedAddress(addr)}
-                      className="mt-1 text-pink-500"
+                      className="mt-1 text-blue-500"
                     />
                     <div>
                       <p className="font-semibold text-gray-800">
@@ -500,7 +499,7 @@ const interval = setInterval(async () => {
           <div className="text-center mb-8">
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="bg-pink-500 text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-lg hover:bg-pink-600 shadow-md transition"
+              className="bg-blue-600 text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-lg hover:bg-blue-700 shadow-md transition"
             >
               + Add New Address
             </button>
@@ -518,7 +517,7 @@ const interval = setInterval(async () => {
             <button
               onClick={() => placeOrder("Razorpay")}
               disabled={isPlacingOrder}
-              className="bg-pink-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-pink-600 disabled:opacity-60 disabled:cursor-not-allowed transition"
+              className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition"
             >
               {isPlacingOrder ? "Processing..." : "Pay Online"}
             </button>
@@ -549,7 +548,7 @@ const interval = setInterval(async () => {
                 <span>Delivery Fee:</span>
                 <span>₹{displayShipping.toFixed(2)}</span>
               </div>
-              
+
               {appliedCoupon && (
                 <div className="flex justify-between text-green-600">
                   <span>Coupon: {appliedCoupon.code}</span>
@@ -558,7 +557,7 @@ const interval = setInterval(async () => {
               )}
               <div className="flex justify-between text-xl font-bold text-gray-800 mt-4 border-t pt-4">
                 <span>Total Payable:</span>
-                <span className="text-pink-600">₹{Number(grandTotal).toFixed(2)}</span>
+                <span className="text-blue-600">₹{Number(grandTotal).toFixed(2)}</span>
               </div>
             </div>
           </div>

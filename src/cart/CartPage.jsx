@@ -110,7 +110,7 @@ export default function CartPage() {
             <div className="flex items-center gap-4 text-blue-600 font-black text-[10px] uppercase tracking-[0.5em] mb-4 italic">
               <ShoppingBag size={14} /> Acquisition Manifest
             </div>
-            <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter italic leading-none">
+            <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter italic leading-none">
               Your <span className="text-blue-600">Lounge</span> Selection
             </h1>
           </div>
@@ -135,7 +135,7 @@ export default function CartPage() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-40 glass-surface rounded-[4rem] border border-slate-100 border-dashed"
+                  className="text-center py-24 md:py-40 glass-surface rounded-3xl md:rounded-[2rem] border border-slate-100 border-dashed"
                 >
                   <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl border border-slate-50">
                     <ShoppingBag size={32} className="text-slate-200" strokeWidth={3} />
@@ -155,7 +155,7 @@ export default function CartPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="glass-surface p-6 md:p-8 rounded-[2.5rem] border border-slate-100 flex flex-col md:flex-row items-center gap-8 group hover:border-blue-200 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/50"
+                    className="glass-surface p-6 md:p-8 rounded-3xl md:rounded-[2rem] border border-slate-100 flex flex-col md:flex-row items-center gap-8 group hover:border-blue-200 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/50"
                   >
                     {/* Item Image */}
                     <div
@@ -255,7 +255,7 @@ export default function CartPage() {
 
           {/* Right Column: Order Summary */}
           <aside className="lg:col-span-4 w-full sticky top-32">
-            <div className="glass-surface p-10 rounded-[3rem] border border-blue-100/30 flex flex-col gap-8 shadow-3xl shadow-slate-200/40 relative overflow-hidden">
+            <div className="glass-surface p-6 md:p-10 rounded-3xl md:rounded-[2rem] border border-blue-100/30 flex flex-col gap-8 shadow-3xl shadow-slate-200/40 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-[80px] rounded-full -mr-16 -mt-16"></div>
 
               <h2 className="text-2xl font-black text-slate-900 tracking-tighter italic flex items-center gap-3">

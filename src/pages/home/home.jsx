@@ -26,17 +26,17 @@ const itemVariants = {
 };
 
 const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "blue" }) => (
-  <section className="container-custom mb-24 md:mb-32">
-    <div className="flex flex-col md:flex-row md:justify-between md:items-end items-start mb-12 gap-6">
+  <section className="container-custom mb-16 md:mb-24">
+    <div className="flex flex-col md:flex-row md:justify-between md:items-end items-start mb-8 gap-6">
       <div className="max-w-xl w-full">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="flex items-center gap-2 mb-4"
+          className="flex items-center gap-2 mb-3"
         >
-          <div className={`h-1 w-12 rounded-full ${color === 'blue' ? 'bg-blue-600' : 'bg-orange-500'}`}></div>
-          <span className={`${color === 'blue' ? 'text-blue-600' : 'text-orange-500'} font-black text-[10px] uppercase tracking-[0.4em]`}>
+          <div className={`h-1 w-8 rounded-full ${color === 'blue' ? 'bg-blue-600' : 'bg-orange-500'}`}></div>
+          <span className={`${color === 'blue' ? 'text-blue-600' : 'text-orange-500'} font-black text-[9px] uppercase tracking-[0.3em]`}>
             {subtitle}
           </span>
         </motion.div>
@@ -44,7 +44,7 @@ const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "b
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-3xl sm:text-4xl md:text-6xl font-black text-slate-900 tracking-tighter italic leading-tight"
+          className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 tracking-tighter italic leading-tight"
         >
           {title}
         </motion.h2>
@@ -59,7 +59,7 @@ const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "b
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-100px" }}
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10"
+      className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 md:gap-10"
     >
       {loading ? (
         [...Array(4)].map((_, i) => (
@@ -79,12 +79,12 @@ const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "b
 const CategorySection = ({ categories, loading }) => (
   <section className="container-custom mb-32 relative">
     <div className="absolute top-[-100px] left-0 w-64 h-64 bg-blue-100/30 blur-[100px] rounded-full -z-10"></div>
-    <div className="flex flex-col items-center text-center mb-16">
+    <div className="flex flex-col items-center text-center mb-12">
       <motion.span
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-blue-600 font-black text-xs uppercase tracking-[0.5em] mb-4"
+        className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em] mb-3"
       >
         Elite curation
       </motion.span>
@@ -92,7 +92,7 @@ const CategorySection = ({ categories, loading }) => (
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-3xl sm:text-4xl md:text-7xl font-black text-slate-900 tracking-tighter italic mb-8"
+        className="text-2xl sm:text-3xl md:text-6xl font-black text-slate-900 tracking-tighter italic mb-6"
       >
         SHOP BY <span className="text-blue-600">UNIVERSE</span>
       </motion.h2>
@@ -142,7 +142,7 @@ const Home = () => {
   // Pro-level data fetching with React Query
   const { data: latestData, isLoading: latestLoading } = useProducts({ limit: 4 });
   const { data: featuredData, isLoading: featuredLoading } = useProducts({ limit: 4, isFeatured: 'true' });
-  const { data: bestData, isLoading: bestLoading } = useProducts({ limit: 4, isBestSeller: 'true' });
+  const { data: bestData, isLoading: bestLoading } = useProducts({ limit: 4, isBestseller: 'true' });
   const { data: categories, isLoading: catsLoading } = useCategories();
 
   return (
@@ -154,30 +154,30 @@ const Home = () => {
 
         {/* Global Stats Strip - Full Width */}
         <section className="mb-24 md:mb-32">
-         <div className="bg-slate-900 rounded-[2rem] md:rounded-[2rem] p-12 md:p-20 relative overflow-hidden shadow-2xl">
+          <div className="bg-slate-900 rounded-[2rem] md:rounded-[2rem] p-12 md:p-20 relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#2563eb33_0%,transparent_50%)]"></div>
             <div className="absolute bottom-0 right-0 w-1/2 h-full bg-blue-600/5 blur-[150px] rounded-full translate-x-1/2"></div>
-            
+
             <div className="container-custom relative z-10">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-              {[
-                { label: 'Global Reach', value: '45+', sub: 'Countries Served', icon: Globe },
-                { label: 'Market Trust', value: '99.9%', sub: 'Customer Satisfaction', icon: Sparkles },
-                { label: 'Elite Speed', value: '24h', sub: 'Average Dispatch', icon: Zap }
-              ].map((stat, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="flex flex-col items-center"
-                >
-                  <stat.icon className="text-blue-500 mb-4 md:mb-6" size={isMobile ? 32 : 40} />
-                  <span className="text-4xl sm:text-5xl md:text-7xl font-black text-white italic tracking-tighter mb-2">{stat.value}</span>
-                  <span className="text-blue-400 font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-1">{stat.label}</span>
-                  <p className="text-slate-500 text-xs md:text-sm font-medium">{stat.sub}</p>
-                </motion.div>
-              ))}
+                {[
+                  { label: 'Global Reach', value: '45+', sub: 'Countries Served', icon: Globe },
+                  { label: 'Market Trust', value: '99.9%', sub: 'Customer Satisfaction', icon: Sparkles },
+                  { label: 'Elite Speed', value: '24h', sub: 'Average Dispatch', icon: Zap }
+                ].map((stat, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="flex flex-col items-center"
+                  >
+                    <stat.icon className="text-blue-500 mb-3 md:mb-4" size={isMobile ? 28 : 32} />
+                    <span className="text-3xl sm:text-4xl md:text-6xl font-black text-white italic tracking-tighter mb-1">{stat.value}</span>
+                    <span className="text-blue-400 font-bold uppercase tracking-[0.25em] text-[9px] md:text-[10px] mb-1">{stat.label}</span>
+                    <p className="text-slate-500 text-xs md:text-sm font-medium">{stat.sub}</p>
+                  </motion.div>
+                ))}
               </div>
             </div>
           </div>
@@ -210,8 +210,8 @@ const Home = () => {
                   >
                     <TrendingUp size={16} /> Seasonal Milestone
                   </motion.div>
-                  <h3 className="text-4xl sm:text-6xl md:text-[10rem] font-black text-white leading-[0.85] tracking-tighter italic">
-                    ELITE<br /><span className="text-blue-600 md:ml-20">PRIME</span>
+                  <h3 className="text-3xl sm:text-5xl md:text-8xl font-black text-white leading-[0.85] tracking-tighter italic">
+                    ELITE<br /><span className="text-blue-600 md:ml-12">PRIME</span>
                   </h3>
                   <p className="text-slate-400 text-sm sm:text-xl md:text-2xl font-medium max-w-md leading-relaxed line-clamp-2 md:line-clamp-none">Redefining the boundaries of premium e-commerce performance.</p>
                   <Link to="/products" className="btn-premium px-8 md:px-12 py-3.5 md:py-5 text-sm md:text-xl group w-fit flex items-center gap-3">
@@ -233,38 +233,47 @@ const Home = () => {
         />
 
         {/* Elite Hall of Fame (Bestsellers) */}
-        <section className="bg-slate-950 py-28 md:py-40 overflow-hidden relative">
+        <section className="bg-slate-950 py-24 md:py-32 overflow-hidden relative">
           <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600/5 blur-[150px] rounded-full translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-1/2 h-full bg-indigo-600/5 blur-[150px] rounded-full -translate-x-1/2"></div>
 
           <div className="container-custom relative z-10">
-            <div className="flex flex-col items-center text-center mb-24">
-              <motion.span
+            <div className="flex flex-col items-center text-center mb-16 md:mb-24">
+              <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                className="text-blue-500 font-black text-xs uppercase tracking-[0.6em] mb-6"
+                viewport={{ once: true }}
+                className="flex items-center gap-3 mb-6"
               >
-                The Hall of Fame
-              </motion.span>
+                <div className="h-px w-8 bg-blue-600"></div>
+                <span className="text-blue-500 font-black text-[10px] uppercase tracking-[0.5em]">The Hall of Fame</span>
+                <div className="h-px w-8 bg-blue-600"></div>
+              </motion.div>
               <motion.h2
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                className="text-white text-4xl sm:text-6xl md:text-[8rem] font-black italic tracking-tighter leading-none mb-4"
+                viewport={{ once: true }}
+                className="text-white text-4xl sm:text-6xl md:text-7xl font-black italic tracking-tighter leading-none mb-8"
               >
                 TITANS <span className="text-blue-600">'26</span>
               </motion.h2>
-              <p className="text-slate-500 text-sm sm:text-lg md:text-xl font-medium max-w-lg mb-12">The most sought-after masterpieces in our global repository.</p>
-              <div className="w-48 h-1.5 bg-linear-to-r from-transparent via-blue-600 to-transparent rounded-full"></div>
+              <p className="text-slate-400 text-sm sm:text-lg font-medium max-w-lg mb-12 italic leading-relaxed">
+                The most sought-after masterpieces in our global repository, curated for the elite.
+              </p>
+              <Link to="/products?filter=bestsellers" className="btn-premium px-10 py-4 text-xs group flex items-center gap-3">
+                Explore Collection <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-500" />
+              </Link>
             </div>
 
             <motion.div
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10"
+              viewport={{ once: true, margin: "-100px" }}
+              className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 md:gap-10"
             >
               {bestLoading ? (
-                [...Array(4)].map((_, i) => <div key={i} className="aspect-3/4 bg-slate-900 animate-pulse rounded-[3rem]"></div>)
+                [...Array(4)].map((_, i) => <div key={i} className="aspect-3/4 bg-slate-900/50 animate-pulse rounded-[2.5rem] border border-slate-800"></div>)
               ) : (
                 bestData?.products?.map(product => (
                   <motion.div key={product.id || product._id} variants={itemVariants}>
