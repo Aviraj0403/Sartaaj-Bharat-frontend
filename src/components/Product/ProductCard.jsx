@@ -8,7 +8,7 @@ import { addToCartThunk } from '../../features/cart/cartThunk';
 import QuickViewModal from './QuickViewModal';
 import { useWishlist } from '../../hooks';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, layout = "grid" }) => {
   const [showQuickView, setShowQuickView] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const { isAuthenticated } = useSelector(state => state.auth);
@@ -51,6 +51,81 @@ const ProductCard = ({ product }) => {
       addToWishlist(product._id);
     }
   };
+
+  if (layout === "list") {
+    return (
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        className="bg-white rounded-[2rem] border border-slate-100 p-6 flex gap-8 hover:shadow-2xl transition-all duration-700 relative group overflow-hidden"
+      >
+        <div className="w-64 h-64 bg-slate-50 rounded-2xl overflow-hidden p-6 shrink-0 relative">
+          <Link to={`/product/${product.slug || product._id || product.id}`}>
+            <motion.img
+              src={product.images?.[0] || product.pimage}
+              whileHover={{ scale: 1.1 }}
+              className="w-full h-full object-contain mix-blend-multiply"
+            />
+          </Link>
+          {product.discount > 0 && (
+            <div className="absolute top-4 left-4 bg-blue-600 text-white text-[8px] font-black px-3 py-1.5 rounded-lg uppercase tracking-widest italic">
+              -{product.discount}% ELITE
+            </div>
+          )}
+        </div>
+
+        <div className="flex-1 flex flex-col py-2">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block italic">{product.brand || 'Elite Series'}</span>
+              <h3 className="text-2xl font-black text-slate-900 tracking-tighter italic">
+                <Link to={`/product/${product.slug || product._id || product.id}`}>{product.name}</Link>
+              </h3>
+            </div>
+            <div className="flex items-center gap-1.5 bg-slate-50 px-4 py-2 rounded-full border border-slate-100">
+              <Star size={12} className="fill-blue-500 text-blue-500" />
+              <span className="text-xs font-black text-slate-900 italic">{product.rating || '4.9'}</span>
+            </div>
+          </div>
+
+          <p className="text-slate-500 text-sm font-bold uppercase tracking-widest mb-6 italic line-clamp-2 max-w-xl">
+            {product.description || "The pinnacle of engineering meets elite aesthetics. Experience superior performance in every detail."}
+          </p>
+
+          <div className="flex items-center gap-6 mb-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
+            {product.variants?.[0]?.ram && <span className="flex items-center gap-2"><Cpu size={14} /> {product.variants[0].ram} Memory</span>}
+            {product.variants?.[0]?.storage && <span className="flex items-center gap-2"><HardDrive size={14} /> {product.variants[0].storage} Vault</span>}
+          </div>
+
+          <div className="mt-auto flex items-center justify-between">
+            <div className="flex flex-col">
+              {displayOldPrice && <span className="text-slate-300 text-xs line-through font-bold tracking-widest">₹{displayOldPrice.toLocaleString()}</span>}
+              <span className="text-3xl font-black text-blue-600 tracking-tighter italic leading-none">₹{displayPrice.toLocaleString()}</span>
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                onClick={toggleWishlist}
+                className={`p-4 rounded-2xl transition-all shadow-xl ${inWishlist ? 'bg-red-50 text-red-500' : 'bg-slate-50 text-slate-400 hover:text-slate-900'}`}
+              >
+                <Heart size={20} fill={inWishlist ? "currentColor" : "none"} strokeWidth={2.5} />
+              </button>
+              <button
+                onClick={handleAddToCart}
+                className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-2xl flex items-center gap-3 italic"
+              >
+                <ShoppingCart size={16} strokeWidth={2.5} /> Acquire Artifact
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {showQuickView && (
+          <QuickViewModal product={product} onClose={() => setShowQuickView(false)} />
+        )}
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div

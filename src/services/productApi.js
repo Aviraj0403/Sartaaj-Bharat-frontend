@@ -61,7 +61,8 @@ export const getMiniProducts = async (
   isHotProduct = '',
   isBestseller = '',
   isFeatured = '',
-  isCombo = ''
+  isCombo = '',
+  extraParams = {}
 ) => {
   try {
     const params = { page, limit, search, category };
@@ -69,6 +70,18 @@ export const getMiniProducts = async (
     if (isBestseller !== '') params.isBestseller = isBestseller;
     if (isFeatured !== '') params.isFeatured = isFeatured;
     if (isCombo !== '') params.isCombo = isCombo;
+    if (search !== '') params.search = search;
+    if (category !== '') params.category = category;
+
+    // Advanced filters
+    const { brand, ram, storage, minPrice, maxPrice, sortBy, sortOrder } = extraParams;
+    if (brand) params.brand = brand;
+    if (ram) params.ram = ram;
+    if (storage) params.storage = storage;
+    if (minPrice) params.minPrice = minPrice;
+    if (maxPrice) params.maxPrice = maxPrice;
+    if (sortBy) params.sortBy = sortBy;
+    if (sortOrder) params.sortOrder = sortOrder;
 
     const response = await Axios.get('/products', { params });
 
@@ -105,4 +118,29 @@ export const getProductBySlug = async (slug) => {
     return { success: false, product: null };
   }
 };
+
+/**
+ * Fetch product recommendations
+ * Backend: GET /v1/api/products/:productId/recommendations
+ */
+export const getRecommendations = async (productId, limit = 4) => {
+  try {
+    const response = await Axios.get(`/products/${productId}/recommendations`, {
+      params: { limit }
+    });
+
+    if (response.data && response.data.success) {
+      return {
+        success: true,
+        products: response.data.data || []
+      };
+    } else {
+      throw new Error('Failed to fetch recommendations');
+    }
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    return { success: false, products: [] };
+  }
+};
+
 

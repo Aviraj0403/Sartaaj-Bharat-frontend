@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getMiniProducts, getProductBySlug } from '../services/productApi';
+import { getMiniProducts, getProductBySlug, getRecommendations } from '../services/productApi';
 
 export const useProducts = (params = {}) => {
     return useQuery({
@@ -12,7 +12,8 @@ export const useProducts = (params = {}) => {
             params.isHotProduct || '',
             params.isBestseller || '',
             params.isFeatured || '',
-            params.isCombo || ''
+            params.isCombo || '',
+            params
         ),
         staleTime: 5 * 60 * 1000, // 5 minutes
         keepPreviousData: true,
@@ -25,5 +26,13 @@ export const useProductDetail = (slug) => {
         queryFn: () => getProductBySlug(slug),
         enabled: !!slug,
         staleTime: 10 * 60 * 1000,
+    });
+};
+export const useRecommendations = (productId, limit = 4) => {
+    return useQuery({
+        queryKey: ['recommendations', productId, limit],
+        queryFn: () => getRecommendations(productId, limit),
+        enabled: !!productId,
+        staleTime: 15 * 60 * 1000,
     });
 };

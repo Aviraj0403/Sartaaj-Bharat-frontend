@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import ProductCard from "../../components/Product/ProductCard";
-import { useProduct, useProducts } from "../../hooks";
+import { useProduct, useProducts, useRecommendations } from "../../hooks";
 import { addToCartThunk } from "../../features/cart/cartThunk";
 
 const ProductDetails = () => {
@@ -18,10 +18,10 @@ const ProductDetails = () => {
     const dispatch = useDispatch();
 
     const { data: product, isLoading, error } = useProduct(slug);
-    const { data: relatedData } = useProducts({
-        category: product?.categoryId?._id || product?.categoryId,
-        limit: 4
-    });
+    const { data: recommendationsData, isLoading: isRecLoading } = useRecommendations(
+        product?._id || product?.id,
+        4
+    );
 
     const [activeImage, setActiveImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
@@ -216,8 +216,8 @@ const ProductDetails = () => {
                                             key={idx}
                                             onClick={() => setSelectedVariant(v)}
                                             className={`px-6 py-3 rounded-xl border-2 font-black text-xs uppercase tracking-wider transition-all ${selectedVariant === v
-                                                    ? 'border-blue-600 bg-blue-50 text-blue-600 shadow-lg'
-                                                    : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white'
+                                                ? 'border-blue-600 bg-blue-50 text-blue-600 shadow-lg'
+                                                : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white'
                                                 }`}
                                         >
                                             {v.size} {v.color !== 'Default' ? `- ${v.color}` : ''}
@@ -486,29 +486,41 @@ const ProductDetails = () => {
                     </div>
                 </div>
 
-                {/* Related Products */}
-                {relatedData?.products?.length > 1 && (
-                    <div className="mt-16 md:mt-24">
-                        <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Similar Products</h2>
-                            <Link
-                                to={`/category/${product.categoryId?.slug || ''}`}
-                                className="text-blue-600 font-semibold hover:underline flex items-center gap-1"
-                            >
-                                View All <ChevronRight size={20} />
-                            </Link>
+                {/* Related Products / Recommendations */}
+                <div className="mt-16 md:mt-24 border-t border-slate-100 pt-16">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
+                        <div className="text-center md:text-left">
+                            <span className="text-[10px] font-black text-blue-600 tracking-[0.3em] uppercase mb-2 block italic">Similar Artifacts</span>
+                            <h2 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tighter italic">Recommended <span className="text-blue-600">Archive.</span></h2>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {relatedData.products
-                                .filter(p => p._id !== product._id)
-                                .slice(0, 4)
-                                .map(p => (
-                                    <ProductCard key={p._id} product={p} />
-                                ))
-                            }
-                        </div>
+                        <Link
+                            to={`/category/${product.categoryId?.slug || ''}`}
+                            className="bg-slate-50 text-slate-900 px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-sm flex items-center gap-3 italic border border-slate-100"
+                        >
+                            View Entire Collection <ChevronRight size={14} strokeWidth={3} />
+                        </Link>
                     </div>
-                )}
+
+                    {!isRecLoading && (!recommendationsData || (Array.isArray(recommendationsData) ? recommendationsData.length === 0 : recommendationsData?.products?.length === 0)) ? (
+                        <div className="bg-slate-50 rounded-[3rem] p-16 text-center border border-dashed border-slate-200">
+                            <Sparkles className="mx-auto text-slate-300 mb-6" size={48} strokeWidth={1} />
+                            <h3 className="text-xl font-black text-slate-400 uppercase tracking-widest italic mb-2">No Similar Artifacts Found</h3>
+                            <p className="text-slate-400 text-sm font-medium italic">Our curator is still cataloging related items for this specified protocol.</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {isRecLoading ? (
+                                [...Array(4)].map((_, i) => (
+                                    <div key={i} className="aspect-[4/5] bg-slate-50 animate-pulse rounded-[2rem]"></div>
+                                ))
+                            ) : (
+                                (Array.isArray(recommendationsData) ? recommendationsData : recommendationsData?.products || []).slice(0, 4).map(p => (
+                                    <ProductCard key={p._id || p.id} product={p} />
+                                ))
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Mobile Sticky Footer */}
