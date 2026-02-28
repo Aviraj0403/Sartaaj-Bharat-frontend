@@ -22,54 +22,60 @@ export default function AddressModal({ isOpen, onClose, address, onSuccess }) {
 
   if (!isOpen) return null;
 
-return (
-  <div
-    className="
-      fixed left-0 right-0
-      top-[150px] bottom-[40px]
-      z-[9999]
-      flex items-center justify-center
-      bg-black/60
-      px-2 sm:px-4
-    "
-    onClick={onClose}
-  >
+  return (
     <div
-      onClick={(e) => e.stopPropagation()}
       className="
-        bg-white w-full max-w-2xl
-        rounded-lg shadow-lg
-        max-h-full
-        flex flex-col
-      "
-      role="dialog"
-      aria-modal="true"
+      fixed inset-0
+      z-[10000]
+      flex items-center justify-center
+      bg-slate-950/40 backdrop-blur-md
+      p-4 sm:p-8
+    "
+      onClick={onClose}
     >
-      {/* Modal Header */}
-      <div className="sticky top-0 z-20 bg-white border-b px-5 py-3 flex justify-between">
-        <h2 className="text-lg font-semibold text-gray-800">
-          {formMode === "edit" ? "Edit Address" : "Add New Address"}
-        </h2>
-        <button
-          onClick={onClose}
-          className="text-gray-500 hover:text-gray-700 text-xl"
-        >
-          ✕
-        </button>
-      </div>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="
+        bg-white w-full max-w-3xl
+        rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)]
+        max-h-[90vh]
+        flex flex-col
+        overflow-hidden
+        border border-white/20
+      "
+        role="dialog"
+        aria-modal="true"
+      >
+        {/* Modal Header */}
+        <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-50 px-10 py-8 flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-black text-slate-900 italic uppercase tracking-tighter">
+              {formMode === "edit" ? "Coordinate Update" : "Establish New Node"}
+            </h2>
+            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mt-1">Authorized Location Protocol</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-900 hover:text-white transition-all duration-300 transform hover:rotate-90"
+          >
+            ✕
+          </button>
+        </div>
 
-      {/* Body */}
-      <div className="flex-1 overflow-y-auto">
-        <AddressSidebar
-          isOpen={true}
-          onClose={onClose}
-          address={currentAddress}
-          refreshAddresses={handleSidebarSuccess}
-          embedded={true}
-        />
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto no-scrollbar p-0">
+          <div className="px-10 py-6">
+            <AddressSidebar
+              isOpen={true}
+              onClose={onClose}
+              address={currentAddress}
+              refreshAddresses={handleSidebarSuccess}
+              embedded={true}
+            />
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 
 }

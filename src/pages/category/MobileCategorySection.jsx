@@ -73,10 +73,10 @@ export default function MobileCategorySection() {
   };
 
   return (
-    <div className="block md:hidden bg-white py-3 border-t border-b border-gray-200">
+    <div className="block md:hidden bg-white py-4 border-t border-b border-slate-100 shadow-sm">
       <div className="flex items-center justify-start gap-4 overflow-x-auto px-4 scrollbar-hide">
         {/* Loading State */}
-        {isLoading && <div className="w-full text-center text-pink-600">Loading...</div>}
+        {isLoading && <div className="w-full text-center text-blue-600 font-black text-[10px] uppercase tracking-[0.3em] italic animate-pulse">Syncing...</div>}
 
         {/* Error State */}
         {isError && <div className="w-full text-center text-red-600">Error fetching categories. Please try again later.</div>}
@@ -89,16 +89,17 @@ export default function MobileCategorySection() {
             className="flex flex-col items-center justify-center min-w-[70px] text-center cursor-pointer group active:scale-95 transition-all"
           >
             {/* Category Image */}
-            <div className="text-pink-600 mb-1 group-hover:text-pink-700 transition-colors">
+            <div className="relative mb-2 group-hover:scale-105 transition-transform">
+              <div className="absolute inset-0 rounded-2xl bg-blue-600/10 group-hover:bg-blue-600/0 transition-colors"></div>
               <img
                 src={cat.image[1]} // Use the second image from the image array
                 alt={cat.name}
-                className="w-20 h-20 object-cover rounded-full"
+                className="w-20 h-24 object-cover rounded-2xl grayscale group-hover:grayscale-0 transition-all duration-500 shadow-sm"
               />
             </div>
 
             {/* Category Title */}
-            <span className="text-[11px] font-medium text-gray-700 whitespace-nowrap group-hover:text-pink-600">
+            <span className="text-[10px] font-black text-slate-500 whitespace-nowrap group-hover:text-blue-600 uppercase tracking-widest italic transition-colors">
               {cat.name}
             </span>
           </div>

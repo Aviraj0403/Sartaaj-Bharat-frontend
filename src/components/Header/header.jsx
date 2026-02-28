@@ -110,7 +110,7 @@ const Header = () => {
               onFocus={() => setIsFocused(true)}
               onBlur={() => setTimeout(() => setIsFocused(false), 200)}
               placeholder="Search for Mobiles, Accessories & more..."
-              className={`w-full pl-16 pr-36 py-3.5 bg-slate-100 border-2 border-transparent rounded-2xl outline-none text-slate-900 font-medium placeholder-slate-500 transition-all duration-300 ${isFocused ? 'bg-white border-blue-600 shadow-[0_20px_40px_-15px_rgba(37,99,235,0.15)] ring-4 ring-blue-500/5' : 'hover:bg-slate-200/50'}`}
+              className={`w-full pl-16 pr-36 py-3.5 bg-slate-100 border-2 border-transparent rounded-xl outline-none text-slate-900 font-medium placeholder-slate-500 transition-all duration-300 ${isFocused ? 'bg-white border-blue-600 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)]' : 'hover:bg-slate-200/50'}`}
             />
             <button
               type="submit"

@@ -2,11 +2,11 @@ import React from "react";
 
 export default function AestheticCosmeticSection() {
   return (
-    <section className="w-full  py-10 px-6 relative overflow-hidden">
+    <section className="w-full py-8 px-6 relative overflow-hidden">
 
       {/* Background Soft Shapes */}
-      <div className="absolute top-0 left-0 w-72 h-72 bg-rose-200/30 blur-3xl rounded-full"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-pink-300/20 blur-[100px] rounded-full"></div>
+      <div className="absolute top-0 left-0 w-96 h-96 bg-blue-600/5 blur-[120px] rounded-full"></div>
+      <div className="absolute bottom-0 right-0 w-full h-full bg-slate-900/10 blur-[150px] rounded-full"></div>
 
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
 
@@ -14,36 +14,36 @@ export default function AestheticCosmeticSection() {
         <div className="space-y-8">
 
           {/* ONE-LINE TITLE WITH DIFFERENT COLOR */}
-          <h1 className="text-[65px] font-extrabold leading-none">
-            <span className="text-pink-500">Pure</span>{" "}
-            <span className="text-yellow-500">Beauty</span>
+          <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.5em] mb-4 block italic">Core Engineering</span>
+          <h1 className="text-[50px] md:text-[70px] font-black leading-none italic uppercase tracking-tighter text-slate-950">
+            AESTHETIC <br />
+            <span className="text-blue-600">PROTOCOL.</span>
           </h1>
 
-          <p className="text-lg text-gray-700 max-w-md leading-relaxed">
-            Feel the elegance of premium cosmetics crafted for glowing,
-            healthy and naturally radiant skin. Discover a collection that
-            enhances your charm effortlessly.
+          <p className="text-base font-medium text-slate-500 max-w-md leading-relaxed uppercase tracking-wider italic">
+            EXPERIENCE THE PRECISION OF ELITE DERMATOLOGICAL ASSETS CRAFTED FOR QUANTUM RADIANCE.
+            EVOLVE YOUR VISUAL INTERFACE EFFORTLESSLY.
           </p>
 
           {/* Features */}
           <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <span className="w-4 h-4 rounded-full bg-rose-600"></span>
-              <p className="text-gray-800 font-medium">Premium Active Ingredients</p>
+            <div className="flex items-center gap-6 group">
+              <span className="w-8 h-[2px] bg-blue-600 transition-all group-hover:w-12"></span>
+              <p className="text-slate-900 font-black text-xs uppercase tracking-widest italic">PREMIUM ACTIVE NODES</p>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="w-4 h-4 rounded-full bg-rose-400"></span>
-              <p className="text-gray-800 font-medium">Dermatologist Tested</p>
+            <div className="flex items-center gap-6 group">
+              <span className="w-8 h-[2px] bg-slate-300 transition-all group-hover:w-12"></span>
+              <p className="text-slate-900 font-black text-xs uppercase tracking-widest italic">DERMATOLOGICAL VALIDATION</p>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="w-4 h-4 rounded-full bg-pink-400"></span>
-              <p className="text-gray-800 font-medium">Perfect for All Skin Types</p>
+            <div className="flex items-center gap-6 group">
+              <span className="w-8 h-[2px] bg-blue-600/30 transition-all group-hover:w-12"></span>
+              <p className="text-slate-900 font-black text-xs uppercase tracking-widest italic">UNIVERSAL DERMA-SYNC</p>
             </div>
           </div>
 
           {/* Button */}
-          <button className="mt-6 px-12 py-4 bg-rose-600 text-white rounded-full text-lg font-semibold shadow-lg hover:bg-rose-700 transition-all duration-300">
-            Discover Collection →
+          <button className="mt-6 px-10 py-4 bg-slate-950 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] shadow-2xl hover:bg-blue-600 transition-all duration-500 italic">
+            INITIATE SEARCH PROMPT →
           </button>
         </div>
 
@@ -51,18 +51,17 @@ export default function AestheticCosmeticSection() {
         <div className="relative flex justify-center">
 
           {/* Background Tall Rectangle */}
-          <div className="absolute -top-10 w-64 h-[520px] bg-white rounded-3xl shadow-[0_15px_50px_rgba(0,0,0,0.15)] border border-white/40"></div>
+          <div className="absolute -top-10 w-72 h-[450px] bg-white rounded-[3rem] shadow-[0_40px_100px_rgba(0,0,0,0.1)] border border-slate-50 transition-all group-hover:shadow-[0_40px_100px_rgba(37,99,235,0.1)] shadow-blue-500/5"></div>
 
           {/* Product Image */}
-          <img
-            src="https://images.unsplash.com/photo-1596462502278-27bfdc403348"
+          <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348"
             alt="Cosmetic Product"
-            className="relative z-10 h-[500px] object-cover rounded-3xl drop-shadow-xl hover:scale-105 transition duration-500"
+            className="relative z-10 h-[350px] object-cover rounded-[2.5rem] shadow-2xl hover:scale-[1.02] transition-all duration-700 grayscale hover:grayscale-0"
           />
 
           {/* Floating Badge */}
-          <div className="absolute top-6 right-6 bg-white px-5 py-2 rounded-full shadow-md text-rose-600 font-semibold z-20">
-            Luxury Edition ✨
+          <div className="absolute top-8 -right-12 bg-slate-950 px-8 py-3 rounded-2xl shadow-2xl text-white font-black text-[10px] uppercase tracking-[0.3em] z-20 italic">
+            Elite Verification <span className="text-blue-600">Active</span>
           </div>
 
         </div>

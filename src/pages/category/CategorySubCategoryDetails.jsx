@@ -42,7 +42,7 @@ export default function CategorySubCategoryDetails() {
   }, [categorySlug, subCategorySlug, currentPage]);
 
   if (loading) {
-    return <div>Loading products...</div>;
+    return <div className="flex items-center justify-center min-h-[60vh] text-blue-600 font-black uppercase tracking-[0.5em] italic animate-pulse">Syncing Artifacts...</div>;
   }
 
   if (error) {
@@ -56,9 +56,12 @@ export default function CategorySubCategoryDetails() {
   return (
     <section className="py-10 bg-white">
       <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-8 text-center">
-          {categoryName} : {subCategoryName }
-        </h2>
+        <div className="text-center mb-16">
+          <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block italic">Topological Selection</span>
+          <h2 className="text-3xl md:text-6xl font-black text-slate-950 italic uppercase tracking-tighter">
+            {categoryName} <span className="text-blue-600">// {subCategoryName}</span>
+          </h2>
+        </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {products.length === 0 ? (
@@ -74,25 +77,25 @@ export default function CategorySubCategoryDetails() {
           )}
         </div>
 
-        {pagination.totalPages > 1 && (
-          <div className="mt-8 flex justify-center">
-            <button
-              onClick={() => fetchProducts(currentPage - 1)}
-              disabled={currentPage <= 1}
-              className="px-4 py-2 bg-pink-500 text-white rounded-md disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <span className="mx-4">{currentPage} / {pagination.totalPages}</span>
-            <button
-              onClick={() => fetchProducts(currentPage + 1)}
-              disabled={currentPage >= pagination.totalPages}
-              className="px-4 py-2 bg-pink-500 text-white rounded-md disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-        )}
+        <div className="mt-16 flex justify-center items-center gap-6">
+          <button
+            onClick={() => fetchProducts(currentPage - 1)}
+            disabled={currentPage <= 1}
+            className="px-8 py-3 bg-slate-950 text-white rounded-xl font-black text-[10px] uppercase tracking-[0.3em] italic disabled:opacity-20 hover:bg-blue-600 transition-all flex items-center gap-2"
+          >
+            PREVIOUS
+          </button>
+          <span className="font-black text-xs italic text-slate-400 uppercase tracking-widest bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
+            {currentPage} <span className="text-blue-600">/</span> {pagination.totalPages}
+          </span>
+          <button
+            onClick={() => fetchProducts(currentPage + 1)}
+            disabled={currentPage >= pagination.totalPages}
+            className="px-8 py-3 bg-slate-950 text-white rounded-xl font-black text-[10px] uppercase tracking-[0.3em] italic disabled:opacity-20 hover:bg-blue-600 transition-all flex items-center gap-2"
+          >
+            NEXT
+          </button>
+        </div>
       </div>
     </section>
   );

@@ -33,7 +33,7 @@ const EliteHeroSlider = () => {
     const currentSlide = slides[currentIndex];
 
     return (
-        <section className="relative overflow-hidden pb-12 md:pb-16">
+        <section className="relative overflow-hidden pb-6 md:pb-10">
             <div className="w-full">
                 {/* <div className="relative h-[380px] sm:h-[480px] md:h-[650px] lg:h-screen overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900"> */}
                 <div className="relative h-[380px] sm:h-[480px] md:h-[650px] lg:h-screen overflow-hidden rounded-[2rem] md:rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900">
@@ -163,7 +163,7 @@ const EliteHeroSlider = () => {
 
                 {/* Luxury Advantage Strip - Professional Design */}
                 <div className="container-custom">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-12 md:mt-16 relative z-30 px-2 sm:px-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-6 sm:mt-8 md:mt-10 relative z-30 px-2 sm:px-4">
                         {[
                             { title: 'Global Warranty', desc: 'Secure Coverage', icon: Shield, color: 'blue' },
                             { title: 'Nexus Shipping', desc: 'Ultra-fast Delivery', icon: Zap, color: 'orange' },
@@ -176,19 +176,19 @@ const EliteHeroSlider = () => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: idx * 0.08, duration: 0.5 }}
-                                whileHover={{ y: -6, scale: 1.02 }}
-                                className="bg-white/95 backdrop-blur-xl p-5 sm:p-6 md:p-7 rounded-3xl border border-slate-200/60 shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] group cursor-default transition-all duration-300"
+                                whileHover={{ y: -4, scale: 1.02 }}
+                                className="bg-white/95 backdrop-blur-xl p-4 sm:p-5 rounded-3xl border border-slate-200/60 shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] group cursor-default transition-all duration-300"
                             >
-                                <div className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-14 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 ${item.color === 'blue'
+                                <div className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-12 rounded-2xl flex items-center justify-center mb-3 transition-all duration-300 ${item.color === 'blue'
                                     ? 'bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white'
                                     : 'bg-orange-50 text-orange-600 group-hover:bg-orange-600 group-hover:text-white'
                                     } shadow-sm group-hover:shadow-lg`}>
-                                    <item.icon size={20} strokeWidth={2.5} className="sm:w-6 sm:h-6 md:w-7 md:h-7" />
+                                    <item.icon size={20} strokeWidth={2.5} className="sm:w-5 sm:h-5 md:w-6 md:h-6" />
                                 </div>
-                                <h4 className="font-black text-slate-900 group-hover:text-blue-600 transition-colors text-xs sm:text-sm md:text-base italic uppercase tracking-tight mb-1.5 leading-tight">
+                                <h4 className="font-black text-slate-900 group-hover:text-blue-600 transition-colors text-[10px] sm:text-xs md:text-sm italic uppercase tracking-tight mb-1 leading-tight">
                                     {item.title}
                                 </h4>
-                                <p className="text-[9px] sm:text-[10px] md:text-xs text-slate-500 font-semibold uppercase tracking-[0.15em] leading-tight">
+                                <p className="text-[8px] sm:text-[9px] md:text-[10px] text-slate-500 font-semibold uppercase tracking-[0.15em] leading-tight">
                                     {item.desc}
                                 </p>
                             </motion.div>

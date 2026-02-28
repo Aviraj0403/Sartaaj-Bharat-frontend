@@ -38,12 +38,13 @@ export default function Testimonials() {
       <div className="container mx-auto px-5">
 
         {/* Heading */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">What’s our students says</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Beauty lovers from across India trust our cosmetic products for their amazing results. 
-            Our formulations are designed to enhance your natural glow, improve skin texture, 
-            and give long-lasting nourishment.
+        <div className="text-center mb-16">
+          <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block italic">User Validation</span>
+          <h2 className="text-3xl md:text-5xl font-black text-slate-950 mb-6 italic uppercase tracking-tighter">
+            VALIDATION <span className="text-blue-600">LOGS.</span>
+          </h2>
+          <p className="text-slate-500 font-medium max-w-2xl mx-auto text-sm uppercase tracking-widest leading-relaxed italic">
+            ELITE OPERATIVES FROM ACROSS THE SUB-CONTINENT VERIFY OUR ARTIFACT CALIBRATION AND NEURAL RESULTS.
           </p>
         </div>
 
@@ -63,7 +64,8 @@ export default function Testimonials() {
         >
           {testimonials.map((testimonial) => (
             <SwiperSlide key={testimonial.id}>
-              <div className="bg-white border border-pink-300 rounded-lg shadow-md p-6 text-left">
+              <div className="bg-white border border-slate-100 rounded-[2.5rem] shadow-sm p-8 text-left hover:shadow-2xl transition-all duration-500 group relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-2 h-full bg-blue-600 opacity-0 group-hover:opacity-100 transition-all"></div>
                 {/* Profile */}
                 <div className="flex items-center mb-4">
                   <img
@@ -72,14 +74,14 @@ export default function Testimonials() {
                     className="w-12 h-12 rounded-full mr-4"
                   />
                   <div>
-                    <h4 className="font-semibold text-gray-800">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-500">{testimonial.role}</p>
+                    <h4 className="font-black text-slate-950 italic uppercase tracking-tighter">{testimonial.name}</h4>
+                    <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest italic">{testimonial.role}</p>
                   </div>
                 </div>
 
                 {/* Feedback */}
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {testimonial.feedback}
+                <p className="text-slate-500 font-medium text-sm leading-relaxed italic">
+                  "{testimonial.feedback}"
                 </p>
               </div>
             </SwiperSlide>
@@ -90,9 +92,9 @@ export default function Testimonials() {
         <div className="flex justify-end items-center mt-6 space-x-4">
           <div className="custom-pagination flex space-x-2"></div>
 
-          <div className="flex space-x-2">
-            <button className="custom-prev px-3 py-1 bg-pink-200 rounded">←</button>
-            <button className="custom-next px-3 py-1 bg-pink-200 rounded">→</button>
+          <div className="flex space-x-4">
+            <button className="custom-prev px-6 py-3 bg-slate-900 text-white rounded-xl hover:bg-blue-600 transition-all font-black text-xs italic">BACK</button>
+            <button className="custom-next px-6 py-3 bg-slate-900 text-white rounded-xl hover:bg-blue-600 transition-all font-black text-xs italic">NEXT</button>
           </div>
         </div>
 

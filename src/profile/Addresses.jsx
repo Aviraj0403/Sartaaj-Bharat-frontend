@@ -72,7 +72,7 @@ export default function Addresses() {
   if (loading) {
     return (
       <div className="animate-pulse">
-        <h1 className="text-3xl font-bold text-pink-600 mb-6">My Addresses</h1>
+        <h1 className="text-3xl font-black text-slate-900 mb-6 italic tracking-tighter uppercase">My Addresses</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[1, 2].map((i) => (
             <div key={i} className="p-6 border rounded-xl bg-gray-50">
@@ -86,16 +86,19 @@ export default function Addresses() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
+    <div className="max-w-6xl mx-auto p-4 sm:p-6 bg-slate-50/30 min-h-screen">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-pink-600">My Addresses</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-6">
+        <div>
+          <h1 className="text-3xl md:text-5xl font-black text-slate-900 italic tracking-tighter uppercase">Vault Addresses</h1>
+          <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mt-2">Manage your secure dispatch locations</p>
+        </div>
         <button
           onClick={handleAdd}
-          className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-5 py-3 rounded-lg font-medium transition shadow-md"
+          className="flex items-center gap-3 bg-blue-600 hover:bg-black text-white px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-blue-500/20 group active:scale-95 italic text-center w-full sm:w-auto justify-center"
         >
-          <Plus size={20} />
-          Add New Address
+          <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+          Establish New Node
         </button>
       </div>
 
@@ -103,12 +106,12 @@ export default function Addresses() {
       {addresses.length === 0 ? (
         <div className="text-center py-16 bg-gray-50 rounded-xl">
           <MapPin size={64} className="mx-auto text-gray-300 mb-4" />
-          <p className="text-gray-500 text-lg">No addresses saved yet.</p>
+          <p className="text-slate-400 font-bold italic">No secure address nodes established in current branch.</p>
           <button
             onClick={handleAdd}
-            className="mt-4 text-pink-600 font-semibold hover:underline"
+            className="mt-6 text-blue-600 font-black text-xs uppercase tracking-[0.2em] hover:text-black transition-colors"
           >
-            + Add your first address
+            + Initialize First Node
           </button>
         </div>
       ) : (
@@ -116,29 +119,27 @@ export default function Addresses() {
           {addresses.map((addr) => (
             <div
               key={addr._id || addr.id}
-              className={`relative p-6 border-2 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 ${
-                addr.isDefault
-                  ? "border-pink-500 bg-pink-50"
-                  : "border-pink-100 bg-white"
-              }`}
+              className={`relative p-8 border-2 rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 group ${addr.isDefault
+                  ? "border-blue-600 bg-white"
+                  : "border-slate-100 bg-white"
+                }`}
             >
               {/* Default Badge */}
               {addr.isDefault && (
-                <div className="absolute -top-3 left-4 bg-pink-600 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                  <CheckCircle size={14} />
-                  Default
+                <div className="absolute -top-4 left-8 bg-blue-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 shadow-xl shadow-blue-500/30 italic">
+                  <CheckCircle size={14} strokeWidth={3} />
+                  Primary Node
                 </div>
               )}
 
               <div className="flex items-start justify-between">
-                <div className="flex items-start gap-4">
-                  <MapPin className="text-pink-500 mt-1" size={28} />
+                <div className="flex items-start gap-6">
+                  <div className={`p-4 rounded-2xl ${addr.isDefault ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-50 text-blue-600'}`}>
+                    <MapPin size={28} strokeWidth={2.5} />
+                  </div>
                   <div>
-                    <h2 className="font-bold text-xl text-gray-800 flex items-center gap-2">
+                    <h2 className="font-black text-xl text-slate-900 italic tracking-tighter uppercase flex items-center gap-3">
                       {addr.addressType || addr.name}
-                      {addr.isDefault && (
-                        <span className="text-xs bg-pink-200 text-pink-800 px-2 py-0.5 rounded">Default</span>
-                      )}
                     </h2>
                     <p className="text-gray-600 mt-1 leading-relaxed">
                       {addr.flat && `${addr.flat}, `}

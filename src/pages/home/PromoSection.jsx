@@ -33,10 +33,10 @@ const products = [
 
 export default function PromoSection() {
   return (
-    <section className="bg-white py-12">
-      <div className="max-w-7xl mx-auto px-4 md:px-6"> 
+    <section className="bg-white py-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* px-4 / px-6 = Left and Right Margin */}
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {products.map((product, idx) => (
             <div
@@ -46,7 +46,7 @@ export default function PromoSection() {
               <img
                 src={product.image}
                 alt={product.brand}
-                className="w-full h-60 object-fit rounded-lg"
+                className="w-full h-48 object-fit rounded-lg"
               />
               <div className="bg-white w-full py-3">
                 <h3 className="font-bold text-lg text-gray-900">

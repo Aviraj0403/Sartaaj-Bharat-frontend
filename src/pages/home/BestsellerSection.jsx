@@ -13,7 +13,7 @@ export default function BestsellerSection({ categorySlug }) {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["bestsellers", categorySlug],
     queryFn: () =>
-      getMiniProducts(1, 100, "", categorySlug, "", "true", "", "" ,""), // Fetch bestseller products with category filter
+      getMiniProducts(1, 100, "", categorySlug, "", "true", "", "", ""), // Fetch bestseller products with category filter
   });
 
   // Scroll functions
@@ -44,43 +44,43 @@ export default function BestsellerSection({ categorySlug }) {
   if (isError) return <div>Error: {error.message}</div>;
 
   return (
-   <section className="bg-white relative ">
-  <div className="relative max-w-7xl mx-auto px-4 sm:px-6"> 
-    <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-6 text-center">
-      Bestseller Products
-    </h2>
+    <section className="bg-white relative ">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-6 text-center italic tracking-tighter uppercase">
+          Elite <span className="text-blue-600 underline underline-offset-4 decoration-2">Classics</span>
+        </h2>
 
-    <div className="relative">
-      <button
-        onClick={scrollLeft}
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white p-2 rounded-full shadow hover:bg-pink-50 transition"
-      >
-        <FaChevronLeft className="text-pink-500" />
-      </button>
+        <div className="relative">
+          <button
+            onClick={scrollLeft}
+            className="absolute left-[-1.5rem] top-1/2 -translate-y-1/2 z-20 bg-white p-4 rounded-full shadow-2xl border border-slate-100 hover:bg-blue-600 hover:text-white transition-all duration-500 group active:scale-90"
+          >
+            <FaChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+          </button>
 
-      <button
-        onClick={scrollRight}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white p-2 rounded-full shadow hover:bg-pink-50 transition"
-      >
-        <FaChevronRight className="text-pink-500" />
-      </button>
+          <button
+            onClick={scrollRight}
+            className="absolute right-[-1.5rem] top-1/2 -translate-y-1/2 z-20 bg-white p-4 rounded-full shadow-2xl border border-slate-100 hover:bg-blue-600 hover:text-white transition-all duration-500 group active:scale-90"
+          >
+            <FaChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          </button>
 
-      <div
-        ref={carouselRef}
-        className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory py-2 px-2"
-      >
-        {data.products.map((product) => (
-          <div key={product._id} className="flex-shrink-0 w-1/2 sm:w-60 md:w-52 lg:w-60">
-            <BestSellPC
-              product={product}
-              onProductClick={(productId) => navigate(`/product/${productId}`)}
-            />
+          <div
+            ref={carouselRef}
+            className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory py-2 px-2"
+          >
+            {data.products.map((product) => (
+              <div key={product._id} className="flex-shrink-0 w-1/2 sm:w-60 md:w-52 lg:w-60">
+                <BestSellPC
+                  product={product}
+                  onProductClick={(productId) => navigate(`/product/${productId}`)}
+                />
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
   );
 }

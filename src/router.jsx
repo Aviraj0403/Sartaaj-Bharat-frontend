@@ -15,6 +15,7 @@ import CookiePolicy from "./pages/legal/CookieDoc.jsx";
 import ShippingPolicy from "./pages/legal/ShippingPolicy.jsx";
 import RefundPolicy from "./pages/legal/RefundPolicy.jsx";
 import NotFoundPage from "./pages/PNF/NotFoundPage.jsx";
+import ProfilePage from "./profile/ProfilePage.jsx";
 import Layout from "./Layout.jsx";
 
 // Minimal router configuration for Sartaaj Bharat Store
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "signup",
         element: <SignupPage />
+      },
+      {
+        path: "profile",
+        element: <ProfilePage />
       },
       {
         path: "forgot-password",
