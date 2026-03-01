@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const baseURL = 'http://localhost:6005/v1/api';
-// const baseURL = 'https://sartaaj-bharat-backend.onrender.com/v1/api';
+// const baseURL = 'http://localhost:6005/v1/api';
+
+const baseURL = 'https://sartaaj-bharat-backend.onrender.com/v1/api';
 
 const Axios = axios.create({
   baseURL,
