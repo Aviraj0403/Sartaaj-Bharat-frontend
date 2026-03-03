@@ -12,13 +12,13 @@ export default function NewArrivalPC({ product, onProductClick }) {
   const size = activeVariant?.size;
   // const color = activeVariant?.color;  // Ensure color is extracted from the variant
   const color = Array.isArray(activeVariant?.color)
-  ? activeVariant.color[0]
-  : activeVariant?.color;
+    ? activeVariant.color[0]
+    : activeVariant?.color;
   const price = activeVariant?.price;
-const image =
-  activeVariant?.images?.[0] ||
-  activeVariant?.image ||
-  product?.pimage;
+  const image =
+    activeVariant?.images?.[0] ||
+    activeVariant?.image ||
+    product?.pimage;
 
   const [quantity, setQuantity] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
@@ -80,8 +80,8 @@ const image =
   };
 
   return (
-<div
-  className="
+    <div
+      className="
     w-full 
     max-w-[240px] sm:max-w-none 
     min-h-[360px] sm:min-h-auto
@@ -96,27 +96,27 @@ const image =
     flex flex-col justify-between 
     overflow-visible
   "
->
+    >
       {/* ❤️ Heart Icon */}
-      <div className="absolute top-3 right-3 z-20 text-pink-500 cursor-pointer opacity-80 hover:opacity-100 transition text-lg">
+      <div className="absolute top-4 right-4 z-20 text-slate-400 cursor-pointer hover:text-blue-500 transition-all text-lg group-hover:scale-110">
         <FaHeart />
       </div>
 
       {/* 🏷️ Discount Badge */}
       {discount > 0 && (
-        <div className="absolute top-3 left-3 z-20 bg-pink-500 text-white text-xs font-semibold px-2 py-1 rounded-md shadow">
-          {discount}% OFF
+        <div className="absolute top-4 left-4 z-20 bg-blue-600 text-white text-[8px] font-black px-3 py-1.5 rounded-lg shadow-2xl uppercase tracking-widest italic">
+          -{discount}% YIELD
         </div>
       )}
 
       {/* Static New Arrival Badge */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 bg-pink-500 z-20 text-white px-3 py-1 rounded-tl-xl rounded-bl-xl text-xs font-bold">
-        New Arrival
+      <div className="absolute top-0 right-0 -translate-y-1/2 bg-slate-950 z-20 text-white px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest italic border border-white/10">
+        LATEST ARCHIVE
       </div>
 
       {/* 🖼️ Product Image */}
       <div
-       className="w-full h-32 md:h-36 flex justify-center items-center mb-4 cursor-pointer"
+        className="w-full h-32 md:h-36 flex justify-center items-center mb-4 cursor-pointer"
         onClick={handleProductClick}
       >
         <img
@@ -127,26 +127,26 @@ const image =
       </div>
 
       {/* 📝 Product Info */}
-     <h3 className="text-base md:text-base font-semibold text-gray-800 mb-2">
+      <h3 className="text-sm md:text-base font-black text-slate-950 mb-3 px-1 italic uppercase tracking-tighter">
         <span className="block w-full line-clamp-2" title={product.name}>{product.name}</span>
       </h3>
 
       {/* 💰 Price and Rating */}
       <div className="flex justify-between items-center mb-3 px-1 text-sm">
-        <div className="flex items-center gap-1">
-          <p className="text-pink-500 font-medium text-sm">₹{activeVariant?.price}</p>
-          <p className="text-gray-400 line-through text-xs">
+        <div className="flex items-center gap-2">
+          <p className="text-blue-600 font-black text-sm italic">₹{activeVariant?.price}</p>
+          <p className="text-slate-300 line-through text-[10px] font-bold tracking-widest">
             ₹{activeVariant?.realPrice?.toFixed(2)}
           </p>
         </div>
-        <div className="flex items-center">
-          <FaStar className="text-yellow-400 text-xs" />
-          <span className="ml-1 text-gray-600 text-xs">{product.rating}</span>
+        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-full">
+          <FaStar className="text-blue-500 text-[10px]" />
+          <span className="text-slate-700 text-[10px] font-black italic">{product.rating}</span>
         </div>
       </div>
 
       {/* ⭐ SUCCESS POPUP */}
- {showPopup && (
+      {showPopup && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
           <div className="bg-white rounded-xl p-5 w-[90%] max-w-sm text-center">
 
@@ -160,10 +160,10 @@ const image =
               className="w-20 h-20 mx-auto mt-3 object-contain"
             />
 
-            <p className="font-semibold text-sm mt-2">{product.name}</p>
-            {color && <p className="text-xs">Color: {color}</p>}
-            {size && <p className="text-xs">Size: {size}</p>}
-            <p className="text-pink-500 text-sm font-semibold mt-1">
+            <p className="text-slate-950 font-black text-sm mt-3 uppercase tracking-tighter italic">{product.name}</p>
+            {color && <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">AXIS: {color}</p>}
+            {size && <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">SCALE: {size}</p>}
+            <p className="text-blue-600 text-base font-black mt-2 italic">
               ₹{price}
             </p>
 
@@ -174,9 +174,9 @@ const image =
             <div className="flex gap-2 mt-4">
               <button
                 onClick={() => navigate("/cart")}
-                className="flex-1 bg-pink-500 text-white text-sm py-1.5 rounded"
+                className="flex-1 bg-blue-600 text-white text-[10px] font-black uppercase tracking-[0.2em] py-3 rounded-xl shadow-2xl italic"
               >
-                Go to Cart
+                OPEN LOGISTICS
               </button>
               <button
                 onClick={() => setShowPopup(false)}
@@ -190,18 +190,18 @@ const image =
       )}
       {/* 🛒 Button Area */}
       {quantity > 0 ? (
-        <div className="flex flex-col md:flex-row gap-2">
-          <div className="flex justify-between items-center border border-pink-500 rounded flex-1">
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-between items-center border border-slate-950 rounded-2xl flex-1 overflow-hidden">
             <button
               onClick={handleDecrement}
-              className="w-1/3 text-xl font-bold py-2 text-pink-500 hover:bg-pink-100"
+              className="w-1/3 text-xl font-black py-2.5 text-slate-950 hover:bg-slate-50 transition"
             >
               –
             </button>
-            <span className="w-1/3 text-center font-medium">{quantity}</span>
+            <span className="w-1/3 text-center font-black text-sm italic">{quantity}</span>
             <button
               onClick={handleIncrement}
-              className="w-1/3 text-xl font-bold py-2 text-pink-500 hover:bg-pink-100"
+              className="w-1/3 text-xl font-black py-2.5 text-slate-950 hover:bg-slate-50 transition"
             >
               +
             </button>
@@ -209,25 +209,25 @@ const image =
 
           <button
             onClick={handleBuyNow}
-            className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm"
+            className="flex-1 bg-slate-950 text-white font-black py-4 rounded-2xl hover:bg-blue-600 transition-all text-[10px] uppercase tracking-[0.3em] italic shadow-2xl"
           >
-            Buy Now
+            AUTHORIZE GAIN
           </button>
         </div>
       ) : (
-        <div className="flex flex-col md:flex-row gap-2">
+        <div className="flex flex-col gap-3">
           <button
             onClick={handleAddToCart}
-            className="flex-1 bg-pink-500 text-white font-semibold py-2 rounded-lg hover:bg-pink-600 transition text-sm"
+            className="flex-1 bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-slate-950 transition-all text-[10px] uppercase tracking-[0.3em] italic shadow-2xl"
           >
-            Add to Cart
+            ACQUIRE ASSET
           </button>
 
           <button
             onClick={handleBuyNow}
-            className="flex-1 border border-pink-500 text-pink-500 font-semibold py-2 rounded-lg hover:bg-pink-50 transition text-sm"
+            className="flex-1 border border-slate-950 text-slate-950 font-black py-4 rounded-2xl hover:bg-slate-50 transition text-[10px] uppercase tracking-[0.3em] italic"
           >
-            Buy Now
+            AUTHORIZE GAIN
           </button>
         </div>
       )}

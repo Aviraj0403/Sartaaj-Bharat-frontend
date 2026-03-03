@@ -10,8 +10,8 @@ export const syncCartOnLogin = createAsyncThunk(
 
     try {
       // STEP 1: Fetch backend cart
-      const backend = await getUserCart();
-      const backendItems = backend.data.cartItems;
+      const response = await getUserCart();
+      const backendItems = response.data.cart?.items || [];
 
       if (localCart.length === 0) {
         dispatch(setCart({ items: backendItems }));
@@ -43,7 +43,7 @@ export const syncCartOnLogin = createAsyncThunk(
 
       // STEP 3: Fetch final cart from backend and merge
       const finalCart = await getUserCart();
-      dispatch(setCart({ items: finalCart.data.cartItems }));
+      dispatch(setCart({ items: finalCart.data.cart?.items || [] }));
     } catch (err) {
       console.error("❌ Failed to sync cart on login:", err);
     }
@@ -51,13 +51,12 @@ export const syncCartOnLogin = createAsyncThunk(
 );
 
 // Fetch backend cart (on refresh or token restore)
-export const fetchBackendCart = createAsyncThunk(
-  "cart/fetchBackendCart",
+export const loadCartFromBackend = createAsyncThunk(
+  "cart/loadFromBackend",
   async (_, { dispatch }) => {
     try {
       const response = await getUserCart();
-      // console.log("📦 Fetched Backend Cart:", response.data.cartItems);
-      dispatch(setCart({ items: response.data.cartItems }));
+      dispatch(setCart({ items: response.data.cart?.items || [] }));
     } catch (err) {
       console.error("❌ Fetch backend cart error:", err);
     }
@@ -69,15 +68,11 @@ export const addToCartThunk = createAsyncThunk(
   "cart/addToCart",
   async ({ productId, size, color, quantity }, { dispatch }) => {
     try {
-      // console.log("🛒 Adding to backend:", { productId, size, color, quantity });
-      
       await addToCart({ productId, size, color, quantity });
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
-      // console.log("✅ Backend response after add:", updatedCart.data.cartItems);
-      
-      dispatch(setCart({ items: updatedCart.data.cartItems }));
+      dispatch(setCart({ items: updatedCart.data.cart?.items || [] }));
     } catch (err) {
       console.error("❌ Add to cart failed:", err);
       throw err;
@@ -85,23 +80,17 @@ export const addToCartThunk = createAsyncThunk(
   }
 );
 
-// 🔧 CRITICAL FIX: Update item quantity in cart
+// Update item quantity in cart
 export const updateCartItemThunk = createAsyncThunk(
   "cart/updateCartItem",
-  async ({ productId, size, color, quantity }, { dispatch }) => {
+  async ({ id, quantity }, { dispatch }) => { // id is the itemId from backend cart
     try {
-      // console.log("📝 Updating backend:", { productId, size, color, quantity });
-      
-      // Update backend
-      await updateCartItem({ productId, size, color, quantity });
+      await updateCartItem(id, quantity);
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
-      // console.log("✅ Backend response after update:", updatedCart.data.cartItems);
-      
-      // Update Redux state with backend data
-      dispatch(setCart({ items: updatedCart.data.cartItems }));
-      
+      dispatch(setCart({ items: updatedCart.data.cart?.items || [] }));
+
       return { success: true };
     } catch (err) {
       console.error("❌ Update cart item failed:", err);
@@ -113,17 +102,13 @@ export const updateCartItemThunk = createAsyncThunk(
 // Remove item from backend and update Redux
 export const removeFromCartThunk = createAsyncThunk(
   "cart/removeFromCart",
-  async ({ productId, size, color }, { dispatch }) => {
+  async (itemId, { dispatch }) => {
     try {
-      // console.log("🗑️ Removing from backend:", { productId, size, color });
-      
-      await removeCartItem({ productId, size, color });
+      await removeCartItem(itemId);
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
-      // console.log("✅ Backend response after remove:", updatedCart.data.cartItems);
-      
-      dispatch(setCart({ items: updatedCart.data.cartItems }));
+      dispatch(setCart({ items: updatedCart.data.cart?.items || [] }));
     } catch (err) {
       console.error("❌ Remove from cart failed:", err);
     }
@@ -142,3 +127,5 @@ export const clearCartThunk = createAsyncThunk(
     }
   }
 );
+
+export { loadCartFromBackend as fetchBackendCart };

@@ -34,7 +34,7 @@ export default function ComboSection({ categorySlug }) {
       if (carouselRef.current) {
         if (
           carouselRef.current.scrollLeft +
-            carouselRef.current.offsetWidth >=
+          carouselRef.current.offsetWidth >=
           carouselRef.current.scrollWidth
         ) {
           carouselRef.current.scrollTo({ left: 0, behavior: "smooth" });
@@ -56,23 +56,24 @@ export default function ComboSection({ categorySlug }) {
   return (
     <section className="bg-white relative">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-        <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-6 text-center">
-          Combo Products
+        <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block text-center italic">Optimized Packages</span>
+        <h2 className="text-3xl md:text-5xl font-black text-slate-950 mb-12 text-center italic uppercase tracking-tighter">
+          ARTIFACT <span className="text-blue-600">CLUSTERS.</span>
         </h2>
 
-        <div className="relative">
+        <div className="relative group/carousel">
           <button
             onClick={scrollLeft}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white p-2 rounded-full shadow hover:bg-pink-50 transition"
+            className="absolute -left-4 top-1/2 -translate-y-1/2 z-20 bg-slate-950 text-white p-4 rounded-2xl shadow-2xl opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-blue-600 active:scale-90"
           >
-            <FaChevronLeft className="text-pink-500" />
+            <FaChevronLeft className="text-sm" />
           </button>
 
           <button
             onClick={scrollRight}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white p-2 rounded-full shadow hover:bg-pink-50 transition"
+            className="absolute -right-4 top-1/2 -translate-y-1/2 z-20 bg-slate-950 text-white p-4 rounded-2xl shadow-2xl opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-blue-600 active:scale-90"
           >
-            <FaChevronRight className="text-pink-500" />
+            <FaChevronRight className="text-sm" />
           </button>
 
           <div

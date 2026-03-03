@@ -19,10 +19,10 @@ export const checkAuth = createAsyncThunk(
   'auth/checkAuth',
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const res = await authMe(); // /auth/me
-      dispatch(setUser(res.data)); // { data: user }
-      dispatch(loadCartFromBackend()); // cart bhi load kar lo
-      return res.data;
+      const user = await authMe();
+      dispatch(setUser(user));
+      dispatch(loadCartFromBackend());
+      return user;
     } catch (err) {
       dispatch(clearUser());
       dispatch(setAuthChecked());
@@ -36,11 +36,11 @@ export const loginUser = createAsyncThunk(
   'auth/login',
   async (credentials, { dispatch, rejectWithValue }) => {
     try {
-      await login(credentials); // backend login
-      const res = await authMe();
-      dispatch(setUser(res.data));
-      await dispatch(syncCartOnLogin()).unwrap(); // guest cart → user cart merge
-      return res.data;
+      await login(credentials);
+      const user = await authMe();
+      dispatch(setUser(user));
+      await dispatch(syncCartOnLogin()).unwrap();
+      return user;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || 'Login failed');
     }
@@ -73,10 +73,10 @@ export const phoneSignIn = createAsyncThunk(
   async (idToken, { dispatch, rejectWithValue }) => {
     try {
       await registerViaPhone({ token: idToken });
-      const res = await authMe();
-      dispatch(setUser(res.data));
+      const user = await authMe();
+      dispatch(setUser(user));
       await dispatch(syncCartOnLogin()).unwrap();
-      return res.data;
+      return user;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || 'Phone login failed');
     }

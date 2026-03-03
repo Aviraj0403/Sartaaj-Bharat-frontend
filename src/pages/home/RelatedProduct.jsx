@@ -23,10 +23,11 @@ export default function RelatedProduct({ categorySlug }) {
   }
 
   return (
-    <section className="py-10 bg-white w-full overflow-hidden">
-      <div className="w-full max-w-[100vw]">
-        <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-6 text-center">
-          Related Products
+    <section className="py-10 bg-slate-50 w-full overflow-hidden border-t border-slate-100">
+      <div className="w-full max-w-[100vw] px-4">
+        <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-3 block text-center italic">Neural Match</span>
+        <h2 className="text-2xl md:text-4xl font-black text-slate-950 mb-6 text-center italic uppercase tracking-tighter">
+          SIMILAR <span className="text-blue-600">ARTIFACTS.</span>
         </h2>
 
         <div

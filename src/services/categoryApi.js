@@ -1,10 +1,14 @@
 import Axios from '../utils/Axios';
 
+/**
+ * Fetch categories for the menu
+ * Backend: GET /v1/api/categories/tree
+ */
 export const getMenuCategories = async () => {
   try {
-    const response = await Axios.get('/category/getMenuCategories');
+    const response = await Axios.get('/categories/tree');
     if (response.data.success) {
-      return response.data.categories;
+      return response.data.data || response.data.categories || [];
     } else {
       throw new Error('Failed to fetch categories');
     }
@@ -13,13 +17,18 @@ export const getMenuCategories = async () => {
     return [];
   }
 };
+
+/**
+ * Fetch search suggestions
+ * Backend: GET /v1/api/products/search with query
+ */
 export const getSearchSuggestions = async (query) => {
   try {
-    const response = await Axios.get(`/products/suggestions`, {
-      params: { search: query, limit: 30 },
+    const response = await Axios.get(`/products/search`, {
+      params: { q: query },
     });
     if (response.data.success) {
-      return response.data.suggestions;  // Return the suggestions list
+      return response.data.products; // Adjusted from suggestions to products based on common patterns
     } else {
       throw new Error('Failed to fetch search suggestions');
     }

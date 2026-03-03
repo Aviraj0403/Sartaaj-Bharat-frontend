@@ -52,34 +52,41 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-xl z-[200] transform transition-transform duration-300 ${
-        isOpen ? "translate-x-0" : "translate-x-full"
-      }`}
+      className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-xl z-[200] transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
     >
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-800">Apply Coupon</h2>
+      <div className="flex justify-between items-center p-8 border-b border-slate-50 bg-white/80 backdrop-blur-md sticky top-0 z-10">
+        <div>
+          <h2 className="text-2xl font-black text-slate-900 italic uppercase tracking-tighter">Protocol Activation</h2>
+          <p className="text-slate-400 text-[8px] font-black uppercase tracking-[0.4em] mt-1">Discount Authorization Required</p>
+        </div>
         <button
           onClick={onClose}
-          className="text-gray-600 hover:text-pink-600 transition"
+          className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-950 hover:text-white transition-all transform hover:rotate-90"
         >
-          <X size={20} />
+          <X size={20} strokeWidth={3} />
         </button>
       </div>
 
       {/* Content */}
       <div className="p-6 flex flex-col gap-4">
         {appliedCoupon ? (
-          <div className="flex flex-col items-center gap-2">
-            <Check className="text-green-500" size={32} />
-            <p className="text-green-600 font-semibold text-center">
-              Coupon "{appliedCoupon}" Applied Successfully!
-            </p>
+          <div className="flex flex-col items-center gap-6 p-8 bg-blue-50/50 rounded-[3rem] border border-blue-500/20 border-dashed">
+            <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center shadow-xl shadow-blue-500/20">
+              <Check className="text-white" size={32} strokeWidth={4} />
+            </div>
+            <div className="text-center">
+              <p className="text-slate-900 font-black italic uppercase tracking-tighter text-lg leading-none">
+                Protocol <span className="text-blue-600">"{appliedCoupon}"</span>
+              </p>
+              <p className="text-slate-400 font-bold text-[9px] uppercase tracking-[0.3em] mt-2">Active Authorization Granted</p>
+            </div>
             <button
               onClick={onClose}
-              className="mt-2 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition"
+              className="w-full py-5 bg-slate-950 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] italic hover:bg-blue-600 transition-all active:scale-95"
             >
-              Close
+              Back to Checkout
             </button>
           </div>
         ) : (
@@ -91,24 +98,24 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
               </div>
             )}
 
-            <p className="text-gray-600 mb-2">
-              Enter your coupon code or choose one of our amazing offers:
+            <p className="text-slate-400 font-bold text-[9px] uppercase tracking-[0.2em] italic mb-6 leading-relaxed">
+              INPUT AUTHORIZED OVERRIDE CODE OR SELECT FROM ACTIVE ENTERPRISE NODES:
             </p>
 
             {/* Custom Coupon Input */}
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <input
                 type="text"
                 value={coupon}
                 onChange={(e) => setCoupon(e.target.value)}
-                placeholder="Enter coupon code"
-                className="flex-1 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500 transition"
+                placeholder="ENTER OVERRIDE CODE"
+                className="flex-1 bg-slate-50 border-2 border-slate-50 rounded-[1.5rem] p-5 outline-none text-slate-800 font-black text-[11px] uppercase tracking-[0.2em] italic focus:border-blue-600 focus:bg-white transition-all shadow-inner focus:shadow-2xl focus:shadow-blue-500/10"
               />
               <button
                 onClick={() => handleApply(coupon)}
-                className="bg-pink-500 hover:bg-pink-600 text-white font-semibold px-4 rounded-lg transition"
+                className="bg-blue-600 hover:bg-slate-950 text-white font-black text-[10px] px-8 rounded-[1.5rem] transition-all italic tracking-[0.2em] shadow-xl shadow-blue-500/20 active:scale-90"
               >
-                Apply
+                DEPLOY
               </button>
             </div>
 
@@ -118,25 +125,25 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
             {/* Active Offers Section */}
             <div className="mt-4 flex flex-col gap-3">
               {!loading && offers.length === 0 ? (
-                <p className="text-gray-600">No active offers available.</p>
+                <p className="text-slate-400 font-bold text-[9px] uppercase tracking-widest text-center py-10">No active neural nodes available.</p>
               ) : (
                 offers.map((offer) => (
                   <div
                     key={offer._id}
-                    className="relative bg-gradient-to-r from-pink-50 via-pink-100 to-pink-50 border-l-4 border-pink-500 rounded-xl p-4 flex justify-between items-center shadow-md hover:shadow-lg transition cursor-pointer"
+                    className="relative bg-slate-50 border border-slate-100 rounded-[2rem] p-8 flex justify-between items-center group cursor-pointer hover:bg-white hover:border-blue-600 hover:shadow-2xl transition-all duration-500"
                     onClick={() => handleApply(offer.code, offer.name)}
                   >
                     <div className="flex flex-col">
-                      <span className="font-semibold text-pink-600 text-sm sm:text-base">
+                      <span className="font-black text-blue-600 italic text-lg tracking-tighter uppercase leading-none">
                         {offer.code}
                       </span>
-                      <span className="text-gray-600 text-xs sm:text-sm">
-                        {offer.name} - {offer.discountPercentage}% off
+                      <span className="text-slate-400 font-bold text-[8px] uppercase tracking-[0.3em] mt-3">
+                        {offer.name} // {offer.discountPercentage}% YIELD
                       </span>
                     </div>
-                    <button className="bg-pink-500 text-white px-3 py-1 rounded-lg text-xs sm:text-sm hover:bg-pink-600 transition">
-                      Apply
-                    </button>
+                    <div className="w-12 h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-all duration-500">
+                      <Check size={18} strokeWidth={3} />
+                    </div>
                   </div>
                 ))
               )}

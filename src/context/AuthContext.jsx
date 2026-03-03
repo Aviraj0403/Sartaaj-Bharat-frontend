@@ -19,9 +19,9 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const validateSession = async () => {
       try {
-        const res = await Axios.get("/auth/me");
+        const res = await Axios.get("/auth/profile");
         setUser(res.data.data);
-        
+
         setCartSyncing(true);
         await dispatch(fetchBackendCart()).unwrap();
       } catch (error) {
@@ -35,16 +35,15 @@ export const AuthProvider = ({ children }) => {
         setCartSyncing(false);
       }
     };
-    
+
     validateSession();
   }, [dispatch]);
 
-  // ✅ Phone OTP V2 - Send OTP
-  const sendPhoneOTP = async (phoneNumber, sessionId = null) => {
+  // ✅ Phone OTP - Send OTP
+  const sendPhoneOTP = async (phoneNumber) => {
     try {
-      const response = await Axios.post("/auth/phoneV2/send-otp", {
-        phoneNumber,
-        sessionId
+      const response = await Axios.post("/auth/phone/request-otp", {
+        phoneNumber
       });
       return response.data;
     } catch (error) {
@@ -52,24 +51,24 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ Phone OTP V2 - Verify OTP & Login
-  const verifyPhoneOTP = async (sessionId, otp) => {
+  // ✅ Phone OTP - Verify OTP & Login
+  const verifyPhoneOTP = async (phoneNumber, otp) => {
     try {
-      const response = await Axios.post("/auth/phoneV2/verify-otp", {
-        sessionId,
+      const response = await Axios.post("/auth/phone/verify-otp", {
+        phoneNumber,
         otp
       });
-      
+
       // Fetch updated user data
-      const userRes = await Axios.get("/auth/me");
+      const userRes = await Axios.get("/auth/profile");
       setUser(userRes.data.data);
-      
+
       // Sync cart
       setCartSyncing(true);
       await dispatch(syncCartOnLogin()).unwrap();
       await dispatch(fetchBackendCart()).unwrap();
       setCartSyncing(false);
-      
+
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: "Failed to verify OTP" };
@@ -79,16 +78,16 @@ export const AuthProvider = ({ children }) => {
   // ✅ Email/Username login
   const login = async (credentials) => {
     try {
-      await Axios.post("/auth/signIn", credentials);
-      
-      const res = await Axios.get("/auth/me");
+      await Axios.post("/auth/login", credentials);
+
+      const res = await Axios.get("/auth/profile");
       setUser(res.data.data);
-      
+
       setCartSyncing(true);
       await dispatch(syncCartOnLogin()).unwrap();
       await dispatch(fetchBackendCart()).unwrap();
       setCartSyncing(false);
-      
+
       return res.data.data;
     } catch (error) {
       throw error.response?.data || { message: "Login failed" };
@@ -99,34 +98,34 @@ export const AuthProvider = ({ children }) => {
   const googleLogin = async () => {
     try {
       console.log('🔐 Starting Google login...');
-      
+
       // Dynamic import of Firebase
-      const { auth, googleProvider, signInWithPopup } = 
+      const { auth, googleProvider, signInWithPopup } =
         await import("../pages/firebase/firebase");
       const { getIdToken } = await import("firebase/auth");
-      
+
       console.log('🔐 Opening Google sign-in popup...');
       const result = await signInWithPopup(auth, googleProvider);
-      
+
       console.log('✅ Google popup successful');
       const firebaseUser = result.user;
       const idToken = await getIdToken(firebaseUser);
-      
+
       // console.log('🔐 Sending token to backend...');
-      
+
       // Send token to backend
-      const response = await Axios.post("/auth/googleSignIn", { 
-        idToken 
+      const response = await Axios.post("/auth/google", {
+        idToken
       });
-      
+
       console.log('✅ Backend authentication successful');
-      
+
       // Fetch updated user data
-      const userRes = await Axios.get("/auth/me");
+      const userRes = await Axios.get("/auth/profile");
       setUser(userRes.data.data);
-      
+
       console.log('🛒 Syncing cart...');
-      
+
       // Sync cart
       setCartSyncing(true);
       try {
@@ -137,39 +136,72 @@ export const AuthProvider = ({ children }) => {
         // Don't fail login if cart sync fails
       }
       setCartSyncing(false);
-      
+
       console.log('✅ Google login complete');
-      
+
       return userRes.data.data;
     } catch (error) {
       console.error('❌ Google login error:', error);
-      
+
       // Handle specific Firebase errors
       if (error.code === 'auth/popup-closed-by-user') {
         throw { message: "Sign-in cancelled" };
       }
-      
+
       if (error.code === 'auth/popup-blocked') {
         throw { message: "Popup blocked. Please allow popups for this site." };
       }
-      
+
       if (error.code === 'auth/network-request-failed') {
         throw { message: "Network error. Please check your connection." };
       }
-      
+
       // Backend errors
       if (error.response?.data?.message) {
         throw { message: error.response.data.message };
       }
-      
+
       throw { message: error.message || "Google login failed" };
+    }
+  };
+
+  // ✅ Facebook Login
+  const facebookLogin = async () => {
+    try {
+      const { auth, facebookProvider, signInWithPopup } =
+        await import("../pages/firebase/firebase");
+      const { getIdToken } = await import("firebase/auth");
+
+      const result = await signInWithPopup(auth, facebookProvider);
+      const firebaseUser = result.user;
+      const idToken = await getIdToken(firebaseUser);
+
+      await Axios.post("/auth/facebook", { idToken });
+
+      const userRes = await Axios.get("/auth/profile");
+      setUser(userRes.data.data);
+
+      setCartSyncing(true);
+      try {
+        await dispatch(syncCartOnLogin()).unwrap();
+        await dispatch(fetchBackendCart()).unwrap();
+      } catch (cartError) {
+        console.error("Cart sync error:", cartError);
+      }
+      setCartSyncing(false);
+
+      return userRes.data.data;
+    } catch (error) {
+      console.error('❌ Facebook login error:', error);
+      if (error.code === 'auth/popup-closed-by-user') throw { message: "Sign-in cancelled" };
+      throw { message: error.response?.data?.message || "Facebook login failed" };
     }
   };
 
   // ✅ Logout
   const logout = async () => {
     try {
-      await Axios.post("/auth/user/logout");
+      await Axios.post("/auth/logout");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
@@ -177,7 +209,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       dispatch(clearCart());
       queryClient.clear();
-      
+
       // Clear all storage
       localStorage.clear();
       sessionStorage.clear();
@@ -194,6 +226,7 @@ export const AuthProvider = ({ children }) => {
         verifyPhoneOTP,
         login,
         googleLogin,
+        facebookLogin,
         logout,
       }}
     >

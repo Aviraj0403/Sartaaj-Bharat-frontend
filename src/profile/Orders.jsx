@@ -11,7 +11,7 @@ export default function Orders() {
   // State to hold fetched orders
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
-  
+
   // Fetch orders on component mount
   useEffect(() => {
     if (user) {
@@ -47,9 +47,9 @@ export default function Orders() {
   }
 
   return (
-    <div className="p-5 min-h-screen">
-      <h1 className="text-3xl font-extrabold text-pink-600 mb-2">My Orders</h1>
-      <p className="text-gray-600 mb-6 text-sm">
+    <div className="p-5 min-h-screen bg-slate-50/30">
+      <h1 className="text-3xl font-black text-slate-900 mb-2 italic tracking-tighter uppercase">My Orders</h1>
+      <p className="text-slate-500 mb-6 text-sm font-medium uppercase tracking-widest">
         Manage and track your recent orders below.
       </p>
 
@@ -68,85 +68,84 @@ export default function Orders() {
           return (
             <div
               key={order._id} // Use _id from the database as key
-              className="bg-white rounded-2xl shadow-md border border-pink-100 overflow-hidden hover:shadow-lg transition-all"
+              className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-500 group"
             >
               {/* Header */}
-{/* Header */}
-<div className="flex justify-between items-center p-4 bg-gradient-to-r from-pink-50 to-pink-100 border-b border-pink-100 flex-wrap gap-2">
-  <div className="min-w-0">
-    <h2 className="text-sm font-semibold text-gray-800 truncate max-w-[200px]">
-      #{order._id}
-    </h2>
-    <p className="text-gray-500 text-xs">
-      Placed on {new Date(order.placedAt).toLocaleDateString()}
-    </p>
-  </div>
+              <div className="flex justify-between items-center p-5 bg-slate-50 border-b border-slate-100 flex-wrap gap-2">
+                <div className="min-w-0">
+                  <h2 className="text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">
+                    Order Protocol #{order._id}
+                  </h2>
+                  <p className="text-slate-900 font-bold text-xs italic">
+                    Placed on {new Date(order.placedAt).toLocaleDateString()}
+                  </p>
+                </div>
 
-  <span
-    className={`px-3 py-1 rounded-full text-white text-xs font-semibold whitespace-nowrap ${statusColors[order.orderStatus]}`}
-  >
-    {order.orderStatus}
-  </span>
-</div>
+                <span
+                  className={`px-3 py-1 rounded-full text-white text-xs font-semibold whitespace-nowrap ${statusColors[order.orderStatus]}`}
+                >
+                  {order.orderStatus}
+                </span>
+              </div>
 
 
               {/* Item */}
-             <div className="p-4 flex items-center gap-4 cursor-pointer">
-  <div className="relative flex-shrink-0">
-    <img
-      src={mainItem.product?.pimages[0]} // Assuming product images are in pimages array
-      alt={mainItem.product?.name || "GK Store Product"}
-      className="w-24 h-24 object-cover rounded-xl border border-pink-100 shadow-sm"
-    />
-    {remainingCount > 0 && (
-      <div className="absolute bottom-1 right-1 bg-pink-600 text-white rounded-full px-1.5 py-0.5 text-xs flex items-center gap-0.5 shadow-md">
-        <Plus size={12} /> {remainingCount}
-      </div>
-    )}
-  </div>
+              <div className="p-5 flex items-center gap-6 cursor-pointer">
+                <div className="relative flex-shrink-0">
+                  <img
+                    src={mainItem.product?.pimages[0]} // Assuming product images are in pimages array
+                    alt={mainItem.product?.name || "GK Store Product"}
+                    className="w-24 h-24 object-contain rounded-2xl border border-slate-100 shadow-sm bg-slate-50 p-2 group-hover:scale-105 transition-transform duration-500"
+                  />
+                  {remainingCount > 0 && (
+                    <div className="absolute -bottom-2 -right-2 bg-blue-600 text-white rounded-full px-2 py-1 text-[10px] font-black flex items-center gap-0.5 shadow-xl shadow-blue-500/30">
+                      <Plus size={10} strokeWidth={4} /> {remainingCount}
+                    </div>
+                  )}
+                </div>
 
-  <div className="flex-1">
-    <h3 className="text-gray-800 font-semibold text-sm sm:text-base">
-      {mainItem.product?.name}
-    </h3>
-    <p className="text-gray-500 text-sm">{mainItem.product?.seller}</p>
+                <div className="flex-1">
+                  <h3 className="text-gray-800 font-semibold text-sm sm:text-base">
+                    {mainItem.product?.name}
+                  </h3>
+                  <p className="text-gray-500 text-sm">{mainItem.product?.seller}</p>
 
-    {/* Display selected color and size */}
-    <div className="text-sm text-gray-600 mt-1">
-      <p><strong>Color:</strong> {mainItem.selectedVariant?.color}</p>
-      <p><strong>Size:</strong> {mainItem.selectedVariant?.size}</p>
-    </div>
+                  {/* Display selected color and size */}
+                  <div className="text-sm text-gray-600 mt-1">
+                    <p><strong>Color:</strong> {mainItem.selectedVariant?.color}</p>
+                    <p><strong>Size:</strong> {mainItem.selectedVariant?.size}</p>
+                  </div>
 
-    <div className="text-gray-800 mt-2 text-sm sm:text-base">
-      {couponDiscount > 0 && (
-        <p className="text-gray-600 text-sm">Coupon: -₹{couponDiscount}</p>
-      )}
-      <p className="text-gray-600 text-sm">Shipping: ₹{shippingAmount}</p>
-      <p className="text-gray-800 font-semibold mt-1">
-        Total: <span className="text-pink-500 font-bold">₹{order.totalAmount}</span>
-      </p>
-    </div>
+                  <div className="text-slate-900 mt-2 text-sm sm:text-base">
+                    {couponDiscount > 0 && (
+                      <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">Coupon: -₹{couponDiscount}</p>
+                    )}
+                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Shipping: ₹{shippingAmount}</p>
+                    <p className="text-slate-900 font-bold mt-2 italic">
+                      ARCHIVE TOTAL: <span className="text-blue-600 font-black">₹{order.totalAmount}</span>
+                    </p>
+                  </div>
 
-    <p className="text-gray-600 text-sm mt-1">{order.paymentStatus}</p>
-  </div>
-</div>
+                  <p className="text-blue-600 font-black text-[9px] uppercase tracking-[0.3em] mt-3">{order.paymentStatus}</p>
+                </div>
+              </div>
 
 
               {/* Footer */}
-              <div className="px-4 py-3 border-t border-pink-100 flex justify-between items-center">
+              <div className="px-5 py-4 border-t border-slate-100 flex justify-between items-center bg-slate-50/50">
                 <button
                   onClick={() => handleDownloadInvoice(order._id)} // Navigate to invoice page
-                  className="flex items-center gap-2 text-pink-600 text-sm font-medium hover:text-pink-700 transition"
+                  className="flex items-center gap-2 text-blue-600 text-[10px] font-black uppercase tracking-[0.2em] hover:text-blue-700 transition-colors italic"
                 >
-                  <Download size={16} />
-                  View Invoice
+                  <Download size={16} strokeWidth={2.5} />
+                  Download Protocol
                 </button>
 
                 <button
                   onClick={() => navigate(`/order/${order._id}`)} // Navigate to order details
-                  className="px-4 py-1.5 bg-pink-500 text-white text-xs rounded-full hover:bg-pink-600 transition"
+                  className="px-6 py-2 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-blue-600 transition-all shadow-lg active:scale-95 italic"
                 >
-                  View Details
+                  Inspection View
                 </button>
               </div>
             </div>

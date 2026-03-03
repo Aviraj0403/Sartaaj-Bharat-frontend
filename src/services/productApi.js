@@ -1,101 +1,146 @@
 import Axios from '../utils/Axios';
 
-// API call to fetch products by category slug
+/**
+ * Fetch products by category slug
+ * Backend: GET /v1/api/products?category=:slug
+ */
 export const getProductsByCategorySlug = async (slug, page = 1, limit = 100) => {
   try {
-    // Send GET request to the server to fetch products by category slug
-    const response = await Axios.get(`/products/${slug}`, {
-      params: { page, limit },
+    const response = await Axios.get('/products', {
+      params: { category: slug, page, limit },
     });
 
-    // Check if the response is successful
     if (response.data && response.data.success) {
-      return response.data;
+      return {
+        ...response.data,
+        products: response.data.data || [],
+        pagination: response.data.meta || {}
+      };
     } else {
-      // If not successful, throw an error
       throw new Error('Failed to fetch products');
     }
   } catch (error) {
-    // Log the error and provide fallback data
     console.error('Error fetching products by category slug:', error);
     return { success: false, products: [], pagination: {} };
   }
 };
 
+/**
+ * Fetch products by category and sub-category slug
+ * Backend: GET /v1/api/products?category=:categorySlug&subCategory=:subCategorySlug
+ */
 export const getProductsByCategoryAndSubCategorySlug = async (categorySlug, subCategorySlug, page = 1, limit = 20) => {
   try {
-    // Send GET request to the server to fetch products by category and sub-category slug
-    const response = await Axios.get(`/products/${categorySlug}/${subCategorySlug}`, {
-      params: { page, limit },
+    const response = await Axios.get('/products', {
+      params: { category: categorySlug, subCategory: subCategorySlug, page, limit },
     });
-    // Check if the response is successful
     if (response.data && response.data.success) {
-      return response.data;
+      return {
+        ...response.data,
+        products: response.data.data || [],
+        pagination: response.data.meta || {}
+      };
     } else {
-      // If not successful, throw an error
       throw new Error('Failed to fetch products');
     }
   } catch (error) {
-    // Log the error and provide fallback data
     console.error('Error fetching products by category and sub-category slug:', error);
     return { success: false, products: [], pagination: {} };
   }
 };
 
+/**
+ * Fetch products with filters (mimicking the previous getminiversion)
+ * Backend: GET /v1/api/products with search, category, isFeatured, etc.
+ */
 export const getMiniProducts = async (
-  page = 1, 
-  limit = 1000, 
-  search = '', 
-  category = '', 
-  isHotProduct = '', 
-  isBestSeller = '', // Default isBestSeller to 'true'
+  page = 1,
+  limit = 100,
+  search = '',
+  category = '',
+  isHotProduct = '',
+  isBestseller = '',
   isFeatured = '',
-  isCombo = '' // Ensure isCombo is passed in the request
+  isCombo = '',
+  extraParams = {}
 ) => {
   try {
-    // Send GET request to fetch mini products with filters and pagination
-    const response = await Axios.get('/products/getminiversion', {
-      params: { 
-        page, 
-        limit, 
-        search, 
-        category, 
-        isHotProduct, 
-        isBestSeller, // Filter by Best Seller by default
-        isFeatured,
-        isCombo // Make sure isCombo is included in the request params
-      },
-    });
+    const params = { page, limit, search, category };
+    if (isHotProduct !== '') params.isHotProduct = isHotProduct;
+    if (isBestseller !== '') params.isBestseller = isBestseller;
+    if (isFeatured !== '') params.isFeatured = isFeatured;
+    if (isCombo !== '') params.isCombo = isCombo;
+    if (search !== '') params.search = search;
+    if (category !== '') params.category = category;
 
-    // Check if the response is successful
+    // Advanced filters
+    const { brand, ram, storage, minPrice, maxPrice, sortBy, sortOrder } = extraParams;
+    if (brand) params.brand = brand;
+    if (ram) params.ram = ram;
+    if (storage) params.storage = storage;
+    if (minPrice) params.minPrice = minPrice;
+    if (maxPrice) params.maxPrice = maxPrice;
+    if (sortBy) params.sortBy = sortBy;
+    if (sortOrder) params.sortOrder = sortOrder;
+
+    const response = await Axios.get('/products', { params });
+
     if (response.data && response.data.success) {
-      return response.data;
+      return {
+        ...response.data,
+        products: response.data.data || [],
+        pagination: response.data.meta || {}
+      };
     } else {
-      // If not successful, throw an error
       throw new Error('Failed to fetch mini products');
     }
   } catch (error) {
-    // Log the error and provide fallback data
     console.error('Error fetching mini products:', error);
     return { success: false, products: [], pagination: {} };
   }
 };
 
+/**
+ * Fetch single product by slug
+ * Backend: GET /v1/api/products/slug/:slug
+ */
 export const getProductBySlug = async (slug) => {
   try {
-    // Send GET request to fetch product by slug
-    const response = await Axios.get(`/products/getSingleProduct/${slug}`);
-    
-    // Check if the response is successful
+    const response = await Axios.get(`/products/slug/${slug}`);
+
     if (response.data && response.data.success) {
-      return response.data;  // Return the product data if successful
+      return response.data.data || response.data.product || response.data;
     } else {
       throw new Error('Failed to fetch product');
     }
   } catch (error) {
-    // Log the error and return fallback data
     console.error('Error fetching product by slug:', error);
-    return { success: false, product: null };  // Returning null product in case of error
+    return { success: false, product: null };
   }
 };
+
+/**
+ * Fetch product recommendations
+ * Backend: GET /v1/api/products/:productId/recommendations
+ */
+export const getRecommendations = async (productId, limit = 4) => {
+  try {
+    const response = await Axios.get(`/products/${productId}/recommendations`, {
+      params: { limit }
+    });
+
+    if (response.data && response.data.success) {
+      return {
+        success: true,
+        products: response.data.data || []
+      };
+    } else {
+      throw new Error('Failed to fetch recommendations');
+    }
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    return { success: false, products: [] };
+  }
+};
+
 

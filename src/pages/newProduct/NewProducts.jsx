@@ -20,7 +20,7 @@ const NewProducts = () => {
 
   // Loading state
   if (isLoading) {
-    return <div className="text-center text-pink-600">Loading...</div>;
+    return <div className="flex items-center justify-center min-h-[60vh] text-blue-600 font-black uppercase tracking-[0.5em] italic animate-pulse">Syncing Archives...</div>;
   }
 
   // Error handling state
@@ -34,13 +34,16 @@ const NewProducts = () => {
   return (
     <section className="py-5 bg-white">
       <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-pink-500 mb-6 text-center">
-          New Arrivals 
-        </h2>
+        <div className="text-center mb-16">
+          <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block italic">Newly Logged Artifacts</span>
+          <h2 className="text-3xl md:text-6xl font-black text-slate-950 italic uppercase tracking-tighter">
+            LATEST <span className="text-blue-600">ARCHIVES.</span>
+          </h2>
+        </div>
 
         {/* Product Grid */}
-    <div
-  className="
+        <div
+          className="
     grid
     grid-cols-2
     sm:grid-cols-2
@@ -49,17 +52,17 @@ const NewProducts = () => {
     xl:grid-cols-5
     gap-3 lg:gap-4
   "
->
-  {products.map((product) => (
-    <NewArrivalPC
-      key={product._id}
-      product={product}
-      onProductClick={handleProductClick}
-    />
-  ))}
-</div>
+        >
+          {products.map((product) => (
+            <NewArrivalPC
+              key={product._id}
+              product={product}
+              onProductClick={handleProductClick}
+            />
+          ))}
+        </div>
 
-     
+
       </div>
     </section>
   );

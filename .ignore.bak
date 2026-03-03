@@ -1,0 +1,163 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDGbXsMlno_6dOCvoZ0-ZEZu64ffT-5iNM",
+  authDomain: "gkstore-2ef6b.firebaseapp.com",
+  projectId: "gkstore-2ef6b",
+  storageBucket: "gkstore-2ef6b.firebasestorage.app",
+  messagingSenderId: "603124458135",
+  appId: "1:603124458135:web:4c3b9cf3a0031aa83bbfd2",
+  measurementId: "G-2QKS595Z06"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+
+
+
+import React from "react";
+import { FaStar, FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useCartActions } from "../../hooks/useCartActions";
+
+export default function ProductCard({ product, onProductClick }) {
+  const navigate = useNavigate();
+  const { addToCart, loading } = useCartActions();
+
+  // Safe access — agar kuch missing ho toh crash nahi
+  const variant = product?.variants || {};
+  const size = variant.size || "Standard";
+  const price = Number(variant.price) || 0;
+  const realPrice = Number(variant.realPrice) || price;
+  const discountPercent = product?.discount || 0;
+
+  // Final price after discount (if any)
+  const finalPrice = realPrice - (realPrice * discountPercent) / 100;
+
+  const handleProductClick = (e) => {
+    e.stopPropagation();
+    if (onProductClick) {
+      onProductClick(product.slug);
+    } else {
+      navigate(`/product/${product.slug}`);
+    }
+  };
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+
+    if (!size || price === 0) {
+      handleProductClick(e);
+      return;
+    }
+
+    addToCart(product._id, size, price, 1);
+  };
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 group overflow-hidden flex flex-col h-full cursor-pointer">
+      {/* Wishlist Heart */}
+      <div className="absolute top-3 right-3 z-20 text-pink-500 opacity-0 group-hover:opacity-100 transition text-xl">
+        <FaHeart className="drop-shadow-md" />
+      </div>
+
+      {/* Discount Badge */}
+      {discountPercent > 0 && (
+        <div className="absolute top-3 left-3 z-20 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+          {discountPercent}% OFF
+        </div>
+      )}
+
+      {/* Best Seller Badge */}
+      {product?.isBestSeller && (
+        <div className="absolute top-0 right-0 bg-gradient-to-bl from-orange-500 to-pink-500 text-white text-xs font-bold px-4 py-1 rounded-bl-xl">
+          Best Seller
+        </div>
+      )}
+
+      {/* Product Image */}
+      <div
+        onClick={handleProductClick}
+        className="relative w-full h-48 md:h-56 bg-gradient-to-b from-gray-50 to-white flex justify-center items-center p-4"
+      >
+        <img
+          src={product?.pimage || "/placeholder.jpg"}
+          alt={product?.name || "Product"}
+          className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110"
+          loading="lazy"
+        />
+      </div>
+
+      {/* Content */}
+      <div className="p-4 flex flex-col flex-grow">
+        <h3
+          onClick={handleProductClick}
+          className="font-bold text-gray-800 text-sm md:text-base line-clamp-2 mb-1 hover:text-pink-600 transition"
+        >
+          {product?.name || "Product Name"}
+        </h3>
+
+        <p className="text-xs text-gray-500 mb-3 line-clamp-2">
+          {product?.description || "No description"}
+        </p>
+
+        {/* Size */}
+        {size && (
+          <p className="text-xs font-medium text-gray-600 mb-2">Size: {size}</p>
+        )}
+
+        {/* Price */}
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xl font-bold text-pink-600">
+            ₹{Math.round(finalPrice)}
+          </span>
+          {discountPercent > 0 && (
+            <>
+              <span className="text-sm text-gray-400 line-through">
+                ₹{Math.round(realPrice)}
+              </span>
+              <span className="text-xs text-green-600 font-semibold">
+                Save ₹{Math.round(realPrice - finalPrice)}
+              </span>
+            </>
+          )}
+        </div>
+
+        {/* Rating */}
+        <div className="flex items-center gap-1 text-xs text-gray-600 mb-4">
+          <FaStar className="text-yellow-400" />
+          <span>
+            {product?.rating?.toFixed(1) || "4.3"} •{" "}
+            {product?.reviewCount || 0} reviews
+          </span>
+        </div>
+
+        {/* Buttons */}
+        <div className="mt-auto flex gap-2">
+          <button
+            onClick={handleAddToCart}
+            disabled={loading || !variant.size}
+            className="flex-1 bg-pink-500 text-white font-bold py-3 rounded-lg hover:bg-pink-600 transition disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
+          >
+            {loading ? "Adding..." : "Add to Cart"}
+          </button>
+
+          <button
+            onClick={handleProductClick}
+            className="flex-1 border-2 border-pink-500 text-pink-500 font-bold py-3 rounded-lg hover:bg-pink-50 transition text-sm"
+          >
+            Buy Now
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
