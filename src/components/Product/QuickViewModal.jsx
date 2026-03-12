@@ -5,14 +5,19 @@ const FM = motion;
 import { useDispatch } from 'react-redux';
 import { createPortal } from 'react-dom';
 import { toast } from 'react-toastify';
-import { addToCartThunk } from '../../features/cart/cartThunk';
+import { useCartActions } from '../../hooks/useCartActions';
+import { useWishlist } from '../../hooks';
 
 const QuickViewModal = ({ product, onClose }) => {
     const [quantity, setQuantity] = useState(1);
     const [activeImage, setActiveImage] = useState(0);
     const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] || null);
-    const [isWishlisted, setIsWishlisted] = useState(false);
+    
+    const { isWishlisted, addToWishlist, removeFromWishlist } = useWishlist();
+    const inWishlist = product ? isWishlisted(product._id || product.id) : false;
+    
     const dispatch = useDispatch();
+    const { addToCart } = useCartActions();
 
     if (!product) return null;
 
@@ -22,17 +27,27 @@ const QuickViewModal = ({ product, onClose }) => {
 
     const handleAddToCart = async () => {
         try {
-            const payload = {
-                productId: product._id || product.id,
-                quantity,
-                size: selectedVariant?.size || 'Standard',
-                color: selectedVariant?.color || 'Default'
-            };
-            await dispatch(addToCartThunk(payload)).unwrap();
+            await addToCart(
+                product,
+                selectedVariant?.size || 'Standard',
+                selectedVariant?.color || 'Default',
+                quantity
+            );
             toast.success(`Exquisite ${product.name} reserved in your lounge`);
             onClose();
         } catch (err) {
             toast.error(err.message || 'Acquisition error');
+        }
+    };
+
+    const toggleWishlist = (e) => {
+        e.stopPropagation();
+        if (!product) return;
+        
+        if (inWishlist) {
+            removeFromWishlist(product._id || product.id);
+        } else {
+            addToWishlist(product._id || product.id);
         }
     };
 
@@ -178,10 +193,10 @@ const QuickViewModal = ({ product, onClose }) => {
 
                         <div className="flex gap-10 mt-10">
                             <button
-                                onClick={() => setIsWishlisted(!isWishlisted)}
-                                className={`flex items-center gap-3 text-[10px] font-black uppercase tracking-widest transition-colors ${isWishlisted ? 'text-red-500' : 'text-slate-400 hover:text-slate-900'}`}
+                                onClick={toggleWishlist}
+                                className={`flex items-center gap-3 text-[10px] font-black uppercase tracking-widest transition-colors ${inWishlist ? 'text-red-500' : 'text-slate-400 hover:text-slate-900'}`}
                             >
-                                <Heart size={16} strokeWidth={2.5} fill={isWishlisted ? "currentColor" : "none"} /> Add to Private Favorites
+                                <Heart size={16} strokeWidth={2.5} fill={inWishlist ? "currentColor" : "none"} /> Add to Private Favorites
                             </button>
                             <button className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors">
                                 <RefreshCw size={16} strokeWidth={2.5} /> Compare Specs

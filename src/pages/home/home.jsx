@@ -36,7 +36,7 @@ const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "b
           className="flex items-center gap-2 mb-3"
         >
           <div className={`h-1 w-8 rounded-full ${color === 'blue' ? 'bg-blue-600' : 'bg-orange-500'}`}></div>
-          <span className={`${color === 'blue' ? 'text-blue-600' : 'text-orange-500'} font-black text-[9px] uppercase tracking-[0.3em]`}>
+          <span className={`${color === 'blue' ? 'text-blue-600' : 'text-orange-500'} font-bold text-[10px] uppercase tracking-[0.2em]`}>
             {subtitle}
           </span>
         </motion.div>
@@ -44,7 +44,7 @@ const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "b
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 tracking-tighter italic leading-tight"
+          className="text-2xl sm:text-3xl md:text-5xl font-bold text-slate-900 tracking-tight leading-tight"
         >
           {title}
         </motion.h2>
@@ -96,7 +96,7 @@ const DepartmentScroll = ({ categories, loading }) => {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em] mb-3 block"
+            className="text-blue-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-3 block"
           >
             Elite curation
           </motion.span>
@@ -104,7 +104,7 @@ const DepartmentScroll = ({ categories, loading }) => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-2xl md:text-4xl font-black text-slate-900 tracking-tighter italic"
+            className="text-2xl md:text-4xl font-bold text-slate-900 tracking-tight"
           >
             SHOP BY <span className="text-blue-600">UNIVERSE</span>
           </motion.h2>
@@ -201,8 +201,8 @@ const Home = () => {
                     className="flex flex-col items-center"
                   >
                     <stat.icon className="text-blue-500 mb-2 md:mb-3" size={isMobile ? 24 : 28} />
-                    <span className="text-2xl sm:text-3xl md:text-5xl font-black text-white italic tracking-tighter mb-1">{stat.value}</span>
-                    <span className="text-blue-400 font-bold uppercase tracking-[0.25em] text-[9px] md:text-[10px] mb-1">{stat.label}</span>
+                    <span className="text-2xl sm:text-3xl md:text-5xl font-bold text-white tracking-tight mb-1">{stat.value}</span>
+                    <span className="text-blue-400 font-semibold uppercase tracking-[0.2em] text-[10px] mb-1">{stat.label}</span>
                     <p className="text-slate-500 text-xs md:text-sm font-medium">{stat.sub}</p>
                   </motion.div>
                 ))}
@@ -238,8 +238,8 @@ const Home = () => {
                   >
                     <TrendingUp size={16} /> Seasonal Milestone
                   </motion.div>
-                  <h3 className="text-2xl sm:text-4xl md:text-7xl font-black text-white leading-[0.85] tracking-tighter italic">
-                    ELITE<br /><span className="text-blue-600 md:ml-12">PRIME</span>
+                  <h3 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-[0.9] tracking-tight">
+                    ELITE<br /><span className="text-blue-400">PRIME</span>
                   </h3>
                   <p className="text-slate-400 text-sm sm:text-xl md:text-2xl font-medium max-w-md leading-relaxed line-clamp-2 md:line-clamp-none">Redefining the boundaries of premium e-commerce performance.</p>
                   <Link to="/products" className="btn-premium px-8 md:px-12 py-3.5 md:py-5 text-sm md:text-xl group w-fit flex items-center gap-3">
@@ -281,11 +281,11 @@ const Home = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                className="text-white text-4xl sm:text-6xl md:text-7xl font-black italic tracking-tighter leading-none mb-8"
+                className="text-white text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-none mb-8"
               >
-                TITANS <span className="text-blue-600">'26</span>
+                TITANS <span className="text-blue-500">'26</span>
               </motion.h2>
-              <p className="text-slate-400 text-sm sm:text-lg font-medium max-w-lg mb-12 italic leading-relaxed">
+              <p className="text-slate-400 text-sm sm:text-lg font-medium max-w-lg mb-12 leading-relaxed">
                 The most sought-after masterpieces in our global repository, curated for the elite.
               </p>
               <Link to="/products?filter=bestsellers" className="btn-premium px-10 py-4 text-xs group flex items-center gap-3">

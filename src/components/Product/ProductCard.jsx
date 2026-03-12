@@ -4,15 +4,16 @@ import { ShoppingCart, Heart, Eye, Star, ArrowRight, Sparkles } from 'lucide-rea
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { addToCartThunk } from '../../features/cart/cartThunk';
 import QuickViewModal from './QuickViewModal';
 import { useWishlist } from '../../hooks';
+import { useCartActions } from '../../hooks/useCartActions';
 
 const ProductCard = ({ product, layout = "grid" }) => {
   const [showQuickView, setShowQuickView] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const { isAuthenticated } = useSelector(state => state.auth);
   const { isWishlisted, addToWishlist, removeFromWishlist } = useWishlist();
+  const { addToCart } = useCartActions();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -28,13 +29,12 @@ const ProductCard = ({ product, layout = "grid" }) => {
     e.preventDefault();
     e.stopPropagation();
     try {
-      const payload = {
-        productId: product._id || product.id,
-        quantity: 1,
-        size: product.variants?.[0]?.size || 'Standard',
-        color: product.variants?.[0]?.color || 'Default'
-      };
-      await dispatch(addToCartThunk(payload)).unwrap();
+      await addToCart(
+        product,
+        product.variants?.[0]?.size || 'Standard',
+        product.variants?.[0]?.color || 'Default',
+        1
+      );
       toast.success(`Exclusive ${product.name} added to lounge`);
     } catch (err) {
       toast.error(err.message || 'Collection sync failed');
@@ -68,7 +68,7 @@ const ProductCard = ({ product, layout = "grid" }) => {
             />
           </Link>
           {product.discount > 0 && (
-            <div className="absolute top-4 left-4 bg-blue-600 text-white text-[8px] font-black px-3 py-1.5 rounded-lg uppercase tracking-widest italic">
+            <div className="absolute top-4 left-4 bg-blue-600 text-white text-[9px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-[0.2em]">
               -{product.discount}% ELITE
             </div>
           )}
@@ -77,8 +77,8 @@ const ProductCard = ({ product, layout = "grid" }) => {
         <div className="flex-1 flex flex-col py-2">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block italic">{product.brand || 'Elite Series'}</span>
-              <h3 className="text-2xl font-black text-slate-900 tracking-tighter italic">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1 block">{product.brand || 'Elite Series'}</span>
+              <h3 className="text-2xl font-bold text-slate-900 tracking-tight">
                 <Link to={`/product/${product.slug || product._id || product.id}`}>{product.name}</Link>
               </h3>
             </div>
@@ -88,7 +88,7 @@ const ProductCard = ({ product, layout = "grid" }) => {
             </div>
           </div>
 
-          <p className="text-slate-500 text-sm font-bold uppercase tracking-widest mb-6 italic line-clamp-2 max-w-xl">
+          <p className="text-slate-500 text-sm font-medium leading-relaxed mb-6 line-clamp-2 max-w-xl">
             {product.description || "The pinnacle of engineering meets elite aesthetics. Experience superior performance in every detail."}
           </p>
 
@@ -99,8 +99,8 @@ const ProductCard = ({ product, layout = "grid" }) => {
 
           <div className="mt-auto flex items-center justify-between">
             <div className="flex flex-col">
-              {displayOldPrice && <span className="text-slate-300 text-xs line-through font-bold tracking-widest">₹{displayOldPrice.toLocaleString()}</span>}
-              <span className="text-3xl font-black text-blue-600 tracking-tighter italic leading-none">₹{displayPrice.toLocaleString()}</span>
+              {displayOldPrice && <span className="text-slate-300 text-xs line-through font-medium tracking-wide">₹{displayOldPrice.toLocaleString()}</span>}
+              <span className="text-3xl font-bold text-slate-900 tracking-tight leading-none">₹{displayPrice.toLocaleString()}</span>
             </div>
 
             <div className="flex gap-4">
@@ -144,7 +144,7 @@ const ProductCard = ({ product, layout = "grid" }) => {
             <motion.span
               initial={{ x: -10, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              className="bg-slate-900 text-white text-[8px] sm:text-[9px] font-black px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl uppercase tracking-[0.2em] shadow-2xl flex items-center gap-2 border border-slate-700/50"
+              className="bg-slate-900 text-white text-[9px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-[0.2em] shadow-lg flex items-center gap-2 border border-slate-700/50"
             >
               <Sparkles size={10} className="text-blue-400" /> Signature
             </motion.span>
@@ -211,12 +211,12 @@ const ProductCard = ({ product, layout = "grid" }) => {
       {/* Insight Area (Content) */}
       <div className="px-5 sm:px-8 pb-6 sm:pb-8 pt-2 flex flex-col flex-1">
         <div className="flex justify-between items-center mb-4">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
             {product.brand || 'Elite Series'}
           </span>
           <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 px-3 py-1 rounded-full">
             <Star size={10} className="fill-blue-500 text-blue-500" />
-            <span className="text-[10px] font-black text-slate-700 tracking-tighter">{product.rating || '4.9'}</span>
+            <span className="text-[10px] font-bold text-slate-700">{product.rating || '4.9'}</span>
           </div>
         </div>
 
@@ -240,11 +240,11 @@ const ProductCard = ({ product, layout = "grid" }) => {
         <div className="mt-auto flex items-end justify-between pt-4 border-t border-slate-100/50">
           <div className="flex flex-col">
             {displayOldPrice && (
-              <span className="text-slate-300 text-xs line-through font-bold mb-1 tracking-widest uppercase">
+              <span className="text-slate-300 text-xs line-through font-medium mb-1 tracking-wide uppercase">
                 ₹{displayOldPrice.toLocaleString()}
               </span>
             )}
-            <span className="text-blue-600 font-black text-lg sm:text-2xl tracking-tighter italic">
+            <span className="text-slate-900 font-bold text-lg sm:text-2xl tracking-tight">
               ₹{displayPrice.toLocaleString()}
             </span>
           </div>

@@ -25,7 +25,7 @@
   }
 
   .btn-premium {
-    @apply relative overflow-hidden bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 hover:shadow-[0_8px_30px_rgba(37,99,235,0.4)] active:scale-95 transition-all duration-300 font-semibold tracking-wide flex items-center justify-center gap-2;
+    @apply relative overflow-hidden bg-slate-900 text-white px-6 py-3.5 rounded-2xl hover:bg-black hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.4)] active:scale-[0.98] transition-all duration-500 font-semibold tracking-wide flex items-center justify-center gap-2;
   }
 
   .btn-premium-outline {
@@ -34,7 +34,7 @@
 
   /* Glassmorphism Surface */
   .glass-surface {
-    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
+    @apply bg-white/60 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.03)];
   }
 
   /* Premium Card */
@@ -43,7 +43,7 @@
   }
 
   .section-heading {
-    @apply text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4 relative tracking-tight;
+    @apply text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-4 relative tracking-tight;
     font-family: 'Outfit', sans-serif;
   }
 
@@ -54,9 +54,9 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  @apply bg-slate-50 text-slate-900 antialiased selection:bg-blue-100 selection:text-blue-900 overflow-x-hidden;
-  background-image: radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.03) 0, transparent 50%),
-    radial-gradient(at 50% 0%, rgba(245, 158, 11, 0.02) 0, transparent 50%);
+  @apply bg-[#FCFDFD] text-slate-900 antialiased selection:bg-blue-100 selection:text-blue-900 overflow-x-hidden;
+  background-image: radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.02) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(15, 23, 42, 0.01) 0, transparent 50%);
 }
 
 h1,

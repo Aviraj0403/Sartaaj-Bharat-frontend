@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../features/cart/cartSlice";
 import { fetchBackendCart, syncCartOnLogin } from "../features/cart/cartThunk";
+import { setUser, clearUser } from "../features/auth/authSlice";
 import Axios from "../utils/Axios";
 
 const AuthContext = createContext();
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await Axios.get("/auth/profile");
         setUser(res.data.data);
+        dispatch(setUser(res.data.data)); // Sync with Redux
 
         setCartSyncing(true);
         await dispatch(fetchBackendCart()).unwrap();
@@ -62,6 +64,7 @@ export const AuthProvider = ({ children }) => {
       // Fetch updated user data
       const userRes = await Axios.get("/auth/profile");
       setUser(userRes.data.data);
+      dispatch(setUser(userRes.data.data)); // Sync with Redux
 
       // Sync cart
       setCartSyncing(true);
@@ -82,6 +85,7 @@ export const AuthProvider = ({ children }) => {
 
       const res = await Axios.get("/auth/profile");
       setUser(res.data.data);
+      dispatch(setUser(res.data.data)); // Sync with Redux
 
       setCartSyncing(true);
       await dispatch(syncCartOnLogin()).unwrap();
@@ -123,6 +127,7 @@ export const AuthProvider = ({ children }) => {
       // Fetch updated user data
       const userRes = await Axios.get("/auth/profile");
       setUser(userRes.data.data);
+      dispatch(setUser(userRes.data.data)); // Sync with Redux
 
       console.log('🛒 Syncing cart...');
 
@@ -180,6 +185,7 @@ export const AuthProvider = ({ children }) => {
 
       const userRes = await Axios.get("/auth/profile");
       setUser(userRes.data.data);
+      dispatch(setUser(userRes.data.data)); // Sync with Redux
 
       setCartSyncing(true);
       try {
@@ -207,6 +213,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       // Clear everything regardless of API success
       setUser(null);
+      dispatch(clearUser()); // Clear Redux auth state
       dispatch(clearCart());
       queryClient.clear();
 

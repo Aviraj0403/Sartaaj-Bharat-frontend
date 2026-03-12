@@ -9,24 +9,27 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import ProductCard from "../../components/Product/ProductCard";
-import { useProduct, useProducts, useRecommendations } from "../../hooks";
-import { addToCartThunk } from "../../features/cart/cartThunk";
+import { useProduct, useProducts, useRecommendations, useWishlist } from "../../hooks";
+import { useCartActions } from "../../hooks/useCartActions";
 
 const ProductDetails = () => {
     const { slug } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { addToCart } = useCartActions();
 
     const { data: product, isLoading, error } = useProduct(slug);
     const { data: recommendationsData, isLoading: isRecLoading } = useRecommendations(
         product?._id || product?.id,
         4
     );
+    const { isAuthenticated } = window.store?.getState()?.auth || { isAuthenticated: false }; // fallback
+    const { isWishlisted, addToWishlist, removeFromWishlist } = useWishlist();
+    const inWishlist = isWishlisted(product?._id || product?.id);
 
     const [activeImage, setActiveImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [selectedVariant, setSelectedVariant] = useState(null);
-    const [isWishlisted, setIsWishlisted] = useState(false);
     const [showFullDesc, setShowFullDesc] = useState(false);
     const [activeTab, setActiveTab] = useState("overview");
 
@@ -67,16 +70,26 @@ const ProductDetails = () => {
 
     const handleAddToCart = async () => {
         try {
-            const payload = {
-                productId: product._id || product.id,
-                quantity,
-                size: selectedVariant?.size || 'Standard',
-                color: selectedVariant?.color || 'Default'
-            };
-            await dispatch(addToCartThunk(payload)).unwrap();
+            await addToCart(
+                product,
+                selectedVariant?.size || 'Standard',
+                selectedVariant?.color || 'Default',
+                quantity
+            );
             toast.success(`${product.name} added to cart!`);
         } catch (err) {
             toast.error(err.message || 'Failed to add to cart');
+        }
+    };
+
+    const toggleWishlist = (e) => {
+        e.stopPropagation();
+        if (!product) return;
+        
+        if (inWishlist) {
+            removeFromWishlist(product._id || product.id);
+        } else {
+            addToWishlist(product._id || product.id);
         }
     };
 
@@ -134,11 +147,11 @@ const ProductDetails = () => {
                             {/* Wishlist & Share */}
                             <div className="absolute top-4 right-4 flex gap-2">
                                 <button
-                                    onClick={() => setIsWishlisted(!isWishlisted)}
-                                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-lg ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-600 hover:bg-white'
+                                    onClick={toggleWishlist}
+                                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-lg ${inWishlist ? 'bg-red-500 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-600 hover:bg-white'
                                         }`}
                                 >
-                                    <Heart size={20} fill={isWishlisted ? "currentColor" : "none"} />
+                                    <Heart size={20} fill={inWishlist ? "currentColor" : "none"} />
                                 </button>
                                 <button className="w-12 h-12 bg-white/90 backdrop-blur-sm rounded-xl flex items-center justify-center text-slate-600 hover:bg-white transition-all shadow-lg">
                                     <Share2 size={20} />
@@ -540,11 +553,11 @@ const ProductDetails = () => {
                         </span>
                     </div>
                     <button
-                        onClick={() => setIsWishlisted(!isWishlisted)}
-                        className={`w-12 h-12 rounded-xl flex items-center justify-center border-2 transition-all ${isWishlisted ? 'bg-red-50 border-red-500 text-red-500' : 'border-slate-200 text-slate-400'
+                        onClick={toggleWishlist}
+                        className={`w-12 h-12 rounded-xl flex items-center justify-center border-2 transition-all ${inWishlist ? 'bg-red-50 border-red-500 text-red-500' : 'border-slate-200 text-slate-400'
                             }`}
                     >
-                        <Heart size={18} fill={isWishlisted ? "currentColor" : "none"} />
+                        <Heart size={18} fill={inWishlist ? "currentColor" : "none"} />
                     </button>
                     <button
                         onClick={handleAddToCart}
