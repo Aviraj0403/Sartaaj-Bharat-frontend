@@ -84,18 +84,12 @@ Axios.interceptors.response.use(
         processQueue(refreshError, null);
         isRefreshing = false;
 
-        // Clear local data and redirect to login
-        console.error("❌ Refresh token failed. Redirecting to login.");
+        // Clear local data
+        console.error("❌ Refresh token failed. Session expired or unauthenticated.");
 
         // Clear all auth-related storage
         localStorage.removeItem("user");
         sessionStorage.clear();
-
-        // Redirect to login with return URL
-        const currentPath = window.location.pathname;
-        if (currentPath !== '/signin' && currentPath !== '/signup') {
-          window.location.href = `/signin?redirect=${encodeURIComponent(currentPath)}`;
-        }
 
         return Promise.reject(refreshError);
       }
