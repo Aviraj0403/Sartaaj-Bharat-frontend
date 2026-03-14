@@ -36,7 +36,7 @@ const EliteHeroSlider = () => {
         <section className="relative overflow-hidden pb-6 md:pb-10">
             <div className="w-full">
                 {/* <div className="relative h-[380px] sm:h-[480px] md:h-[650px] lg:h-screen overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900"> */}
-                <div className="relative h-[380px] sm:h-[480px] md:h-[650px] lg:h-screen overflow-hidden rounded-[2rem] md:rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900">
+                <div className="relative h-[380px] sm:h-[480px] md:h-[600px] lg:h-[75vh] overflow-hidden rounded-[2rem] md:rounded-[2.5rem] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.3)] group bg-slate-900">
 
                     {/* Background Layers with Parallax */}
                     <AnimatePresence mode="wait">
@@ -60,7 +60,7 @@ const EliteHeroSlider = () => {
 
                     {/* Content Overlay */}
                     <div className="absolute inset-0 z-10 flex items-center">
-                        <div className="container-custom px-6 sm:px-8 md:px-24">
+                        <div className="container-custom px-6 sm:px-8 md:px-16">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={currentIndex}
@@ -77,7 +77,7 @@ const EliteHeroSlider = () => {
                                         className="flex items-center gap-3 bg-blue-600/20 backdrop-blur-xl border border-blue-500/30 text-blue-400 text-[9px] md:text-xs font-black px-4 md:px-6 py-2 md:py-2.5 rounded-full uppercase tracking-[0.3em] w-fit"
                                     >
                                         <Sparkles size={14} className="animate-pulse" />
-                                        {currentSlide.subtitle || 'Elite Global Collection'}
+                                        {currentSlide.subtitle || 'Premium Collection'}
                                     </motion.div>
 
                                     <motion.h2
@@ -108,9 +108,9 @@ const EliteHeroSlider = () => {
                                         transition={{ delay: 0.6 }}
                                         className="flex flex-wrap gap-6"
                                     >
-                                        <button className="btn-premium px-12 py-5 text-xl group relative overflow-hidden">
+                                        <button className="btn-premium px-8 md:px-10 py-3.5 md:py-4.5 text-base md:text-lg group relative overflow-hidden">
                                             <span className="relative z-10 flex items-center gap-3">
-                                                Discover Selection <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform duration-500" />
+                                                Shop Collection <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform duration-500" />
                                             </span>
                                             <motion.div
                                                 className="absolute inset-0 bg-linear-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -152,11 +152,9 @@ const EliteHeroSlider = () => {
                         ))}
                     </div>
 
-                    {/* Floating Side Note */}
-                    {/* <div className="absolute top-1/2 -translate-y-1/2 right-12 hidden xl:block"> */}
-                    <div className="absolute inset-0 flex items-center justify-center hidden xl:flex pointer-events-none opacity-20">
-                        <span className="text-white/5 text-6xl lg:text-8xl font-black italic tracking-tighter select-none whitespace-nowrap">
-                            SARTAAJ BHARAT
+                    <div className="absolute inset-0 flex items-center justify-center hidden xl:flex pointer-events-none overflow-hidden">
+                        <span className="text-white/[0.08] text-[4vw] lg:text-[5rem] font-black italic tracking-[0.2em] select-none whitespace-nowrap uppercase text-center">
+                            Sartaaj Bharat
                         </span>
                     </div>
                 </div>

@@ -4,7 +4,8 @@ import { useProducts, useCategories } from '../../hooks';
 import { useViewport } from '../../hooks/useViewport';
 import EliteHeroSlider from '../../components/home/EliteHeroSlider.jsx';
 import ProductCard from '../../components/Product/ProductCard.jsx';
-import { ArrowRight, LayoutGrid, Sparkles, TrendingUp, Zap, Globe } from 'lucide-react';
+import AccessoriesShowcase from '../../components/home/AccessoriesShowcase.jsx';
+import { ArrowRight, Sparkles, TrendingUp, Zap, Globe } from 'lucide-react';
 import { Link } from "react-router-dom";
 
 // Animation Variants
@@ -26,7 +27,7 @@ const itemVariants = {
 };
 
 const ProductSection = ({ title, subtitle, products, loading, linkTo, color = "blue" }) => (
-  <section className="container-custom mb-10 md:mb-16">
+  <section className="container-custom mb-10 md:mb-14">
     <div className="flex flex-col md:flex-row md:justify-between md:items-end items-start mb-8 gap-6">
       <div className="max-w-xl w-full">
         <motion.div
@@ -87,7 +88,7 @@ const DepartmentScroll = ({ categories, loading }) => {
   };
 
   return (
-    <section className="container-custom mb-16 md:mb-24 relative">
+    <section className="container-custom mb-12 md:mb-16 relative">
       <div className="absolute top-[-100px] left-0 w-64 h-64 bg-blue-100/20 blur-[100px] rounded-full -z-10"></div>
 
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6 px-2">
@@ -106,7 +107,7 @@ const DepartmentScroll = ({ categories, loading }) => {
             viewport={{ once: true }}
             className="text-2xl md:text-4xl font-bold text-slate-900 tracking-tight"
           >
-            SHOP BY <span className="text-blue-600">UNIVERSE</span>
+            SHOP BY <span className="text-blue-600">CATEGORY</span>
           </motion.h2>
         </div>
 
@@ -167,21 +168,25 @@ const DepartmentScroll = ({ categories, loading }) => {
 
 const Home = () => {
   const { isMobile } = useViewport();
-  // Pro-level data fetching with React Query
-  const { data: latestData, isLoading: latestLoading } = useProducts({ limit: 4 });
+
+  // All 4 queries fire in parallel — React Query deduplicates identical query keys
+  // across the entire app. After 10 min staleTime, cached data is served instantly.
+  const { data: latestData,   isLoading: latestLoading }   = useProducts({ limit: 4 });
   const { data: featuredData, isLoading: featuredLoading } = useProducts({ limit: 4, isFeatured: 'true' });
-  const { data: bestData, isLoading: bestLoading } = useProducts({ limit: 4, isBestseller: 'true' });
-  const { data: categories, isLoading: catsLoading } = useCategories();
+  const { data: bestData,     isLoading: bestLoading }     = useProducts({ limit: 4, isBestseller: 'true' });
+  const { data: categories,   isLoading: catsLoading }     = useCategories();
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 selection:bg-blue-600 selection:text-white">
       <main className="flex-1 pb-8 md:pb-12 overflow-hidden">
         <EliteHeroSlider />
 
-        <DepartmentScroll categories={categories} loading={catsLoading} />
+        <div className="mt-4 md:mt-8">
+          <DepartmentScroll categories={categories} loading={catsLoading} />
+        </div>
 
         {/* Global Stats Strip - Full Width */}
-        <section className="mb-16 md:mb-24">
+        <section className="mb-12 md:mb-16">
           <div className="bg-slate-900 rounded-[2rem] md:rounded-[2rem] p-8 md:p-14 relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#2563eb33_0%,transparent_50%)]"></div>
             <div className="absolute bottom-0 right-0 w-1/2 h-full bg-blue-600/5 blur-[150px] rounded-full translate-x-1/2"></div>
@@ -212,15 +217,15 @@ const Home = () => {
         </section>
 
         <ProductSection
-          title="THE NEW NEXUS"
-          subtitle="Just Landed"
+          title="NEW ARRIVALS"
+          subtitle="FRESHLY DROPPED"
           products={latestData?.products}
           loading={latestLoading}
           linkTo="/products"
         />
 
         {/* Cinematic Promo Banner */}
-        <section className="mb-16 md:mb-24">
+        <section className="mb-12 md:mb-16">
           <div className="bg-slate-900 rounded-[2rem] md:rounded-[2rem] relative overflow-hidden shadow-2xl h-[350px] md:h-[450px]">
             <div className="absolute inset-0 bg-dark-elite"></div>
             <img
@@ -239,11 +244,11 @@ const Home = () => {
                     <TrendingUp size={16} /> Seasonal Milestone
                   </motion.div>
                   <h3 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-[0.9] tracking-tight">
-                    ELITE<br /><span className="text-blue-400">PRIME</span>
+                    SARTAAJ<br /><span className="text-blue-400">BHARAT</span>
                   </h3>
-                  <p className="text-slate-400 text-sm sm:text-xl md:text-2xl font-medium max-w-md leading-relaxed line-clamp-2 md:line-clamp-none">Redefining the boundaries of premium e-commerce performance.</p>
-                  <Link to="/products" className="btn-premium px-8 md:px-12 py-3.5 md:py-5 text-sm md:text-xl group w-fit flex items-center gap-3">
-                    Start Experience <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform duration-500" />
+                  <p className="text-slate-400 text-sm sm:text-xl md:text-2xl font-medium max-w-md leading-relaxed line-clamp-2 md:line-clamp-none">Leading the future of Indian e-commerce with premium quality.</p>
+                  <Link to="/products" className="btn-premium px-8 md:px-12 py-3.5 md:py-5 text-sm md:text-lg group w-fit flex items-center gap-3">
+                    Shop Collection <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform duration-500" />
                   </Link>
                 </div>
               </div>
@@ -252,16 +257,16 @@ const Home = () => {
         </section>
 
         <ProductSection
-          title="CURATED EXCELLENCE"
-          subtitle="Featured Selection"
+          title="FEATURED SELECTION"
+          subtitle="EXCLUSIVELY FOR YOU"
           products={featuredData?.products}
           loading={featuredLoading}
           linkTo="/products?filter=featured"
           color="orange"
         />
 
-        {/* Elite Hall of Fame (Bestsellers) */}
-        <section className="bg-slate-950 py-16 md:py-24 overflow-hidden relative">
+        {/* Best Sellers Section */}
+        <section className="bg-slate-950 py-12 md:py-16 overflow-hidden relative">
           <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600/5 blur-[150px] rounded-full translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-1/2 h-full bg-indigo-600/5 blur-[150px] rounded-full -translate-x-1/2"></div>
 
@@ -274,7 +279,7 @@ const Home = () => {
                 className="flex items-center gap-3 mb-6"
               >
                 <div className="h-px w-8 bg-blue-600"></div>
-                <span className="text-blue-500 font-black text-[10px] uppercase tracking-[0.5em]">The Hall of Fame</span>
+                <span className="text-blue-500 font-black text-[10px] uppercase tracking-[0.5em]">Global Favorites</span>
                 <div className="h-px w-8 bg-blue-600"></div>
               </motion.div>
               <motion.h2
@@ -283,10 +288,10 @@ const Home = () => {
                 viewport={{ once: true }}
                 className="text-white text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-none mb-8"
               >
-                TITANS <span className="text-blue-500">'26</span>
+                BEST <span className="text-blue-500">SELLERS</span>
               </motion.h2>
-              <p className="text-slate-400 text-sm sm:text-lg font-medium max-w-lg mb-12 leading-relaxed">
-                The most sought-after masterpieces in our global repository, curated for the elite.
+              <p className="text-slate-400 text-sm sm:text-lg font-medium max-w-lg mb-8 leading-relaxed">
+                Our most sought-after products, loved by customers worldwide.
               </p>
               <Link to="/products?filter=bestsellers" className="btn-premium px-10 py-4 text-xs group flex items-center gap-3">
                 Explore Collection <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-500" />
@@ -313,39 +318,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Accessories / Finish Strip to fill space before footer */}
-        <section className="container-custom pt-8 md:pt-12 pb-4 md:pb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-            <div>
-              <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em]">
-                Elite Accessories
-              </span>
-              <h3 className="mt-1.5 text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight italic">
-                Complete your setup
-              </h3>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-500 max-w-sm hidden sm:block">
-              Add finishing touches with cases, audio, and chargers designed to match your elite collection.
-            </p>
-          </div>
-
-          <div className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar pb-2">
-            {[
-              'Premium Cases & Covers',
-              'Chargers & Cables',
-              'Audio & Headsets',
-              'Stands & Docks',
-              'Screen Protectors'
-            ].map((label) => (
-              <button
-                key={label}
-                className="whitespace-nowrap px-4 py-2.5 rounded-2xl border border-slate-200 bg-white text-[11px] font-black uppercase tracking-[0.2em] text-slate-700 hover:border-blue-500 hover:text-blue-600 hover:shadow-md active:scale-95 transition-all"
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </section>
+        <AccessoriesShowcase />
       </main>
     </div>
   );

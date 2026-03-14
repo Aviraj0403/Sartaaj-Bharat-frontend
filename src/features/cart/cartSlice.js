@@ -9,13 +9,13 @@ const initialState = {
 
 // Normalize cart item
 const normalizeItem = (item) => ({
-  id: item.id || item.productId,
+  id: item.id || item.productId || item._id,
   name: item.name,
-  image: item.image,
-  price: Number(item.price),
-  quantity: Number(item.quantity),
-  color: item.color,
-  size: item.size,
+  image: item.image || item.pimage || (item.product?.pimage) || (item.product?.image) || '/placeholder-premium.png',
+  price: Number(item.price || item.product?.variants?.price || 0),
+  quantity: Number(item.quantity || 1),
+  color: item.color || 'DFT',
+  size: item.size || 'STD',
 });
 
 // Calculate totals for cart

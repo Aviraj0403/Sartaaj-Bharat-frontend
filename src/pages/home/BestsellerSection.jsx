@@ -1,86 +1,94 @@
 import React, { useRef, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import BestSellPC from "../../components/Product/ProductCard"; // Import the reusable ProductCard component
-import { getMiniProducts } from "../../services/productApi"; // Import your product API
+import { Sparkles } from "lucide-react";
+import ProductCard from "../../components/Product/ProductCard";
+import { getMiniProducts } from "../../services/productApi";
 
 export default function BestsellerSection({ categorySlug }) {
   const navigate = useNavigate();
   const carouselRef = useRef(null);
 
-  // Fetch products using React Query with the correct object signature
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["bestsellers", categorySlug],
-    queryFn: () =>
-      getMiniProducts(1, 100, "", categorySlug, "", "true", "", "", ""), // Fetch bestseller products with category filter
+    queryFn: () => getMiniProducts(1, 20, "", categorySlug, "", "true", "", "", ""),
+    staleTime: 10 * 60 * 1000,
   });
 
-  // Scroll functions
-  const scrollLeft = () => {
-    carouselRef.current.scrollBy({ left: -carouselRef.current.offsetWidth / 2, behavior: "smooth" });
-  };
+  const products = data?.products || [];
 
-  const scrollRight = () => {
-    carouselRef.current.scrollBy({ left: carouselRef.current.offsetWidth / 2, behavior: "smooth" });
-  };
+  const scrollLeft = () => carouselRef.current?.scrollBy({ left: -(carouselRef.current.offsetWidth * 0.6), behavior: "smooth" });
+  const scrollRight = () => carouselRef.current?.scrollBy({ left: carouselRef.current.offsetWidth * 0.6, behavior: "smooth" });
 
-  // Auto-slide every 3 seconds
+  // Auto-slide every 4 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      if (carouselRef.current) {
-        if (carouselRef.current.scrollLeft + carouselRef.current.offsetWidth >= carouselRef.current.scrollWidth) {
-          carouselRef.current.scrollTo({ left: 0, behavior: "smooth" });
-        } else {
-          carouselRef.current.scrollBy({ left: carouselRef.current.offsetWidth / 2, behavior: "smooth" });
-        }
+      const el = carouselRef.current;
+      if (!el) return;
+      if (el.scrollLeft + el.offsetWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        el.scrollBy({ left: el.offsetWidth * 0.5, behavior: "smooth" });
       }
-    }, 3000);
-
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
-  if (isLoading) return <div>Loading products...</div>;
-  if (isError) return <div>Error: {error.message}</div>;
-
   return (
-    <section className="bg-white relative ">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-        <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-6 text-center italic tracking-tighter uppercase">
-          Elite <span className="text-blue-600 underline underline-offset-4 decoration-2">Classics</span>
-        </h2>
+    <section className="bg-white py-2">
+      <div className="container-custom">
+        {/* Header */}
+        <div className="flex items-end justify-between mb-6">
+          <div>
+            <div className="flex items-center gap-2 text-blue-600 text-[9px] font-black uppercase tracking-[0.3em] mb-2">
+              <Sparkles size={11} className="animate-pulse" /> Top Rated
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black text-slate-900 italic tracking-tighter leading-none">
+              Best<span className="text-blue-600">sellers</span>
+            </h2>
+          </div>
+          <Link to="/category/bestsellers" className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-800 transition-colors border-b-2 border-blue-200 hover:border-blue-600 pb-0.5">
+            View All →
+          </Link>
+        </div>
 
-        <div className="relative">
-          <button
-            onClick={scrollLeft}
-            className="absolute left-[-1.5rem] top-1/2 -translate-y-1/2 z-20 bg-white p-4 rounded-full shadow-2xl border border-slate-100 hover:bg-blue-600 hover:text-white transition-all duration-500 group active:scale-90"
-          >
-            <FaChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-          </button>
-
-          <button
-            onClick={scrollRight}
-            className="absolute right-[-1.5rem] top-1/2 -translate-y-1/2 z-20 bg-white p-4 rounded-full shadow-2xl border border-slate-100 hover:bg-blue-600 hover:text-white transition-all duration-500 group active:scale-90"
-          >
-            <FaChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
-          </button>
-
-          <div
-            ref={carouselRef}
-            className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory py-2 px-2"
-          >
-            {data.products.map((product) => (
-              <div key={product._id} className="flex-shrink-0 w-1/2 sm:w-60 md:w-52 lg:w-60">
-                <BestSellPC
-                  product={product}
-                  onProductClick={(productId) => navigate(`/product/${productId}`)}
-                />
-              </div>
+        {isLoading && (
+          <div className="flex gap-5 overflow-hidden py-2">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex-shrink-0 w-64 h-80 bg-slate-100 rounded-2xl animate-pulse" />
             ))}
           </div>
-        </div>
+        )}
+
+        {isError && (
+          <p className="text-slate-400 text-sm font-bold uppercase tracking-widest text-center py-10">Unable to load bestsellers</p>
+        )}
+
+        {!isLoading && !isError && products.length > 0 && (
+          <div className="relative">
+            {/* Scroll buttons */}
+            <button onClick={scrollLeft} className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-20 bg-white p-3 rounded-full shadow-xl border border-slate-100 hover:bg-blue-600 hover:text-white transition-all group hidden md:flex">
+              <FaChevronLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+            </button>
+            <button onClick={scrollRight} className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-20 bg-white p-3 rounded-full shadow-xl border border-slate-100 hover:bg-blue-600 hover:text-white transition-all group hidden md:flex">
+              <FaChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+            </button>
+
+            <div
+              ref={carouselRef}
+              className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory pb-3"
+            >
+              {products.map((product) => (
+                <div key={product._id} className="flex-shrink-0 w-[48%] sm:w-56 md:w-60 lg:w-64 snap-start">
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
-
   );
 }
+

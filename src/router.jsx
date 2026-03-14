@@ -9,6 +9,7 @@ import SignupPage from "./pages/auth/SignupPage.jsx";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 import CartPage from "./cart/CartPage.jsx";
+import CheckoutPage from "./checkout/CheckoutPage.jsx";
 import PrivacyPolicy from "./pages/legal/PrivacyDoc.jsx";
 import TermsAndConditions from "./pages/legal/TermsAndConditions.jsx";
 import CookiePolicy from "./pages/legal/CookieDoc.jsx";
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "cart",
         element: <CartPage />
+      },
+      {
+        path: "checkout",
+        element: <CheckoutPage />
       },
       {
         path: "signin",

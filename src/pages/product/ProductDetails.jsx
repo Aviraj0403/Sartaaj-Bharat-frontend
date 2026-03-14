@@ -110,8 +110,8 @@ const ProductDetails = () => {
                 </div>
             </div>
 
-            <div className="container-custom py-6 md:py-10">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <div className="container-custom py-4 md:py-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
 
                     {/* Left: Image Gallery */}
                     <div className="space-y-4">
@@ -184,34 +184,34 @@ const ProductDetails = () => {
                         )}
 
                         {/* Product Name */}
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 leading-tight tracking-tight italic mb-6">
+                        <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 leading-[1.1] tracking-tighter italic mb-4 uppercase">
                             {product.name}
                         </h1>
 
                         {/* Rating */}
-                        <div className="flex items-center gap-4 pb-6 mb-6 border-b border-slate-200">
-                            <div className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl shadow-lg">
-                                <Star size={16} fill="#3b82f6" className="text-blue-500" />
-                                <span className="font-black italic">{product.rating || '4.8'}</span>
+                        <div className="flex items-center gap-4 pb-4 mb-4 border-b border-slate-100">
+                            <div className="flex items-center gap-2 bg-slate-900 text-white px-4 py-1.5 rounded-lg shadow-md">
+                                <Star size={14} fill="#3b82f6" className="text-blue-500" />
+                                <span className="font-black italic text-sm">{product.rating || '4.8'}</span>
                             </div>
-                            <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
-                                Elite Validation
+                            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">
+                                Verified Ratings
                             </span>
                         </div>
 
                         {/* Price */}
-                        <div className="space-y-2 mb-8">
-                            <div className="flex items-baseline gap-4">
-                                <span className="text-4xl md:text-5xl font-black text-blue-600 tracking-tighter italic">
+                        <div className="space-y-1 mb-6">
+                            <div className="flex items-baseline gap-3">
+                                <span className="text-3xl md:text-5xl font-black text-blue-600 tracking-tighter italic">
                                     ₹{currentPrice.toLocaleString()}
                                 </span>
                                 {oldPrice && (
                                     <>
-                                        <span className="text-2xl text-slate-300 line-through font-bold">
+                                        <span className="text-xl text-slate-300 line-through font-bold">
                                             ₹{oldPrice.toLocaleString()}
                                         </span>
-                                        <span className="text-green-600 font-black text-sm uppercase tracking-wider">
-                                            Save {discount}%
+                                        <span className="text-blue-600 font-black text-xs uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded-md">
+                                            {discount}% OFF
                                         </span>
                                     </>
                                 )}
@@ -258,23 +258,25 @@ const ProductDetails = () => {
                                         <Plus size={18} strokeWidth={3} />
                                     </button>
                                 </div>
-                                <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
-                                    {product.stock > 0 ? `${product.stock} Available` : 'In Stock'}
+                                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">
+                                    {product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock'}
                                 </span>
                             </div>
 
-                            <div className="flex gap-3">
+                             <div className="flex gap-3">
                                 <motion.button
+                                    whileHover={{ scale: 1.02, translateY: -2 }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={handleAddToCart}
-                                    className="flex-1 bg-slate-900 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 shadow-xl italic"
+                                    className="flex-[1.5] bg-gradient-to-r from-slate-900 to-slate-800 text-white py-4 rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] hover:shadow-2xl hover:shadow-slate-900/20 transition-all flex items-center justify-center gap-3 italic border border-slate-700/50"
                                 >
-                                    <ShoppingCart size={20} />
-                                    Acquire
+                                    <ShoppingCart size={18} strokeWidth={2.5} />
+                                    Add to Cart
                                 </motion.button>
                                 <motion.button
+                                    whileHover={{ scale: 1.02, translateY: -2 }}
                                     whileTap={{ scale: 0.98 }}
-                                    className="flex-1 bg-blue-600 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-blue-700 transition-colors shadow-xl italic"
+                                    className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] hover:shadow-2xl hover:shadow-blue-600/20 transition-all shadow-xl italic border border-blue-400/30"
                                 >
                                     Buy Now
                                 </motion.button>
@@ -503,8 +505,8 @@ const ProductDetails = () => {
                 <div className="mt-16 md:mt-24 border-t border-slate-100 pt-16">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
                         <div className="text-center md:text-left">
-                            <span className="text-[10px] font-black text-blue-600 tracking-[0.3em] uppercase mb-2 block italic">Similar Artifacts</span>
-                            <h2 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tighter italic">Recommended <span className="text-blue-600">Archive.</span></h2>
+                            <span className="text-[10px] font-black text-blue-600 tracking-[0.3em] uppercase mb-1 block italic">Related Selection</span>
+                            <h2 className="text-2xl md:text-4xl font-black text-slate-950 tracking-tighter italic uppercase">Recommended <span className="text-blue-600">For You</span></h2>
                         </div>
                         <Link
                             to={`/category/${product.categoryId?.slug || ''}`}
@@ -544,8 +546,8 @@ const ProductDetails = () => {
             >
                 <div className="flex items-center gap-3">
                     <div className="flex-1">
-                        <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 leading-none block mb-1">Elite Artifact</span>
-                        <span className="text-sm font-black text-slate-900 truncate block tracking-tight italic">
+                        <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 leading-none block mb-1">Premium Collection</span>
+                        <span className="text-xs font-black text-slate-900 truncate block tracking-tight italic uppercase">
                             {product.name}
                         </span>
                         <span className="text-blue-600 font-bold text-xs italic">
@@ -561,10 +563,10 @@ const ProductDetails = () => {
                     </button>
                     <button
                         onClick={handleAddToCart}
-                        className="bg-slate-900 text-white px-8 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 shadow-xl italic"
+                        className="bg-slate-900 text-white px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 shadow-xl italic"
                     >
                         <ShoppingCart size={16} />
-                        Acquire
+                        Add to Cart
                     </button>
                 </div>
             </motion.div>

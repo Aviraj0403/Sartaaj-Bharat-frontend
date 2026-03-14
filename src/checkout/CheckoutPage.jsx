@@ -444,7 +444,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex justify-center items-start p-4 sm:p-8">
+    <div className="min-h-screen bg-white py-12 md:py-20 font-sans">
       <AddressSidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
@@ -453,114 +453,173 @@ export default function CheckoutPage() {
         email={user?.email || ""}
       />
 
-      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
-            Shipping Information
-          </h2>
+      <div className="container-custom px-4 sm:px-6">
+        {/* Header */}
+        <header className="mb-12">
+          <div className="flex items-center gap-4 text-blue-600 font-black text-[10px] uppercase tracking-[0.5em] mb-3 italic">
+            SECURED CHECKOUT
+          </div>
+          <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter italic leading-none uppercase">
+            Order <span className="text-blue-600">Review</span>
+          </h1>
+        </header>
 
-          <div className="space-y-4 mb-6">
-            {addresses.length > 0 ? (
-              addresses.map(addr => (
-                <label
-                  key={addr._id}
-                  className={`block border-2 rounded-xl p-4 cursor-pointer transition ${selectedAddress?._id === addr._id
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-300 hover:bg-gray-50"
-                    }`}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          {/* Left Column: Shipping & Payment */}
+          <div className="lg:col-span-7 space-y-10">
+            {/* Shipping Info */}
+            <section className="bg-slate-50/50 rounded-[2rem] p-6 md:p-10 border border-slate-100">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-xl font-black text-slate-900 tracking-tight italic uppercase">Shipping Destination</h2>
+                <button
+                  onClick={() => setIsSidebarOpen(true)}
+                  className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-700 transition-colors italic"
                 >
-                  <div className="flex items-start gap-3">
-                    <input
-                      type="radio"
-                      name="address"
-                      checked={selectedAddress?._id === addr._id}
-                      onChange={() => setSelectedAddress(addr)}
-                      className="mt-1 text-blue-500"
-                    />
-                    <div>
-                      <p className="font-semibold text-gray-800">
-                        {addr.label || addr.type} ({addr.phoneNumber})
-                        {addr.isDefault && (
-                          <span className="text-sm text-gray-500 ml-2">(Default)</span>
-                        )}
+                  + Add New Address
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {addresses.length > 0 ? (
+                  addresses.map(addr => (
+                    <motion.label
+                      key={addr._id}
+                      whileHover={{ scale: 1.01 }}
+                      className={`block border-2 rounded-2xl p-5 cursor-pointer transition-all duration-300 relative overflow-hidden ${selectedAddress?._id === addr._id
+                          ? "border-blue-600 bg-white shadow-xl shadow-blue-900/5"
+                          : "border-slate-100 bg-white/50 hover:bg-white hover:border-slate-200"
+                        }`}
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selectedAddress?._id === addr._id ? 'border-blue-600' : 'border-slate-200'}`}>
+                          {selectedAddress?._id === addr._id && <div className="w-2.5 h-2.5 bg-blue-600 rounded-full" />}
+                        </div>
+                        <input
+                          type="radio"
+                          className="hidden"
+                          name="address"
+                          checked={selectedAddress?._id === addr._id}
+                          onChange={() => setSelectedAddress(addr)}
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-1">
+                            <span className="font-black text-slate-900 uppercase tracking-tighter text-sm italic">
+                              {addr.label || addr.type}
+                            </span>
+                            {addr.isDefault && (
+                              <span className="text-[8px] font-bold bg-slate-900 text-white px-2 py-0.5 rounded-md uppercase tracking-widest">Default</span>
+                            )}
+                          </div>
+                          <p className="text-slate-900 font-bold text-xs mb-1">{addr.name}</p>
+                          <p className="text-slate-500 text-xs leading-relaxed max-w-md">
+                            {addr.street || addr.flat}, {addr.city}, {addr.state} - {addr.pincode || addr.postalCode}
+                          </p>
+                          <p className="text-slate-400 font-black text-[10px] mt-2 uppercase tracking-widest italic">{addr.phoneNumber}</p>
+                        </div>
+                      </div>
+                    </motion.label>
+                  ))
+                ) : (
+                  <div className="text-center py-10 bg-white rounded-2xl border border-dashed border-slate-200">
+                    <p className="text-slate-400 font-medium italic">No saved addresses found.</p>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* Payment Method */}
+            <section className="bg-slate-50/50 rounded-[2rem] p-6 md:p-10 border border-slate-100">
+              <h2 className="text-xl font-black text-slate-900 tracking-tight italic uppercase mb-8">Payment Method</h2>
+              
+              <div className="bg-blue-600 text-white rounded-2xl p-6 mb-8 relative overflow-hidden shadow-2xl">
+                <div className="absolute top-0 right-0 w-32 h-full bg-white/5 skew-x-12 translate-x-12"></div>
+                <div className="relative z-10 flex gap-4">
+                  <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center">
+                    <span className="font-black italic text-xl">₹</span>
+                  </div>
+                  <div>
+                    <h3 className="font-black italic text-sm uppercase tracking-widest mb-1">Razorpay Secured</h3>
+                    <p className="text-[10px] text-white/70 leading-relaxed max-w-xs">Pay via UPI, Credit/Debit Card, or Net Banking. Encrypted and secured by Razorpay.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <div className="text-center sm:text-left">
+                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 mb-1 italic">Authorized Action</p>
+                  <motion.button
+                    whileHover={{ scale: 1.02, translateY: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => placeOrder("Razorpay")}
+                    disabled={isPlacingOrder}
+                    className="bg-gradient-to-r from-slate-900 to-slate-800 text-white px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.3em] hover:shadow-2xl hover:shadow-slate-900/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed italic border border-slate-700/50"
+                  >
+                    {isPlacingOrder ? "Processing..." : "Complete Purchase"}
+                  </motion.button>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          {/* Right Column: Order Summary */}
+          <aside className="lg:col-span-5 w-full sticky top-32">
+            <div className="bg-slate-900 text-white p-8 md:p-12 rounded-[2.5rem] shadow-[0_40px_80px_-20px_rgba(15,23,42,0.3)] relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-blue-600/10 blur-[100px] rounded-full -mr-24 -mt-24"></div>
+              
+              <h2 className="text-2xl font-black tracking-tighter italic uppercase mb-10 flex items-center gap-4">
+                Summary <div className="h-0.5 flex-1 bg-white/10"></div>
+              </h2>
+
+              <div className="space-y-6 mb-10">
+                {cartItems.map(item => (
+                  <div key={item.id + item.size + item.color} className="flex justify-between items-start group">
+                    <div className="flex-1 pr-6">
+                      <p className="text-xs font-black italic uppercase tracking-tighter leading-tight mb-1 group-hover:text-blue-400 transition-colors">
+                        {item.name}
                       </p>
-                      <p className="text-sm text-gray-600">
-                        {addr.street || addr.flat}, {addr.city}, {addr.state} - {addr.pincode || addr.postalCode}
+                      <p className="text-[9px] text-white/40 font-bold uppercase tracking-widest">
+                        {item.size} {item.color ? `· ${item.color}` : ""} × {item.quantity}
                       </p>
                     </div>
+                    <span className="font-black italic text-sm tracking-tighter whitespace-nowrap">
+                      ₹{(item.price * item.quantity).toLocaleString()}
+                    </span>
                   </div>
-                </label>
-              ))
-            ) : (
-              <p className="text-center text-gray-500">No saved addresses</p>
-            )}
-          </div>
-
-          <div className="text-center mb-8">
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              className="bg-blue-600 text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-lg hover:bg-blue-700 shadow-md transition"
-            >
-              + Add New Address
-            </button>
-          </div>
-
-          <h3 className="text-center font-semibold mb-4">Payment Method</h3>
-
-          {/* ✅ NEW: Payment info alert */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm text-gray-700">
-            <p className="font-medium mb-1">⏰ Important:</p>
-            <p>Complete payment within 10 minutes to avoid timeout.</p>
-          </div>
-
-          <div className="flex justify-center gap-3">
-            <button
-              onClick={() => placeOrder("Razorpay")}
-              disabled={isPlacingOrder}
-              className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition"
-            >
-              {isPlacingOrder ? "Processing..." : "Pay Online"}
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
-            Order Summary
-          </h2>
-          <div className="space-y-3">
-            {cartItems.map(item => (
-              <div key={item.id + item.size + item.color} className="flex justify-between text-gray-700">
-                <span>
-                  {item.name} ({item.size ? `${item.size}` : "N/A"}
-                  {item.color ? `, ${item.color}` : ""}) × {item.quantity}
-                </span>
-                <span className="font-medium">₹{(item.price * item.quantity).toFixed(2)}</span>
-              </div>
-            ))}
-
-            <div className="border-t pt-4">
-              <div className="flex justify-between">
-                <span>Total Items:</span>
-                <span className="font-semibold">{totalQuantity}</span>
-              </div>
-              <div className="flex justify-between text-gray-700">
-                <span>Delivery Fee:</span>
-                <span>₹{displayShipping.toFixed(2)}</span>
+                ))}
               </div>
 
-              {appliedCoupon && (
-                <div className="flex justify-between text-green-600">
-                  <span>Coupon: {appliedCoupon.code}</span>
-                  <span>{appliedCoupon.discountPercentage}%</span>
+              <div className="space-y-4 pt-10 border-t border-white/10 mb-10">
+                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] text-white/40 italic">
+                  <span>Subtotal</span>
+                  <span className="text-white">₹{totalAmount.toLocaleString()}</span>
                 </div>
-              )}
-              <div className="flex justify-between text-xl font-bold text-gray-800 mt-4 border-t pt-4">
-                <span>Total Payable:</span>
-                <span className="text-blue-600">₹{Number(grandTotal).toFixed(2)}</span>
+                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] text-white/40 italic">
+                  <span>Logistics</span>
+                  <span className="text-white">₹{displayShipping.toLocaleString()}</span>
+                </div>
+                {appliedCoupon && (
+                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 italic">
+                    <span>Savings ({appliedCoupon.code})</span>
+                    <span>-₹{(totalAmount * appliedCoupon.discountPercentage / 100).toLocaleString()}</span>
+                  </div>
+                )}
               </div>
+
+              <div className="pt-6">
+                <p className="text-white/30 text-[9px] font-black uppercase tracking-[0.5em] mb-3 italic">Total Amount Payable</p>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-5xl font-black text-white italic tracking-tighter">
+                    ₹{Math.round(grandTotal).toLocaleString()}
+                  </span>
+                  <span className="text-white/40 text-[10px] font-bold uppercase tracking-widest">INR</span>
+                </div>
+              </div>
+
+              <p className="mt-12 text-[9px] font-black uppercase tracking-[0.4em] text-white/20 italic text-center border-t border-white/5 pt-8">
+                Securerd by Sartaaj Bharat
+              </p>
             </div>
-          </div>
+          </aside>
         </div>
       </div>
     </div>

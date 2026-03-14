@@ -74,11 +74,11 @@ export const useCartActions = () => {
         addItem({
           id: product._id,
           name: product.name,
-          image: product.pimage,
+          image: product.pimage || product.image,
           size,
           color,
-          price: product.variants?.price || 0,
-          quantity: 1,  // 🔧 FIX: Use newQty (existing + new)
+          price: product.variants?.price || product.price || 0,
+          quantity, 
         })
       );
 
@@ -89,7 +89,7 @@ export const useCartActions = () => {
             productId: product._id, 
             size, 
             color, 
-            quantity: 1  // 🔧 FIX: Send total quantity
+            quantity
           })
         ).unwrap();
       }

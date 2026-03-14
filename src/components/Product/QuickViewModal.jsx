@@ -33,10 +33,10 @@ const QuickViewModal = ({ product, onClose }) => {
                 selectedVariant?.color || 'Default',
                 quantity
             );
-            toast.success(`Exquisite ${product.name} reserved in your lounge`);
+            toast.success(`${product.name} added to cart`);
             onClose();
         } catch (err) {
-            toast.error(err.message || 'Acquisition error');
+            toast.error(err.message || 'Failed to add to cart');
         }
     };
 
@@ -68,7 +68,7 @@ const QuickViewModal = ({ product, onClose }) => {
                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                    className="bg-white/95 backdrop-blur-md w-full max-w-6xl rounded-3xl sm:rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden relative flex flex-col lg:flex-row border border-white max-h-[95vh] h-auto"
+                    className="bg-white/95 backdrop-blur-md w-full max-w-4xl rounded-3xl sm:rounded-[2rem] shadow-[0_30px_60px_-10px_rgba(0,0,0,0.3)] overflow-hidden relative flex flex-col lg:flex-row border border-white max-h-[90vh] h-auto"
                 >
                     {/* Interaction Exit */}
                     <button
@@ -79,24 +79,24 @@ const QuickViewModal = ({ product, onClose }) => {
                     </button>
 
                     {/* Visual Core (Left) */}
-                    <div className="w-full lg:w-1/2 bg-slate-50 flex flex-col items-center justify-center p-8 sm:p-10 lg:p-12 relative overflow-hidden group">
+                    <div className="w-full lg:w-1/2 bg-slate-50 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-hidden group">
                         <motion.img
                             key={activeImage}
                             initial={{ opacity: 0, scale: 1.1 }}
                             animate={{ opacity: 1, scale: 1 }}
                             src={images[activeImage]}
                             alt={product.name}
-                            className="max-h-[350px] lg:max-h-[500px] object-contain mix-blend-multiply drop-shadow-2xl"
+                            className="max-h-[280px] lg:max-h-[360px] object-contain mix-blend-multiply drop-shadow-2xl"
                         />
 
                         {/* Image Navigation Nodes */}
                         {images.length > 1 && (
-                            <div className="flex gap-3 mt-10">
+                            <div className="flex gap-2 mt-4">
                                 {images.map((img, idx) => (
                                     <button
                                         key={idx}
                                         onClick={() => setActiveImage(idx)}
-                                        className={`w-16 h-16 rounded-2xl border-2 transition-all p-2 bg-white ${activeImage === idx ? 'border-blue-600 scale-110 shadow-lg' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                                        className={`w-12 h-12 rounded-lg border-2 transition-all p-1 bg-white ${activeImage === idx ? 'border-blue-600 scale-105 shadow-sm' : 'border-transparent opacity-50 hover:opacity-100'}`}
                                     >
                                         <img src={img} className="w-full h-full object-contain" />
                                     </button>
@@ -106,59 +106,59 @@ const QuickViewModal = ({ product, onClose }) => {
                     </div>
 
                     {/* Intelligence Core (Right) */}
-                    <div className="w-full lg:w-1/2 p-6 sm:p-10 lg:p-16 flex flex-col overflow-y-auto no-scrollbar">
-                        <div className="mb-6 lg:mb-10">
+                    <div className="w-full lg:w-1/2 p-4 sm:p-6 lg:p-10 flex flex-col overflow-y-auto no-scrollbar">
+                        <div className="mb-3 lg:mb-4">
                             <motion.span
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className="text-blue-600 font-bold text-[10px] sm:text-xs uppercase tracking-[0.3em] mb-2 sm:mb-4 block"
+                                className="text-blue-600 font-bold text-[9px] sm:text-[10px] uppercase tracking-[0.3em] mb-1 sm:mb-2 block"
                             >
-                                {product.brand || 'Elite Selection'}
+                                {product.brand || 'Official Store'}
                             </motion.span>
-                            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-black text-slate-900 mb-4 sm:mb-6 leading-tight italic tracking-tighter">
+                            <h2 className="text-lg sm:text-xl lg:text-3xl font-black text-slate-900 mb-1 sm:mb-3 leading-tight italic tracking-tighter">
                                 {product.name}
                             </h2>
-                            <div className="flex items-center gap-4 sm:gap-6">
-                                <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-blue-600 tracking-tighter italic">
+                            <div className="flex items-center gap-3 sm:gap-4">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-black text-blue-600 tracking-tighter italic">
                                     ₹{(selectedVariant?.price || product.price || 0).toLocaleString()}
                                 </div>
                                 {(selectedVariant?.compareAtPrice || product.oldPrice) && (
-                                    <div className="text-slate-300 line-through text-lg sm:text-2xl font-bold">
+                                    <div className="text-slate-300 line-through text-base sm:text-xl font-bold">
                                         ₹{(selectedVariant?.compareAtPrice || product.oldPrice).toLocaleString()}
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 mb-10 pb-10 border-b border-slate-100">
+                        <div className="flex items-center gap-4 mb-4 pb-4 border-b border-slate-100">
                             <div className="flex items-center gap-1.5 bg-slate-900 text-white px-4 py-1.5 rounded-full">
                                 <Star size={12} className="fill-blue-400 text-blue-400" />
                                 <span className="text-xs font-black">{product.rating || '4.9'}</span>
                             </div>
-                            <span className="text-slate-400 text-xs font-black uppercase tracking-widest italic">21 Private Reviews</span>
+                            <span className="text-slate-400 text-xs font-black uppercase tracking-widest italic">Customer Reviews</span>
                         </div>
 
-                        <p className="text-slate-600 text-lg font-medium mb-12 leading-relaxed">
-                            {product.description || "Experience the pinnacle of technology and design with our most refined collection yet. Engineered for those who demand excellence."}
+                        <p className="text-slate-600 text-sm font-medium mb-6 leading-relaxed">
+                            {product.description || "Premium quality product designed for excellence and durability."}
                         </p>
 
-                        <div className="space-y-10 mb-12">
+                        <div className="space-y-4 mb-6">
                             <div className="flex items-center gap-3 text-sm font-black text-slate-900 group">
                                 <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
                                     <Check size={14} strokeWidth={3} />
                                 </div>
-                                <span className="uppercase tracking-widest">In Stock / Sartaaj Prime</span>
+                                <span className="uppercase tracking-widest">In Stock / Sartaaj Express</span>
                             </div>
 
                             {product.variants && product.variants.length > 0 && (
-                                <div className="space-y-4">
-                                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest block">Select Your Configuration</span>
+                                <div className="space-y-3">
+                                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest block">Select Configuration</span>
                                     <div className="flex flex-wrap gap-3">
                                         {product.variants.map((variant, idx) => (
                                             <button
                                                 key={idx}
                                                 onClick={() => setSelectedVariant(variant)}
-                                                className={`px-6 py-3 rounded-2xl border-2 text-xs font-black tracking-widest transition-all ${selectedVariant === variant ? 'border-blue-600 bg-blue-50/50 text-blue-600 shadow-xl shadow-blue-100 scale-105' : 'border-slate-100 text-slate-400 hover:border-slate-200 hover:text-slate-600'}`}
+                                                className={`px-3 py-2 rounded-lg border-2 text-[9px] font-black tracking-widest transition-all ${selectedVariant === variant ? 'border-blue-600 bg-blue-50/50 text-blue-600 shadow-md shadow-blue-100 scale-105' : 'border-slate-100 text-slate-400 hover:border-slate-200 hover:text-slate-600'}`}
                                             >
                                                 {variant.size} {variant.color !== 'Default' ? `- ${variant.color}` : ''}
                                             </button>
@@ -168,16 +168,16 @@ const QuickViewModal = ({ product, onClose }) => {
                             )}
                         </div>
 
-                        <div className="flex items-center gap-4 sm:gap-6 pt-6 sm:pt-10 border-t border-slate-100 mt-auto">
-                            <div className="flex items-center bg-slate-100 rounded-2xl sm:rounded-4xl p-1 sm:p-2 gap-2 sm:gap-4">
+                        <div className="flex items-center gap-4 sm:gap-6 pt-4 sm:pt-6 border-t border-slate-100 mt-auto">
+                            <div className="flex items-center bg-slate-100 rounded-xl sm:rounded-2xl p-1 gap-1 sm:gap-2">
                                 <button
                                     onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl hover:bg-white text-slate-900 font-black transition-all shadow-sm flex items-center justify-center"
+                                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg hover:bg-white text-slate-900 font-black transition-all shadow-sm flex items-center justify-center"
                                 >-</button>
-                                <span className="w-6 sm:w-8 text-center text-xs sm:text-sm font-black">{quantity}</span>
+                                <span className="w-5 sm:w-6 text-center text-[10px] sm:text-xs font-black">{quantity}</span>
                                 <button
                                     onClick={() => setQuantity(q => q + 1)}
-                                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl hover:bg-white text-slate-900 font-black transition-all shadow-sm flex items-center justify-center"
+                                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg hover:bg-white text-slate-900 font-black transition-all shadow-sm flex items-center justify-center"
                                 >+</button>
                             </div>
 
@@ -185,21 +185,21 @@ const QuickViewModal = ({ product, onClose }) => {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={handleAddToCart}
-                                className="flex-1 bg-slate-900 text-white px-4 sm:px-10 py-3 sm:py-5 rounded-2xl sm:rounded-4xl font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-xl flex items-center justify-center gap-2 sm:gap-4 group"
+                                className="flex-1 bg-slate-900 text-white px-4 sm:px-8 py-2.5 sm:py-4 rounded-xl sm:rounded-2xl font-black text-[9px] sm:text-[10px] uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-lg flex items-center justify-center gap-2 sm:gap-3 group"
                             >
-                                <ShoppingCart size={18} strokeWidth={2.5} /> Reserve Access
+                                <ShoppingCart size={18} strokeWidth={2.5} /> Add to Cart
                             </motion.button>
                         </div>
 
-                        <div className="flex gap-10 mt-10">
+                        <div className="flex gap-4 mt-4">
                             <button
                                 onClick={toggleWishlist}
                                 className={`flex items-center gap-3 text-[10px] font-black uppercase tracking-widest transition-colors ${inWishlist ? 'text-red-500' : 'text-slate-400 hover:text-slate-900'}`}
                             >
-                                <Heart size={16} strokeWidth={2.5} fill={inWishlist ? "currentColor" : "none"} /> Add to Private Favorites
+                                <Heart size={16} strokeWidth={2.5} fill={inWishlist ? "currentColor" : "none"} /> Add to Wishlist
                             </button>
                             <button className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors">
-                                <RefreshCw size={16} strokeWidth={2.5} /> Compare Specs
+                                <RefreshCw size={16} strokeWidth={2.5} /> Add to Compare
                             </button>
                         </div>
                     </div>

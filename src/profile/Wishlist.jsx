@@ -17,7 +17,7 @@ export default function Wishlist() {
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           className="w-16 h-16 border-4 border-slate-100 border-t-blue-600 rounded-full mb-6"
         />
-        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 italic">Accessing Intelligence Bank...</span>
+        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 italic">Updating Favorites...</span>
       </div>
     );
   }
@@ -30,10 +30,10 @@ export default function Wishlist() {
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 px-4">
           <div>
             <div className="flex items-center gap-4 text-blue-600 font-black text-[10px] uppercase tracking-[0.5em] mb-6 italic">
-              <Sparkles size={14} /> Intelligence Bank
+              <Sparkles size={14} /> Desired Items
             </div>
-            <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter italic leading-none">
-              Elite <span className="text-blue-600 underline underline-offset-[16px] decoration-8">Collection</span>
+            <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter italic leading-none uppercase">
+              Your <span className="text-blue-600 underline underline-offset-[16px] decoration-8">Wishlist</span>
             </h1>
           </div>
 
@@ -44,7 +44,7 @@ export default function Wishlist() {
               onClick={clearWishlist}
               className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 hover:text-red-500 transition-colors group italic"
             >
-              <Trash2 size={18} className="group-hover:rotate-12 transition-transform" /> Vaporize Selection
+              <Trash2 size={18} className="group-hover:rotate-12 transition-transform" /> Clear Wishlist
             </motion.button>
           )}
         </header>
@@ -69,7 +69,7 @@ export default function Wishlist() {
                   {/* Elite Overlay Tag */}
                   <div className="absolute top-4 left-4 z-10 pointer-events-none">
                     <span className="bg-white/80 backdrop-blur-md text-blue-600 text-[8px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest shadow-sm border border-white/50 italic opacity-0 group-hover:opacity-100 transition-opacity">
-                      Authorized Item
+                      Saved Choice
                     </span>
                   </div>
                 </motion.div>
@@ -86,10 +86,10 @@ export default function Wishlist() {
                 <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-10 shadow-2xl border border-slate-50 group">
                   <Heart size={36} className="text-slate-200 group-hover:text-red-400 transition-colors" strokeWidth={3} />
                 </div>
-                <h3 className="text-4xl font-black text-slate-900 mb-6 tracking-tighter italic">Intelligence Bank Restricted</h3>
-                <p className="text-slate-400 font-medium text-xl mb-12 max-w-sm mx-auto italic leading-relaxed">No high-fidelity artifacts have been authorized for your elite collection yet.</p>
+                <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tighter italic uppercase">Your Wishlist is Empty</h3>
+                <p className="text-slate-400 font-medium text-lg mb-10 max-w-sm mx-auto italic leading-relaxed">No premium pieces have been saved to your collection yet.</p>
                 <Link to="/" className="btn-premium px-12 py-5 inline-flex items-center gap-4">
-                  <Search size={20} /> Inspect Gallery
+                  <Search size={20} /> Explore Products
                 </Link>
               </div>
               {/* Background Decoration */}
@@ -103,12 +103,12 @@ export default function Wishlist() {
         {wishlist?.length > 0 && (
           <div className="mt-40 pt-24 border-t border-slate-100 text-center">
             <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.6em] mb-4 block italic">Next Step</span>
-            <h2 className="text-3xl md:text-5xl font-black text-slate-900 italic tracking-tighter mb-10">Authorize Transaction?</h2>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 italic tracking-tighter mb-10">Add All to Bag?</h2>
             <button
               onClick={() => navigate('/cart')}
               className="btn-premium px-16 py-6 text-sm flex items-center gap-4 mx-auto group"
             >
-              Proceed to Checkout <ArrowRight size={20} className="group-hover:translate-x-3 transition-transform" />
+              Go to Cart <ArrowRight size={20} className="group-hover:translate-x-3 transition-transform" />
             </button>
           </div>
         )}

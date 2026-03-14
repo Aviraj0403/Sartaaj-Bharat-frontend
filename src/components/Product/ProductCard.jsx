@@ -8,7 +8,7 @@ import QuickViewModal from './QuickViewModal';
 import { useWishlist } from '../../hooks';
 import { useCartActions } from '../../hooks/useCartActions';
 
-const ProductCard = ({ product, layout = "grid" }) => {
+const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
   const [showQuickView, setShowQuickView] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const { isAuthenticated } = useSelector(state => state.auth);
@@ -35,9 +35,9 @@ const ProductCard = ({ product, layout = "grid" }) => {
         product.variants?.[0]?.color || 'Default',
         1
       );
-      toast.success(`Exclusive ${product.name} added to lounge`);
+      toast.success(`${product.name} added to cart`);
     } catch (err) {
-      toast.error(err.message || 'Collection sync failed');
+      toast.error(err.message || 'Failed to add to cart');
     }
   };
 
@@ -57,28 +57,28 @@ const ProductCard = ({ product, layout = "grid" }) => {
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         whileInView={{ opacity: 1, x: 0 }}
-        className="bg-white rounded-[2rem] border border-slate-100 p-6 flex gap-8 hover:shadow-2xl transition-all duration-700 relative group overflow-hidden"
+        className="bg-white rounded-[1.2rem] border border-slate-100 p-4 flex gap-5 hover:shadow-xl transition-all duration-700 relative group overflow-hidden"
       >
-        <div className="w-64 h-64 bg-slate-50 rounded-2xl overflow-hidden p-6 shrink-0 relative">
+        <div className="w-48 h-48 bg-slate-50 rounded-xl overflow-hidden p-4 shrink-0 relative">
           <Link to={`/product/${product.slug || product._id || product.id}`}>
             <motion.img
               src={product.images?.[0] || product.pimage}
               whileHover={{ scale: 1.1 }}
-              className="w-full h-full object-contain mix-blend-multiply"
+              className={`w-full h-full ${imageFit === 'cover' ? 'object-cover' : 'object-contain'} mix-blend-multiply`}
             />
           </Link>
           {product.discount > 0 && (
             <div className="absolute top-4 left-4 bg-blue-600 text-white text-[9px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-[0.2em]">
-              -{product.discount}% ELITE
+              {product.discount}% OFF
             </div>
           )}
         </div>
 
         <div className="flex-1 flex flex-col py-2">
-          <div className="flex justify-between items-start mb-4">
+          <div className="flex justify-between items-start mb-2">
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1 block">{product.brand || 'Elite Series'}</span>
-              <h3 className="text-2xl font-bold text-slate-900 tracking-tight">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1 block">{product.brand || 'Official Collection'}</span>
+              <h3 className="text-xl font-bold text-slate-900 tracking-tight">
                 <Link to={`/product/${product.slug || product._id || product.id}`}>{product.name}</Link>
               </h3>
             </div>
@@ -88,11 +88,11 @@ const ProductCard = ({ product, layout = "grid" }) => {
             </div>
           </div>
 
-          <p className="text-slate-500 text-sm font-medium leading-relaxed mb-6 line-clamp-2 max-w-xl">
-            {product.description || "The pinnacle of engineering meets elite aesthetics. Experience superior performance in every detail."}
+          <p className="text-slate-500 text-xs font-medium leading-relaxed mb-4 line-clamp-2 max-w-lg">
+            {product.description || "Premium quality product designed for excellence and performance."}
           </p>
 
-          <div className="flex items-center gap-6 mb-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
+          <div className="flex items-center gap-4 mb-4 text-[9px] font-black uppercase tracking-widest text-slate-400">
             {product.variants?.[0]?.ram && <span className="flex items-center gap-2"><Cpu size={14} /> {product.variants[0].ram} Memory</span>}
             {product.variants?.[0]?.storage && <span className="flex items-center gap-2"><HardDrive size={14} /> {product.variants[0].storage} Vault</span>}
           </div>
@@ -112,9 +112,9 @@ const ProductCard = ({ product, layout = "grid" }) => {
               </button>
               <button
                 onClick={handleAddToCart}
-                className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-2xl flex items-center gap-3 italic"
+                className="bg-slate-900 text-white px-8 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-2xl flex items-center gap-3 italic"
               >
-                <ShoppingCart size={16} strokeWidth={2.5} /> Acquire Artifact
+                <ShoppingCart size={16} strokeWidth={2.5} /> Add to Cart
               </button>
             </div>
           </div>
@@ -134,24 +134,27 @@ const ProductCard = ({ product, layout = "grid" }) => {
       viewport={{ once: true }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="flex flex-col h-full bg-white rounded-2xl md:rounded-[2rem] overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-700 border border-slate-100/50"
+      className={`flex flex-col h-full bg-white rounded-xl md:rounded-[1.5rem] overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-700 border relative ${product.isBestSeller ? 'border-amber-100/50 outline outline-4 outline-amber-500/5' : 'border-slate-100/50'}`}
     >
+      {product.isBestSeller && (
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-amber-400/30 to-transparent z-10" />
+      )}
       {/* Discovery Core (Image Area) */}
-      <div className="relative aspect-square overflow-hidden bg-slate-50 p-4 sm:p-6 md:p-10">
+      <div className="relative aspect-square overflow-hidden bg-slate-50 p-3 sm:p-4 md:p-5">
         {/* Status Indicators */}
         <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex flex-col gap-2">
           {(product.isFeatured || product.isBestSeller) && (
             <motion.span
               initial={{ x: -10, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              className="bg-slate-900 text-white text-[9px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-[0.2em] shadow-lg flex items-center gap-2 border border-slate-700/50"
+              className="bg-slate-900 text-white text-[8px] font-bold px-2.5 py-1.5 rounded-lg uppercase tracking-[0.2em] shadow-lg flex items-center gap-2 border border-slate-700/50"
             >
-              <Sparkles size={10} className="text-blue-400" /> Signature
+              <Sparkles size={10} className="text-blue-400" /> Best Seller
             </motion.span>
           )}
           {product.discount > 0 && (
             <span className="bg-blue-600 text-white text-[8px] sm:text-[9px] font-black px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl uppercase tracking-[0.2em] shadow-2xl">
-              -{product.discount}% ELITE
+              {product.discount}% OFF
             </span>
           )}
         </div>
@@ -168,7 +171,7 @@ const ProductCard = ({ product, layout = "grid" }) => {
               rotate: isHovered ? 2 : 0
             }}
             transition={{ duration: 0.8, ease: "circOut" }}
-            className="w-full h-full object-contain mix-blend-multiply"
+            className={`w-full h-full ${imageFit === 'cover' ? 'object-cover' : 'object-contain'} mix-blend-multiply`}
           />
         </Link>
 
@@ -179,13 +182,13 @@ const ProductCard = ({ product, layout = "grid" }) => {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 40 }}
-              className="absolute inset-x-8 bottom-8 z-30 flex gap-3"
+              className="absolute inset-x-6 bottom-6 z-30 flex gap-2.5"
             >
               <button
                 onClick={handleAddToCart}
-                className="flex-[3] bg-slate-900 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-2xl shadow-slate-900/40 flex items-center justify-center gap-3 active:scale-95"
+                className="flex-[3] bg-slate-900 text-white py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-2xl shadow-slate-900/40 flex items-center justify-center gap-2.5 active:scale-95"
               >
-                <ShoppingCart size={16} strokeWidth={2.5} /> Acquire
+                <ShoppingCart size={16} strokeWidth={2.5} /> Add to Cart
               </button>
               <button
                 onClick={(e) => { e.preventDefault(); setShowQuickView(true); }}
@@ -209,10 +212,10 @@ const ProductCard = ({ product, layout = "grid" }) => {
       </div>
 
       {/* Insight Area (Content) */}
-      <div className="px-5 sm:px-8 pb-6 sm:pb-8 pt-2 flex flex-col flex-1">
-        <div className="flex justify-between items-center mb-4">
+      <div className="px-3 sm:px-4 pb-4 sm:pb-5 pt-1 flex flex-col flex-1">
+        <div className="flex justify-between items-center mb-2">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-            {product.brand || 'Elite Series'}
+            {product.brand || 'Official Collection'}
           </span>
           <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 px-3 py-1 rounded-full">
             <Star size={10} className="fill-blue-500 text-blue-500" />
@@ -220,12 +223,12 @@ const ProductCard = ({ product, layout = "grid" }) => {
           </div>
         </div>
 
-        <h3 className="text-slate-900 font-bold text-sm sm:text-lg mb-2 sm:mb-4 leading-tight tracking-tight hover:text-blue-600 transition-colors duration-300">
+        <h3 className="text-slate-900 font-bold text-xs sm:text-sm mb-1 sm:mb-2 leading-tight tracking-tight hover:text-blue-600 transition-colors duration-300">
           <Link to={`/product/${product.slug || product._id || product.id}`} className="line-clamp-2 italic">{product.name}</Link>
         </h3>
 
         {/* Always-visible Quick View trigger */}
-        <div className="mb-4 flex justify-between items-center">
+        <div className="mb-2 flex justify-between items-center">
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowQuickView(true); }}
             className="inline-flex items-center gap-2 text-slate-400 hover:text-blue-600 font-bold uppercase tracking-[0.2em] text-[10px] transition-all duration-300 py-1"
@@ -237,14 +240,14 @@ const ProductCard = ({ product, layout = "grid" }) => {
           </button>
         </div>
 
-        <div className="mt-auto flex items-end justify-between pt-4 border-t border-slate-100/50">
+        <div className="mt-auto flex items-end justify-between pt-2 border-t border-slate-100/50">
           <div className="flex flex-col">
             {displayOldPrice && (
               <span className="text-slate-300 text-xs line-through font-medium mb-1 tracking-wide uppercase">
                 ₹{displayOldPrice.toLocaleString()}
               </span>
             )}
-            <span className="text-slate-900 font-bold text-lg sm:text-2xl tracking-tight">
+            <span className="text-slate-900 font-bold text-sm sm:text-lg tracking-tight">
               ₹{displayPrice.toLocaleString()}
             </span>
           </div>

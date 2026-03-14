@@ -52,9 +52,9 @@ export default function OrderDetails() {
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
-        className="mb-6 flex items-center gap-2 text-blue-600 text-[10px] font-black uppercase tracking-[0.3em] hover:translate-x-[-4px] transition-transform italic"
+        className="mb-8 flex items-center gap-2 text-blue-600 text-[10px] font-black uppercase tracking-[0.3em] hover:translate-x-[-4px] transition-transform italic"
       >
-        <ArrowRight size={14} className="rotate-180" strokeWidth={3} /> Return to Archives
+        <ArrowRight size={14} className="rotate-180" strokeWidth={3} /> Back to Orders
       </button>
 
       {/* Header */}
@@ -63,10 +63,10 @@ export default function OrderDetails() {
         <div className="flex justify-between items-center flex-wrap gap-6 relative z-10">
           <div className="min-w-0">
             <h1 className="text-2xl sm:text-5xl font-black text-slate-900 italic tracking-tighter uppercase break-all leading-none mb-3">
-              Order Protocol <span className="text-blue-600">#{order._id}</span>
+              Order <span className="text-blue-600">Details</span>
             </h1>
             <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em]">
-              Authorization Date: {new Date(order.placedAt).toLocaleDateString()}
+              Order Date: {new Date(order.placedAt).toLocaleDateString()}
             </p>
           </div>
 
@@ -85,7 +85,7 @@ export default function OrderDetails() {
       {/* Items Section */}
       <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] shadow-sm border border-slate-100 mb-8">
         <h2 className="text-xl sm:text-3xl font-black text-slate-900 mb-8 italic tracking-tight uppercase">
-          Neural Artifacts <span className="text-blue-600 italic">[{order.items.length}]</span>
+          Items <span className="text-blue-600 italic">({order.items.length})</span>
         </h2>
 
         <div className="space-y-4">
@@ -107,8 +107,8 @@ export default function OrderDetails() {
                   {item.product.name}
                 </h3>
                 <div className="flex gap-4 mt-2">
-                  <span className="text-slate-400 text-[9px] font-black uppercase tracking-widest">Seller: Elite Archive</span>
-                  <span className="text-slate-400 text-[9px] font-black uppercase tracking-widest">Protocol: {item.selectedVariant?.size || "Alpha"}</span>
+                  <span className="text-slate-400 text-[9px] font-black uppercase tracking-widest">Official Store</span>
+                  <span className="text-slate-400 text-[9px] font-black uppercase tracking-widest">Size: {item.selectedVariant?.size || "Standard"}</span>
                 </div>
 
                 <p className="text-blue-600 font-black text-sm sm:text-xl mt-3 italic">
@@ -124,7 +124,7 @@ export default function OrderDetails() {
       <div className="bg-slate-900 p-6 sm:p-10 rounded-[2.5rem] shadow-2xl mb-8 border border-slate-800 relative overflow-hidden">
         <div className="absolute bottom-0 right-0 w-32 h-32 bg-blue-600/10 blur-3xl rounded-full"></div>
         <h2 className="text-xl sm:text-3xl font-black text-white mb-6 italic tracking-tight uppercase relative z-10">
-          Neural Node <span className="text-blue-600">Address</span>
+          Shipping <span className="text-blue-600">Address</span>
         </h2>
 
         <div className="space-y-2 relative z-10">
@@ -138,16 +138,16 @@ export default function OrderDetails() {
       {/* Payment Details */}
       <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] shadow-sm border border-slate-100 mb-10">
         <h2 className="text-xl sm:text-3xl font-black text-slate-900 mb-8 italic tracking-tight uppercase">
-          Financial <span className="text-blue-600">Protocol</span>
+          Payment <span className="text-blue-600">Summary</span>
         </h2>
 
         <div className="space-y-4 max-w-sm">
           <div className="flex justify-between items-center">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Escrow Type</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Payment method</span>
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-900 italic">{order.paymentMethod}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Vault Status</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Status</span>
             <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.3em] italic">{order.paymentStatus}</span>
           </div>
           <div className="h-px bg-slate-50"></div>
@@ -162,7 +162,7 @@ export default function OrderDetails() {
             <span>₹80.00</span>
           </div>
           <div className="pt-6 border-t border-slate-200 flex justify-between items-end">
-            <span className="text-slate-400 font-black text-[10px] uppercase tracking-[0.4em]">Final Authorization</span>
+            <span className="text-slate-400 font-black text-[10px] uppercase tracking-[0.4em]">Total Amount</span>
             <span className="text-blue-600 font-black text-4xl italic leading-none">₹{order.totalAmount?.toLocaleString()}</span>
           </div>
         </div>
@@ -174,15 +174,15 @@ export default function OrderDetails() {
           onClick={handleDownloadInvoice}
           className="bg-blue-600 hover:bg-slate-900 text-white px-8 md:px-12 py-4 md:py-6 rounded-[2rem] font-black text-xs md:text-sm uppercase tracking-[0.3em] flex items-center gap-4 transition-all shadow-xl shadow-blue-500/20 active:scale-95 italic"
         >
-          <Download size={20} strokeWidth={3} /> Download Protocol
+          <Download size={20} strokeWidth={3} /> Download Invoice
         </button>
 
-        <button className="px-8 md:px-10 py-4 md:py-6 rounded-[2rem] border-2 border-slate-200 text-slate-400 font-black text-xs uppercase tracking-[0.34em] hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all active:scale-95 italic">
-          Intelligence Link
+        <button className="px-8 md:px-10 py-4 md:py-6 rounded-[2rem] border-2 border-slate-200 text-slate-400 font-black text-xs uppercase tracking-[0.34em] hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all active:scale-95 italic text-center">
+          Track Order
         </button>
 
-        <button className="px-8 md:px-10 py-4 md:py-6 rounded-[2rem] border-2 border-slate-200 text-slate-400 font-black text-xs uppercase tracking-[0.34em] hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all active:scale-95 italic ml-auto md:ml-0">
-          Restore Selection
+        <button className="px-8 md:px-10 py-4 md:py-6 rounded-[2rem] border-2 border-slate-200 text-slate-400 font-black text-xs uppercase tracking-[0.34em] hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all active:scale-95 italic text-center ml-auto md:ml-0">
+          Reorder Items
         </button>
       </div>
     </div>
