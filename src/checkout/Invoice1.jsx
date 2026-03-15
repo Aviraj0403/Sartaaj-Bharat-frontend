@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { Printer, Download, Truck } from "lucide-react";
-import logo from "../image/logo-cosmetic2.jpg";
+import logo from "../image/sb.png";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 

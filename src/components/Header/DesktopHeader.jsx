@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Smartphone, Info, Truck, ShoppingCart, User, LogOut, ChevronDown } from "lucide-react";
 import { FaPhone, FaMapMarkerAlt } from "react-icons/fa";
-import logo from "../../image/logo-cosmetic2.jpg";
+import logo from "../../image/sb.png";
 import { useQuery } from "@tanstack/react-query";
 import { getMenuCategories } from "../../services/categoryApi";
 import { useAuth } from "../../context/AuthContext";

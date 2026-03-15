@@ -292,7 +292,7 @@ const ReviewList = ({ reviews }) => {
           >
             <div className="flex items-start gap-3 mb-3">
               <img
-                src={review.user.avatar || "/logo-cosmetic2.jpg"}
+                src={review.user.avatar || "/sb.png"}
                 alt={review.user.userName}
                 className="w-12 h-12 rounded-full object-cover border-2 border-pink-100"
               />

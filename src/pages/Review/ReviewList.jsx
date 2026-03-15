@@ -37,7 +37,7 @@ const ReviewList = ({ reviews }) => {
             <div className="absolute top-0 left-0 w-1 h-full bg-blue-600 opacity-0 group-hover:opacity-100 transition-all"></div>
             <div className="flex items-start gap-3 mb-3">
               <img
-                src={review.user.avatar || "/logo-cosmetic2.jpg"}
+                src={review.user.avatar || "/sb.png"}
                 alt={review.user.userName}
                 className="w-14 h-14 rounded-full object-cover border-2 border-slate-100 grayscale group-hover:grayscale-0 transition-all"
               />

@@ -14,7 +14,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../image/logo-cosmetic2.jpg";
+import logo from "../../image/sb.png";
 import { useQuery } from "@tanstack/react-query";
 import { getMenuCategories } from "../../services/categoryApi";
 import { useAuth } from "../../context/AuthContext";
@@ -93,7 +93,7 @@ export default function MobileHeader() {
 
           {/* Logo */}
           <Link to="/" className="flex justify-center">
-            <img src={logo} alt="Logo" className="h-12 w-auto" />
+            <img id="logo" src="https://gurmeetkaurstore.com/sb.png" />
           </Link>
 
           {/* Profile + Cart */}
