@@ -64,18 +64,41 @@ const CategoryDetails = () => {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState("grid");
 
+  const [dynamicFilters, setDynamicFilters] = useState({}); // { filter_Fabric: "Cotton,Silk" }
+
   // Reset filters on category switch
   useEffect(() => {
     setSelectedBrand(""); setSelectedSubCat("");
     setMinPrice(""); setMaxPrice("");
+    setDynamicFilters({});
   }, [categorySlug]);
 
   const clearFilters = useCallback(() => {
     setSelectedBrand(""); setSelectedSubCat("");
     setMinPrice(""); setMaxPrice("");
+    setDynamicFilters({});
   }, []);
 
-  const hasFilters = selectedBrand || selectedSubCat || minPrice || maxPrice;
+  const hasFilters = selectedBrand || selectedSubCat || minPrice || maxPrice || Object.keys(dynamicFilters).length > 0;
+
+  const toggleDynamicFilter = (filterName, value) => {
+    setDynamicFilters(prev => {
+      const key = `filter_${filterName}`;
+      const currentValues = prev[key] ? prev[key].split(',') : [];
+      let nextValues;
+      if (currentValues.includes(value)) {
+        nextValues = currentValues.filter(v => v !== value);
+      } else {
+        nextValues = [...currentValues, value];
+      }
+      
+      if (nextValues.length === 0) {
+        const { [key]: removed, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [key]: nextValues.join(',') };
+    });
+  };
 
   // ── Data: dynamic filter options ────────────────────────────────────────
   const { data: filterOpts } = useQuery({
@@ -95,6 +118,7 @@ const CategoryDetails = () => {
     maxPrice: maxPrice || undefined,
     sortBy,
     sortOrder,
+    ...dynamicFilters,
   });
 
   const categoryName = data?.category?.name || categorySlug?.replace(/-/g, " ");
@@ -153,6 +177,34 @@ const CategoryDetails = () => {
           </div>
         </FilterGroup>
       )}
+
+      {/* Dynamic Filters */}
+      {filterOpts?.dynamicFilters && Object.entries(filterOpts.dynamicFilters).map(([filterName, filterValues]) => (
+        <FilterGroup key={filterName} title={filterName} defaultOpen={false}>
+          <div className="flex flex-col gap-2">
+            {filterValues.map(val => (
+              <label key={val} className="flex items-center gap-3 cursor-pointer group">
+                <div className="relative flex items-center justify-center">
+                  <input
+                    type="checkbox"
+                    className="peer sr-only"
+                    checked={dynamicFilters[`filter_${filterName}`]?.split(',').includes(val) || false}
+                    onChange={() => toggleDynamicFilter(filterName, val)}
+                  />
+                  <div className="w-4 h-4 rounded border-2 border-slate-300 peer-checked:bg-blue-600 peer-checked:border-blue-600 transition-all flex items-center justify-center group-hover:border-blue-400">
+                    <svg className="w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-slate-500 group-hover:text-slate-800 transition-colors capitalize">
+                  {val}
+                </span>
+              </label>
+            ))}
+          </div>
+        </FilterGroup>
+      ))}
 
       {/* Price range */}
       {filterOpts?.priceRange && (
@@ -304,6 +356,16 @@ const CategoryDetails = () => {
                     ₹{minPrice || 0} – ₹{maxPrice || "∞"} <X size={10} className="cursor-pointer" onClick={() => { setMinPrice(""); setMaxPrice(""); }} />
                   </span>
                 )}
+                {/* Dynamic Filters Chips */}
+                {Object.entries(dynamicFilters).map(([key, valueStr]) => {
+                  const filterName = key.replace('filter_', '');
+                  const values = valueStr.split(',');
+                  return values.map(val => (
+                    <span key={`${key}-${val}`} className="bg-emerald-50 text-emerald-600 border border-emerald-100 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
+                      {filterName}: {val} <X size={10} className="cursor-pointer" onClick={() => toggleDynamicFilter(filterName, val)} />
+                    </span>
+                  ));
+                })}
               </div>
             )}
 

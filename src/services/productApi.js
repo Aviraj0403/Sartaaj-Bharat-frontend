@@ -74,7 +74,7 @@ export const getMiniProducts = async (
     if (category !== '') params.category = category;
 
     // Advanced filters
-    const { brand, ram, storage, minPrice, maxPrice, sortBy, sortOrder } = extraParams;
+    const { brand, ram, storage, minPrice, maxPrice, sortBy, sortOrder, ...dynamicFilters } = extraParams;
     if (brand) params.brand = brand;
     if (ram) params.ram = ram;
     if (storage) params.storage = storage;
@@ -82,6 +82,9 @@ export const getMiniProducts = async (
     if (maxPrice) params.maxPrice = maxPrice;
     if (sortBy) params.sortBy = sortBy;
     if (sortOrder) params.sortOrder = sortOrder;
+
+    // Attach dynamic filters (e.g. filter_Fabric: "Cotton")
+    Object.assign(params, dynamicFilters);
 
     const response = await Axios.get('/products', { params });
 
