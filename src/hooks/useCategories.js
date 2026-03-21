@@ -5,7 +5,7 @@ export const useCategories = () => {
     return useQuery({
         queryKey: ['categories'],
         queryFn: getMenuCategories,
-        staleTime: 30 * 60 * 1000, // 30 minutes (categories don't change often)
+        staleTime: 1 * 60 * 1000, // 1 minute (allow fast sync with admin adds)
         select: (data) => data || [],
     });
 };

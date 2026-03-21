@@ -529,33 +529,58 @@ export default function CheckoutPage() {
 
             {/* Payment Method */}
             <section className="bg-slate-50/50 rounded-[2rem] p-6 md:p-10 border border-slate-100">
-              <h2 className="text-xl font-black text-slate-900 tracking-tight italic uppercase mb-8">Payment Method</h2>
+              <h2 className="text-xl font-black text-slate-900 tracking-tight italic uppercase mb-8">Secure Payment</h2>
               
-              <div className="bg-blue-600 text-white rounded-2xl p-6 mb-8 relative overflow-hidden shadow-2xl">
-                <div className="absolute top-0 right-0 w-32 h-full bg-white/5 skew-x-12 translate-x-12"></div>
-                <div className="relative z-10 flex gap-4">
-                  <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center">
-                    <span className="font-black italic text-xl">₹</span>
+              <div className="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-[2rem] p-8 mb-8 relative overflow-hidden shadow-2xl shadow-blue-900/20 border border-blue-800">
+                <div className="absolute top-0 right-0 w-64 h-full bg-white/5 skew-x-12 translate-x-12 backdrop-blur-3xl"></div>
+                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl"></div>
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="flex gap-5 items-center">
+                    <div className="w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl flex items-center justify-center shadow-inner">
+                      <span className="font-black italic text-2xl">₹</span>
+                    </div>
+                    <div>
+                      <h3 className="font-black italic text-lg uppercase tracking-widest mb-1 flex items-center gap-2">
+                        Razorpay <span className="px-2 py-0.5 bg-blue-500/30 text-[8px] rounded uppercase tracking-[0.2em] border border-blue-400/30">Secured</span>
+                      </h3>
+                      <p className="text-xs text-blue-100/70 leading-relaxed max-w-sm">Pay seamlessly via UPI, Credit/Debit Card, or Net Banking. Encrypted with bank-grade security.</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-black italic text-sm uppercase tracking-widest mb-1">Razorpay Secured</h3>
-                    <p className="text-[10px] text-white/70 leading-relaxed max-w-xs">Pay via UPI, Credit/Debit Card, or Net Banking. Encrypted and secured by Razorpay.</p>
+                  
+                  <div className="flex gap-2">
+                    {['UPI', 'Visa', 'MasterCard'].map((badge) => (
+                      <div key={badge} className="px-3 py-1 bg-white/5 border border-white/10 rounded-md text-[8px] font-black uppercase tracking-widest text-white/60 italic">
+                        {badge}
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                <div className="text-center sm:text-left">
-                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 mb-1 italic">Authorized Action</p>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-1 italic">Total Amount</p>
+                  <p className="text-3xl font-black text-slate-900 italic tracking-tighter">₹{Math.round(grandTotal).toLocaleString()}</p>
+                </div>
+                <div className="text-center sm:text-right w-full sm:w-auto">
                   <motion.button
                     whileHover={{ scale: 1.02, translateY: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => placeOrder("Razorpay")}
                     disabled={isPlacingOrder}
-                    className="bg-gradient-to-r from-slate-900 to-slate-800 text-white px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.3em] hover:shadow-2xl hover:shadow-slate-900/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed italic border border-slate-700/50"
+                    className="w-full sm:w-auto bg-blue-600 text-white px-10 py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-blue-600/20 hover:bg-blue-500 hover:shadow-blue-600/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed italic border border-blue-500 flex items-center justify-center gap-3"
                   >
-                    {isPlacingOrder ? "Processing..." : "Complete Purchase"}
+                    {isPlacingOrder ? (
+                      <span className="flex items-center gap-2">
+                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> Processing
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">Pay & Place Order</span>
+                    )}
                   </motion.button>
+                  <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-3 italic flex items-center justify-center sm:justify-end gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> AES-256 Encrypted
+                  </p>
                 </div>
               </div>
             </section>

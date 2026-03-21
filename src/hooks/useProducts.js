@@ -25,8 +25,8 @@ export const useProducts = (params = {}) => {
         params.isCombo || '',
         params
       ),
-    staleTime: 10 * 60 * 1000,   // 10 min — serve from cache on repeat visits
-    gcTime:    15 * 60 * 1000,   // 15 min before GC
+    staleTime: 1 * 60 * 1000,   // 1 min — sync faster with admin updates
+    gcTime:    2 * 60 * 1000,   // 2 min before GC
     placeholderData: (prev) => prev, // replaces deprecated keepPreviousData
   });
 };
@@ -37,8 +37,8 @@ export const useProductDetail = (slug) => {
     queryKey: ['product', slug],
     queryFn: () => getProductBySlug(slug),
     enabled: !!slug,
-    staleTime: 15 * 60 * 1000,
-    gcTime:    20 * 60 * 1000,
+    staleTime: 1 * 60 * 1000,
+    gcTime:    2 * 60 * 1000,
   });
 };
 
@@ -48,7 +48,7 @@ export const useRecommendations = (productId, limit = 4) => {
     queryKey: ['recommendations', productId, limit],
     queryFn: () => getRecommendations(productId, limit),
     enabled: !!productId,
-    staleTime: 15 * 60 * 1000,
-    gcTime:    20 * 60 * 1000,
+    staleTime: 1 * 60 * 1000,
+    gcTime:    2 * 60 * 1000,
   });
 };

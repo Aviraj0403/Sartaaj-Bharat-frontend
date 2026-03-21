@@ -324,7 +324,7 @@ export default function CartPage() {
                 </div>
 
                 <motion.button
-                  whileHover={{ scale: 1.02, translateY: -1 }}
+                  whileHover={{ scale: 1.02, translateY: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     if (!user) {
@@ -345,9 +345,9 @@ export default function CartPage() {
                     }
                   }}
                   disabled={cartItems.length === 0}
-                  className="w-full bg-blue-600 text-white py-4 rounded-xl font-black text-[9px] uppercase tracking-widest shadow-lg shadow-blue-600/10 hover:bg-blue-500 transition-all disabled:opacity-50 italic flex items-center justify-center gap-2 group/btn"
+                  className="w-full bg-blue-600 text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-blue-600/20 hover:bg-blue-500 hover:shadow-blue-600/40 transition-all disabled:opacity-50 italic flex items-center justify-center gap-3 border border-blue-500"
                 >
-                  Proceed to Checkout <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                  <span className="flex items-center gap-2">Proceed to Checkout <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" /></span>
                 </motion.button>
 
                 {!user && (
@@ -356,8 +356,8 @@ export default function CartPage() {
                   </p>
                 )}
 
-                <p className="mt-6 text-[7px] font-bold uppercase tracking-widest text-white/5 italic text-center">
-                  Sartaaj Protocol Secured
+                <p className="mt-6 text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-3 italic flex items-center justify-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Sartaaj Protocol Secured
                 </p>
               </div>
             </div>

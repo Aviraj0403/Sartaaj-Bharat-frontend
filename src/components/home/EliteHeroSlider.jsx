@@ -33,10 +33,9 @@ const EliteHeroSlider = () => {
     const currentSlide = slides[currentIndex];
 
     return (
-        <section className="relative overflow-hidden pb-6 md:pb-10">
-            <div className="w-full">
-                {/* <div className="relative h-[380px] sm:h-[480px] md:h-[650px] lg:h-screen overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] group bg-slate-900"> */}
-                <div className="relative h-[380px] sm:h-[480px] md:h-[600px] lg:h-[75vh] overflow-hidden rounded-[2rem] md:rounded-[2.5rem] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.3)] group bg-slate-900">
+        <section className="relative overflow-hidden pt-4 pb-6 md:pb-10 bg-slate-50">
+            <div className="w-full px-4 sm:px-6 md:px-8">
+                <div className="relative h-[480px] sm:h-[550px] md:h-[650px] lg:h-[80vh] overflow-hidden rounded-[2.5rem] md:rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] group bg-slate-950 border border-slate-800">
 
                     {/* Background Layers with Parallax */}
                     <AnimatePresence mode="wait">
