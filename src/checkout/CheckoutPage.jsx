@@ -456,11 +456,11 @@ export default function CheckoutPage() {
       <div className="container-custom px-4 sm:px-6">
         {/* Header */}
         <header className="mb-12">
-          <div className="flex items-center gap-4 text-blue-600 font-black text-[10px] uppercase tracking-[0.5em] mb-3 italic">
+          <div className="flex items-center gap-4 text-orange-500 font-black text-[10px] uppercase tracking-[0.5em] mb-3 italic">
             SECURED CHECKOUT
           </div>
           <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter italic leading-none uppercase">
-            Order <span className="text-blue-600">Review</span>
+            Order <span className="text-orange-500">Review</span>
           </h1>
         </header>
 
@@ -473,7 +473,7 @@ export default function CheckoutPage() {
                 <h2 className="text-xl font-black text-slate-900 tracking-tight italic uppercase">Shipping Destination</h2>
                 <button
                   onClick={() => setIsSidebarOpen(true)}
-                  className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-700 transition-colors italic"
+                  className="text-[10px] font-black uppercase tracking-widest text-orange-500 hover:text-orange-600 transition-colors italic"
                 >
                   + Add New Address
                 </button>
@@ -486,13 +486,13 @@ export default function CheckoutPage() {
                       key={addr._id}
                       whileHover={{ scale: 1.01 }}
                       className={`block border-2 rounded-2xl p-5 cursor-pointer transition-all duration-300 relative overflow-hidden ${selectedAddress?._id === addr._id
-                          ? "border-blue-600 bg-white shadow-xl shadow-blue-900/5"
+                          ? "border-orange-500 bg-white shadow-xl shadow-orange-900/5"
                           : "border-slate-100 bg-white/50 hover:bg-white hover:border-slate-200"
                         }`}
                     >
                       <div className="flex items-start gap-4">
-                        <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selectedAddress?._id === addr._id ? 'border-blue-600' : 'border-slate-200'}`}>
-                          {selectedAddress?._id === addr._id && <div className="w-2.5 h-2.5 bg-blue-600 rounded-full" />}
+                        <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selectedAddress?._id === addr._id ? 'border-orange-500' : 'border-slate-200'}`}>
+                          {selectedAddress?._id === addr._id && <div className="w-2.5 h-2.5 bg-orange-500 rounded-full" />}
                         </div>
                         <input
                           type="radio"
@@ -531,7 +531,7 @@ export default function CheckoutPage() {
             <section className="bg-slate-50/50 rounded-[2rem] p-6 md:p-10 border border-slate-100">
               <h2 className="text-xl font-black text-slate-900 tracking-tight italic uppercase mb-8">Secure Payment</h2>
               
-              <div className="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-[2rem] p-8 mb-8 relative overflow-hidden shadow-2xl shadow-blue-900/20 border border-blue-800">
+              <div className="bg-gradient-to-r from-orange-900 to-indigo-900 text-white rounded-[2rem] p-8 mb-8 relative overflow-hidden shadow-2xl shadow-orange-900/20 border border-blue-800">
                 <div className="absolute top-0 right-0 w-64 h-full bg-white/5 skew-x-12 translate-x-12 backdrop-blur-3xl"></div>
                 <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl"></div>
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -560,7 +560,23 @@ export default function CheckoutPage() {
               <div className="flex flex-col sm:flex-row items-center justify-between gap-6 bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm">
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-1 italic">Total Amount</p>
-                  <p className="text-3xl font-black text-slate-900 italic tracking-tighter">₹{Math.round(grandTotal).toLocaleString()}</p>
+                  {isPlacingOrder ? (
+                    <div className="flex flex-col items-center justify-center py-4">
+                      <div className="relative">
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                          className="w-20 h-20 border-[3px] border-slate-100 border-t-orange-500 rounded-full"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <ShieldCheck className="text-orange-500/20 w-8 h-8" />
+                        </div>
+                      </div>
+                      <span className="mt-8 text-[11px] font-black uppercase tracking-[0.6em] text-slate-400 italic animate-pulse">Initializing Protocol...</span>
+                    </div>
+                  ) : (
+                    <p className="text-3xl font-black text-slate-900 italic tracking-tighter">₹{Math.round(grandTotal).toLocaleString()}</p>
+                  )}
                 </div>
                 <div className="text-center sm:text-right w-full sm:w-auto">
                   <motion.button
@@ -568,7 +584,7 @@ export default function CheckoutPage() {
                     whileTap={{ scale: 0.98 }}
                     onClick={() => placeOrder("Razorpay")}
                     disabled={isPlacingOrder}
-                    className="w-full sm:w-auto bg-blue-600 text-white px-10 py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-blue-600/20 hover:bg-blue-500 hover:shadow-blue-600/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed italic border border-blue-500 flex items-center justify-center gap-3"
+                    className="w-full sm:w-auto bg-orange-500 text-white px-10 py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-orange-500/20 hover:bg-blue-500 hover:shadow-orange-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed italic border border-blue-500 flex items-center justify-center gap-3"
                   >
                     {isPlacingOrder ? (
                       <span className="flex items-center gap-2">
@@ -589,7 +605,7 @@ export default function CheckoutPage() {
           {/* Right Column: Order Summary */}
           <aside className="lg:col-span-5 w-full sticky top-32">
             <div className="bg-slate-900 text-white p-8 md:p-12 rounded-[2.5rem] shadow-[0_40px_80px_-20px_rgba(15,23,42,0.3)] relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-blue-600/10 blur-[100px] rounded-full -mr-24 -mt-24"></div>
+              <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/10 blur-[100px] rounded-full -mr-24 -mt-24"></div>
               
               <h2 className="text-2xl font-black tracking-tighter italic uppercase mb-10 flex items-center gap-4">
                 Summary <div className="h-0.5 flex-1 bg-white/10"></div>

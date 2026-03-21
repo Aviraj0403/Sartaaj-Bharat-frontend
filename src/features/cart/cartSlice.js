@@ -9,7 +9,8 @@ const initialState = {
 
 // Normalize cart item
 const normalizeItem = (item) => ({
-  id: item.id || item.productId || item._id,
+  id: item.productId || item.id || item._id,
+  backendId: item._id || item.backendId, // Preserve backend itemId if available
   name: item.name,
   image: item.image || item.pimage || (item.product?.pimage) || (item.product?.image) || '/placeholder-premium.png',
   price: Number(item.price || item.product?.variants?.price || 0),
@@ -48,13 +49,10 @@ const cartSlice = createSlice({
       );
 
       if (existing) {
-        // ✅ CRITICAL FIX: REPLACE quantity (don't add)
-        // This ensures consistency between local and backend cart
-        existing.quantity = newItem.quantity;
-        // console.log(`✅ Updated: ${newItem.color} - Qty: ${existing.quantity}`);
+        // Increment quantity if already exists, otherwise use new quantity
+        existing.quantity += newItem.quantity;
       } else {
         state.items.push(newItem);
-        // console.log(`✅ Added NEW: ${newItem.color} - Qty: ${newItem.quantity}`);
       }
 
       const totals = calculateTotals(state.items);

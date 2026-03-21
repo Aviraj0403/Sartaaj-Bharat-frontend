@@ -112,9 +112,12 @@ export const useCartActions = () => {
 
       // If authenticated, sync with backend
       if (isAuthenticated) {
-        await dispatch(
-          updateCartItemThunk({ productId, size, color, quantity })
-        ).unwrap();
+        const item = findCartItem(productId, size, color);
+        if (item?.backendId) {
+          await dispatch(
+            updateCartItemThunk({ backendId: item.backendId, quantity })
+          ).unwrap();
+        }
       }
 
       return { success: true };
@@ -137,13 +140,15 @@ export const useCartActions = () => {
     console.log("🗑️ Remove from Cart:", { productId, size, color });
 
     const removeItemAction = async () => {
+      const item = findCartItem(productId, size, color);
+      
       // Optimistically remove item from local cart
       dispatch(removeItem({ id: productId, size, color }));
 
       // If authenticated, remove from backend
-      if (isAuthenticated) {
+      if (isAuthenticated && item?.backendId) {
         await dispatch(
-          removeFromCartThunk({ productId, size, color })
+          removeFromCartThunk(item.backendId)
         ).unwrap();
       }
 

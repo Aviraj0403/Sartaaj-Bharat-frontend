@@ -83,9 +83,9 @@ export const addToCartThunk = createAsyncThunk(
 // Update item quantity in cart
 export const updateCartItemThunk = createAsyncThunk(
   "cart/updateCartItem",
-  async ({ id, quantity }, { dispatch }) => { // id is the itemId from backend cart
+  async ({ backendId, quantity }, { dispatch }) => {
     try {
-      await updateCartItem(id, quantity);
+      await updateCartItem(backendId, quantity);
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
@@ -102,9 +102,9 @@ export const updateCartItemThunk = createAsyncThunk(
 // Remove item from backend and update Redux
 export const removeFromCartThunk = createAsyncThunk(
   "cart/removeFromCart",
-  async (itemId, { dispatch }) => {
+  async (backendId, { dispatch }) => {
     try {
-      await removeCartItem(itemId);
+      await removeCartItem(backendId);
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();

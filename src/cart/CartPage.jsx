@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Minus, Plus, X, ShoppingBag, ShieldCheck, Truck, ArrowRight, Trash2, RefreshCw } from "lucide-react";
+import { Minus, Plus, X, ShoppingBag, ShieldCheck, Truck, ArrowRight, Trash2, RefreshCw, ChevronRight, Luggage } from "lucide-react";
 import ApplyCouponPanel from "./ApplyCouponPanel";
 import { useNavigate, Link } from "react-router-dom";
 import { useCartActions } from "../hooks/useCartActions";
@@ -90,62 +90,75 @@ export default function CartPage() {
   if (cartSyncing || loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="w-16 h-16 border-4 border-slate-100 border-t-blue-600 rounded-full mb-6"
-        />
-        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 italic">Syncing Manifest...</span>
+        <div className="relative">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+            className="w-20 h-20 border-[3px] border-slate-100 border-t-orange-500 rounded-full"
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+             <ShoppingBag className="text-orange-500/20 w-8 h-8" />
+          </div>
+        </div>
+        <span className="mt-8 text-[11px] font-black uppercase tracking-[0.6em] text-slate-400 italic animate-pulse">Synchronizing Inventory...</span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white py-8 md:py-16 font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#fafafa] py-12 md:py-24 font-sans selection:bg-orange-500 selection:text-white overflow-x-hidden">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
 
-        {/* Header - Compact & Premium */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 border-b border-slate-50 pb-6">
-          <div>
-            <div className="flex items-center gap-2 text-blue-600 font-bold text-[9px] uppercase tracking-[0.2em] mb-1 italic">
-              <ShoppingBag size={10} /> SELECTION
+        {/* Header - Premium Minimalist */}
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <div className="inline-flex items-center gap-3 px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-[9px] font-black uppercase tracking-[0.2em] mb-4 border border-orange-100/50">
+              <Luggage size={12} className="stroke-[3]" /> YOUR CURATION
             </div>
-            <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tighter italic leading-none uppercase">
-              Shopping <span className="text-blue-600">Cart</span>
+            <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-[0.9] uppercase italic">
+              CART <span className="text-orange-500 font-light block md:inline md:ml-4">PROTOCOL</span>
             </h1>
-          </div>
+          </motion.div>
+          
           {cartItems.length > 0 && (
             <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleClearCart}
-              className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-widest text-slate-400 hover:text-red-500 transition-colors group italic"
+              className="group flex items-center gap-3 px-6 py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 hover:border-red-100 transition-all shadow-sm hover:shadow-md italic"
             >
-              <Trash2 size={12} className="group-hover:rotate-12 transition-transform" /> Clear
+              <Trash2 size={14} className="group-hover:rotate-12 transition-transform" /> Clear Selection
             </motion.button>
           )}
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
 
           {/* Left Column: Items */}
-          <div className="lg:col-span-8 space-y-4">
+          <div className="lg:col-span-8 space-y-6">
             <AnimatePresence mode="popLayout">
               {cartItems.length === 0 ? (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-20 md:py-28 bg-slate-50/50 rounded-3xl border border-slate-100 border-dashed relative overflow-hidden"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="relative group py-24 px-8 bg-white rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/50 text-center overflow-hidden"
                 >
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-blue-600/5 blur-[60px] rounded-full -mr-20 -mt-20"></div>
-                  <div className="relative z-10">
-                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg border border-slate-50">
-                      <ShoppingBag size={24} className="text-slate-200" strokeWidth={3} />
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-orange-500/5 to-transparent rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-blue-500/5 to-transparent rounded-full -ml-32 -mb-32 blur-3xl"></div>
+                  
+                  <div className="relative z-10 max-w-sm mx-auto">
+                    <div className="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner border border-slate-100 group-hover:scale-110 transition-transform duration-500">
+                      <ShoppingBag size={40} className="text-slate-200" strokeWidth={1.5} />
                     </div>
-                    <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tighter italic uppercase">Bag is Empty</h3>
-                    <p className="text-slate-400 font-medium text-sm mb-8 max-w-[240px] mx-auto italic leading-relaxed">Your curated collection awaits. Start discovering premium artifacts.</p>
-                    <Link to="/" className="btn-premium px-10 py-4 inline-flex items-center gap-3 text-[10px]">
-                      Explore Collection <ArrowRight size={16} />
+                    <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tighter uppercase italic">The Vault is Empty</h3>
+                    <p className="text-slate-500 font-medium text-sm mb-10 italic leading-relaxed">Your collection of luxury artifacts is waiting to be curated. Explore our latest acquisitions.</p>
+                    <Link to="/" className="inline-flex items-center gap-4 px-10 py-5 bg-slate-900 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] hover:bg-orange-600 transition-all shadow-xl shadow-slate-900/20 hover:shadow-orange-600/30 group">
+                      Discover Excellence <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
                     </Link>
                   </div>
                 </motion.div>
@@ -154,181 +167,200 @@ export default function CartPage() {
                   <motion.div
                     key={`${item.id || idx}-${item.size}-${item.color}`}
                     layout
-                    initial={{ opacity: 0, y: 15 }}
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ delay: idx * 0.04, ease: "easeOut", duration: 0.4 }}
-                    className="group relative flex flex-col sm:flex-row items-center gap-4 p-4 md:p-5 bg-white rounded-3xl border border-slate-100 hover:border-blue-100 transition-all duration-300 hover:shadow-lg hover:shadow-slate-50"
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ delay: idx * 0.05, ease: "circOut", duration: 0.6 }}
+                    className="group relative flex flex-col md:flex-row items-center gap-8 p-6 md:p-8 bg-white rounded-[2.5rem] border border-slate-100 hover:border-orange-200 transition-all duration-500 shadow-sm hover:shadow-2xl hover:shadow-orange-500/5"
                   >
-                    {/* Item Image - Optimized */}
+                    {/* Item Image - Large & Impactful */}
                     <div
-                      className="w-24 h-24 md:w-28 md:h-28 rounded-xl bg-slate-50 border border-slate-50 p-3 flex-shrink-0 cursor-pointer overflow-hidden relative group/img"
+                      className="w-32 h-32 md:w-40 md:h-40 rounded-[2rem] bg-[#fdfdfd] border border-slate-50 p-6 flex-shrink-0 cursor-pointer overflow-hidden relative group/img shadow-inner"
                       onClick={() => navigate(`/product/${transformToSlug(item.name)}`)}
                     >
-                      <img
+                      <motion.img
+                        layoutId={`img-${item.id}-${item.size}-${item.color}`}
                         src={item.image}
                         alt={item.name}
-                        className="w-full h-full object-contain mix-blend-multiply group-hover/img:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-contain mix-blend-multiply transition-all duration-700 group-hover/img:scale-110 group-hover/img:rotate-3"
                         onError={(e) => { e.target.src = '/placeholder-premium.png'; }}
                       />
+                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/0 to-orange-500/5 opacity-0 group-hover/img:opacity-100 transition-opacity"></div>
                     </div>
 
                     {/* Item Details */}
-                    <div className="flex-1 text-center sm:text-left">
-                      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1">
-                        <span className="text-[6px] font-black uppercase tracking-[0.2em] text-blue-600 bg-blue-50/50 px-2 py-0.5 rounded-full italic border border-blue-100/30">Premium</span>
-                        <span className="text-slate-300 text-[6px] font-bold uppercase tracking-[0.2em] italic">#{item.id?.slice(-4)?.toUpperCase() || 'N/A'}</span>
+                    <div className="flex-1 text-center md:text-left space-y-3">
+                      <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                        <span className="px-3 py-1 bg-slate-900 text-white text-[8px] font-black uppercase tracking-widest rounded-full italic shadow-lg shadow-slate-900/10">AUTHENTIC</span>
+                        <span className="text-slate-300 text-[8px] font-bold uppercase tracking-[0.4em] italic border-l border-slate-100 pl-3">PRO-ID: {item.id?.slice(-6)?.toUpperCase() || 'REF-NUL'}</span>
                       </div>
                       <h2
-                        className="text-base md:text-lg font-black text-slate-800 mb-2 tracking-tight italic leading-tight hover:text-blue-600 transition-colors uppercase cursor-pointer"
+                        className="text-xl md:text-2xl font-black text-slate-900 tracking-tight italic leading-none hover:text-orange-500 transition-colors uppercase cursor-pointer"
                         onClick={() => navigate(`/product/${transformToSlug(item.name)}`)}
                       >
                         {item.name}
                       </h2>
-                      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-[8px] font-bold uppercase tracking-widest text-slate-400 italic">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-slate-300">SIZE:</span>
+                      <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-[9px] font-black uppercase tracking-widest text-slate-400 italic">
+                        <div className="flex items-center gap-2">
+                          <span className="text-slate-200 px-1.5 py-0.5 border border-slate-100 rounded">SZ</span>
                           <span className="text-slate-900">{item.size || 'STD'}</span>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-slate-300">COLOR:</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-slate-200 px-1.5 py-0.5 border border-slate-100 rounded">CL</span>
                           <span className="text-slate-900">{item.color || 'DFT'}</span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Quantity & Price Panel */}
-                    <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-8 w-full sm:w-auto mt-2 sm:mt-0">
-                      <div className="flex items-center bg-slate-50 p-0.5 rounded-lg border border-slate-100">
+                    {/* Controls & Price */}
+                    <div className="flex flex-col items-center md:items-end gap-6 min-w-[140px] pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-slate-50 md:pl-8">
+                      <div className="flex items-center gap-2 bg-slate-50/80 backdrop-blur-sm p-1 rounded-2xl border border-slate-100 shadow-inner">
                         <motion.button
                           whileTap={{ scale: 0.8 }}
                           onClick={() => handleDecrement(item.id, item.size, item.color)}
-                          className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all hover:bg-white rounded shadow-sm"
+                          className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-900 transition-all rounded-xl"
                         >
-                          <Minus size={10} strokeWidth={3} />
+                          <Minus size={14} strokeWidth={3} />
                         </motion.button>
-                        <span className="w-8 text-center font-black italic text-[10px] text-slate-900">{item.quantity}</span>
+                        <span className="w-10 text-center font-black italic text-sm text-slate-900">{item.quantity}</span>
                         <motion.button
                           whileTap={{ scale: 0.8 }}
                           onClick={() => handleIncrement(item.id, item.size, item.color)}
-                          className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all hover:bg-white rounded shadow-sm"
+                          className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-900 transition-all rounded-xl"
                         >
-                          <Plus size={10} strokeWidth={3} />
+                          <Plus size={14} strokeWidth={3} />
                         </motion.button>
                       </div>
 
-                      <div className="flex flex-col items-center sm:items-end min-w-[80px]">
-                        <span className="text-lg font-black text-slate-900 italic tracking-tighter leading-none mb-0.5">
+                      <div className="text-center md:text-right">
+                        <div className="text-2xl font-black text-slate-900 italic tracking-tighter leading-none mb-1">
                           ₹{(item.price * item.quantity).toLocaleString()}
-                        </span>
-                        <span className="text-[6px] font-black text-slate-300 uppercase tracking-widest italic tracking-[0.2em]">₹{item.price.toLocaleString()}</span>
+                        </div>
+                        <div className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.2em] italic">Unit: ₹{item.price.toLocaleString()}</div>
                       </div>
-
-                      {/* Remove Button */}
-                      <button
-                        className="p-2 text-slate-200 hover:text-red-500 transition-all"
-                        onClick={() => handleRemoveItem(item.id, item.size, item.color)}
-                      >
-                         <X size={14} strokeWidth={3} />
-                      </button>
                     </div>
+
+                    {/* Elite Exit Button */}
+                    <button
+                      className="absolute top-6 right-6 md:top-8 md:right-8 p-2.5 text-slate-200 hover:text-red-500 hover:bg-red-50 rounded-full transition-all group/exit"
+                      onClick={() => handleRemoveItem(item.id, item.size, item.color)}
+                    >
+                       <X size={18} strokeWidth={3} className="group-hover/exit:rotate-90 transition-transform duration-300" />
+                    </button>
                   </motion.div>
                 ))
               )}
             </AnimatePresence>
 
-            {/* Reassurance Grid - Minimalist */}
+            {/* Premium Trust Grid */}
             {cartItems.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-slate-50 mt-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-12">
                 {[
-                  { icon: ShieldCheck, title: "SECURED", sub: "AES-256" },
-                  { icon: Truck, title: "LOGISTICS", sub: "Priority" },
-                  { icon: RefreshCw, title: "RETURNS", sub: "30-Day" },
-                  { icon: ShoppingBag, title: "AUTHENTIC", sub: "Verified" }
+                  { icon: ShieldCheck, title: "SECURE NODE", sub: "End-to-End Encryption" },
+                  { icon: Truck, title: "EXPRESS LOGISTICS", sub: "Priority Dispatch" },
+                  { icon: RefreshCw, title: "VALUATION GUARANTEE", sub: "30-Day Protocol" },
+                  { icon: ShoppingBag, title: "CERTIFIED ORIGIN", sub: "Quality Audited" }
                 ].map((item, idx) => (
-                  <div key={idx} className="flex flex-col items-center text-center gap-1">
-                    <div className="w-6 h-6 bg-slate-50/50 rounded-full flex items-center justify-center text-blue-600/50">
-                      <item.icon size={10} strokeWidth={2.5} />
+                  <motion.div 
+                    key={idx} 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + idx * 0.1 }}
+                    className="flex flex-col items-center text-center p-6 bg-white rounded-3xl border border-slate-50"
+                  >
+                    <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 mb-4 shadow-sm">
+                      <item.icon size={20} strokeWidth={2.5} />
                     </div>
-                    <div>
-                      <span className="block text-[7px] font-black uppercase tracking-widest text-slate-900 italic leading-none">{item.title}</span>
-                      <span className="block text-[6px] font-bold text-slate-300 uppercase italic mt-0.5">{item.sub}</span>
-                    </div>
-                  </div>
+                    <span className="block text-[10px] font-black uppercase tracking-widest text-slate-900 italic leading-none mb-2">{item.title}</span>
+                    <span className="block text-[8px] font-bold text-slate-300 uppercase italic leading-tight">{item.sub}</span>
+                  </motion.div>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Right Column: Order Summary - Optimized Sidebar */}
-          <aside className="lg:col-span-4 w-full sticky top-24">
-            <div className="bg-slate-900 text-white p-6 md:p-8 rounded-3xl shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 blur-[60px] rounded-full -mr-16 -mt-16"></div>
+          {/* Right Column: Checkout Nexus */}
+          <aside className="lg:col-span-4 w-full sticky top-32">
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="bg-slate-900 text-white rounded-[3rem] p-8 md:p-12 shadow-[0_40px_80px_-20px_rgba(15,23,42,0.3)] relative overflow-hidden group/nexus border border-slate-800"
+            >
+              {/* Dynamic Background FX */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-500/20 to-transparent blur-[120px] rounded-full pointer-events-none transition-transform duration-1000 group-hover/nexus:scale-110"></div>
               
               <div className="relative z-10">
-                <h2 className="text-xl font-black italic tracking-tighter uppercase mb-6 flex items-center gap-3">
-                  Summary <div className="h-px flex-1 bg-white/5"></div>
+                <h2 className="text-2xl font-black italic tracking-tighter uppercase mb-10 flex items-center gap-4">
+                  CHECKOUT <span className="h-[2px] w-12 bg-orange-500 rounded-full"></span>
                 </h2>
 
-                <div className="space-y-4 mb-8">
-                  <div className="flex justify-between items-center text-[8px] font-bold uppercase tracking-widest text-white/20 italic">
-                    <span>Artifact Count</span>
-                    <span className="text-white/60">{totalItems}</span>
+                <div className="space-y-6 mb-12">
+                  <div className="flex justify-between items-center group/row">
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 italic">Quantity</span>
+                    <span className="text-sm font-black italic">{totalItems} Units</span>
                   </div>
-                  <div className="flex justify-between items-center text-[8px] font-bold uppercase tracking-widest text-white/20 italic">
-                    <span>Subtotal</span>
-                    <span className="text-white/60">₹{totalAmount.toLocaleString()}</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 italic">Subtotal</span>
+                    <span className="text-sm font-black italic">₹{totalAmount.toLocaleString()}</span>
                   </div>
                   {coupon.applied && (
-                    <div className="flex justify-between items-center text-[8px] font-bold uppercase tracking-widest text-blue-400 italic">
-                      <span>Privilege Discount</span>
-                      <span>-₹{calculateDiscount().toLocaleString()}</span>
-                    </div>
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="flex justify-between items-center pt-2 border-t border-white/5"
+                    >
+                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-400 italic">Privilege Off</span>
+                      <span className="text-sm font-black italic text-orange-400">-₹{calculateDiscount().toLocaleString()}</span>
+                    </motion.div>
                   )}
-                  <div className="flex justify-between items-center text-[8px] font-bold uppercase tracking-widest text-white/20 italic">
-                    <span>Logistics</span>
-                    <span className="text-blue-500 font-black">Authorized</span>
-                  </div>
-                </div>
-
-                <div className="pt-6 border-t border-white/5 mb-8 text-center">
-                  <p className="text-white/10 text-[7px] font-bold uppercase tracking-[0.3em] mb-1 italic">Final Value</p>
-                  <div className="flex items-end justify-center gap-1.5">
-                    <span className="text-4xl font-black text-white italic tracking-tighter leading-none">
-                      ₹{finalAmount.toLocaleString()}
+                  <div className="flex justify-between items-center group/row">
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 italic">Logistics</span>
+                    <span className="flex items-center gap-2 text-[10px] font-black text-green-400 uppercase italic">
+                      COMPLIMENTARY <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div>
                     </span>
-                    <span className="text-[8px] font-black text-white/10 tracking-widest uppercase mb-1">INR</span>
                   </div>
                 </div>
 
-                {/* Coupon Nexus */}
-                <div className="mb-8">
+                <div className="py-10 border-y border-white/5 mb-10 text-center relative">
+                   <div className="text-slate-500 text-[10px] font-black uppercase tracking-[0.5em] mb-4 italic">Settlement amount</div>
+                   <div className="flex items-baseline justify-center gap-3">
+                     <span className="text-[12px] font-black text-white/20 uppercase tracking-widest italic mb-2">INR</span>
+                     <span className="text-6xl font-black text-white italic tracking-tighter leading-none">
+                       {finalAmount.toLocaleString()}
+                     </span>
+                   </div>
+                </div>
+
+                {/* Voucher Integration */}
+                <div className="mb-10">
                   {!coupon.applied ? (
                     <button
                       onClick={() => setCouponOpen(true)}
-                      className="w-full py-3 text-[8px] font-black uppercase tracking-widest text-blue-400 border border-dashed border-blue-400/20 rounded-xl hover:bg-blue-400/5 transition-all italic text-center"
+                      className="w-full py-4 text-[10px] font-black uppercase tracking-[0.3em] text-orange-500 border-2 border-dashed border-orange-500/30 rounded-2xl hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all duration-300 italic"
                     >
-                      Apply Coupon
+                      Enter Promo Code
                     </button>
                   ) : (
-                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/10">
+                    <div className="flex items-center justify-between p-4 bg-orange-500/10 rounded-2xl border border-orange-500/20 backdrop-blur-md">
                       <div>
-                        <p className="text-[7px] font-black tracking-widest text-blue-400 uppercase italic">Active</p>
-                        <p className="text-xs font-black uppercase italic">{coupon.code}</p>
+                        <div className="flex items-center gap-2 mb-1">
+                           <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                           <p className="text-[8px] font-black tracking-[0.3em] text-orange-500 uppercase italic">Privilege Active</p>
+                        </div>
+                        <p className="text-lg font-black uppercase italic tracking-tight">{coupon.code}</p>
                       </div>
-                      <button onClick={handleCouponRemove} className="p-1.5 hover:text-red-400 transition-colors">
-                        <X size={14} />
+                      <button onClick={handleCouponRemove} className="w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-red-500/20 hover:text-red-500 rounded-xl transition-all">
+                        <X size={20} />
                       </button>
                     </div>
                   )}
                 </div>
 
                 <motion.button
-                  whileHover={{ scale: 1.02, translateY: -2 }}
+                  whileHover={{ scale: 1.02, translateY: -5 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     if (!user) {
-                      // Login Gate: Redirect to signin with return URL
                       navigate("/signin", { state: { from: "/cart" } });
                     } else {
                       navigate("/checkout", {
@@ -345,27 +377,43 @@ export default function CartPage() {
                     }
                   }}
                   disabled={cartItems.length === 0}
-                  className="w-full bg-blue-600 text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-blue-600/20 hover:bg-blue-500 hover:shadow-blue-600/40 transition-all disabled:opacity-50 italic flex items-center justify-center gap-3 border border-blue-500"
+                  className="group relative w-full bg-orange-500 text-white py-6 rounded-2xl font-black text-[12px] uppercase tracking-[0.4em] shadow-2xl shadow-orange-500/30 hover:bg-orange-600 transition-all disabled:opacity-50 italic flex items-center justify-center gap-4 overflow-hidden"
                 >
-                  <span className="flex items-center gap-2">Proceed to Checkout <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" /></span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                  INITIALIZE ACQUISITION <ChevronRight size={20} className="group-hover:translate-x-2 transition-transform duration-300" />
                 </motion.button>
 
                 {!user && (
-                  <p className="mt-4 text-center text-[7px] font-bold text-slate-500 uppercase italic">
-                    Authentication required for checkout
-                  </p>
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="mt-6 flex items-center justify-center gap-3 py-3 px-4 bg-white/5 rounded-xl border border-white/5"
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                    <span className="text-[9px] font-black text-slate-400 uppercase italic tracking-widest">
+                      ID Sync Required for Order Dispatch
+                    </span>
+                  </motion.div>
                 )}
 
-                <p className="mt-6 text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-3 italic flex items-center justify-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Sartaaj Protocol Secured
-                </p>
+                <div className="mt-12 flex flex-col items-center gap-4">
+                  <div className="flex items-center gap-2 py-2 px-4 bg-white/5 rounded-full border border-white/10">
+                    <ShieldCheck size={14} className="text-orange-500" />
+                    <span className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em] italic">Protocol Secured</span>
+                  </div>
+                  <div className="flex gap-4 opacity-20 grayscale hover:grayscale-0 transition-all duration-700">
+                     {/* Payment Logos Placeholder */}
+                     <div className="h-4 w-12 bg-white rounded"></div>
+                     <div className="h-4 w-12 bg-white rounded"></div>
+                     <div className="h-4 w-12 bg-white rounded"></div>
+                  </div>
+                </div>
               </div>
-            </div>
+            </motion.div>
           </aside>
         </div>
       </div>
 
-      {/* Coupon Modal - Using ApplyCouponPanel for consistency if preferred, otherwise inline as planned */}
       <ApplyCouponPanel
         isOpen={couponOpen}
         onClose={() => setCouponOpen(false)}
