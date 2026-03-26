@@ -83,6 +83,7 @@ const ProductDetails = () => {
         selectedVariant?.size || "Standard",
         selectedVariant?.color || "Default",
         quantity,
+        selectedVariant?._id,
       );
       toast.success(`${product.name} added to cart!`);
     } catch (err) {

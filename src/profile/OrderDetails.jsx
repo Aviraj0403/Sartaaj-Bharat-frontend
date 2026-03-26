@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Download } from "lucide-react";
+import { Download, ArrowLeft, ShieldCheck, Zap, Package, MapPin, CreditCard } from "lucide-react";
 import Axios from "../utils/Axios";
 
 export default function OrderDetails() {
@@ -30,10 +30,11 @@ export default function OrderDetails() {
   if (!order) return <div className="p-6">Order not found</div>;
 
   const statusColors = {
-    Shipped: "bg-green-500",
-    Processing: "bg-yellow-500",
-    Cancelled: "bg-red-500",
-    Pending: "bg-gray-500",
+    Pending: "bg-amber-500",
+    Shipped: "bg-blue-500",
+    Processing: "bg-indigo-500",
+    Cancelled: "bg-rose-500",
+    Delivered: "bg-emerald-500",
   };
 
   const handleDownloadInvoice = () => {
@@ -51,10 +52,10 @@ export default function OrderDetails() {
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
-        className="mb-8 flex items-center gap-2 text-blue-600 text-[10px] font-black uppercase tracking-[0.3em] hover:translate-x-[-4px] transition-transform italic"
+        className="mb-8 flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] hover:text-blue-600 transition-all italic group"
       >
-        <ArrowRight size={14} className="rotate-180" strokeWidth={3} /> Back to
-        Orders
+        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" strokeWidth={3} /> 
+        Return to Protocol Logs
       </button>
 
       {/* Header */}
@@ -62,16 +63,16 @@ export default function OrderDetails() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
         <div className="flex justify-between items-center flex-wrap gap-6 relative z-10">
           <div className="min-w-0">
-            <h1 className="text-2xl sm:text-5xl font-black text-slate-900 italic tracking-tighter uppercase break-all leading-none mb-3">
-              Order <span className="text-blue-600">Details</span>
+            <h1 className="text-3xl sm:text-6xl font-black text-slate-900 italic tracking-tighter uppercase break-all leading-none mb-3">
+              Action <span className="text-blue-600">Protocol</span>
             </h1>
-            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em]">
-              Order Date: {new Date(order.placedAt).toLocaleDateString()}
+            <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] italic">
+              Authenticated At: {new Date(order.placedAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' })}
             </p>
           </div>
 
           <span
-            className={`px-3 py-1 rounded-full text-white text-sm font-semibold whitespace-nowrap ${statusColors[order.orderStatus]}`}
+            className={`px-8 py-2 rounded-full text-white text-[10px] font-black uppercase tracking-widest italic shadow-lg shadow-current/20 ${statusColors[order.orderStatus] || "bg-slate-400"}`}
           >
             {order.orderStatus}
           </span>
@@ -84,9 +85,9 @@ export default function OrderDetails() {
 
       {/* Items Section */}
       <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] shadow-sm border border-slate-100 mb-8">
-        <h2 className="text-xl sm:text-3xl font-black text-slate-900 mb-8 italic tracking-tight uppercase">
-          Items{" "}
-          <span className="text-blue-600 italic">({order.items.length})</span>
+        <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-10 italic tracking-tight uppercase flex items-center gap-4">
+          <Package className="text-blue-600" size={28} />
+          Acquisition <span className="text-blue-600 italic">({order.items.length})</span>
         </h2>
 
         <div className="space-y-4">
@@ -97,8 +98,8 @@ export default function OrderDetails() {
             >
               <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-2xl overflow-hidden p-3 border border-slate-100 group-hover:scale-105 transition-transform duration-500">
                 <img
-                  src={item.product.pimages[0]}
-                  alt={item.product.name}
+                  src={item.product?.pimages?.[0] || item.product?.pimage || item.product?.image}
+                  alt={item.product?.name}
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -128,63 +129,72 @@ export default function OrderDetails() {
       {/* Delivery Details */}
       <div className="bg-slate-900 p-6 sm:p-10 rounded-[2.5rem] shadow-2xl mb-8 border border-slate-800 relative overflow-hidden">
         <div className="absolute bottom-0 right-0 w-32 h-32 bg-blue-600/10 blur-3xl rounded-full"></div>
-        <h2 className="text-xl sm:text-3xl font-black text-white mb-6 italic tracking-tight uppercase relative z-10">
-          Shipping <span className="text-blue-600">Address</span>
+        <h2 className="text-2xl sm:text-3xl font-black text-white mb-8 italic tracking-tight uppercase relative z-10 flex items-center gap-4">
+          <MapPin className="text-blue-600" size={28} />
+          Dispatch <span className="text-blue-600">Node</span>
         </h2>
 
-        <div className="space-y-2 relative z-10">
-          <p className="text-white font-black text-lg italic uppercase tracking-tight">
-            {order.shippingAddress?.name}
+        <div className="space-y-4 relative z-10">
+          <div>
+            <p className="text-white font-black text-xl md:text-2xl italic uppercase tracking-tight">
+              {order.shippingAddress?.name || "Operator Alpha"}
+            </p>
+            <div className="h-1 w-12 bg-blue-600 mt-1 opacity-50"></div>
+          </div>
+          <p className="text-slate-400 font-bold text-sm leading-relaxed max-w-sm italic">
+            {order.shippingAddress?.street}, {order.shippingAddress?.city}, {order.shippingAddress?.state} - {order.shippingAddress?.pincode}
           </p>
-          <p className="text-slate-400 font-medium text-sm leading-relaxed max-w-sm">
-            {order.shippingAddress?.street}
-          </p>
-          <div className="h-px w-12 bg-blue-600 my-4"></div>
-          <p className="text-blue-500 font-black text-xs uppercase tracking-[0.2em]">
-            {order.shippingAddress?.phoneNumber}
-          </p>
+          <div className="flex items-center gap-3 pt-2">
+            <div className="w-8 h-8 rounded-xl bg-blue-600/20 flex items-center justify-center border border-blue-500/30">
+              <Zap size={14} className="text-blue-400" />
+            </div>
+            <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.3em] italic">
+              {order.shippingAddress?.phoneNumber || order.shippingAddress?.phone}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Payment Details */}
       <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] shadow-sm border border-slate-100 mb-10">
-        <h2 className="text-xl sm:text-3xl font-black text-slate-900 mb-8 italic tracking-tight uppercase">
-          Payment <span className="text-blue-600">Summary</span>
+        <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-10 italic tracking-tight uppercase flex items-center gap-4">
+          <CreditCard className="text-blue-600" size={28} />
+          Financial <span className="text-blue-600">Overview</span>
         </h2>
 
-        <div className="space-y-4 max-w-sm">
-          <div className="flex justify-between items-center">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
-              Payment method
+        <div className="space-y-6 max-w-sm">
+          <div className="flex justify-between items-center group/fee">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 group-hover:text-slate-600 transition-colors">
+              Transfer Method
             </span>
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-900 italic">
+            <span className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 italic">
               {order.paymentMethod}
             </span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
-              Status
+          <div className="flex justify-between items-center group/fee">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 group-hover:text-slate-600 transition-colors">
+              Node Status
             </span>
-            <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.3em] italic">
+            <span className="text-blue-600 font-black text-[11px] uppercase tracking-[0.3em] italic">
               {order.paymentStatus}
             </span>
           </div>
-          <div className="h-px bg-slate-50"></div>
+          <div className="h-px bg-slate-100"></div>
           {order.discountAmount > 0 && (
-            <div className="flex justify-between items-center text-red-500 font-black text-[10px] uppercase tracking-[0.3em]">
-              <span>Discount</span>
-              <span>-₹{order.discountAmount}</span>
+            <div className="flex justify-between items-center text-emerald-600 font-black text-[10px] uppercase tracking-[0.3em]">
+              <span>Credits Applied</span>
+              <span className="italic">-₹{order.discountAmount}</span>
             </div>
           )}
-          <div className="flex justify-between items-center text-slate-900 font-black text-[10px] uppercase tracking-[0.3em]">
-            <span>Logistics</span>
-            <span>₹80.00</span>
+          <div className="flex justify-between items-center text-slate-400 font-black text-[10px] uppercase tracking-[0.3em]">
+            <span>Logistics Fee</span>
+            <span className="italic font-bold">₹{order.shipping || 80}</span>
           </div>
-          <div className="pt-6 border-t border-slate-200 flex justify-between items-end">
-            <span className="text-slate-400 font-black text-[10px] uppercase tracking-[0.4em]">
-              Total Amount
+          <div className="pt-8 border-t border-slate-200 flex justify-between items-end">
+            <span className="text-slate-400 font-black text-[10px] uppercase tracking-[0.5em] mb-2 italic">
+              Contract Value
             </span>
-            <span className="text-blue-600 font-black text-4xl italic leading-none">
+            <span className="text-blue-600 font-black text-5xl italic tracking-tighter leading-none">
               ₹{order.totalAmount?.toLocaleString()}
             </span>
           </div>

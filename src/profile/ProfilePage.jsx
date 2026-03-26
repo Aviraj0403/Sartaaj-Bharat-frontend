@@ -10,11 +10,12 @@ import {
   Trash2,
   Menu,
   X,
+  ShieldCheck,
 } from "lucide-react";
 import Orders from "./Orders";
 import Support from "./Support";
 import Reviews from "./Reviews";
-import BeautyProfile from "./BeautyProfile";
+import TechProfile from "./TechProfile";
 import Addresses from "./Addresses";
 import DeleteAccount from "./DeleteAccount";
 import SignInPage from "../pages/auth/SignInPage"; // Import SignInPage component
@@ -44,10 +45,10 @@ export default function ProfilePage() {
       component: <Reviews />,
     },
     {
-      key: "beauty",
-      title: "My Beauty Profile",
-      icon: <User size={24} />,
-      component: <BeautyProfile />,
+      key: "protocols",
+      title: "Security & Protocols",
+      icon: <ShieldCheck size={24} />,
+      component: <TechProfile />,
     },
     {
       key: "addresses",
@@ -114,7 +115,7 @@ export default function ProfilePage() {
             </h2>
             <div className="mt-2 px-3 py-1 bg-blue-600/10 border border-blue-500/20 rounded-full">
               <span className="text-blue-400 font-black text-[9px] uppercase tracking-[0.3em]">
-                Titan Member
+                Elite Operator
               </span>
             </div>
           </div>

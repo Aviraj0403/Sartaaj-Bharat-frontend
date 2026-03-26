@@ -97,24 +97,25 @@ export default function Addresses() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4 sm:p-6 bg-slate-50/30 min-h-screen">
+    <div className="max-w-6xl mx-auto p-4 md:p-8 bg-white min-h-screen">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 px-2">
         <div>
-          <h1 className="text-3xl md:text-5xl font-black text-slate-900 italic tracking-tighter uppercase">
-            Vault Addresses
+          <h1 className="text-4xl md:text-6xl font-black text-slate-900 mb-2 italic tracking-tighter uppercase leading-none">
+            Secure <span className="text-blue-600">Nodes</span>
           </h1>
-          <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mt-2">
-            Manage your secure dispatch locations
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] italic leading-relaxed">
+            Authorized dispatch and extraction points
           </p>
         </div>
         <button
           onClick={handleAdd}
-          className="flex items-center gap-3 bg-blue-600 hover:bg-black text-white px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-blue-500/20 group active:scale-95 italic text-center w-full sm:w-auto justify-center"
+          className="bg-slate-900 hover:bg-blue-600 text-white px-10 py-5 rounded-[2rem] text-[10px] font-black uppercase tracking-[0.3em] transition-all shadow-2xl hover:shadow-blue-600/20 active:scale-95 italic flex items-center justify-center gap-4 group border border-white/5"
         >
           <Plus
-            size={20}
-            className="group-hover:rotate-90 transition-transform duration-300"
+            size={18}
+            className="group-hover:rotate-90 transition-transform duration-500"
+            strokeWidth={3}
           />
           Establish New Node
         </button>
@@ -122,92 +123,99 @@ export default function Addresses() {
 
       {/* Addresses Grid */}
       {addresses.length === 0 ? (
-        <div className="text-center py-16 bg-gray-50 rounded-xl">
-          <MapPin size={64} className="mx-auto text-gray-300 mb-4" />
-          <p className="text-slate-400 font-bold italic">
-            No secure address nodes established in current branch.
+        <div className="text-center py-24 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-100">
+          <MapPin size={48} className="mx-auto text-slate-200 mb-6" strokeWidth={1} />
+          <h3 className="text-xl font-black text-slate-400 uppercase tracking-widest italic mb-2">
+            No Active Nodes
+          </h3>
+          <p className="text-slate-400 text-xs font-medium italic">
+            Your dispatch matrix is currently empty.
           </p>
-          <button
-            onClick={handleAdd}
-            className="mt-6 text-blue-600 font-black text-xs uppercase tracking-[0.2em] hover:text-black transition-colors"
-          >
-            + Initialize First Node
-          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {addresses.map((addr) => (
             <div
               key={addr._id || addr.id}
-              className={`relative p-8 border-2 rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 group ${
+              className={`relative p-8 md:p-10 border-2 rounded-[3rem] transition-all duration-700 group hover:shadow-2xl hover:shadow-blue-600/5 ${
                 addr.isDefault
                   ? "border-blue-600 bg-white"
-                  : "border-slate-100 bg-white"
+                  : "border-slate-50 bg-white hover:border-blue-600/30"
               }`}
             >
               {/* Default Badge */}
               {addr.isDefault && (
-                <div className="absolute -top-4 left-8 bg-blue-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 shadow-xl shadow-blue-500/30 italic">
+                <div className="absolute -top-4 left-10 bg-blue-600 text-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 shadow-xl shadow-blue-500/30 italic">
                   <CheckCircle size={14} strokeWidth={3} />
-                  Primary Node
+                  Primary Dispatch
                 </div>
               )}
 
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-6">
+              <div className="flex flex-col h-full justify-between">
+                <div className="flex gap-6 md:gap-8">
                   <div
-                    className={`p-4 rounded-2xl ${addr.isDefault ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" : "bg-slate-50 text-blue-600"}`}
+                    className={`w-16 h-16 rounded-3xl flex items-center justify-center flex-shrink-0 transition-transform duration-500 group-hover:rotate-6 ${
+                      addr.isDefault ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20" : "bg-slate-50 text-slate-400 group-hover:text-blue-600"
+                    }`}
                   >
                     <MapPin size={28} strokeWidth={2.5} />
                   </div>
-                  <div>
-                    <h2 className="font-black text-xl text-slate-900 italic tracking-tighter uppercase flex items-center gap-3">
-                      {addr.addressType || addr.name}
-                    </h2>
-                    <p className="text-gray-600 mt-1 leading-relaxed">
+                  <div className="space-y-4">
+                    <div>
+                      <h2 className="font-black text-xl md:text-2xl text-slate-900 italic tracking-tighter uppercase leading-tight">
+                        {addr.addressType || addr.name}
+                      </h2>
+                      <div className="h-1 w-8 bg-blue-600 mt-1 opacity-50"></div>
+                    </div>
+                    
+                    <p className="text-slate-500 text-sm font-medium italic leading-relaxed">
                       {addr.flat && `${addr.flat}, `}
                       {addr.street || addr.flat},<br />
                       {addr.landmark && `${addr.landmark}, `}
-                      {addr.city}, {addr.state} -{" "}
-                      {addr.pincode || addr.postalCode}
+                      <span className="text-slate-900 font-bold">{addr.city}, {addr.state}</span>
                       <br />
-                      {addr.country}
+                      <span className="text-blue-600 font-black tracking-widest">{addr.pincode || addr.postalCode}</span>
                     </p>
+
                     {(addr.phone || addr.phoneNumber) && (
-                      <p className="text-gray-500 text-sm mt-2">
-                        📞 {addr.phone || addr.phoneNumber}
-                      </p>
+                      <div className="flex items-center gap-2 text-slate-400">
+                         <div className="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center">
+                            <Zap size={10} className="text-blue-500" />
+                         </div>
+                         <span className="text-[10px] font-black uppercase tracking-widest leading-none">
+                           {addr.phone || addr.phoneNumber}
+                         </span>
+                      </div>
                     )}
                   </div>
                 </div>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="flex gap-3 mt-5">
-                <button
-                  onClick={() => handleEdit(addr)}
-                  className="flex items-center gap-1 text-pink-600 hover:bg-pink-50 px-4 py-2 rounded-lg border border-pink-200 transition"
-                >
-                  <Edit2 size={16} />
-                  Edit
-                </button>
-
-                {!addr.isDefault && (
+                {/* Action Buttons */}
+                <div className="flex gap-4 mt-10 pt-8 border-t border-slate-50">
                   <button
-                    onClick={() => handleSetDefault(addr._id || addr.id)}
-                    className="text-green-600 hover:bg-green-50 px-4 py-2 rounded-lg border border-green-200 transition text-sm"
+                    onClick={() => handleEdit(addr)}
+                    className="flex-1 flex items-center justify-center gap-2 bg-slate-50 hover:bg-blue-600 hover:text-white text-slate-600 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all italic border border-slate-100"
                   >
-                    Set Default
+                    <Edit2 size={14} strokeWidth={2.5} />
+                    Modify
                   </button>
-                )}
 
-                <button
-                  onClick={() => handleDelete(addr._id || addr.id)}
-                  className="flex items-center gap-1 text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg border border-red-200 transition"
-                >
-                  <Trash2 size={16} />
-                  Delete
-                </button>
+                  {!addr.isDefault && (
+                    <button
+                      onClick={() => handleSetDefault(addr._id || addr.id)}
+                      className="flex-1 flex items-center justify-center bg-blue-600/5 hover:bg-blue-600 text-blue-600 hover:text-white py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all italic border border-blue-100"
+                    >
+                      Establish Primary
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => handleDelete(addr._id || addr.id)}
+                    className="w-12 h-12 flex items-center justify-center text-slate-300 hover:text-white hover:bg-rose-500 rounded-2xl transition-all border border-slate-100 hover:border-rose-600"
+                  >
+                    <Trash2 size={18} strokeWidth={2.5} />
+                  </button>
+                </div>
               </div>
             </div>
           ))}

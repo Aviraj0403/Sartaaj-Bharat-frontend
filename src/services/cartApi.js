@@ -11,6 +11,7 @@ export const getUserCart = () => {
 /**
  * Add item to cart
  * Backend: POST /v1/api/cart/items
+ * Payload: { productId, size, color, quantity, variantId }
  */
 export const addToCart = (payload) => {
   return Axios.post("/cart/items", payload);

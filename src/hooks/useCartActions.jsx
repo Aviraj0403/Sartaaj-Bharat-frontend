@@ -52,8 +52,8 @@ export const useCartActions = () => {
     await handleAction(() => dispatch(syncCartOnLogin()).unwrap());
   };
 
-  // ⭐ Add to Cart - FIXED
-  const addToCart = async (product, size, color, quantity = 1) => {
+  // ⭐ Add to Cart - FIXED with variantId
+  const addToCart = async (product, size, color, quantity = 1, variantId) => {
     const existingItem = findCartItem(product._id, size, color);
     const newQty = (existingItem?.quantity || 0) + quantity;
 
@@ -82,6 +82,7 @@ export const useCartActions = () => {
           image: product.pimage || product.image,
           size,
           color,
+          variantId,
           price: selectedVariantInfo?.price || product.price || 0,
           quantity,
         }),
@@ -94,6 +95,7 @@ export const useCartActions = () => {
             productId: product._id,
             size,
             color,
+            variantId,
             quantity,
           }),
         ).unwrap();

@@ -27,7 +27,7 @@ export const syncCartOnLogin = createAsyncThunk(
       // STEP 2: Push local items to backend (only missing ones)
       const promises = [];
       for (const item of localCart) {
-        const { id: productId, size, color, quantity } = item;
+        const { id: productId, size, color, quantity, variantId } = item;
 
         const exists = backendItems.find(
           (i) =>
@@ -40,6 +40,7 @@ export const syncCartOnLogin = createAsyncThunk(
               productId,
               size,
               color,
+              variantId,
               quantity: item.quantity,
             }),
           );
@@ -73,9 +74,9 @@ export const loadCartFromBackend = createAsyncThunk(
 // Add item to cart (backend sync after local update)
 export const addToCartThunk = createAsyncThunk(
   "cart/addToCart",
-  async ({ productId, size, color, quantity }, { dispatch }) => {
+  async ({ productId, size, color, quantity, variantId }, { dispatch }) => {
     try {
-      await addToCart({ productId, size, color, quantity });
+      await addToCart({ productId, size, color, quantity, variantId });
 
       // Fetch updated cart from backend
       const updatedCart = await getUserCart();
