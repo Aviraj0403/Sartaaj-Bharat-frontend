@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../features/cart/cartSlice";
@@ -48,7 +48,11 @@ export const AuthProvider = ({ children }) => {
   }, [performLogout]);
 
   // ────────────── VALIDATE SESSION ON MOUNT ──────────────
+  const hasValidated = useRef(false);
   useEffect(() => {
+    if (hasValidated.current) return;
+    hasValidated.current = true;
+
     const validateSession = async () => {
       try {
         const res = await Axios.get("/auth/profile");
@@ -58,7 +62,6 @@ export const AuthProvider = ({ children }) => {
         setCartSyncing(true);
         await dispatch(fetchBackendCart()).unwrap();
       } catch (error) {
-        // 401 = not logged in (expected). Any other error = log it.
         if (error.response?.status !== 401) {
           console.error("Session validation error:", error);
         }

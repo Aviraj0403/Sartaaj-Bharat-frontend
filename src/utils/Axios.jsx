@@ -59,17 +59,26 @@ Axios.interceptors.response.use(
     );
 
     // Only attempt refresh for 401 errors on non-auth routes
+    const token = Cookies.get("userToken");
+    
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !shouldSkipRefresh
+      !shouldSkipRefresh &&
+      token // 🛡️ Safeguard: Only refresh if we actually have a token to begin with
     ) {
       if (isRefreshing) {
-        // Queue this request until refresh completes
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then(() => Axios(originalRequest))
+          .then(() => {
+            originalRequest._retry = true;
+            const newToken = Cookies.get("userToken");
+            if (newToken) {
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            }
+            return Axios(originalRequest);
+          })
           .catch((err) => Promise.reject(err));
       }
 
@@ -77,14 +86,12 @@ Axios.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // Attempt to get a new access token using the refresh token cookie
-        const currentToken = Cookies.get("userToken");
         const refreshResponse = await axios.post(
           `${baseURL}/auth/refresh-token`,
           {},
           {
             withCredentials: true,
-            headers: currentToken ? { Authorization: `Bearer ${currentToken}` } : {},
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
           },
         );
 
@@ -101,14 +108,16 @@ Axios.interceptors.response.use(
         processQueue(null);
         isRefreshing = false;
 
-        // Retry the original request with the new token
         return Axios(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
         isRefreshing = false;
 
-        // Emit a custom event so AuthContext can react and clear user state
-        window.dispatchEvent(new CustomEvent("auth:logout"));
+        // Session definitely dead
+        if (refreshError.response?.status === 401 || refreshError.response?.status === 403) {
+          Cookies.remove("userToken"); // Cleanup immediately
+          window.dispatchEvent(new CustomEvent("auth:logout"));
+        }
 
         return Promise.reject(refreshError);
       }
