@@ -51,6 +51,7 @@ const QuickViewModal = ({ product, onClose }) => {
           ? selectedVariant.color[0]
           : selectedVariant?.color || "Default",
         quantity,
+        selectedVariant?._id,
       );
       toast.success(`${product.name} added to cart`);
       onClose();

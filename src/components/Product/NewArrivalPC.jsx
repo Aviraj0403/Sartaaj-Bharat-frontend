@@ -52,13 +52,13 @@ export default function NewArrivalPC({ product, onProductClick }) {
 
   // Handle adding product to the cart
   const handleAddToCart = async () => {
-    const result = await addToCart(product, size, color, 1); // Ensure color is passed here
+    const result = await addToCart(product, size, color, 1, activeVariant?._id); // Ensure color and variantId are passed here
     if (result.success) triggerPopup();
   };
 
   // Handle 'Buy Now' button click
   const handleBuyNow = async () => {
-    const result = await addToCart(product, size, color, 1); // Ensure color is passed here
+    const result = await addToCart(product, size, color, 1, activeVariant?._id); // Ensure color and variantId are passed here
     if (result.success) {
       triggerPopup();
       navigate("/cart");

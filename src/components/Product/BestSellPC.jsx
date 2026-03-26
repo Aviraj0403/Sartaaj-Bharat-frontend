@@ -29,7 +29,7 @@ export default function BestSellPC({ product, onProductClick }) {
       ? variant.color[0]
       : variant.color || "default";
 
-    const result = await addToCart(product, selectedSize, selectedColor, 1);
+    const result = await addToCart(product, selectedSize, selectedColor, 1, variant?._id);
     if (result.success) {
       // Optionally, notify the user about the success
     } else {
@@ -50,7 +50,7 @@ export default function BestSellPC({ product, onProductClick }) {
       ? variant.color[0]
       : variant.color || "default";
 
-    const result = await addToCart(product, selectedSize, selectedColor, 1);
+    const result = await addToCart(product, selectedSize, selectedColor, 1, variant?._id);
     if (result.success) {
       navigate("/cart"); // Navigate to the cart page after adding the product
     } else {

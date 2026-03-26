@@ -46,6 +46,7 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
           ? variant.color[0]
           : variant?.color || "Default",
         1,
+        variant?._id,
       );
       toast.success(`${product.name} added to cart`);
     } catch (err) {
