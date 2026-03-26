@@ -46,7 +46,7 @@ export default function ProfilePage() {
     },
     {
       key: "protocols",
-      title: "Security & Protocols",
+      title: "Member Profile",
       icon: <ShieldCheck size={24} />,
       component: <TechProfile />,
     },
@@ -115,7 +115,7 @@ export default function ProfilePage() {
             </h2>
             <div className="mt-2 px-3 py-1 bg-blue-600/10 border border-blue-500/20 rounded-full">
               <span className="text-blue-400 font-black text-[9px] uppercase tracking-[0.3em]">
-                Elite Operator
+                Verified Member
               </span>
             </div>
           </div>
@@ -157,7 +157,7 @@ export default function ProfilePage() {
             onClick={logout}
             className="w-full bg-slate-900 hover:bg-red-600/90 text-[10px] font-black uppercase tracking-[0.3em] text-white py-4 rounded-2xl transition-all duration-500 border border-white/5 hover:border-red-500/50 shadow-2xl flex items-center justify-center gap-3 active:scale-95 italic"
           >
-            TERMINATE SESSION
+            LOGOUT FROM PORTAL
           </button>
         </div>
       </div>
@@ -175,8 +175,7 @@ export default function ProfilePage() {
         )}
       </AnimatePresence>
 
-      {/* Main Content */}
-      <div className="flex-1 p-4 md:p-8 mt-0 md:mt-0 z-10 relative">
+      <div className="flex-1 p-6 md:p-12 lg:p-16 mt-0 md:mt-0 z-10 relative max-w-7xl mx-auto w-full">
         {activeOption.component}
       </div>
     </div>

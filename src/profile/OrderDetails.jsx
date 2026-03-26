@@ -64,10 +64,17 @@ export default function OrderDetails() {
         <div className="flex justify-between items-center flex-wrap gap-6 relative z-10">
           <div className="min-w-0">
             <h1 className="text-3xl sm:text-6xl font-black text-slate-900 italic tracking-tighter uppercase break-all leading-none mb-3">
-              Action <span className="text-blue-600">Protocol</span>
+              Order <span className="text-blue-600">Details</span>
             </h1>
-            <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] italic">
-              Authenticated At: {new Date(order.placedAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' })}
+            <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] italic mb-6">
+              Detailed tracking and shipment information
+            </p>
+            <h2 className="text-slate-900 font-black text-sm sm:text-lg italic uppercase tracking-tight flex items-center gap-2">
+              <ShieldCheck className="text-blue-600" size={18} />
+              Order Tracking: #{order._id.slice(-8).toUpperCase()}
+            </h2>
+            <p className="text-blue-600 text-[10px] font-black uppercase tracking-widest italic">
+              Verified System Entry
             </p>
           </div>
 
@@ -173,7 +180,7 @@ export default function OrderDetails() {
           </div>
           <div className="flex justify-between items-center group/fee">
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 group-hover:text-slate-600 transition-colors">
-              Node Status
+              Order Timeline
             </span>
             <span className="text-blue-600 font-black text-[11px] uppercase tracking-[0.3em] italic">
               {order.paymentStatus}

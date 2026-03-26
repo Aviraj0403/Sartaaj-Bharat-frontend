@@ -8,27 +8,14 @@ export default function Orders() {
   const { user } = useAuth(); // Get user data from AuthContext
   const navigate = useNavigate();
 
-  // State to hold fetched orders
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
-
-  // Fetch orders on component mount
-  useEffect(() => {
-    if (user) {
-      const fetchOrders = async () => {
-        try {
-          const response = await Axios.get("/orders/myorders"); // API call to fetch orders
-          setOrders(response.data.orders); // Update state with fetched orders
-        } catch (error) {
-          console.error("Error fetching orders:", error);
-        } finally {
-          setLoading(false); // Stop loading when data is fetched
-        }
-      };
-
-      fetchOrders();
-    }
-  }, [user]); // Only fetch orders if user is logged in
+  const { data: orders = [], isLoading } = useQuery({
+    queryKey: ["user-orders"],
+    queryFn: async () => {
+      const { data } = await Axios.get("/orders/my-orders"); // Use Axios and new endpoint
+      return data.orders || []; // Assuming API returns { orders: [...] }
+    },
+    enabled: !!user, // Only fetch if user is available
+  });
 
   const statusColors = {
     Pending: "bg-amber-500",
@@ -43,19 +30,19 @@ export default function Orders() {
     navigate(`/profile/invoice/${orderId}`);
   };
 
-  if (loading) {
+  if (isLoading) {
     return <div>Loading your orders...</div>;
   }
 
   return (
-    <div className="p-4 md:p-8 min-h-screen bg-white">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+    <div className="bg-white min-h-[70vh] max-w-5xl mx-auto">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 p-4 md:p-8">
         <div>
           <h1 className="text-4xl md:text-6xl font-black text-slate-900 mb-2 italic tracking-tighter uppercase leading-none">
-            Order <span className="text-blue-600">History</span>
+            Order History
           </h1>
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] italic">
-            Deployment and acquisition logs
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] italic leading-relaxed">
+            Record of your premium acquisitions
           </p>
         </div>
         <div className="flex items-center gap-4 bg-slate-50 px-6 py-3 rounded-2xl border border-slate-100">
@@ -64,16 +51,16 @@ export default function Orders() {
           </div>
           <div>
             <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">
-              Total Managed
+              Items Ordered
             </p>
             <p className="text-sm font-black text-slate-900 uppercase italic">
-              {orders.length} Protocols
+              {orders.length} Shipments
             </p>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-8 p-4 md:p-8">
         {orders.length === 0 ? (
           <div className="py-24 text-center border-2 border-dashed border-slate-100 rounded-[3rem] bg-slate-50/50">
             <ShoppingBag
@@ -82,7 +69,7 @@ export default function Orders() {
               strokeWidth={1}
             />
             <h3 className="text-xl font-black text-slate-400 uppercase tracking-widest italic mb-2">
-              No History Found
+              No Orders Found
             </h3>
             <p className="text-slate-400 text-xs font-medium italic">
               You haven't initiated any acquisition protocols yet.
@@ -98,7 +85,7 @@ export default function Orders() {
             return (
               <div
                 key={order._id}
-                className="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden hover:border-blue-600 transition-all duration-500 group shadow-sm hover:shadow-2xl hover:shadow-blue-500/5"
+                className="bg-white rounded-[3rem] border border-slate-100 overflow-hidden hover:border-blue-600 transition-all duration-700 group shadow-sm hover:shadow-2xl hover:shadow-blue-500/5"
               >
                 {/* Header */}
                 <div className="flex justify-between items-center p-6 md:p-8 bg-slate-50/50 border-b border-slate-50 flex-wrap gap-4">
@@ -108,7 +95,7 @@ export default function Orders() {
                     </div>
                     <div>
                       <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none mb-1.5">
-                        Log Entry #{order._id.slice(-8).toUpperCase()}
+                        Order ID #{order._id.slice(-8).toUpperCase()}
                       </h2>
                       <div className="flex items-center gap-3">
                         <p className="text-slate-900 font-black text-xs italic uppercase tracking-tight">
@@ -171,7 +158,7 @@ export default function Orders() {
                       <div className="flex flex-wrap gap-4 pt-2">
                         <div className="bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
                           <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">
-                            Configuration
+                            Specifications
                           </p>
                           <p className="text-[10px] font-bold text-slate-700 uppercase italic">
                             {mainItem.selectedVariant?.size} / {mainItem.selectedVariant?.color}
@@ -205,7 +192,7 @@ export default function Orders() {
                     <div className="h-px w-full bg-slate-200 my-4"></div>
                     <div>
                       <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] mb-1 italic">
-                        Contract Value
+                        Order Total
                       </p>
                       <p className="text-3xl font-black text-slate-900 italic tracking-tighter">
                         ₹{order.totalAmount?.toLocaleString()}
@@ -225,7 +212,7 @@ export default function Orders() {
                       className="group-hover:-translate-y-1 transition-transform"
                       strokeWidth={2.5}
                     />
-                    Acquire Invoice Protocol
+                    Download Invoice
                   </button>
 
                   <button

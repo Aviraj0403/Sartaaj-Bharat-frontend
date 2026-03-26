@@ -156,14 +156,10 @@ export default function AccessoriesShowcase() {
       </div>
 
       {/* Product Grid — same ProductCard as the rest of the site */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         <motion.div
           key={activeTab}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -12 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 md:gap-10"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 md:gap-10 min-h-[460px] content-start"
         >
           {isLoading ? (
             // Skeleton — matches ProductCard aspect ratio

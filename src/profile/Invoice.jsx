@@ -151,8 +151,8 @@ export default function Invoice() {
         {/* Brand Refinement */}
         <div className="flex flex-col md:flex-row justify-between items-start mb-16 gap-8 pb-12 border-b border-slate-50">
           <div>
-            <h1 className="text-3xl md:text-5xl font-black text-slate-900 mb-2 italic tracking-tighter uppercase leading-none">
-              Elite <span className="text-blue-600">Enterprise</span>
+            <h1 className="text-2xl font-black italic tracking-tighter text-slate-900 uppercase">
+              Download <span className="text-blue-600">Invoice</span>
             </h1>
             <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em]">
               Global Distribution Protocol
@@ -205,9 +205,9 @@ export default function Invoice() {
                 <div
                   className={`w-2 h-2 rounded-full ${order.orderStatus === "Shipped" ? "bg-green-500" : "bg-blue-600"} animate-pulse`}
                 ></div>
-                <span className="text-slate-900 font-black uppercase tracking-widest italic">
-                  {order.orderStatus}
-                </span>
+                <h3 className="text-slate-400 font-black uppercase tracking-widest text-[10px] mb-1">
+                  Order History
+                </h3>
               </div>
             </div>
           </div>
