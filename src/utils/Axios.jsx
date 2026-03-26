@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const baseURL = "https://sartaaj-bharat-backend.onrender.com/v1/api";
 
@@ -23,9 +24,15 @@ const processQueue = (error) => {
   failedQueue = [];
 };
 
-// Request interceptor — passthrough
+// Request interceptor — Attach token if available
 Axios.interceptors.request.use(
-  (config) => config,
+  (config) => {
+    const token = Cookies.get("userToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
   (error) => Promise.reject(error),
 );
 
@@ -72,11 +79,21 @@ Axios.interceptors.response.use(
 
       try {
         // Attempt to get a new access token using the refresh token cookie
-        await axios.post(
+        const refreshResponse = await axios.post(
           `${baseURL}/auth/refresh-token`,
           {},
           { withCredentials: true },
         );
+
+        const newToken =
+          refreshResponse.data?.token ||
+          refreshResponse.data?.data?.token ||
+          refreshResponse.data?.data?.accessToken;
+
+        if (newToken) {
+          Cookies.set("userToken", newToken, { expires: 7 });
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        }
 
         processQueue(null);
         isRefreshing = false;

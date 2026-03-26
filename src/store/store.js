@@ -13,7 +13,7 @@ const persistConfig = {
   key: "root",
   storage,
   version: 1,
-  whitelist: ["auth", "cart"],
+  whitelist: ["cart"],
   stateReconciler: autoMergeLevel2,
 };
 

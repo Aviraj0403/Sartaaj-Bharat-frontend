@@ -5,6 +5,7 @@ import { clearCart } from "../features/cart/cartSlice";
 import { fetchBackendCart, syncCartOnLogin } from "../features/cart/cartThunk";
 import { setUser as setReduxUser, clearUser } from "../features/auth/authSlice";
 import Axios from "../utils/Axios";
+import Cookies from "js-cookie";
 
 const AuthContext = createContext();
 
@@ -29,6 +30,7 @@ export const AuthProvider = ({ children }) => {
     dispatch(clearUser());
     dispatch(clearCart());
     queryClient.clear();
+    Cookies.remove("userToken");
     localStorage.removeItem("persist:root");
     sessionStorage.clear();
   }, [dispatch, queryClient]);
@@ -83,7 +85,16 @@ export const AuthProvider = ({ children }) => {
 
   const verifyPhoneOTP = async (phoneNumber, otp) => {
     try {
-      await Axios.post("/auth/phone/verify-otp", { phoneNumber, otp });
+      const response = await Axios.post("/auth/phone/verify-otp", {
+        phoneNumber,
+        otp,
+      });
+
+      const token =
+        response.data?.token ||
+        response.data?.data?.token ||
+        response.data?.data?.accessToken;
+      if (token) Cookies.set("userToken", token, { expires: 7 });
 
       const userRes = await Axios.get("/auth/profile");
       setUser(userRes.data.data);
@@ -105,7 +116,13 @@ export const AuthProvider = ({ children }) => {
   // ────────────── EMAIL / USERNAME LOGIN ──────────────
   const login = async (credentials) => {
     try {
-      await Axios.post("/auth/login", credentials);
+      const response = await Axios.post("/auth/login", credentials);
+
+      const token =
+        response.data?.token ||
+        response.data?.data?.token ||
+        response.data?.data?.accessToken;
+      if (token) Cookies.set("userToken", token, { expires: 7 });
 
       const res = await Axios.get("/auth/profile");
       setUser(res.data.data);
@@ -134,7 +151,13 @@ export const AuthProvider = ({ children }) => {
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await getIdToken(result.user);
 
-      await Axios.post("/auth/google", { idToken });
+      const response = await Axios.post("/auth/google", { idToken });
+
+      const token =
+        response.data?.token ||
+        response.data?.data?.token ||
+        response.data?.data?.accessToken;
+      if (token) Cookies.set("userToken", token, { expires: 7 });
 
       const userRes = await Axios.get("/auth/profile");
       setUser(userRes.data.data);
@@ -171,7 +194,13 @@ export const AuthProvider = ({ children }) => {
       const result = await signInWithPopup(auth, facebookProvider);
       const idToken = await getIdToken(result.user);
 
-      await Axios.post("/auth/facebook", { idToken });
+      const response = await Axios.post("/auth/facebook", { idToken });
+
+      const token =
+        response.data?.token ||
+        response.data?.data?.token ||
+        response.data?.data?.accessToken;
+      if (token) Cookies.set("userToken", token, { expires: 7 });
 
       const userRes = await Axios.get("/auth/profile");
       setUser(userRes.data.data);
