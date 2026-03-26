@@ -2,12 +2,8 @@ import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
 import {
-  FaUser,
-  FaEnvelope,
-  FaLock,
-  FaPhone,
-  FaArrowRight,
-  FaFacebook,
+  FaUser, FaEnvelope, FaLock, FaPhone, FaFacebook,
+  FaEye, FaEyeSlash,
 } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -24,31 +20,48 @@ const SignupPage = () => {
     password: "",
     phoneNumber: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { googleLogin, facebookLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "phoneNumber") {
+      setForm({ ...form, [name]: value.replace(/\D/g, "").slice(0, 10) });
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.email || !form.password || !form.userName) {
-      toast.error(
-        "Username, Email, and Password are required for registration.",
-      );
+
+    if (!form.userName.trim() || !form.email.trim() || !form.password.trim()) {
+      toast.error("Username, Email and Password are required.");
+      return;
+    }
+    if (form.password.length < 6) {
+      toast.error("Password must be at least 6 characters.");
+      return;
+    }
+    if (form.phoneNumber && form.phoneNumber.length !== 10) {
+      toast.error("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      toast.error("Please enter a valid email address.");
       return;
     }
 
     setIsSubmitting(true);
     try {
       await Axios.post("/auth/register", form);
-      toast.success("Account created. Welcome to the elite tier.");
+      toast.success("Account created! Welcome to Sartaaj Bharat 🎉");
       navigate("/", { replace: true });
     } catch (err) {
       toast.error(
-        err?.response?.data?.message || "Registration sequence failed.",
+        err?.response?.data?.message || "Registration failed. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -60,10 +73,10 @@ const SignupPage = () => {
     try {
       if (provider === "google") await googleLogin();
       if (provider === "facebook") await facebookLogin();
-      toast.success("Identity Synchronized.");
+      toast.success("Registered successfully! 🎉");
       navigate("/", { replace: true });
     } catch (err) {
-      toast.error(err?.message || `${provider} synchronization failed`);
+      toast.error(err?.message || `${provider} signup failed. Please try again.`);
     } finally {
       setIsSubmitting(false);
     }
@@ -71,159 +84,163 @@ const SignupPage = () => {
 
   return (
     <AuthLayout
-      title="Create Identity"
-      subtitle="Establish your profile in the Sartaaj Bharat global matrix."
+      title="Create Your Account"
+      subtitle="Register on Sartaaj Bharat and enjoy exclusive offers."
     >
-      <div className="space-y-8">
-        {/* Social Matrix */}
+      <div className="space-y-7">
+        {/* Social Signup */}
         <div className="grid grid-cols-2 gap-4">
           <motion.button
-            whileHover={{ y: -4, scale: 1.02 }}
+            whileHover={{ y: -3, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => handleSocialRegister("google")}
             disabled={isSubmitting}
-            className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-3.5 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+            className="flex items-center justify-center gap-2.5 bg-white/5 border border-white/10 py-3.5 rounded-2xl hover:bg-white/10 transition-all"
           >
             <FcGoogle size={20} />
-            <span className="text-white text-[10px] font-black uppercase tracking-widest">
-              Google Sync
+            <span className="text-white text-[11px] font-bold uppercase tracking-widest">
+              Google
             </span>
           </motion.button>
           <motion.button
-            whileHover={{ y: -4, scale: 1.02 }}
+            whileHover={{ y: -3, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => handleSocialRegister("facebook")}
             disabled={isSubmitting}
-            className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-3.5 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+            className="flex items-center justify-center gap-2.5 bg-white/5 border border-white/10 py-3.5 rounded-2xl hover:bg-white/10 transition-all"
           >
             <FaFacebook size={20} className="text-[#1877F2]" />
-            <span className="text-white text-[10px] font-black uppercase tracking-widest">
-              Facebook Sync
+            <span className="text-white text-[11px] font-bold uppercase tracking-widest">
+              Facebook
             </span>
           </motion.button>
         </div>
 
-        {/* Divider Node */}
+        {/* Divider */}
         <div className="flex items-center gap-4">
-          <div className="flex-1 h-px bg-white/5"></div>
-          <span className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em]">
-            Direct Protocol
+          <div className="flex-1 h-px bg-white/10" />
+          <span className="text-[11px] text-slate-500 font-semibold uppercase tracking-widest whitespace-nowrap">
+            or register directly
           </span>
-          <div className="flex-1 h-px bg-white/5"></div>
+          <div className="flex-1 h-px bg-white/10" />
         </div>
 
-        {/* Form Module */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Username */}
-            <div className="relative group col-span-1 md:col-span-2">
-              <FaUser
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
-                size={14}
-              />
-              <input
-                name="userName"
-                placeholder="UNIQUE USERNAME"
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
-                value={form.userName}
-                onChange={handleChange}
-                required
-              />
-            </div>
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Username */}
+          <div className="relative group">
+            <FaUser
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
+              size={14}
+            />
+            <input
+              name="userName"
+              placeholder="Username (e.g. rahul123)"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-sm font-medium focus:border-blue-500 outline-none transition-all placeholder:text-slate-500"
+              value={form.userName}
+              onChange={handleChange}
+              required
+              autoComplete="username"
+            />
+          </div>
 
-            {/* First Name */}
-            <div className="relative group">
-              <input
-                name="firstName"
-                placeholder="FIRST NAME"
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
-                value={form.firstName}
-                onChange={handleChange}
-              />
-            </div>
+          {/* Name */}
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              name="firstName"
+              placeholder="First Name"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-4 text-white text-sm font-medium focus:border-blue-500 outline-none transition-all placeholder:text-slate-500"
+              value={form.firstName}
+              onChange={handleChange}
+              autoComplete="given-name"
+            />
+            <input
+              name="lastName"
+              placeholder="Last Name"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-4 text-white text-sm font-medium focus:border-blue-500 outline-none transition-all placeholder:text-slate-500"
+              value={form.lastName}
+              onChange={handleChange}
+              autoComplete="family-name"
+            />
+          </div>
 
-            {/* Last Name */}
-            <div className="relative group">
-              <input
-                name="lastName"
-                placeholder="LAST NAME"
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
-                value={form.lastName}
-                onChange={handleChange}
-              />
-            </div>
+          {/* Email */}
+          <div className="relative group">
+            <FaEnvelope
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
+              size={14}
+            />
+            <input
+              name="email"
+              type="email"
+              placeholder="Email Address"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-sm font-medium focus:border-blue-500 outline-none transition-all placeholder:text-slate-500"
+              value={form.email}
+              onChange={handleChange}
+              required
+              autoComplete="email"
+            />
+          </div>
 
-            {/* Email */}
-            <div className="relative group col-span-1 md:col-span-2">
-              <FaEnvelope
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
-                size={14}
-              />
-              <input
-                name="email"
-                type="email"
-                placeholder="SECURE EMAIL"
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
-                value={form.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          {/* Password */}
+          <div className="relative group">
+            <FaLock
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
+              size={14}
+            />
+            <input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password (min. 6 characters)"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-12 text-white text-sm font-medium focus:border-blue-500 outline-none transition-all placeholder:text-slate-500"
+              value={form.password}
+              onChange={handleChange}
+              required
+              autoComplete="new-password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
+            >
+              {showPassword ? <FaEyeSlash size={15} /> : <FaEye size={15} />}
+            </button>
+          </div>
 
-            {/* Password */}
-            <div className="relative group">
-              <FaLock
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
-                size={14}
-              />
-              <input
-                name="password"
-                type="password"
-                placeholder="PASSWORD"
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
-                value={form.password}
-                onChange={handleChange}
-                required
-              />
+          {/* Phone */}
+          <div className="relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 border-r border-white/10 pr-3">
+              <FaPhone className="text-slate-500" size={12} />
+              <span className="text-white text-xs font-bold">+91</span>
             </div>
-
-            {/* Phone */}
-            <div className="relative group">
-              <FaPhone
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
-                size={14}
-              />
-              <input
-                name="phoneNumber"
-                placeholder="MOBILE"
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
-                value={form.phoneNumber}
-                onChange={handleChange}
-              />
-            </div>
+            <input
+              name="phoneNumber"
+              placeholder="Mobile Number (optional)"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-20 pr-4 text-white text-sm font-medium focus:border-blue-500 outline-none transition-all placeholder:text-slate-500"
+              value={form.phoneNumber}
+              onChange={handleChange}
+              inputMode="numeric"
+              autoComplete="tel"
+            />
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-blue-500 transition-all shadow-[0_15px_30px_rgba(37,99,235,0.2)] disabled:opacity-50 flex items-center justify-center gap-3 group"
+            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-sm hover:bg-blue-500 transition-all shadow-lg shadow-blue-700/20 disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {isSubmitting ? "Processing..." : "Establish Identity"}
-            <FaArrowRight
-              size={12}
-              className="group-hover:translate-x-1 transition-transform"
-            />
+            {isSubmitting ? "Creating account..." : "Create Account →"}
           </button>
         </form>
 
-        {/* Redirect */}
-        <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-          Already established?{" "}
+        {/* Footer */}
+        <p className="text-center text-sm text-slate-400">
+          Already have an account?{" "}
           <Link
             to="/signin"
-            className="text-blue-500 font-black hover:text-blue-400 underline decoration-2 underline-offset-4"
+            className="text-blue-500 font-bold hover:text-blue-400 underline decoration-2 underline-offset-4"
           >
-            Initialize Login
+            Login
           </Link>
         </p>
       </div>

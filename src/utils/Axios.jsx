@@ -1,67 +1,65 @@
 import axios from "axios";
 
-// const baseURL = 'http://localhost:6005/v1/api';
-
 const baseURL = "https://sartaaj-bharat-backend.onrender.com/v1/api";
 
 const Axios = axios.create({
   baseURL,
   withCredentials: true,
-  timeout: 30000, // 30 second timeout
+  timeout: 30000,
 });
 
-// Track if we're currently refreshing to prevent multiple refresh calls
+// Track refresh state to prevent multiple simultaneous refresh calls
 let isRefreshing = false;
 let failedQueue = [];
 
-const processQueue = (error, token = null) => {
+const processQueue = (error) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
     } else {
-      prom.resolve(token);
+      prom.resolve();
     }
   });
   failedQueue = [];
 };
 
-// Request interceptor
+// Request interceptor — passthrough
 Axios.interceptors.request.use(
-  (config) => {
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
+  (config) => config,
+  (error) => Promise.reject(error),
 );
 
-// Response interceptor
+// Response interceptor — handles 401 with token refresh
 Axios.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Don't retry on these endpoints
+    // Routes where we should NOT attempt a token refresh
     const skipRefreshRoutes = [
-      "/auth/me",
-      "/auth/phoneV2/send-otp",
-      "/auth/phoneV2/verify-otp",
-      "/auth/phoneV2/refresh-token",
-      "/auth/user/logout",
+      "/auth/profile",
+      "/auth/login",
+      "/auth/logout",
+      "/auth/register",
+      "/auth/google",
+      "/auth/facebook",
+      "/auth/refresh-token",
+      "/auth/phone/request-otp",
+      "/auth/phone/verify-otp",
     ];
 
     const shouldSkipRefresh = skipRefreshRoutes.some((route) =>
       originalRequest.url?.includes(route),
     );
 
-    // Handle 401 errors
+    // Only attempt refresh for 401 errors on non-auth routes
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
       !shouldSkipRefresh
     ) {
       if (isRefreshing) {
-        // If already refreshing, queue this request
+        // Queue this request until refresh completes
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -73,6 +71,7 @@ Axios.interceptors.response.use(
       isRefreshing = true;
 
       try {
+        // Attempt to get a new access token using the refresh token cookie
         await axios.post(
           `${baseURL}/auth/refresh-token`,
           {},
@@ -82,27 +81,21 @@ Axios.interceptors.response.use(
         processQueue(null);
         isRefreshing = false;
 
+        // Retry the original request with the new token
         return Axios(originalRequest);
       } catch (refreshError) {
-        processQueue(refreshError, null);
+        processQueue(refreshError);
         isRefreshing = false;
 
-        // Clear local data
-        console.error(
-          "❌ Refresh token failed. Session expired or unauthenticated.",
-        );
-
-        // Clear all auth-related storage
-        localStorage.removeItem("user");
-        sessionStorage.clear();
+        // Emit a custom event so AuthContext can react and clear user state
+        window.dispatchEvent(new CustomEvent("auth:logout"));
 
         return Promise.reject(refreshError);
       }
     }
 
-    // Handle network errors
+    // Handle network errors gracefully
     if (!error.response) {
-      console.error("Network error:", error.message);
       return Promise.reject({
         message: "Network error. Please check your connection.",
         isNetworkError: true,
