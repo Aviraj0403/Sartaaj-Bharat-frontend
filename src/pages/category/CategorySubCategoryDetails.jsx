@@ -20,7 +20,12 @@ export default function CategorySubCategoryDetails() {
     setError(null);
 
     try {
-      const data = await getProductsByCategoryAndSubCategorySlug(categorySlug, subCategorySlug, page, 20);
+      const data = await getProductsByCategoryAndSubCategorySlug(
+        categorySlug,
+        subCategorySlug,
+        page,
+        20,
+      );
       if (data.success) {
         setProducts(data.products);
         setPagination(data.pagination);
@@ -42,7 +47,11 @@ export default function CategorySubCategoryDetails() {
   }, [categorySlug, subCategorySlug, currentPage]);
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-[60vh] text-blue-600 font-black uppercase tracking-[0.5em] italic animate-pulse">Syncing Artifacts...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] text-blue-600 font-black uppercase tracking-[0.5em] italic animate-pulse">
+        Syncing Artifacts...
+      </div>
+    );
   }
 
   if (error) {
@@ -57,9 +66,12 @@ export default function CategorySubCategoryDetails() {
     <section className="py-10 bg-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
-          <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block italic">Topological Selection</span>
+          <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block italic">
+            Topological Selection
+          </span>
           <h2 className="text-3xl md:text-6xl font-black text-slate-950 italic uppercase tracking-tighter">
-            {categoryName} <span className="text-blue-600">// {subCategoryName}</span>
+            {categoryName}{" "}
+            <span className="text-blue-600">// {subCategoryName}</span>
           </h2>
         </div>
 
@@ -86,7 +98,8 @@ export default function CategorySubCategoryDetails() {
             PREVIOUS
           </button>
           <span className="font-black text-xs italic text-slate-400 uppercase tracking-widest bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
-            {currentPage} <span className="text-blue-600">/</span> {pagination.totalPages}
+            {currentPage} <span className="text-blue-600">/</span>{" "}
+            {pagination.totalPages}
           </span>
           <button
             onClick={() => fetchProducts(currentPage + 1)}

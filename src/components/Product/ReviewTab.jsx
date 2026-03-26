@@ -5,7 +5,7 @@ import { createReview } from "../../services/reviewApi";
 import { useAuth } from "../../context/AuthContext";
 
 // Review Form Component for submitting a new review
-const ReviewForm = ({ productId, reviews , setReviews }) => {
+const ReviewForm = ({ productId, reviews, setReviews }) => {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -14,7 +14,7 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
   const { user } = useAuth();
   const handleSiginin = () => {
     window.location.href = "/signin";
-  }
+  };
   if (!user) {
     return (
       <div className="mt-8 text-center py-12 bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl border-2 border-dashed border-pink-200">
@@ -22,16 +22,25 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
           <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <FaStar className="text-3xl text-pink-500" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">Share Your Experience</h3>
-          <p className="text-gray-600 mb-4">Sign in to write a review and help others make informed decisions</p>
-          <button className="bg-pink-500 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-pink-600 transition-all hover:shadow-lg" onClick={handleSiginin}>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            Share Your Experience
+          </h3>
+          <p className="text-gray-600 mb-4">
+            Sign in to write a review and help others make informed decisions
+          </p>
+          <button
+            className="bg-pink-500 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-pink-600 transition-all hover:shadow-lg"
+            onClick={handleSiginin}
+          >
             Sign In to Review
           </button>
         </div>
       </div>
     );
   }
- const hasUserReviewed = reviews?.some(review => review.user._id === user?._id);
+  const hasUserReviewed = reviews?.some(
+    (review) => review.user._id === user?._id,
+  );
   // If user has already reviewed, show a message
   if (hasUserReviewed) {
     return (
@@ -52,10 +61,17 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
               />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">You've Already Reviewed</h3>
-          <p className="text-gray-600">Thank you for sharing your feedback! You can only submit one review per product.</p>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            You've Already Reviewed
+          </h3>
+          <p className="text-gray-600">
+            Thank you for sharing your feedback! You can only submit one review
+            per product.
+          </p>
           <div className="mt-6">
-            <p className="text-sm text-gray-500">Want to update your review? Contact our support team.</p>
+            <p className="text-sm text-gray-500">
+              Want to update your review? Contact our support team.
+            </p>
           </div>
         </div>
       </div>
@@ -85,10 +101,10 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
       if (newReview.success) {
         // Add the new review to the list immediately
         setReviews((prev) => [newReview.review, ...prev]);
-        
+
         // Show success state
         setIsSubmitted(true);
-        
+
         toast.success("Review submitted successfully!", {
           position: "top-right",
           autoClose: 2000,
@@ -140,9 +156,13 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
             <div className="absolute inset-0 w-20 h-20 bg-green-200 rounded-full mx-auto animate-ping opacity-75"></div>
           </div>
           <h3 className="text-2xl font-bold text-gray-800 mb-2">Thank You!</h3>
-          <p className="text-gray-600 text-lg mb-1">Your review has been submitted successfully</p>
-          <p className="text-sm text-gray-500">Your feedback helps others make better choices</p>
-          
+          <p className="text-gray-600 text-lg mb-1">
+            Your review has been submitted successfully
+          </p>
+          <p className="text-sm text-gray-500">
+            Your feedback helps others make better choices
+          </p>
+
           {/* Rating display */}
           <div className="mt-6 flex justify-center gap-1">
             {Array.from({ length: 5 }, (_, i) => (
@@ -162,9 +182,11 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
     <div className="mt-8 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
       <div className="bg-gradient-to-r from-pink-500 to-purple-500 px-6 py-4">
         <h3 className="text-xl font-bold text-white">Write Your Review</h3>
-        <p className="text-pink-100 text-sm mt-1">Share your thoughts with other customers</p>
+        <p className="text-pink-100 text-sm mt-1">
+          Share your thoughts with other customers
+        </p>
       </div>
-      
+
       <div className="p-6">
         {/* Rating Section */}
         <div className="mb-6">
@@ -228,7 +250,9 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
         <div className="flex justify-end">
           <button
             onClick={handleSubmitReview}
-            disabled={isSubmitting || rating === 0 || comment.trim().length < 20}
+            disabled={
+              isSubmitting || rating === 0 || comment.trim().length < 20
+            }
             className="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-8 rounded-xl font-semibold hover:from-pink-600 hover:to-purple-600 focus:ring-4 focus:ring-pink-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl"
           >
             {isSubmitting ? (
@@ -272,8 +296,12 @@ const ReviewList = ({ reviews }) => {
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <FaStar className="text-3xl text-gray-400" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">No Reviews Yet</h3>
-          <p className="text-gray-500">Be the first to share your experience with this product!</p>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">
+            No Reviews Yet
+          </h3>
+          <p className="text-gray-500">
+            Be the first to share your experience with this product!
+          </p>
         </div>
       </div>
     );
@@ -306,7 +334,9 @@ const ReviewList = ({ reviews }) => {
                       <FaStar
                         key={i}
                         className={`${
-                          i < review.rating ? "text-yellow-400" : "text-gray-300"
+                          i < review.rating
+                            ? "text-yellow-400"
+                            : "text-gray-300"
                         } text-sm`}
                       />
                     ))}
@@ -315,7 +345,7 @@ const ReviewList = ({ reviews }) => {
                     {new Date(review.createdAt).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
-                      year: "numeric"
+                      year: "numeric",
                     })}
                   </span>
                 </div>
@@ -338,7 +368,11 @@ const ReviewTab = ({ productId, reviews, setReviews }) => {
       <ReviewList reviews={reviews} />
 
       {/* Review Form */}
-      <ReviewForm productId={productId} setReviews={setReviews} reviews={reviews} />
+      <ReviewForm
+        productId={productId}
+        setReviews={setReviews}
+        reviews={reviews}
+      />
     </div>
   );
 };

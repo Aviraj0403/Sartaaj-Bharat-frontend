@@ -13,8 +13,12 @@ const ReviewList = ({ reviews }) => {
           <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
             <FaStar className="text-4xl text-slate-300" />
           </div>
-          <h3 className="text-lg font-black text-slate-950 uppercase tracking-widest italic mb-2">Null Validation</h3>
-          <p className="text-slate-500 font-medium text-sm italic uppercase tracking-wider">BE THE FIRST TO AUTHORIZE A VALIDATION LOG FOR THIS ARTIFACT.</p>
+          <h3 className="text-lg font-black text-slate-950 uppercase tracking-widest italic mb-2">
+            Null Validation
+          </h3>
+          <p className="text-slate-500 font-medium text-sm italic uppercase tracking-wider">
+            BE THE FIRST TO AUTHORIZE A VALIDATION LOG FOR THIS ARTIFACT.
+          </p>
         </div>
       </div>
     );
@@ -25,7 +29,8 @@ const ReviewList = ({ reviews }) => {
       <div className="flex items-center gap-4 mb-8">
         <div className="w-1.5 h-8 bg-blue-600 rounded-full"></div>
         <h4 className="text-xl font-black text-slate-950 italic uppercase tracking-tighter">
-          VALIDATION HISTORY <span className="text-blue-600">({safeReviews.length})</span>
+          VALIDATION HISTORY{" "}
+          <span className="text-blue-600">({safeReviews.length})</span>
         </h4>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -50,8 +55,11 @@ const ReviewList = ({ reviews }) => {
                     {Array.from({ length: 5 }, (_, i) => (
                       <FaStar
                         key={i}
-                        className={`${i < review.rating ? "text-yellow-400" : "text-gray-300"
-                          } text-sm`}
+                        className={`${
+                          i < review.rating
+                            ? "text-yellow-400"
+                            : "text-gray-300"
+                        } text-sm`}
                       />
                     ))}
                   </div>
@@ -59,7 +67,7 @@ const ReviewList = ({ reviews }) => {
                     {new Date(review.createdAt).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
-                      year: "numeric"
+                      year: "numeric",
                     })}
                   </span>
                 </div>

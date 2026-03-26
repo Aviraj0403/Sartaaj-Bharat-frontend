@@ -15,14 +15,14 @@ import Axios from "../../utils/Axios";
 // ─── Constants ─────────────────────────────────────────────────────────────
 const CATEGORY_TABS = [
   { id: "premium-cases-covers", label: "Cases & Covers" },
-  { id: "chargers-cables",       label: "Chargers & Cables" },
-  { id: "audio-headsets",        label: "Audio & Headsets" },
-  { id: "stands-docks",          label: "Stands & Docks" },
-  { id: "screen-protectors",     label: "Screen Protectors" },
+  { id: "chargers-cables", label: "Chargers & Cables" },
+  { id: "audio-headsets", label: "Audio & Headsets" },
+  { id: "stands-docks", label: "Stands & Docks" },
+  { id: "screen-protectors", label: "Screen Protectors" },
 ];
 
 const STALE_TIME = 10 * 60 * 1000; // 10 minutes
-const GC_TIME    = 15 * 60 * 1000; // 15 minutes
+const GC_TIME = 15 * 60 * 1000; // 15 minutes
 
 // ─── API helpers ───────────────────────────────────────────────────────────
 
@@ -42,7 +42,12 @@ const fetchSubCategoryMap = async () => {
 /** Fetch products for a single subcategory ID (4 max, sorted by rating). */
 const fetchProductsBySubCategoryId = async (subCategoryId) => {
   const res = await Axios.get("/products", {
-    params: { subCategory: subCategoryId, limit: 4, sortBy: "rating", sortOrder: "desc" },
+    params: {
+      subCategory: subCategoryId,
+      limit: 4,
+      sortBy: "rating",
+      sortOrder: "desc",
+    },
   });
   return res.data?.data || [];
 };
@@ -115,7 +120,8 @@ export default function AccessoriesShowcase() {
             viewport={{ once: true }}
             className="text-2xl md:text-4xl font-bold text-slate-900 tracking-tight"
           >
-            Add the <span className="text-blue-600 font-black italic">final touch</span>
+            Add the{" "}
+            <span className="text-blue-600 font-black italic">final touch</span>
           </motion.h2>
 
           <motion.p
@@ -125,7 +131,8 @@ export default function AccessoriesShowcase() {
             transition={{ delay: 0.1 }}
             className="mt-2 text-slate-400 text-xs md:text-sm font-medium leading-relaxed max-w-sm"
           >
-            Add finishing touches with cases, audio, and chargers designed to match your elite collection.
+            Add finishing touches with cases, audio, and chargers designed to
+            match your elite collection.
           </motion.p>
         </div>
 
@@ -206,7 +213,10 @@ export default function AccessoriesShowcase() {
             className="btn-premium-outline group flex items-center gap-3 px-10 py-4 text-[10px]"
           >
             Explore All Accessories
-            <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform duration-500" />
+            <ArrowRight
+              size={16}
+              className="group-hover:translate-x-2 transition-transform duration-500"
+            />
           </Link>
         </div>
       )}

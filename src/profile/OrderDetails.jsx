@@ -48,13 +48,13 @@ export default function OrderDetails() {
 
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
-
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
         className="mb-8 flex items-center gap-2 text-blue-600 text-[10px] font-black uppercase tracking-[0.3em] hover:translate-x-[-4px] transition-transform italic"
       >
-        <ArrowRight size={14} className="rotate-180" strokeWidth={3} /> Back to Orders
+        <ArrowRight size={14} className="rotate-180" strokeWidth={3} /> Back to
+        Orders
       </button>
 
       {/* Header */}
@@ -85,7 +85,8 @@ export default function OrderDetails() {
       {/* Items Section */}
       <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] shadow-sm border border-slate-100 mb-8">
         <h2 className="text-xl sm:text-3xl font-black text-slate-900 mb-8 italic tracking-tight uppercase">
-          Items <span className="text-blue-600 italic">({order.items.length})</span>
+          Items{" "}
+          <span className="text-blue-600 italic">({order.items.length})</span>
         </h2>
 
         <div className="space-y-4">
@@ -107,8 +108,12 @@ export default function OrderDetails() {
                   {item.product.name}
                 </h3>
                 <div className="flex gap-4 mt-2">
-                  <span className="text-slate-400 text-[9px] font-black uppercase tracking-widest">Official Store</span>
-                  <span className="text-slate-400 text-[9px] font-black uppercase tracking-widest">Size: {item.selectedVariant?.size || "Standard"}</span>
+                  <span className="text-slate-400 text-[9px] font-black uppercase tracking-widest">
+                    Official Store
+                  </span>
+                  <span className="text-slate-400 text-[9px] font-black uppercase tracking-widest">
+                    Size: {item.selectedVariant?.size || "Standard"}
+                  </span>
                 </div>
 
                 <p className="text-blue-600 font-black text-sm sm:text-xl mt-3 italic">
@@ -128,10 +133,16 @@ export default function OrderDetails() {
         </h2>
 
         <div className="space-y-2 relative z-10">
-          <p className="text-white font-black text-lg italic uppercase tracking-tight">{order.shippingAddress?.name}</p>
-          <p className="text-slate-400 font-medium text-sm leading-relaxed max-w-sm">{order.shippingAddress?.street}</p>
+          <p className="text-white font-black text-lg italic uppercase tracking-tight">
+            {order.shippingAddress?.name}
+          </p>
+          <p className="text-slate-400 font-medium text-sm leading-relaxed max-w-sm">
+            {order.shippingAddress?.street}
+          </p>
           <div className="h-px w-12 bg-blue-600 my-4"></div>
-          <p className="text-blue-500 font-black text-xs uppercase tracking-[0.2em]">{order.shippingAddress?.phoneNumber}</p>
+          <p className="text-blue-500 font-black text-xs uppercase tracking-[0.2em]">
+            {order.shippingAddress?.phoneNumber}
+          </p>
         </div>
       </div>
 
@@ -143,12 +154,20 @@ export default function OrderDetails() {
 
         <div className="space-y-4 max-w-sm">
           <div className="flex justify-between items-center">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Payment method</span>
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-900 italic">{order.paymentMethod}</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+              Payment method
+            </span>
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-900 italic">
+              {order.paymentMethod}
+            </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Status</span>
-            <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.3em] italic">{order.paymentStatus}</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+              Status
+            </span>
+            <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.3em] italic">
+              {order.paymentStatus}
+            </span>
           </div>
           <div className="h-px bg-slate-50"></div>
           {order.discountAmount > 0 && (
@@ -162,8 +181,12 @@ export default function OrderDetails() {
             <span>₹80.00</span>
           </div>
           <div className="pt-6 border-t border-slate-200 flex justify-between items-end">
-            <span className="text-slate-400 font-black text-[10px] uppercase tracking-[0.4em]">Total Amount</span>
-            <span className="text-blue-600 font-black text-4xl italic leading-none">₹{order.totalAmount?.toLocaleString()}</span>
+            <span className="text-slate-400 font-black text-[10px] uppercase tracking-[0.4em]">
+              Total Amount
+            </span>
+            <span className="text-blue-600 font-black text-4xl italic leading-none">
+              ₹{order.totalAmount?.toLocaleString()}
+            </span>
           </div>
         </div>
       </div>

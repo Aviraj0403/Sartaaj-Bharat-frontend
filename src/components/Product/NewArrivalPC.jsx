@@ -5,20 +5,20 @@ import { useCartActions } from "../../hooks/useCartActions";
 
 export default function NewArrivalPC({ product, onProductClick }) {
   const navigate = useNavigate();
-  const { cartItems, addToCart, updateQuantity, removeFromCart } = useCartActions();
+  const { cartItems, addToCart, updateQuantity, removeFromCart } =
+    useCartActions();
 
   // Get the active variant for size and color
-  const activeVariant = product?.variants;
-  const size = activeVariant?.size;
-  // const color = activeVariant?.color;  // Ensure color is extracted from the variant
+  const activeVariant = Array.isArray(product?.variants)
+    ? product.variants[0]
+    : product?.variants;
+  const size = activeVariant?.size || "Standard";
   const color = Array.isArray(activeVariant?.color)
     ? activeVariant.color[0]
-    : activeVariant?.color;
-  const price = activeVariant?.price;
+    : activeVariant?.color || "Default";
+  const price = activeVariant?.price || product?.price || 0;
   const image =
-    activeVariant?.images?.[0] ||
-    activeVariant?.image ||
-    product?.pimage;
+    activeVariant?.images?.[0] || activeVariant?.image || product?.pimage;
 
   const [quantity, setQuantity] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
@@ -26,7 +26,7 @@ export default function NewArrivalPC({ product, onProductClick }) {
   // Track quantity in cart
   useEffect(() => {
     const item = cartItems.find(
-      (i) => i.id === product._id && i.size === size && i.color === color  // Ensure color is also checked in the cart
+      (i) => i.id === product._id && i.size === size && i.color === color, // Ensure color is also checked in the cart
     );
     setQuantity(item?.quantity || 0);
   }, [cartItems, size, color, product._id]);
@@ -52,13 +52,13 @@ export default function NewArrivalPC({ product, onProductClick }) {
 
   // Handle adding product to the cart
   const handleAddToCart = async () => {
-    const result = await addToCart(product, size, color, 1);  // Ensure color is passed here
+    const result = await addToCart(product, size, color, 1); // Ensure color is passed here
     if (result.success) triggerPopup();
   };
 
   // Handle 'Buy Now' button click
   const handleBuyNow = async () => {
-    const result = await addToCart(product, size, color, 1);  // Ensure color is passed here
+    const result = await addToCart(product, size, color, 1); // Ensure color is passed here
     if (result.success) {
       triggerPopup();
       navigate("/cart");
@@ -67,16 +67,16 @@ export default function NewArrivalPC({ product, onProductClick }) {
 
   // Handle increment of quantity
   const handleIncrement = async () => {
-    await updateQuantity(product._id, size, color, quantity + 1);  // Ensure color is passed here
+    await updateQuantity(product._id, size, color, quantity + 1); // Ensure color is passed here
   };
 
   // Handle decrement of quantity
   const handleDecrement = async () => {
     if (quantity <= 1) {
-      await removeFromCart(product._id, size, color);  // Ensure color is passed here
+      await removeFromCart(product._id, size, color); // Ensure color is passed here
       return;
     }
-    await updateQuantity(product._id, size, color, quantity - 1);  // Ensure color is passed here
+    await updateQuantity(product._id, size, color, quantity - 1); // Ensure color is passed here
   };
 
   return (
@@ -128,20 +128,26 @@ export default function NewArrivalPC({ product, onProductClick }) {
 
       {/* 📝 Product Info */}
       <h3 className="text-sm md:text-base font-black text-slate-950 mb-3 px-1 italic uppercase tracking-tighter">
-        <span className="block w-full line-clamp-2" title={product.name}>{product.name}</span>
+        <span className="block w-full line-clamp-2" title={product.name}>
+          {product.name}
+        </span>
       </h3>
 
       {/* 💰 Price and Rating */}
       <div className="flex justify-between items-center mb-3 px-1 text-sm">
         <div className="flex items-center gap-2">
-          <p className="text-blue-600 font-black text-sm italic">₹{activeVariant?.price}</p>
+          <p className="text-blue-600 font-black text-sm italic">
+            ₹{activeVariant?.price}
+          </p>
           <p className="text-slate-300 line-through text-[10px] font-bold tracking-widest">
             ₹{activeVariant?.realPrice?.toFixed(2)}
           </p>
         </div>
         <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-full">
           <FaStar className="text-blue-500 text-[10px]" />
-          <span className="text-slate-700 text-[10px] font-black italic">{product.rating}</span>
+          <span className="text-slate-700 text-[10px] font-black italic">
+            {product.rating}
+          </span>
         </div>
       </div>
 
@@ -149,7 +155,6 @@ export default function NewArrivalPC({ product, onProductClick }) {
       {showPopup && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
           <div className="bg-white rounded-xl p-5 w-[90%] max-w-sm text-center">
-
             <div className="w-12 h-12 mx-auto rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xl">
               ✓
             </div>
@@ -160,9 +165,19 @@ export default function NewArrivalPC({ product, onProductClick }) {
               className="w-20 h-20 mx-auto mt-3 object-contain"
             />
 
-            <p className="text-slate-950 font-black text-sm mt-3 uppercase tracking-tighter italic">{product.name}</p>
-            {color && <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">AXIS: {color}</p>}
-            {size && <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">SCALE: {size}</p>}
+            <p className="text-slate-950 font-black text-sm mt-3 uppercase tracking-tighter italic">
+              {product.name}
+            </p>
+            {color && (
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
+                AXIS: {color}
+              </p>
+            )}
+            {size && (
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
+                SCALE: {size}
+              </p>
+            )}
             <p className="text-blue-600 text-base font-black mt-2 italic">
               ₹{price}
             </p>
@@ -198,7 +213,9 @@ export default function NewArrivalPC({ product, onProductClick }) {
             >
               –
             </button>
-            <span className="w-1/3 text-center font-black text-sm italic">{quantity}</span>
+            <span className="w-1/3 text-center font-black text-sm italic">
+              {quantity}
+            </span>
             <button
               onClick={handleIncrement}
               className="w-1/3 text-xl font-black py-2.5 text-slate-950 hover:bg-slate-50 transition"

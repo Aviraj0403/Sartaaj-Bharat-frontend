@@ -1,161 +1,156 @@
-  import React from "react";
-  import { FaStar, FaHeart } from "react-icons/fa";
-  import { useNavigate } from "react-router-dom";
+import React from "react";
+import { FaStar, FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-  const newArrivals = [
-    {
-      id: 1,
-      name: "Rose Glow Toner",
-      description: "Refreshes and tones your skin with a natural rose scent.",
-      price: 699,
-      originalPrice: 899,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/16495Mars_Magic_Shinw_Fix_Spray.jpg",
-      rating: 4.6,
-    },
-    {
-      id: 2,
-      name: "Matte Perfection Foundation",
-      description: "Gives flawless matte coverage for all-day wear.",
-      price: 999,
-      originalPrice: 1299,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/93366HR_Foundation_Nude_04.jpg",
-      rating: 4.8,
-    },
-    {
-      id: 3,
-      name: "Coconut Hair Serum",
-      description: "Repairs and nourishes dry, frizzy hair instantly.",
-      price: 599,
-      originalPrice: 799,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
-      rating: 4.7,
-    },
-    {
-      id: 4,
-      name: "Berry Bliss Lip Balm",
-      description: "Soft, tinted balm for smooth and hydrated lips.",
-      price: 349,
-      originalPrice: 499,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
-      rating: 4.5,
-    },
-    {
-      id: 5,
-      name: "Charcoal Detox Face Mask",
-      description: "Deep cleanses pores and gives a radiant glow.",
-      price: 849,
-      originalPrice: 1099,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/57161Nice_&_Naughty_Bombshell_Lipistick_Mix_Color_D.png",
-      rating: 4.9,
-    },
-    {
-      id: 1,
-      name: "Rose Glow Toner",
-      description: "Refreshes and tones your skin with a natural rose scent.",
-      price: 699,
-      originalPrice: 899,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/16495Mars_Magic_Shinw_Fix_Spray.jpg",
-      rating: 4.6,
-    },
-    {
-      id: 2,
-      name: "Matte Perfection Foundation",
-      description: "Gives flawless matte coverage for all-day wear.",
-      price: 999,
-      originalPrice: 1299,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/93366HR_Foundation_Nude_04.jpg",
-      rating: 4.8,
-    },
-    {
-      id: 3,
-      name: "Coconut Hair Serum",
-      description: "Repairs and nourishes dry, frizzy hair instantly.",
-      price: 599,
-      originalPrice: 799,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
-      rating: 4.7,
-    },
-    {
-      id: 4,
-      name: "Berry Bliss Lip Balm",
-      description: "Soft, tinted balm for smooth and hydrated lips.",
-      price: 349,
-      originalPrice: 499,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
-      rating: 4.5,
-    },
-    {
-      id: 5,
-      name: "Charcoal Detox Face Mask",
-      description: "Deep cleanses pores and gives a radiant glow.",
-      price: 849,
-      originalPrice: 1099,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/57161Nice_&_Naughty_Bombshell_Lipistick_Mix_Color_D.png",
-      rating: 4.9,
-    },
-    {
-      id: 1,
-      name: "Rose Glow Toner",
-      description: "Refreshes and tones your skin with a natural rose scent.",
-      price: 699,
-      originalPrice: 899,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/16495Mars_Magic_Shinw_Fix_Spray.jpg",
-      rating: 4.6,
-    },
-    {
-      id: 2,
-      name: "Matte Perfection Foundation",
-      description: "Gives flawless matte coverage for all-day wear.",
-      price: 999,
-      originalPrice: 1299,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/93366HR_Foundation_Nude_04.jpg",
-      rating: 4.8,
-    },
-    {
-      id: 3,
-      name: "Coconut Hair Serum",
-      description: "Repairs and nourishes dry, frizzy hair instantly.",
-      price: 599,
-      originalPrice: 799,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
-      rating: 4.7,
-    },
-    {
-      id: 4,
-      name: "Berry Bliss Lip Balm",
-      description: "Soft, tinted balm for smooth and hydrated lips.",
-      price: 349,
-      originalPrice: 499,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
-      rating: 4.5,
-    },
-    {
-      id: 5,
-      name: "Charcoal Detox Face Mask",
-      description: "Deep cleanses pores and gives a radiant glow.",
-      price: 849,
-      originalPrice: 1099,
-      image:
-        "https://www.gurmeetkaurstore.in/uploads/57161Nice_&_Naughty_Bombshell_Lipistick_Mix_Color_D.png",
-      rating: 4.9,
-    },
-  ];
-
-
+const newArrivals = [
+  {
+    id: 1,
+    name: "Rose Glow Toner",
+    description: "Refreshes and tones your skin with a natural rose scent.",
+    price: 699,
+    originalPrice: 899,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/16495Mars_Magic_Shinw_Fix_Spray.jpg",
+    rating: 4.6,
+  },
+  {
+    id: 2,
+    name: "Matte Perfection Foundation",
+    description: "Gives flawless matte coverage for all-day wear.",
+    price: 999,
+    originalPrice: 1299,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/93366HR_Foundation_Nude_04.jpg",
+    rating: 4.8,
+  },
+  {
+    id: 3,
+    name: "Coconut Hair Serum",
+    description: "Repairs and nourishes dry, frizzy hair instantly.",
+    price: 599,
+    originalPrice: 799,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
+    rating: 4.7,
+  },
+  {
+    id: 4,
+    name: "Berry Bliss Lip Balm",
+    description: "Soft, tinted balm for smooth and hydrated lips.",
+    price: 349,
+    originalPrice: 499,
+    image: "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
+    rating: 4.5,
+  },
+  {
+    id: 5,
+    name: "Charcoal Detox Face Mask",
+    description: "Deep cleanses pores and gives a radiant glow.",
+    price: 849,
+    originalPrice: 1099,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/57161Nice_&_Naughty_Bombshell_Lipistick_Mix_Color_D.png",
+    rating: 4.9,
+  },
+  {
+    id: 1,
+    name: "Rose Glow Toner",
+    description: "Refreshes and tones your skin with a natural rose scent.",
+    price: 699,
+    originalPrice: 899,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/16495Mars_Magic_Shinw_Fix_Spray.jpg",
+    rating: 4.6,
+  },
+  {
+    id: 2,
+    name: "Matte Perfection Foundation",
+    description: "Gives flawless matte coverage for all-day wear.",
+    price: 999,
+    originalPrice: 1299,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/93366HR_Foundation_Nude_04.jpg",
+    rating: 4.8,
+  },
+  {
+    id: 3,
+    name: "Coconut Hair Serum",
+    description: "Repairs and nourishes dry, frizzy hair instantly.",
+    price: 599,
+    originalPrice: 799,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
+    rating: 4.7,
+  },
+  {
+    id: 4,
+    name: "Berry Bliss Lip Balm",
+    description: "Soft, tinted balm for smooth and hydrated lips.",
+    price: 349,
+    originalPrice: 499,
+    image: "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
+    rating: 4.5,
+  },
+  {
+    id: 5,
+    name: "Charcoal Detox Face Mask",
+    description: "Deep cleanses pores and gives a radiant glow.",
+    price: 849,
+    originalPrice: 1099,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/57161Nice_&_Naughty_Bombshell_Lipistick_Mix_Color_D.png",
+    rating: 4.9,
+  },
+  {
+    id: 1,
+    name: "Rose Glow Toner",
+    description: "Refreshes and tones your skin with a natural rose scent.",
+    price: 699,
+    originalPrice: 899,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/16495Mars_Magic_Shinw_Fix_Spray.jpg",
+    rating: 4.6,
+  },
+  {
+    id: 2,
+    name: "Matte Perfection Foundation",
+    description: "Gives flawless matte coverage for all-day wear.",
+    price: 999,
+    originalPrice: 1299,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/93366HR_Foundation_Nude_04.jpg",
+    rating: 4.8,
+  },
+  {
+    id: 3,
+    name: "Coconut Hair Serum",
+    description: "Repairs and nourishes dry, frizzy hair instantly.",
+    price: 599,
+    originalPrice: 799,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/8147932435Untitled_design_(19).png",
+    rating: 4.7,
+  },
+  {
+    id: 4,
+    name: "Berry Bliss Lip Balm",
+    description: "Soft, tinted balm for smooth and hydrated lips.",
+    price: 349,
+    originalPrice: 499,
+    image: "https://www.gurmeetkaurstore.in/uploads/22793Dr_rashel_De-tan.png",
+    rating: 4.5,
+  },
+  {
+    id: 5,
+    name: "Charcoal Detox Face Mask",
+    description: "Deep cleanses pores and gives a radiant glow.",
+    price: 849,
+    originalPrice: 1099,
+    image:
+      "https://www.gurmeetkaurstore.in/uploads/57161Nice_&_Naughty_Bombshell_Lipistick_Mix_Color_D.png",
+    rating: 4.9,
+  },
+];
 
 export default function NewProductsPage() {
   const navigate = useNavigate();
@@ -171,7 +166,9 @@ export default function NewProductsPage() {
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {newArrivals.map((product) => {
             const discount = Math.round(
-              ((product.originalPrice - product.price) / product.originalPrice) * 100
+              ((product.originalPrice - product.price) /
+                product.originalPrice) *
+                100,
             );
 
             return (
@@ -209,12 +206,18 @@ export default function NewProductsPage() {
 
                 <div className="flex justify-between items-center mb-2 px-1 text-sm">
                   <div className="flex items-center gap-1">
-                    <p className="text-pink-500 font-medium text-sm">₹{product.price}</p>
-                    <p className="text-gray-400 line-through text-xs">₹{product.originalPrice}</p>
+                    <p className="text-pink-500 font-medium text-sm">
+                      ₹{product.price}
+                    </p>
+                    <p className="text-gray-400 line-through text-xs">
+                      ₹{product.originalPrice}
+                    </p>
                   </div>
                   <div className="flex items-center">
                     <FaStar className="text-yellow-400 text-xs" />
-                    <span className="ml-1 text-gray-600 text-xs">{product.rating}</span>
+                    <span className="ml-1 text-gray-600 text-xs">
+                      {product.rating}
+                    </span>
                   </div>
                 </div>
 

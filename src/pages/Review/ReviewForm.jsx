@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createReview } from "../../services/reviewApi";
 import { useAuth } from "../../context/AuthContext";
+
 const ReviewForm = ({ productId, setReviews }) => {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const handleSignInClick = () => {
     window.location.href = "/signin";
   };
@@ -20,15 +22,56 @@ const ReviewForm = ({ productId, setReviews }) => {
           <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <FaStar className="text-3xl text-pink-500" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">Share Your Experience</h3>
-          <p className="text-gray-600 mb-4">Sign in to write a review and help others make informed decisions</p>
-          <button className="bg-pink-500 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-pink-600 transition-all hover:shadow-lg"    onClick={handleSignInClick}>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            Share Your Experience
+          </h3>
+          <p className="text-gray-600 mb-4">
+            Sign in to write a review and help others make informed decisions
+          </p>
+          <button
+            className="bg-pink-500 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-pink-600 transition-all hover:shadow-lg"
+            onClick={handleSignInClick}
+          >
             Sign In to Review
           </button>
         </div>
       </div>
     );
   }
+
+  const mutation = useMutation({
+    mutationFn: (reviewData) => createReview(productId, reviewData),
+    onSuccess: (newReview) => {
+      if (newReview.success) {
+        setReviews((prev) => [newReview.review, ...prev]);
+        setIsSubmitted(true);
+
+        toast.success("Review submitted successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+
+        setTimeout(() => {
+          setRating(0);
+          setComment("");
+          setIsSubmitted(false);
+        }, 3000);
+
+        queryClient.invalidateQueries({ queryKey: ["product", productId] });
+      } else {
+        toast.error("Failed to submit review", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
+    },
+    onError: () => {
+      toast.error("An error occurred. Please try again.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    },
+  });
 
   const handleSubmitReview = async () => {
     if (rating === 0) {
@@ -46,42 +89,7 @@ const ReviewForm = ({ productId, setReviews }) => {
       return;
     }
 
-    setIsSubmitting(true);
-
-    try {
-      const newReview = await createReview(productId, { rating, comment });
-      if (newReview.success) {
-        // Add the new review to the list immediately
-        setReviews((prev) => [newReview.review, ...prev]);
-
-        // Show success state
-        setIsSubmitted(true);
-
-        toast.success("Review submitted successfully!", {
-          position: "top-right",
-          autoClose: 2000,
-        });
-
-        // Reset form after 3 seconds
-        setTimeout(() => {
-          setRating(0);
-          setComment("");
-          setIsSubmitted(false);
-        }, 3000);
-      } else {
-        toast.error("Failed to submit review", {
-          position: "top-right",
-          autoClose: 2000,
-        });
-      }
-    } catch (error) {
-      toast.error("An error occurred. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    mutation.mutate({ rating, comment });
   };
 
   // Success state
@@ -108,8 +116,12 @@ const ReviewForm = ({ productId, setReviews }) => {
             <div className="absolute inset-0 w-20 h-20 bg-green-200 rounded-full mx-auto animate-ping opacity-75"></div>
           </div>
           <h3 className="text-2xl font-bold text-gray-800 mb-2">Thank You!</h3>
-          <p className="text-gray-600 text-lg mb-1">Your review has been submitted successfully</p>
-          <p className="text-sm text-gray-500">Your feedback helps others make better choices</p>
+          <p className="text-gray-600 text-lg mb-1">
+            Your review has been submitted successfully
+          </p>
+          <p className="text-sm text-gray-500">
+            Your feedback helps others make better choices
+          </p>
 
           {/* Rating display */}
           <div className="mt-6 flex justify-center gap-1">
@@ -130,7 +142,9 @@ const ReviewForm = ({ productId, setReviews }) => {
     <div className="mt-8 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
       <div className="bg-gradient-to-r from-pink-500 to-purple-500 px-6 py-4">
         <h3 className="text-xl font-bold text-white">Write Your Review</h3>
-        <p className="text-pink-100 text-sm mt-1">Share your thoughts with other customers</p>
+        <p className="text-pink-100 text-sm mt-1">
+          Share your thoughts with other customers
+        </p>
       </div>
 
       <div className="p-6">
@@ -147,14 +161,15 @@ const ReviewForm = ({ productId, setReviews }) => {
                 onMouseEnter={() => setHoveredRating(i + 1)}
                 onMouseLeave={() => setHoveredRating(0)}
                 onClick={() => setRating(i + 1)}
-                disabled={isSubmitting}
+                disabled={mutation.isPending}
                 className="transition-all duration-200 hover:scale-110 disabled:opacity-50"
               >
                 <FaStar
-                  className={`${i < (hoveredRating || rating)
+                  className={`${
+                    i < (hoveredRating || rating)
                       ? "text-yellow-400"
                       : "text-gray-300"
-                    } text-4xl transition-colors cursor-pointer`}
+                  } text-4xl transition-colors cursor-pointer`}
                 />
               </button>
             ))}
@@ -177,7 +192,7 @@ const ReviewForm = ({ productId, setReviews }) => {
             placeholder="Tell us what you loved about this product, or what could be improved..."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            disabled={isSubmitting}
+            disabled={mutation.isPending}
           />
           <div className="flex justify-between items-center mt-2">
             <span className="text-xs text-gray-500">
@@ -195,10 +210,12 @@ const ReviewForm = ({ productId, setReviews }) => {
         <div className="flex justify-end">
           <button
             onClick={handleSubmitReview}
-            disabled={isSubmitting || rating === 0 || comment.trim().length < 20}
+            disabled={
+              mutation.isPending || rating === 0 || comment.trim().length < 20
+            }
             className="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-8 rounded-xl font-semibold hover:from-pink-600 hover:to-purple-600 focus:ring-4 focus:ring-pink-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl"
           >
-            {isSubmitting ? (
+            {mutation.isPending ? (
               <>
                 <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
                   <circle

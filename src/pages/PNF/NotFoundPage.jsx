@@ -21,7 +21,8 @@ const NotFoundPage = () => {
         <p style={styles.message}>
           Oops! Looks like we don't offer this beauty service right now 💅
           <br />
-          Don't worry, we'll take you back to our fabulous homepage in a few seconds!
+          Don't worry, we'll take you back to our fabulous homepage in a few
+          seconds!
         </p>
         <Link to="/" style={styles.button}>
           Back to Home

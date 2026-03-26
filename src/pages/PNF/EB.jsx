@@ -32,13 +32,16 @@ class EB extends Component {
           <div style={styles.content}>
             <h2 style={styles.title}>Oops! Something Went Wrong!</h2>
             <p style={styles.message}>
-              Looks like our beauty magic got interrupted. 🔥 We're fixing it as fast as we can!
+              Looks like our beauty magic got interrupted. 🔥 We're fixing it as
+              fast as we can!
             </p>
             <p style={styles.message}>
               Meanwhile, why not take a look at our other fabulous services? 💅
             </p>
             {/* Fallback: Use a standard <a> tag if Link is causing issues */}
-            <a href="/" style={styles.button}>Return to Beauty Home</a>
+            <a href="/" style={styles.button}>
+              Return to Beauty Home
+            </a>
           </div>
         </div>
       );

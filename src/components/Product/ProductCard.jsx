@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Heart, Eye, Star, ArrowRight, Sparkles } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import QuickViewModal from './QuickViewModal';
-import { useWishlist } from '../../hooks';
-import { useCartActions } from '../../hooks/useCartActions';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  ShoppingCart,
+  Heart,
+  Eye,
+  Star,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import QuickViewModal from "./QuickViewModal";
+import { useWishlist } from "../../hooks";
+import { useCartActions } from "../../hooks/useCartActions";
 
 const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
   const [showQuickView, setShowQuickView] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const { isAuthenticated } = useSelector(state => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const { isWishlisted, addToWishlist, removeFromWishlist } = useWishlist();
   const { addToCart } = useCartActions();
 
@@ -29,21 +36,26 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
     e.preventDefault();
     e.stopPropagation();
     try {
+      const variant = Array.isArray(product.variants)
+        ? product.variants[0]
+        : product.variants;
       await addToCart(
         product,
-        product.variants?.[0]?.size || 'Standard',
-        product.variants?.[0]?.color || 'Default',
-        1
+        variant?.size || "Standard",
+        Array.isArray(variant?.color)
+          ? variant.color[0]
+          : variant?.color || "Default",
+        1,
       );
       toast.success(`${product.name} added to cart`);
     } catch (err) {
-      toast.error(err.message || 'Failed to add to cart');
+      toast.error(err.message || "Failed to add to cart");
     }
   };
 
   const toggleWishlist = (e) => {
     e.stopPropagation();
-    if (!isAuthenticated) return navigate('/auth');
+    if (!isAuthenticated) return navigate("/auth");
 
     if (inWishlist) {
       removeFromWishlist(product._id);
@@ -64,7 +76,7 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
             <motion.img
               src={product.images?.[0] || product.pimage}
               whileHover={{ scale: 1.1 }}
-              className={`w-full h-full ${imageFit === 'cover' ? 'object-cover' : 'object-contain'} mix-blend-multiply`}
+              className={`w-full h-full ${imageFit === "cover" ? "object-cover" : "object-contain"} mix-blend-multiply`}
             />
           </Link>
           {product.discount > 0 && (
@@ -77,38 +89,65 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
         <div className="flex-1 flex flex-col py-2">
           <div className="flex justify-between items-start mb-2">
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1 block">{product.brand || 'Official Collection'}</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1 block">
+                {product.brand || "Official Collection"}
+              </span>
               <h3 className="text-xl font-bold text-slate-900 tracking-tight">
-                <Link to={`/product/${product.slug || product._id || product.id}`}>{product.name}</Link>
+                <Link
+                  to={`/product/${product.slug || product._id || product.id}`}
+                >
+                  {product.name}
+                </Link>
               </h3>
             </div>
             <div className="flex items-center gap-1.5 bg-slate-50 px-4 py-2 rounded-full border border-slate-100">
               <Star size={12} className="fill-blue-500 text-blue-500" />
-              <span className="text-xs font-black text-slate-900 italic">{product.rating || '4.9'}</span>
+              <span className="text-xs font-black text-slate-900 italic">
+                {product.rating || "4.9"}
+              </span>
             </div>
           </div>
 
           <p className="text-slate-500 text-xs font-medium leading-relaxed mb-4 line-clamp-2 max-w-lg">
-            {product.description || "Premium quality product designed for excellence and performance."}
+            {product.description ||
+              "Premium quality product designed for excellence and performance."}
           </p>
 
           <div className="flex items-center gap-4 mb-4 text-[9px] font-black uppercase tracking-widest text-slate-400">
-            {product.variants?.[0]?.ram && <span className="flex items-center gap-2"><Cpu size={14} /> {product.variants[0].ram} Memory</span>}
-            {product.variants?.[0]?.storage && <span className="flex items-center gap-2"><HardDrive size={14} /> {product.variants[0].storage} Vault</span>}
+            {product.variants?.[0]?.ram && (
+              <span className="flex items-center gap-2">
+                <Cpu size={14} /> {product.variants[0].ram} Memory
+              </span>
+            )}
+            {product.variants?.[0]?.storage && (
+              <span className="flex items-center gap-2">
+                <HardDrive size={14} /> {product.variants[0].storage} Vault
+              </span>
+            )}
           </div>
 
           <div className="mt-auto flex items-center justify-between">
             <div className="flex flex-col">
-              {displayOldPrice && <span className="text-slate-300 text-xs line-through font-medium tracking-wide">₹{displayOldPrice.toLocaleString()}</span>}
-              <span className="text-3xl font-bold text-slate-900 tracking-tight leading-none">₹{displayPrice.toLocaleString()}</span>
+              {displayOldPrice && (
+                <span className="text-slate-300 text-xs line-through font-medium tracking-wide">
+                  ₹{displayOldPrice.toLocaleString()}
+                </span>
+              )}
+              <span className="text-3xl font-bold text-slate-900 tracking-tight leading-none">
+                ₹{displayPrice.toLocaleString()}
+              </span>
             </div>
 
             <div className="flex gap-4">
               <button
                 onClick={toggleWishlist}
-                className={`p-4 rounded-2xl transition-all shadow-xl ${inWishlist ? 'bg-red-50 text-red-500' : 'bg-slate-50 text-slate-400 hover:text-slate-900'}`}
+                className={`p-4 rounded-2xl transition-all shadow-xl ${inWishlist ? "bg-red-50 text-red-500" : "bg-slate-50 text-slate-400 hover:text-slate-900"}`}
               >
-                <Heart size={20} fill={inWishlist ? "currentColor" : "none"} strokeWidth={2.5} />
+                <Heart
+                  size={20}
+                  fill={inWishlist ? "currentColor" : "none"}
+                  strokeWidth={2.5}
+                />
               </button>
               <button
                 onClick={handleAddToCart}
@@ -121,7 +160,10 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
         </div>
 
         {showQuickView && (
-          <QuickViewModal product={product} onClose={() => setShowQuickView(false)} />
+          <QuickViewModal
+            product={product}
+            onClose={() => setShowQuickView(false)}
+          />
         )}
       </motion.div>
     );
@@ -134,7 +176,7 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
       viewport={{ once: true }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`flex flex-col h-full bg-white rounded-xl md:rounded-[1.5rem] overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-700 border relative ${product.isBestSeller ? 'border-amber-100/50 outline outline-4 outline-amber-500/5' : 'border-slate-100/50'}`}
+      className={`flex flex-col h-full bg-white rounded-xl md:rounded-[1.5rem] overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-700 border relative ${product.isBestSeller ? "border-amber-100/50 outline outline-4 outline-amber-500/5" : "border-slate-100/50"}`}
     >
       {product.isBestSeller && (
         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-amber-400/30 to-transparent z-10" />
@@ -160,18 +202,29 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
         </div>
 
         {/* Main Visual */}
-        <Link to={`/product/${product.slug || product._id || product.id}`} className="block w-full h-full relative cursor-pointer">
+        <Link
+          to={`/product/${product.slug || product._id || product.id}`}
+          className="block w-full h-full relative cursor-pointer"
+        >
           <motion.img
-            src={product.images?.[0] || product.pimage || product.image || 'https://via.placeholder.com/400'}
+            src={
+              product.images?.[0] ||
+              product.pimage ||
+              product.image ||
+              "https://via.placeholder.com/400"
+            }
             alt={product.name}
             loading="lazy"
-            onError={(e) => { e.target.src = 'https://via.placeholder.com/400?text=Premium+Collection'; }}
+            onError={(e) => {
+              e.target.src =
+                "https://via.placeholder.com/400?text=Premium+Collection";
+            }}
             animate={{
               scale: isHovered ? 1.15 : 1,
-              rotate: isHovered ? 2 : 0
+              rotate: isHovered ? 2 : 0,
             }}
             transition={{ duration: 0.8, ease: "circOut" }}
-            className={`w-full h-full ${imageFit === 'cover' ? 'object-cover' : 'object-contain'} mix-blend-multiply`}
+            className={`w-full h-full ${imageFit === "cover" ? "object-cover" : "object-contain"} mix-blend-multiply`}
           />
         </Link>
 
@@ -191,7 +244,10 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
                 <ShoppingCart size={16} strokeWidth={2.5} /> Add to Cart
               </button>
               <button
-                onClick={(e) => { e.preventDefault(); setShowQuickView(true); }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowQuickView(true);
+                }}
                 className="flex-1 bg-white/80 backdrop-blur-xl text-slate-900 border border-white p-4 rounded-2xl flex items-center justify-center hover:bg-white transition-all shadow-xl active:scale-90"
               >
                 <Eye size={18} strokeWidth={2.5} />
@@ -205,9 +261,13 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={toggleWishlist}
-          className={`absolute top-4 right-4 sm:top-6 sm:right-6 z-20 p-2.5 sm:p-3 rounded-2xl transition-all duration-500 shadow-xl ${inWishlist ? 'bg-red-50 text-red-500' : 'bg-white/80 backdrop-blur-md text-slate-400 hover:text-slate-900'}`}
+          className={`absolute top-4 right-4 sm:top-6 sm:right-6 z-20 p-2.5 sm:p-3 rounded-2xl transition-all duration-500 shadow-xl ${inWishlist ? "bg-red-50 text-red-500" : "bg-white/80 backdrop-blur-md text-slate-400 hover:text-slate-900"}`}
         >
-          <Heart className="w-[18px] h-[18px] sm:w-5 sm:h-5" strokeWidth={2.5} fill={inWishlist ? "currentColor" : "none"} />
+          <Heart
+            className="w-[18px] h-[18px] sm:w-5 sm:h-5"
+            strokeWidth={2.5}
+            fill={inWishlist ? "currentColor" : "none"}
+          />
         </motion.button>
       </div>
 
@@ -215,22 +275,33 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
       <div className="px-3 sm:px-4 pb-4 sm:pb-5 pt-1 flex flex-col flex-1">
         <div className="flex justify-between items-center mb-2">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-            {product.brand || 'Official Collection'}
+            {product.brand || "Official Collection"}
           </span>
           <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 px-3 py-1 rounded-full">
             <Star size={10} className="fill-blue-500 text-blue-500" />
-            <span className="text-[10px] font-bold text-slate-700">{product.rating || '4.9'}</span>
+            <span className="text-[10px] font-bold text-slate-700">
+              {product.rating || "4.9"}
+            </span>
           </div>
         </div>
 
         <h3 className="text-slate-900 font-bold text-xs sm:text-sm mb-1 sm:mb-2 leading-tight tracking-tight hover:text-blue-600 transition-colors duration-300">
-          <Link to={`/product/${product.slug || product._id || product.id}`} className="line-clamp-2 italic">{product.name}</Link>
+          <Link
+            to={`/product/${product.slug || product._id || product.id}`}
+            className="line-clamp-2 italic"
+          >
+            {product.name}
+          </Link>
         </h3>
 
         {/* Always-visible Quick View trigger */}
         <div className="mb-2 flex justify-between items-center">
           <button
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowQuickView(true); }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowQuickView(true);
+            }}
             className="inline-flex items-center gap-2 text-slate-400 hover:text-blue-600 font-bold uppercase tracking-[0.2em] text-[10px] transition-all duration-300 py-1"
           >
             <div className="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-white transition-colors">
@@ -262,7 +333,10 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
       </div>
 
       {showQuickView && (
-        <QuickViewModal product={product} onClose={() => setShowQuickView(false)} />
+        <QuickViewModal
+          product={product}
+          onClose={() => setShowQuickView(false)}
+        />
       )}
     </motion.div>
   );

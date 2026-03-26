@@ -1,5 +1,5 @@
 // cartThunk.js// src/features/auth/authThunks.js
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   login,
   customRegister,
@@ -8,15 +8,15 @@ import {
   logout,
   authMe,
   getProfile,
-} from '../../services/authApi'; // tumhara Axios file
+} from "../../services/authApi"; // tumhara Axios file
 
-import { setUser, clearUser, setAuthChecked } from './authSlice';
-import { loadCartFromBackend, syncCartOnLogin } from '../cart/cartThunks';
-import { clearCart } from '../cart/cartSlice';
+import { setUser, clearUser, setAuthChecked } from "./authSlice";
+import { loadCartFromBackend, syncCartOnLogin } from "../cart/cartThunks";
+import { clearCart } from "../cart/cartSlice";
 
 // Check session on app load
 export const checkAuth = createAsyncThunk(
-  'auth/checkAuth',
+  "auth/checkAuth",
   async (_, { dispatch, rejectWithValue }) => {
     try {
       const user = await authMe();
@@ -26,14 +26,14 @@ export const checkAuth = createAsyncThunk(
     } catch (err) {
       dispatch(clearUser());
       dispatch(setAuthChecked());
-      return rejectWithValue(err.response?.data || 'Not authenticated');
+      return rejectWithValue(err.response?.data || "Not authenticated");
     }
-  }
+  },
 );
 
 // Email/ Login (Email/Password)
 export const loginUser = createAsyncThunk(
-  'auth/login',
+  "auth/login",
   async (credentials, { dispatch, rejectWithValue }) => {
     try {
       await login(credentials);
@@ -42,19 +42,19 @@ export const loginUser = createAsyncThunk(
       await dispatch(syncCartOnLogin()).unwrap();
       return user;
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || 'Login failed');
+      return rejectWithValue(err.response?.data?.message || "Login failed");
     }
-  }
+  },
 );
 
 // Google Login
 export const googleSignIn = createAsyncThunk(
-  'auth/googleSignIn',
+  "auth/googleSignIn",
   async (_, { dispatch, rejectWithValue }) => {
     try {
       // Frontend Firebase se idToken milega → yeh thunk component se call hoga
       const { idToken } = arguments[1].getState().temp || {}; // ya props se pass karo
-      if (!idToken) throw new Error('No token');
+      if (!idToken) throw new Error("No token");
 
       await registerViaGoogle(idToken);
       const res = await authMe();
@@ -62,14 +62,16 @@ export const googleSignIn = createAsyncThunk(
       await dispatch(syncCartOnLogin()).unwrap();
       return res.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || 'Google login failed');
+      return rejectWithValue(
+        err.response?.data?.message || "Google login failed",
+      );
     }
-  }
+  },
 );
 
 // Phone OTP Login (after verifyOtp)
 export const phoneSignIn = createAsyncThunk(
-  'auth/phoneSignIn',
+  "auth/phoneSignIn",
   async (idToken, { dispatch, rejectWithValue }) => {
     try {
       await registerViaPhone({ token: idToken });
@@ -78,14 +80,16 @@ export const phoneSignIn = createAsyncThunk(
       await dispatch(syncCartOnLogin()).unwrap();
       return user;
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || 'Phone login failed');
+      return rejectWithValue(
+        err.response?.data?.message || "Phone login failed",
+      );
     }
-  }
+  },
 );
 
 // Logout
 export const logoutUser = createAsyncThunk(
-  'auth/logout',
+  "auth/logout",
   async (_, { dispatch, rejectWithValue }) => {
     try {
       await logout();
@@ -93,7 +97,7 @@ export const logoutUser = createAsyncThunk(
       dispatch(clearCart()); // local + backend clear
       return true;
     } catch (err) {
-      return rejectWithValue('Logout failed');
+      return rejectWithValue("Logout failed");
     }
-  }
+  },
 );

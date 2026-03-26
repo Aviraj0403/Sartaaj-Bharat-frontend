@@ -18,12 +18,16 @@ export default function BestSellPC({ product, onProductClick }) {
 
   // Add the product to cart
   const handleAddToCart = async () => {
-    const variant = product?.variants;
+    const variant = Array.isArray(product?.variants)
+      ? product.variants[0]
+      : product?.variants;
 
     if (!variant) return;
 
-    const selectedSize = variant.size || "default"; // Fallback size
-    const selectedColor = variant.color || "default"; // Fallback color
+    const selectedSize = variant.size || "default";
+    const selectedColor = Array.isArray(variant.color)
+      ? variant.color[0]
+      : variant.color || "default";
 
     const result = await addToCart(product, selectedSize, selectedColor, 1);
     if (result.success) {
@@ -35,12 +39,16 @@ export default function BestSellPC({ product, onProductClick }) {
 
   // Add the product to cart and navigate to the cart page
   const handleBuyNow = async () => {
-    const variant = product?.variants;
+    const variant = Array.isArray(product?.variants)
+      ? product.variants[0]
+      : product?.variants;
 
     if (!variant) return;
 
-    const selectedSize = variant.size || "default"; // Fallback size
-    const selectedColor = variant.color || "default"; // Fallback color
+    const selectedSize = variant.size || "default";
+    const selectedColor = Array.isArray(variant.color)
+      ? variant.color[0]
+      : variant.color || "default";
 
     const result = await addToCart(product, selectedSize, selectedColor, 1);
     if (result.success) {
@@ -95,7 +103,9 @@ export default function BestSellPC({ product, onProductClick }) {
 
       {/* 🏷️ Product Info */}
       <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-1 text-left">
-        <span className="block w-full line-clamp-2" title={product.name}>{product.name}</span>
+        <span className="block w-full line-clamp-2" title={product.name}>
+          {product.name}
+        </span>
       </h3>
 
       {/* 💰 Price and Rating */}

@@ -1,4 +1,4 @@
-import Axios from '../utils/Axios';
+import Axios from "../utils/Axios";
 
 // Get all reviews for a specific product (paginated)
 export const getProductReviews = (productId, page = 1, limit = 10) => {
@@ -23,7 +23,7 @@ export const deleteReview = (reviewId) => {
 };
 // Get all reviews made by the logged-in user (paginated)
 export const getUserReviews = (page = 1, limit = 10) => {
-  return Axios.get('/reviews/getUserReviews', {
+  return Axios.get("/reviews/getUserReviews", {
     params: { page, limit },
   });
 };

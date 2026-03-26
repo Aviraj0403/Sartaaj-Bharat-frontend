@@ -1,11 +1,11 @@
-import Axios from '../utils/Axios';
+import Axios from "../utils/Axios";
 
 /**
  * Get user's cart
  * Backend: GET /v1/api/cart
  */
 export const getUserCart = () => {
-  return Axios.get('/cart');
+  return Axios.get("/cart");
 };
 
 /**
@@ -13,7 +13,7 @@ export const getUserCart = () => {
  * Backend: POST /v1/api/cart/items
  */
 export const addToCart = (payload) => {
-  return Axios.post('/cart/items', payload);
+  return Axios.post("/cart/items", payload);
 };
 
 /**
@@ -37,7 +37,7 @@ export const removeCartItem = (itemId) => {
  * Backend: DELETE /v1/api/cart
  */
 export const clearCart = () => {
-  return Axios.delete('/cart');
+  return Axios.delete("/cart");
 };
 
 /**
@@ -45,5 +45,5 @@ export const clearCart = () => {
  * Backend: GET /v1/api/cart/summary
  */
 export const getCartSummary = () => {
-  return Axios.get('/cart/summary');
+  return Axios.get("/cart/summary");
 };

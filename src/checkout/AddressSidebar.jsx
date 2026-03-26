@@ -3,11 +3,18 @@ import axios from "../utils/Axios"; // Your Axios instance
 import { addAddress, updateAddress } from "../services/userApi";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { toast } from 'react-toastify'; // Assuming you use react-toastify for notifications
+import { toast } from "react-toastify"; // Assuming you use react-toastify for notifications
 import { useAuth } from "../context/AuthContext";
 
-export default function AddressSidebar({ isOpen, onClose, refreshAddresses, userName, email, address: propAddress, embedded = false }) {
-
+export default function AddressSidebar({
+  isOpen,
+  onClose,
+  refreshAddresses,
+  userName,
+  email,
+  address: propAddress,
+  embedded = false,
+}) {
   const { user } = useAuth();
   const [address, setAddress] = useState({
     // name: user?.userName || "",  // Prefill with userName from context
@@ -25,7 +32,6 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
   });
 
   const [formMode, setFormMode] = useState("add"); // 'add' or 'edit'
-
 
   useEffect(() => {
     if (user) {
@@ -54,7 +60,8 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
         state: propAddress.state || prev.state,
         country: propAddress.country || prev.country || "India",
         pincode: propAddress.pincode || propAddress.postalCode || prev.pincode,
-        addressType: propAddress.addressType || propAddress.type || prev.addressType,
+        addressType:
+          propAddress.addressType || propAddress.type || prev.addressType,
       }));
       if (propAddress.location && propAddress.location.coordinates) {
         const [lng, lat] = propAddress.location.coordinates;
@@ -78,7 +85,9 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
           setLocation({ lat: latitude, lng: longitude });
 
           try {
-            const res = await axios.get(`/map?lat=${latitude}&lon=${longitude}`);
+            const res = await axios.get(
+              `/map?lat=${latitude}&lon=${longitude}`,
+            );
             const data = res.data;
             const components = data.address;
             setAddress((prev) => ({
@@ -97,7 +106,7 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
         (error) => {
           alert("Unable to fetch location. Please enable GPS.");
           console.error(error);
-        }
+        },
       );
     } else {
       alert("Geolocation not supported by your browser.");
@@ -122,10 +131,12 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     if (!address.name) newErrors.name = "Name is required";
 
     if (!address.phone) newErrors.phone = "Phone number is required";
-    else if (!/^\d{10}$/.test(address.phone)) newErrors.phone = "Enter a valid 10-digit phone number";
+    else if (!/^\d{10}$/.test(address.phone))
+      newErrors.phone = "Enter a valid 10-digit phone number";
 
     if (!address.pincode) newErrors.pincode = "Pincode is required";
-    else if (!/^\d{6}$/.test(address.pincode)) newErrors.pincode = "Enter a valid 6-digit pincode";
+    else if (!/^\d{6}$/.test(address.pincode))
+      newErrors.pincode = "Enter a valid 6-digit pincode";
 
     if (!address.street) newErrors.street = "Street address is required";
     if (!address.city) newErrors.city = "Area is required";
@@ -144,7 +155,10 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
 
     const addressPayload = {
       ...address,
-      location: { type: "Point", coordinates: [location.lng || 0, location.lat || 0] },
+      location: {
+        type: "Point",
+        coordinates: [location.lng || 0, location.lat || 0],
+      },
     };
 
     try {
@@ -172,16 +186,27 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
   const fields = [
     { label: "Name", field: "name", type: "text" },
     { label: "Email", field: "email", type: "email" },
-    { label: "Phone Number *", field: "phone", type: "tel", maxLength: 10, required: true },
+    {
+      label: "Phone Number *",
+      field: "phone",
+      type: "tel",
+      maxLength: 10,
+      required: true,
+    },
     { label: "Area *", field: "city", type: "text", required: true },
     { label: "Address *", field: "street", type: "text", required: true },
     // { label: "Flat / House No.", field: "flat", type: "text" },
     // { label: "Landmark (optional)", field: "landmark", type: "text" },
-    { label: "Pincode *", field: "pincode", type: "text", maxLength: 6, required: true },
+    {
+      label: "Pincode *",
+      field: "pincode",
+      type: "text",
+      maxLength: 6,
+      required: true,
+    },
     // { label: "City *", field: "city", type: "text", required: true },
     { label: "State", field: "state", type: "text" },
     // { label: "Country", field: "country", type: "text" },
-
   ];
 
   const panel = (
@@ -189,10 +214,17 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
       {/* Header Section */}
       <div className="sticky top-0 z-[10000] bg-white/80 backdrop-blur-md px-8 py-6 flex justify-between items-center border-b border-slate-100 shadow-sm">
         <div>
-          <h2 className="text-xl font-black text-slate-900 italic uppercase tracking-tighter">Coordinate Input</h2>
-          <p className="text-slate-400 text-[8px] font-black uppercase tracking-[0.4em] mt-1">Satellite Navigation Sync</p>
+          <h2 className="text-xl font-black text-slate-900 italic uppercase tracking-tighter">
+            Coordinate Input
+          </h2>
+          <p className="text-slate-400 text-[8px] font-black uppercase tracking-[0.4em] mt-1">
+            Satellite Navigation Sync
+          </p>
         </div>
-        <button onClick={onClose} className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-900 hover:text-white transition-all transform hover:rotate-90">
+        <button
+          onClick={onClose}
+          className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-900 hover:text-white transition-all transform hover:rotate-90"
+        >
           <span className="text-lg font-bold">✕</span>
         </button>
       </div>
@@ -202,7 +234,11 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
         {/* Leaflet Map or Custom Image */}
         <div className="w-full h-56 rounded-[2rem] overflow-hidden mb-6 border border-slate-100 bg-slate-50 shadow-inner group relative">
           {location.lat ? (
-            <MapContainer center={[location.lat, location.lng]} zoom={16} style={{ width: "100%", height: "100%" }}>
+            <MapContainer
+              center={[location.lat, location.lng]}
+              zoom={16}
+              style={{ width: "100%", height: "100%" }}
+            >
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <Marker position={[location.lat, location.lng]}>
                 <Popup>{address.street}</Popup>
@@ -213,7 +249,9 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
               <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm">
                 <span className="text-blue-600 font-black italic">GPS</span>
               </div>
-              <p className="text-[10px] font-black uppercase tracking-widest italic">Satellite Offline</p>
+              <p className="text-[10px] font-black uppercase tracking-widest italic">
+                Satellite Offline
+              </p>
             </div>
           )}
         </div>
@@ -241,26 +279,35 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
                 maxLength={maxLength}
                 onChange={handleChange}
                 placeholder={label}
-                className={`w-full bg-slate-50 border-2 rounded-2xl px-5 py-4 outline-none text-slate-800 font-bold transition-all duration-300 ${errors[field] ? 'border-red-500/30 focus:border-red-500 focus:bg-red-50' : 'border-slate-50 focus:border-blue-600 focus:bg-white focus:shadow-2xl focus:shadow-blue-500/10'}`}
+                className={`w-full bg-slate-50 border-2 rounded-2xl px-5 py-4 outline-none text-slate-800 font-bold transition-all duration-300 ${errors[field] ? "border-red-500/30 focus:border-red-500 focus:bg-red-50" : "border-slate-50 focus:border-blue-600 focus:bg-white focus:shadow-2xl focus:shadow-blue-500/10"}`}
               />
               {errors[field] && (
-                <p className="text-red-500 text-[9px] font-black uppercase tracking-widest mt-2 ml-1">{errors[field]}</p>
+                <p className="text-red-500 text-[9px] font-black uppercase tracking-widest mt-2 ml-1">
+                  {errors[field]}
+                </p>
               )}
             </div>
           ))}
 
           {/* Address Type */}
           <div className="pt-4">
-            <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4 block ml-1">Archive Classification</label>
+            <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4 block ml-1">
+              Archive Classification
+            </label>
             <div className="flex gap-4">
               {["Home", "Work", "Other"].map((type) => (
-                <label key={type} className={`flex-1 flex items-center justify-center py-4 rounded-2xl border-2 transition-all cursor-pointer font-black text-[10px] uppercase tracking-widest italic ${address.addressType === type ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-50 border-slate-50 text-slate-400 hover:border-slate-200'}`}>
+                <label
+                  key={type}
+                  className={`flex-1 flex items-center justify-center py-4 rounded-2xl border-2 transition-all cursor-pointer font-black text-[10px] uppercase tracking-widest italic ${address.addressType === type ? "bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20" : "bg-slate-50 border-slate-50 text-slate-400 hover:border-slate-200"}`}
+                >
                   <input
                     type="radio"
                     name="addressType"
                     className="hidden"
                     checked={address.addressType === type}
-                    onChange={() => setAddress({ ...address, addressType: type })}
+                    onChange={() =>
+                      setAddress({ ...address, addressType: type })
+                    }
                   />
                   <span>{type}</span>
                 </label>
@@ -284,9 +331,5 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     return panel;
   }
 
-  return (
-    <div className="fixed inset-0 flex justify-end z-[9999]">
-      {panel}
-    </div>
-  );
+  return <div className="fixed inset-0 flex justify-end z-[9999]">{panel}</div>;
 }

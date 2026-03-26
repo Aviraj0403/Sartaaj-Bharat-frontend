@@ -1,19 +1,19 @@
 // src/app/store.js
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import storage from 'redux-persist/lib/storage';
-import { persistReducer, persistStore } from 'redux-persist';
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import storage from "redux-persist/lib/storage";
+import { persistReducer, persistStore } from "redux-persist";
+import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
 
-import authReducer from '../features/auth/authSlice';
-import cartReducer from '../features/cart/cartSlice';
+import authReducer from "../features/auth/authSlice";
+import cartReducer from "../features/cart/cartSlice";
 // import productReducer from '../features/product/productSlice';
 // import orderReducer from '../features/order/orderSlice';
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage,
   version: 1,
-  whitelist: ['auth', 'cart'],
+  whitelist: ["auth", "cart"],
   stateReconciler: autoMergeLevel2,
 };
 

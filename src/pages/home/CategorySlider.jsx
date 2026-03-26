@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";  // Import React Query hook
-import { getMenuCategories } from "../../services/categoryApi";  // API function for fetching categories
+import { useQuery } from "@tanstack/react-query"; // Import React Query hook
+import { getMenuCategories } from "../../services/categoryApi"; // API function for fetching categories
 
 export default function CategorySlider() {
   const scrollRef = useRef(null);
@@ -12,15 +12,20 @@ export default function CategorySlider() {
   let startX;
   let scrollLeft;
 
-  // Fetch categories using React Query -- new tech mutation 
-  const { data: menuItems, isLoading, isError, error } = useQuery({
-    queryKey: ["categories"],  // Query key
-    queryFn: getMenuCategories,  // Fetch function
+  // Fetch categories using React Query -- new tech mutation
+  const {
+    data: menuItems,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["categories"], // Query key
+    queryFn: getMenuCategories, // Fetch function
     onError: (err) => {
       console.error("Error fetching categories:", err);
     },
   });
-  console.log(menuItems);  // Ensure the categories data is correct
+  console.log(menuItems); // Ensure the categories data is correct
 
   // Handle category click (navigate to category page)
   const handleCategoryClick = (slug) => {
@@ -30,7 +35,8 @@ export default function CategorySlider() {
   // Scroll function
   const scroll = (direction) => {
     const { current } = scrollRef;
-    if (direction === "left") current.scrollBy({ left: -250, behavior: "smooth" });
+    if (direction === "left")
+      current.scrollBy({ left: -250, behavior: "smooth" });
     else current.scrollBy({ left: 250, behavior: "smooth" });
   };
 
@@ -85,36 +91,34 @@ export default function CategorySlider() {
         <div
           ref={scrollRef}
           className="flex overflow-x-auto scrollbar-hide cursor-grab select-none scroll-smooth space-x-1 sm:space-x-4 px-2"
-
-
           onMouseLeave={handleMouseLeave}
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
         >
-          {!isLoading && !isError && menuItems?.map((cat) => (
-            <div
-              key={cat._id}
-              onClick={() => handleCategoryClick(cat.slug)}
-              className="flex-shrink-0 w-[45.33%] sm:w-[180px] cursor-pointer group relative px-1 gap-1"
-            >
-              <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-white">
-                <img
-                  src={cat.image?.[0]}
-                  alt={cat.name}
-                  className="w-full h-[90px] sm:h-[140px] object-fit"
-                // ✅ image fit fix
-                />
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-all"></div>
+          {!isLoading &&
+            !isError &&
+            menuItems?.map((cat) => (
+              <div
+                key={cat._id}
+                onClick={() => handleCategoryClick(cat.slug)}
+                className="flex-shrink-0 w-[45.33%] sm:w-[180px] cursor-pointer group relative px-1 gap-1"
+              >
+                <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-white">
+                  <img
+                    src={cat.image?.[0]}
+                    alt={cat.name}
+                    className="w-full h-[90px] sm:h-[140px] object-fit"
+                    // ✅ image fit fix
+                  />
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-all"></div>
+                </div>
+                <h3 className="text-center mt-2 font-semibold text-gray-700 group-hover:text-blue-600 text-xs sm:text-base">
+                  {cat.name}
+                </h3>
               </div>
-              <h3 className="text-center mt-2 font-semibold text-gray-700 group-hover:text-blue-600 text-xs sm:text-base">
-                {cat.name}
-              </h3>
-            </div>
-          ))}
-
+            ))}
         </div>
       </div>
     </div>
-
   );
 }

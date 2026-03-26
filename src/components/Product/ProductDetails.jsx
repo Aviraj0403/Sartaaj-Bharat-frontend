@@ -85,27 +85,29 @@ const ProductDetails = () => {
               {/* Thumbnails */}
               <div className="flex md:flex-col gap-3 md:gap-4 overflow-x-auto md:overflow-y-auto no-scrollbar md:w-24">
                 <AnimatePresence initial={false}>
-                  {[product.image, ...(product.images || [])].map((img, idx) => {
-                    const key = `${img}-${idx}`;
-                    return (
-                      <motion.button
-                        key={key}
-                        whileHover={{ y: -4, scale: 1.03 }}
-                        onClick={() => setActiveImage(img)}
-                        className={`relative aspect-square rounded-2xl overflow-hidden border shrink-0 p-2 bg-white transition-all duration-300 ${
-                          activeImage === img
-                            ? "border-blue-600 shadow-xl shadow-blue-100"
-                            : "border-slate-100 hover:border-slate-300"
-                        }`}
-                      >
-                        <img
-                          src={img}
-                          alt={`${product.name} view`}
-                          className="w-full h-full object-contain mix-blend-multiply"
-                        />
-                      </motion.button>
-                    );
-                  })}
+                  {[product.image, ...(product.images || [])].map(
+                    (img, idx) => {
+                      const key = `${img}-${idx}`;
+                      return (
+                        <motion.button
+                          key={key}
+                          whileHover={{ y: -4, scale: 1.03 }}
+                          onClick={() => setActiveImage(img)}
+                          className={`relative aspect-square rounded-2xl overflow-hidden border shrink-0 p-2 bg-white transition-all duration-300 ${
+                            activeImage === img
+                              ? "border-blue-600 shadow-xl shadow-blue-100"
+                              : "border-slate-100 hover:border-slate-300"
+                          }`}
+                        >
+                          <img
+                            src={img}
+                            alt={`${product.name} view`}
+                            className="w-full h-full object-contain mix-blend-multiply"
+                          />
+                        </motion.button>
+                      );
+                    },
+                  )}
                 </AnimatePresence>
               </div>
 
@@ -180,7 +182,7 @@ const ProductDetails = () => {
                       {Math.round(
                         ((product.oldPrice - product.price) /
                           product.oldPrice) *
-                          100
+                          100,
                       )}
                       % reserved
                     </span>
@@ -269,15 +271,11 @@ const ProductDetails = () => {
               {activeTab === "details" && (
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl text-sm">
                   <li>
-                    <span className="font-semibold text-slate-800">
-                      Brand:
-                    </span>{" "}
+                    <span className="font-semibold text-slate-800">Brand:</span>{" "}
                     {product.category === "apple" ? "Apple" : "Samsung"}
                   </li>
                   <li>
-                    <span className="font-semibold text-slate-800">
-                      Model:
-                    </span>{" "}
+                    <span className="font-semibold text-slate-800">Model:</span>{" "}
                     {product.name}
                   </li>
                   <li>

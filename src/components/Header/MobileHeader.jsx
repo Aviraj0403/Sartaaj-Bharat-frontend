@@ -21,7 +21,6 @@ import { useAuth } from "../../context/AuthContext";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
-
 export default function MobileHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState(null);
@@ -33,7 +32,7 @@ export default function MobileHeader() {
   const { items: cartItems } = useSelector((state) => state.cart);
   const totalQuantity = cartItems.reduce(
     (total, item) => total + item.quantity,
-    0
+    0,
   );
 
   // Categories
@@ -62,7 +61,8 @@ export default function MobileHeader() {
   const [activeTab, setActiveTab] = useState(() => {
     const p = location.pathname || "";
     if (p === "/" || p === "") return "home";
-    if (p.startsWith("/new-product") || p.startsWith("/new-products")) return "brands";
+    if (p.startsWith("/new-product") || p.startsWith("/new-products"))
+      return "brands";
     if (p.startsWith("/profile")) return "account";
     return "";
   });
@@ -70,7 +70,8 @@ export default function MobileHeader() {
   useEffect(() => {
     const p = location.pathname || "";
     if (p === "/" || p === "") setActiveTab("home");
-    else if (p.startsWith("/new-product") || p.startsWith("/new-products")) setActiveTab("brands");
+    else if (p.startsWith("/new-product") || p.startsWith("/new-products"))
+      setActiveTab("brands");
     else if (p.startsWith("/profile")) setActiveTab("account");
     else setActiveTab("");
   }, [location.pathname]);
@@ -101,10 +102,12 @@ export default function MobileHeader() {
             {/* Profile */}
             <button
               onClick={handleProfileClick}
-              className={`relative flex flex-col items-center gap-1 transition-colors ${activeTab === 'account' ? 'text-blue-600' : 'text-slate-400'}`}
+              className={`relative flex flex-col items-center gap-1 transition-colors ${activeTab === "account" ? "text-blue-600" : "text-slate-400"}`}
             >
               <User size={24} strokeWidth={2.5} />
-              <span className="text-[8px] font-black uppercase tracking-widest italic leading-none">ALPHA-01</span>
+              <span className="text-[8px] font-black uppercase tracking-widest italic leading-none">
+                ALPHA-01
+              </span>
             </button>
 
             {/* Cart */}
@@ -120,7 +123,9 @@ export default function MobileHeader() {
                   </span>
                 )}
               </div>
-              <span className="text-[8px] font-black uppercase tracking-widest italic leading-none">CARGO</span>
+              <span className="text-[8px] font-black uppercase tracking-widest italic leading-none">
+                CARGO
+              </span>
             </Link>
           </div>
         </div>
@@ -140,9 +145,6 @@ export default function MobileHeader() {
             </div>
           </div>
         )}
-
-
-
       </div>
 
       {/* Spacer for sticky header */}
@@ -156,7 +158,9 @@ export default function MobileHeader() {
           className={`flex flex-col items-center gap-1 transition-all duration-300 ${activeTab === "home" ? "text-blue-600 scale-110" : "text-slate-400"}`}
         >
           <Home size={22} strokeWidth={activeTab === "home" ? 3 : 2} />
-          <span className="text-[9px] font-black uppercase tracking-widest italic">Core</span>
+          <span className="text-[9px] font-black uppercase tracking-widest italic">
+            Core
+          </span>
         </Link>
 
         <button
@@ -167,7 +171,9 @@ export default function MobileHeader() {
           className={`flex flex-col items-center gap-1 transition-all duration-300 ${activeTab === "menu" ? "text-blue-600 scale-110" : "text-slate-400"}`}
         >
           <List size={22} strokeWidth={activeTab === "menu" ? 3 : 2} />
-          <span className="text-[9px] font-black uppercase tracking-widest italic">Grid</span>
+          <span className="text-[9px] font-black uppercase tracking-widest italic">
+            Grid
+          </span>
         </button>
 
         <Link
@@ -176,7 +182,9 @@ export default function MobileHeader() {
           className={`flex flex-col items-center gap-1 transition-all duration-300 ${activeTab === "brands" ? "text-blue-600 scale-110" : "text-slate-400"}`}
         >
           <Tag size={22} strokeWidth={activeTab === "brands" ? 3 : 2} />
-          <span className="text-[9px] font-black uppercase tracking-widest italic">Vault</span>
+          <span className="text-[9px] font-black uppercase tracking-widest italic">
+            Vault
+          </span>
         </Link>
 
         {/* <Link to="/offers" className="flex flex-col items-center text-gray-700">
@@ -192,22 +200,32 @@ export default function MobileHeader() {
           className={`flex flex-col items-center gap-1 transition-all duration-300 ${activeTab === "account" ? "text-blue-600 scale-110" : "text-slate-400"}`}
         >
           <User size={22} strokeWidth={activeTab === "account" ? 3 : 2} />
-          <span className="text-[9px] font-black uppercase tracking-widest italic">Alpha</span>
+          <span className="text-[9px] font-black uppercase tracking-widest italic">
+            Alpha
+          </span>
         </button>
       </div>
 
       {/* ⭐ Sidebar Menu */}
       <div
-        className={`fixed top-0 left-0 h-screen w-72 bg-white shadow-xl transform transition-transform duration-300 z-[100] rounded-r-2xl ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed top-0 left-0 h-screen w-72 bg-white shadow-xl transform transition-transform duration-300 z-[100] rounded-r-2xl ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         {/* Header */}
         <div className="flex justify-between items-center px-8 py-8 bg-slate-950 sticky top-0 z-10 border-b border-white/5">
           <div>
-            <h2 className="text-xl font-black text-white italic uppercase tracking-tighter">ELITE SYSTEMS</h2>
-            <p className="text-blue-500 text-[8px] font-black uppercase tracking-[0.4em] mt-1">Authorized Access Only</p>
+            <h2 className="text-xl font-black text-white italic uppercase tracking-tighter">
+              ELITE SYSTEMS
+            </h2>
+            <p className="text-blue-500 text-[8px] font-black uppercase tracking-[0.4em] mt-1">
+              Authorized Access Only
+            </p>
           </div>
-          <button onClick={() => setIsMenuOpen(false)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-red-600 transition-colors">
+          <button
+            onClick={() => setIsMenuOpen(false)}
+            className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-red-600 transition-colors"
+          >
             <X size={24} strokeWidth={3} />
           </button>
         </div>

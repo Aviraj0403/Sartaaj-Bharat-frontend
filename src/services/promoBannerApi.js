@@ -1,16 +1,16 @@
-import Axios from '../utils/Axios';
+import Axios from "../utils/Axios";
 
 // Public API - Get active promo banners for frontend
 export const getPromoBanners = async () => {
   try {
-    const response = await Axios.get('/promo-banners');
+    const response = await Axios.get("/promo-banners");
     if (response.data.success) {
       return response.data.banners || response.data.data || response.data;
     } else {
-      throw new Error('Failed to fetch promo banners');
+      throw new Error("Failed to fetch promo banners");
     }
   } catch (error) {
-    console.error('Error fetching promo banners:', error);
+    console.error("Error fetching promo banners:", error);
     return [];
   }
 };
@@ -18,14 +18,14 @@ export const getPromoBanners = async () => {
 // Admin APIs - Protected routes
 export const getAdminPromoBanners = async () => {
   try {
-    const response = await Axios.get('/promo-banners/admin');
+    const response = await Axios.get("/promo-banners/admin");
     if (response.data.success) {
       return response.data.banners || response.data.data || response.data;
     } else {
-      throw new Error('Failed to fetch admin promo banners');
+      throw new Error("Failed to fetch admin promo banners");
     }
   } catch (error) {
-    console.error('Error fetching admin promo banners:', error);
+    console.error("Error fetching admin promo banners:", error);
     return [];
   }
 };
@@ -36,10 +36,10 @@ export const getPromoBanner = async (bannerId) => {
     if (response.data.success) {
       return response.data.banner || response.data.data;
     } else {
-      throw new Error('Failed to fetch promo banner');
+      throw new Error("Failed to fetch promo banner");
     }
   } catch (error) {
-    console.error('Error fetching promo banner:', error);
+    console.error("Error fetching promo banner:", error);
     return null;
   }
 };
@@ -47,27 +47,27 @@ export const getPromoBanner = async (bannerId) => {
 export const createPromoBanner = async (bannerData) => {
   try {
     const formData = new FormData();
-    
+
     // Append all banner data to FormData
-    Object.keys(bannerData).forEach(key => {
+    Object.keys(bannerData).forEach((key) => {
       if (bannerData[key] !== null && bannerData[key] !== undefined) {
         formData.append(key, bannerData[key]);
       }
     });
 
-    const response = await Axios.post('/promo-banners/admin', formData, {
+    const response = await Axios.post("/promo-banners/admin", formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
 
     if (response.data.success) {
       return response.data.banner || response.data.data;
     } else {
-      throw new Error('Failed to create promo banner');
+      throw new Error("Failed to create promo banner");
     }
   } catch (error) {
-    console.error('Error creating promo banner:', error);
+    console.error("Error creating promo banner:", error);
     throw error;
   }
 };
@@ -75,27 +75,31 @@ export const createPromoBanner = async (bannerData) => {
 export const updatePromoBanner = async (bannerId, bannerData) => {
   try {
     const formData = new FormData();
-    
+
     // Append all banner data to FormData
-    Object.keys(bannerData).forEach(key => {
+    Object.keys(bannerData).forEach((key) => {
       if (bannerData[key] !== null && bannerData[key] !== undefined) {
         formData.append(key, bannerData[key]);
       }
     });
 
-    const response = await Axios.patch(`/promo-banners/admin/${bannerId}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
+    const response = await Axios.patch(
+      `/promo-banners/admin/${bannerId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       },
-    });
+    );
 
     if (response.data.success) {
       return response.data.banner || response.data.data;
     } else {
-      throw new Error('Failed to update promo banner');
+      throw new Error("Failed to update promo banner");
     }
   } catch (error) {
-    console.error('Error updating promo banner:', error);
+    console.error("Error updating promo banner:", error);
     throw error;
   }
 };
@@ -106,24 +110,26 @@ export const deletePromoBanner = async (bannerId) => {
     if (response.data.success) {
       return response.data;
     } else {
-      throw new Error('Failed to delete promo banner');
+      throw new Error("Failed to delete promo banner");
     }
   } catch (error) {
-    console.error('Error deleting promo banner:', error);
+    console.error("Error deleting promo banner:", error);
     throw error;
   }
 };
 
 export const toggleBannerStatus = async (bannerId) => {
   try {
-    const response = await Axios.patch(`/promo-banners/admin/${bannerId}/toggle`);
+    const response = await Axios.patch(
+      `/promo-banners/admin/${bannerId}/toggle`,
+    );
     if (response.data.success) {
       return response.data.banner || response.data.data;
     } else {
-      throw new Error('Failed to toggle banner status');
+      throw new Error("Failed to toggle banner status");
     }
   } catch (error) {
-    console.error('Error toggling banner status:', error);
+    console.error("Error toggling banner status:", error);
     throw error;
   }
 };

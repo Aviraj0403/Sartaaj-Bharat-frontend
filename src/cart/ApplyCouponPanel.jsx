@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import { X, Check, AlertCircle } from "lucide-react";
 import { getActiveOffers, applyDiscount } from "../services/offerApi";
 
-export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoupon, totalAmount }) {
+export default function ApplyCouponPanel({
+  isOpen,
+  onClose,
+  onApply,
+  appliedCoupon,
+  totalAmount,
+}) {
   const [coupon, setCoupon] = useState(""); // Coupon code input
   const [error, setError] = useState(null); // Error handling
   const [offers, setOffers] = useState([]); // List of active offers
@@ -29,7 +35,7 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
 
   const handleApply = async (code, offerName = "") => {
     if (code.trim() !== "") {
-      setLoading(true);  // Show loading state
+      setLoading(true); // Show loading state
 
       try {
         const discountResult = await applyDiscount(totalAmount, code);
@@ -43,7 +49,7 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
         console.error("Error applying discount:", error);
         setError("An error occurred while applying the coupon.");
       } finally {
-        setLoading(false);  // Hide loading state after the request
+        setLoading(false); // Hide loading state after the request
       }
     } else {
       setError("Please enter a coupon code.");
@@ -52,14 +58,19 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-xl z-[200] transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+      className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-xl z-[200] transform transition-transform duration-300 ${
+        isOpen ? "translate-x-0" : "translate-x-full"
+      }`}
     >
       {/* Header */}
       <div className="flex justify-between items-center p-8 border-b border-slate-50 bg-white/80 backdrop-blur-md sticky top-0 z-10">
         <div>
-          <h2 className="text-2xl font-black text-slate-900 italic uppercase tracking-tighter">Protocol Activation</h2>
-          <p className="text-slate-400 text-[8px] font-black uppercase tracking-[0.4em] mt-1">Discount Authorization Required</p>
+          <h2 className="text-2xl font-black text-slate-900 italic uppercase tracking-tighter">
+            Protocol Activation
+          </h2>
+          <p className="text-slate-400 text-[8px] font-black uppercase tracking-[0.4em] mt-1">
+            Discount Authorization Required
+          </p>
         </div>
         <button
           onClick={onClose}
@@ -78,9 +89,12 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
             </div>
             <div className="text-center">
               <p className="text-slate-900 font-black italic uppercase tracking-tighter text-lg leading-none">
-                Protocol <span className="text-blue-600">"{appliedCoupon}"</span>
+                Protocol{" "}
+                <span className="text-blue-600">"{appliedCoupon}"</span>
               </p>
-              <p className="text-slate-400 font-bold text-[9px] uppercase tracking-[0.3em] mt-2">Active Authorization Granted</p>
+              <p className="text-slate-400 font-bold text-[9px] uppercase tracking-[0.3em] mt-2">
+                Active Authorization Granted
+              </p>
             </div>
             <button
               onClick={onClose}
@@ -99,7 +113,8 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
             )}
 
             <p className="text-slate-400 font-bold text-[9px] uppercase tracking-[0.2em] italic mb-6 leading-relaxed">
-              INPUT AUTHORIZED OVERRIDE CODE OR SELECT FROM ACTIVE ENTERPRISE NODES:
+              INPUT AUTHORIZED OVERRIDE CODE OR SELECT FROM ACTIVE ENTERPRISE
+              NODES:
             </p>
 
             {/* Custom Coupon Input */}
@@ -125,7 +140,9 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
             {/* Active Offers Section */}
             <div className="mt-4 flex flex-col gap-3">
               {!loading && offers.length === 0 ? (
-                <p className="text-slate-400 font-bold text-[9px] uppercase tracking-widest text-center py-10">No active neural nodes available.</p>
+                <p className="text-slate-400 font-bold text-[9px] uppercase tracking-widest text-center py-10">
+                  No active neural nodes available.
+                </p>
               ) : (
                 offers.map((offer) => (
                   <div

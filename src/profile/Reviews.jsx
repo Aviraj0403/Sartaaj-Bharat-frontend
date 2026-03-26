@@ -3,8 +3,18 @@ import { Star } from "lucide-react";
 
 export default function Reviews() {
   const reviews = [
-    { id: 1, product: "Glow Radiance Face Cream", rating: 5, comment: "Amazing results!" },
-    { id: 2, product: "Hydrating Lip Balm", rating: 4, comment: "Very smooth and soft." },
+    {
+      id: 1,
+      product: "Glow Radiance Face Cream",
+      rating: 5,
+      comment: "Amazing results!",
+    },
+    {
+      id: 2,
+      product: "Hydrating Lip Balm",
+      rating: 4,
+      comment: "Very smooth and soft.",
+    },
   ];
 
   return (

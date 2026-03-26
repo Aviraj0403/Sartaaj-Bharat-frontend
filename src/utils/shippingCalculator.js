@@ -7,23 +7,23 @@
 // Weight conversion constants
 const WEIGHT_CONVERSIONS = {
   // Convert to grams as base unit
-  'g': 1,
-  'gm': 1,
-  'gram': 1,
-  'grams': 1,
-  'kg': 1000,
-  'kilogram': 1000,
-  'kilograms': 1000,
+  g: 1,
+  gm: 1,
+  gram: 1,
+  grams: 1,
+  kg: 1000,
+  kilogram: 1000,
+  kilograms: 1000,
   // For liquids, approximate density (1ml ≈ 1g for most cosmetics)
-  'ml': 1,
-  'milliliter': 1,
-  'milliliters': 1,
-  'l': 1000,
-  'liter': 1000,
-  'liters': 1000,
+  ml: 1,
+  milliliter: 1,
+  milliliters: 1,
+  l: 1000,
+  liter: 1000,
+  liters: 1000,
   // Common cosmetic units
-  'oz': 28.35, // 1 oz ≈ 28.35g
-  'fl oz': 29.57, // 1 fl oz ≈ 29.57g (for liquids)
+  oz: 28.35, // 1 oz ≈ 28.35g
+  "fl oz": 29.57, // 1 fl oz ≈ 29.57g (for liquids)
 };
 
 /**
@@ -32,40 +32,41 @@ const WEIGHT_CONVERSIONS = {
  * @returns {object} - {weight: number, unit: string, originalString: string}
  */
 export const parseWeightFromString = (sizeString) => {
-  if (!sizeString || typeof sizeString !== 'string') {
-    return { weight: 0, unit: 'g', originalString: sizeString || '' };
+  if (!sizeString || typeof sizeString !== "string") {
+    return { weight: 0, unit: "g", originalString: sizeString || "" };
   }
 
   // Clean the string and make it lowercase
   const cleanString = sizeString.toLowerCase().trim();
-  
+
   // Regular expression to match number and unit
-  const weightRegex = /(\d+(?:\.\d+)?)\s*(g|gm|gram|grams|kg|kilogram|kilograms|ml|milliliter|milliliters|l|liter|liters|oz|fl\s*oz)s?/i;
-  
+  const weightRegex =
+    /(\d+(?:\.\d+)?)\s*(g|gm|gram|grams|kg|kilogram|kilograms|ml|milliliter|milliliters|l|liter|liters|oz|fl\s*oz)s?/i;
+
   const match = cleanString.match(weightRegex);
-  
+
   if (match) {
     const weight = parseFloat(match[1]);
-    const unit = match[2].replace(/\s+/g, '').toLowerCase(); // Remove spaces from "fl oz"
-    
+    const unit = match[2].replace(/\s+/g, "").toLowerCase(); // Remove spaces from "fl oz"
+
     return {
       weight,
       unit,
-      originalString: sizeString
+      originalString: sizeString,
     };
   }
-  
+
   // If no match found, try to extract just numbers (assume grams)
   const numberMatch = cleanString.match(/(\d+(?:\.\d+)?)/);
   if (numberMatch) {
     return {
       weight: parseFloat(numberMatch[1]),
-      unit: 'g', // Default to grams
-      originalString: sizeString
+      unit: "g", // Default to grams
+      originalString: sizeString,
     };
   }
-  
-  return { weight: 0, unit: 'g', originalString: sizeString };
+
+  return { weight: 0, unit: "g", originalString: sizeString };
 };
 
 /**
@@ -75,7 +76,7 @@ export const parseWeightFromString = (sizeString) => {
  * @returns {number} - Weight in grams
  */
 export const convertToGrams = (weight, unit) => {
-  const cleanUnit = unit.toLowerCase().replace(/\s+/g, '');
+  const cleanUnit = unit.toLowerCase().replace(/\s+/g, "");
   const conversionFactor = WEIGHT_CONVERSIONS[cleanUnit] || 1;
   return weight * conversionFactor;
 };
@@ -92,20 +93,21 @@ export const calculateTotalWeight = (cartItems) => {
 
   return cartItems.reduce((totalWeight, item) => {
     const quantity = item.quantity || 1;
-    
+
     // Try to get weight from different possible product properties
-    const sizeString = item.product?.size || 
-                      item.product?.weight || 
-                      item.product?.volume || 
-                      item.size || 
-                      item.weight || 
-                      item.volume || 
-                      '';
+    const sizeString =
+      item.product?.size ||
+      item.product?.weight ||
+      item.product?.volume ||
+      item.size ||
+      item.weight ||
+      item.volume ||
+      "";
 
     const { weight, unit } = parseWeightFromString(sizeString);
     const weightInGrams = convertToGrams(weight, unit);
-    
-    return totalWeight + (weightInGrams * quantity);
+
+    return totalWeight + weightInGrams * quantity;
   }, 0);
 };
 
@@ -127,13 +129,13 @@ export const calculateShippingCharges = (totalWeightInGrams) => {
       weightBreakdown: {
         totalWeightGrams: 0,
         totalWeightKg: 0,
-        additionalKg: 0
-      }
+        additionalKg: 0,
+      },
     };
   }
 
   const totalWeightKg = totalWeightInGrams / 1000;
-  
+
   let additionalCharge = 0;
   let additionalKg = 0;
 
@@ -151,8 +153,8 @@ export const calculateShippingCharges = (totalWeightInGrams) => {
     weightBreakdown: {
       totalWeightGrams: Math.round(totalWeightInGrams),
       totalWeightKg: Math.round(totalWeightKg * 100) / 100, // Round to 2 decimal places
-      additionalKg
-    }
+      additionalKg,
+    },
   };
 };
 
@@ -164,20 +166,25 @@ export const calculateShippingCharges = (totalWeightInGrams) => {
 export const calculateCartShipping = (cartItems) => {
   const totalWeight = calculateTotalWeight(cartItems);
   const shippingResult = calculateShippingCharges(totalWeight);
-  
+
   return {
     ...shippingResult,
     itemsAnalyzed: cartItems.length,
-    weightSources: cartItems.map(item => ({
-      productName: item.product?.name || item.name || 'Unknown Product',
+    weightSources: cartItems.map((item) => ({
+      productName: item.product?.name || item.name || "Unknown Product",
       quantity: item.quantity || 1,
-      sizeString: item.product?.size || item.product?.weight || item.size || 'Not specified',
+      sizeString:
+        item.product?.size ||
+        item.product?.weight ||
+        item.size ||
+        "Not specified",
       calculatedWeight: (() => {
-        const sizeString = item.product?.size || item.product?.weight || item.size || '';
+        const sizeString =
+          item.product?.size || item.product?.weight || item.size || "";
         const { weight, unit } = parseWeightFromString(sizeString);
         return convertToGrams(weight, unit);
-      })()
-    }))
+      })(),
+    })),
   };
 };
 
@@ -187,17 +194,18 @@ export const calculateCartShipping = (cartItems) => {
  * @returns {string} - Formatted string for display
  */
 export const formatShippingBreakdown = (shippingResult) => {
-  const { baseCharge, additionalCharge, totalShipping, weightBreakdown } = shippingResult;
-  
+  const { baseCharge, additionalCharge, totalShipping, weightBreakdown } =
+    shippingResult;
+
   let breakdown = `Base Shipping: ₹${baseCharge}`;
-  
+
   if (additionalCharge > 0) {
     breakdown += `\nAdditional Weight (${weightBreakdown.additionalKg}kg): ₹${additionalCharge}`;
   }
-  
+
   breakdown += `\nTotal Weight: ${weightBreakdown.totalWeightKg}kg`;
   breakdown += `\nTotal Shipping: ₹${totalShipping}`;
-  
+
   return breakdown;
 };
 
@@ -219,5 +227,5 @@ export default {
   calculateShippingCharges,
   calculateCartShipping,
   formatShippingBreakdown,
-  getShippingAmount // Simple customer-facing function
+  getShippingAmount, // Simple customer-facing function
 };

@@ -1,13 +1,15 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from "react";
 
 const SearchContext = createContext();
 
 export const SearchProvider = ({ children }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   return (
-    <SearchContext.Provider value={{ searchQuery, setSearchQuery, suggestions, setSuggestions }}>
+    <SearchContext.Provider
+      value={{ searchQuery, setSearchQuery, suggestions, setSuggestions }}
+    >
       {children}
     </SearchContext.Provider>
   );

@@ -52,7 +52,9 @@ export default function AddressModal({ isOpen, onClose, address, onSuccess }) {
             <h2 className="text-2xl font-black text-slate-900 italic uppercase tracking-tighter">
               {formMode === "edit" ? "Coordinate Update" : "Establish New Node"}
             </h2>
-            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mt-1">Authorized Location Protocol</p>
+            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mt-1">
+              Authorized Location Protocol
+            </p>
           </div>
           <button
             onClick={onClose}
@@ -77,5 +79,4 @@ export default function AddressModal({ isOpen, onClose, address, onSuccess }) {
       </div>
     </div>
   );
-
 }

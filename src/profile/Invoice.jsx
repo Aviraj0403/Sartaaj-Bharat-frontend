@@ -45,7 +45,7 @@ export default function Invoice() {
     phone: order.shippingAddress.phoneNumber,
   };
 
-  const items = order.items.map(item => ({
+  const items = order.items.map((item) => ({
     name: item.product.name,
     size: item.selectedVariant.size,
     color: item.selectedVariant.color,
@@ -60,7 +60,10 @@ export default function Invoice() {
   // Prefer backend shipping when available; otherwise use static ₹80
   const shipping = order.shipping !== undefined ? order.shipping : 80;
   // Prefer backend totalAmount when available; otherwise compute
-  const total = order.totalAmount !== undefined ? order.totalAmount : (subtotal - couponDiscount);
+  const total =
+    order.totalAmount !== undefined
+      ? order.totalAmount
+      : subtotal - couponDiscount;
 
   // PDF DOWNLOAD FUNCTION
   const handleDownload = async () => {
@@ -105,7 +108,6 @@ export default function Invoice() {
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-12 flex justify-center items-start relative selection:bg-blue-600 selection:text-white overflow-hidden">
-
       {/* BACKGROUND DECORATION */}
       <div className="absolute top-0 right-0 w-[50rem] h-[50rem] bg-blue-600/5 blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 -z-0"></div>
       <div className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-slate-900/5 blur-[120px] rounded-full -translate-x-1/2 translate-y-1/2 -z-0"></div>
@@ -120,10 +122,8 @@ export default function Invoice() {
         ref={invoiceRef}
         className="bg-white shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)] rounded-[3rem] p-8 md:p-16 w-full max-w-5xl border border-slate-100 relative z-10"
       >
-
         {/* HEADER */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-8 gap-4">
-
           {/* Logo + Brand */}
           <div className="flex flex-col md:flex-row items-center gap-3 md:gap-6">
             <img src={logo} alt="Logo" className="w-20 md:w-24" />
@@ -154,13 +154,19 @@ export default function Invoice() {
             <h1 className="text-3xl md:text-5xl font-black text-slate-900 mb-2 italic tracking-tighter uppercase leading-none">
               Elite <span className="text-blue-600">Enterprise</span>
             </h1>
-            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em]">Global Distribution Protocol</p>
+            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em]">
+              Global Distribution Protocol
+            </p>
           </div>
           <div className="text-right">
             <div className="bg-slate-950 px-6 py-2 rounded-full mb-3 inline-block">
-              <span className="text-blue-500 font-black text-[9px] uppercase tracking-[0.5em] italic">Authorized Invoice</span>
+              <span className="text-blue-500 font-black text-[9px] uppercase tracking-[0.5em] italic">
+                Authorized Invoice
+              </span>
             </div>
-            <p className="text-slate-900 font-black text-lg italic tracking-tight uppercase">TRANS-ID: {orderId}</p>
+            <p className="text-slate-900 font-black text-lg italic tracking-tight uppercase">
+              TRANS-ID: {orderId}
+            </p>
           </div>
         </div>
 
@@ -168,25 +174,52 @@ export default function Invoice() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 mb-16 text-[11px] font-medium text-slate-600">
           <div className="space-y-6">
             <div className="space-y-1">
-              <span className="text-slate-400 font-black text-[9px] uppercase tracking-[0.4em] mb-2 block">Protocol Metadata</span>
-              <p><strong className="text-slate-900 uppercase font-black tracking-tight italic">Authorization: </strong>{orderId}</p>
-              <p><strong className="text-slate-900 uppercase font-black tracking-tight italic">Timestamp: </strong>{new Date(order.placedAt).toLocaleDateString()}</p>
-              <p><strong className="text-slate-900 uppercase font-black tracking-tight italic">Escrow: </strong>{order.paymentMethod}</p>
+              <span className="text-slate-400 font-black text-[9px] uppercase tracking-[0.4em] mb-2 block">
+                Protocol Metadata
+              </span>
+              <p>
+                <strong className="text-slate-900 uppercase font-black tracking-tight italic">
+                  Authorization:{" "}
+                </strong>
+                {orderId}
+              </p>
+              <p>
+                <strong className="text-slate-900 uppercase font-black tracking-tight italic">
+                  Timestamp:{" "}
+                </strong>
+                {new Date(order.placedAt).toLocaleDateString()}
+              </p>
+              <p>
+                <strong className="text-slate-900 uppercase font-black tracking-tight italic">
+                  Escrow:{" "}
+                </strong>
+                {order.paymentMethod}
+              </p>
             </div>
 
             <div className="space-y-1">
-              <span className="text-slate-400 font-black text-[9px] uppercase tracking-[0.4em] mb-2 block">Current Status</span>
+              <span className="text-slate-400 font-black text-[9px] uppercase tracking-[0.4em] mb-2 block">
+                Current Status
+              </span>
               <div className="flex items-center gap-3">
-                <div className={`w-2 h-2 rounded-full ${order.orderStatus === "Shipped" ? "bg-green-500" : "bg-blue-600"} animate-pulse`}></div>
-                <span className="text-slate-900 font-black uppercase tracking-widest italic">{order.orderStatus}</span>
+                <div
+                  className={`w-2 h-2 rounded-full ${order.orderStatus === "Shipped" ? "bg-green-500" : "bg-blue-600"} animate-pulse`}
+                ></div>
+                <span className="text-slate-900 font-black uppercase tracking-widest italic">
+                  {order.orderStatus}
+                </span>
               </div>
             </div>
           </div>
 
           <div className="space-y-6">
             <div className="space-y-2">
-              <span className="text-slate-400 font-black text-[9px] uppercase tracking-[0.4em] mb-2 block">Recipient Branch</span>
-              <p className="text-slate-900 font-black text-lg italic tracking-tight uppercase leading-none">{customer.name}</p>
+              <span className="text-slate-400 font-black text-[9px] uppercase tracking-[0.4em] mb-2 block">
+                Recipient Branch
+              </span>
+              <p className="text-slate-900 font-black text-lg italic tracking-tight uppercase leading-none">
+                {customer.name}
+              </p>
               <p className="font-bold">{customer.email}</p>
               <div className="h-[2px] w-8 bg-blue-600 mt-4 mb-2"></div>
               <p className="leading-relaxed">{customer.address}</p>
@@ -200,22 +233,43 @@ export default function Invoice() {
           <table className="w-full text-[11px] font-medium border-collapse">
             <thead>
               <tr className="bg-slate-950 text-white">
-                <th className="py-5 px-6 text-left font-black uppercase tracking-[0.4em] italic rounded-l-2xl">Class Artifact</th>
-                <th className="py-5 px-6 text-center font-black uppercase tracking-[0.4em] italic">Quantity</th>
-                <th className="py-5 px-6 text-right font-black uppercase tracking-[0.4em] italic">Unit Price</th>
-                <th className="py-5 px-6 text-right font-black uppercase tracking-[0.4em] italic rounded-r-2xl">Branch Total</th>
+                <th className="py-5 px-6 text-left font-black uppercase tracking-[0.4em] italic rounded-l-2xl">
+                  Class Artifact
+                </th>
+                <th className="py-5 px-6 text-center font-black uppercase tracking-[0.4em] italic">
+                  Quantity
+                </th>
+                <th className="py-5 px-6 text-right font-black uppercase tracking-[0.4em] italic">
+                  Unit Price
+                </th>
+                <th className="py-5 px-6 text-right font-black uppercase tracking-[0.4em] italic rounded-r-2xl">
+                  Branch Total
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {items.map((item, index) => (
-                <tr key={index} className="group hover:bg-slate-50/50 transition-colors">
+                <tr
+                  key={index}
+                  className="group hover:bg-slate-50/50 transition-colors"
+                >
                   <td className="py-6 px-6">
-                    <p className="text-slate-900 font-black text-sm uppercase tracking-tight italic">{item.name}</p>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest mt-1">SPEC: {item?.size || "Alpha"} / {item?.color || "N/A"}</p>
+                    <p className="text-slate-900 font-black text-sm uppercase tracking-tight italic">
+                      {item.name}
+                    </p>
+                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest mt-1">
+                      SPEC: {item?.size || "Alpha"} / {item?.color || "N/A"}
+                    </p>
                   </td>
-                  <td className="py-6 px-6 text-center text-slate-900 font-bold">{item.qty}</td>
-                  <td className="py-6 px-6 text-right text-slate-900 font-bold">₹{item.price?.toLocaleString()}</td>
-                  <td className="py-6 px-6 text-right text-blue-600 font-black italic">₹{(item.price * item.qty)?.toLocaleString()}</td>
+                  <td className="py-6 px-6 text-center text-slate-900 font-bold">
+                    {item.qty}
+                  </td>
+                  <td className="py-6 px-6 text-right text-slate-900 font-bold">
+                    ₹{item.price?.toLocaleString()}
+                  </td>
+                  <td className="py-6 px-6 text-right text-blue-600 font-black italic">
+                    ₹{(item.price * item.qty)?.toLocaleString()}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -227,25 +281,35 @@ export default function Invoice() {
           <div className="w-full max-w-xs space-y-4">
             <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">
               <span>Voucher Reduction</span>
-              <span className="text-red-500">-₹{couponDiscount.toFixed(2)}</span>
+              <span className="text-red-500">
+                -₹{couponDiscount.toFixed(2)}
+              </span>
             </div>
             <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">
               <span>Logistics Protocol</span>
               <span className="text-slate-900">₹{shipping.toFixed(2)}</span>
             </div>
             <div className="pt-8 border-t-2 border-slate-950 flex justify-between items-end">
-              <span className="text-slate-400 font-black text-[10px] uppercase tracking-[0.5em] italic">Final Settlement</span>
-              <span className="text-blue-600 font-black text-5xl leading-none italic tracking-tighter">₹{total.toFixed(2)}</span>
+              <span className="text-slate-400 font-black text-[10px] uppercase tracking-[0.5em] italic">
+                Final Settlement
+              </span>
+              <span className="text-blue-600 font-black text-5xl leading-none italic tracking-tighter">
+                ₹{total.toFixed(2)}
+              </span>
             </div>
           </div>
         </div>
 
         {/* Footer Note */}
         <div className="mt-24 pt-12 border-t border-slate-50 text-center">
-          <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.6em] italic mb-4">Enterprise Authenticated Document</p>
-          <p className="text-slate-400 text-[10px] font-medium max-w-lg mx-auto leading-relaxed italic">This is a digitally generated protocol authorization. No physical signature required for neural validation.</p>
+          <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.6em] italic mb-4">
+            Enterprise Authenticated Document
+          </p>
+          <p className="text-slate-400 text-[10px] font-medium max-w-lg mx-auto leading-relaxed italic">
+            This is a digitally generated protocol authorization. No physical
+            signature required for neural validation.
+          </p>
         </div>
-
       </div>
     </div>
   );

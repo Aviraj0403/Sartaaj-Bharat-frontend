@@ -3,7 +3,13 @@ import { MapPin, Plus, Edit2, Trash2, CheckCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import axios from "../utils/Axios"; // Your axios instance
 
-import { getAddress, addAddress, updateAddress, deleteAddress, setDefaultAddress } from "../services/userApi"; // Your API helpers
+import {
+  getAddress,
+  addAddress,
+  updateAddress,
+  deleteAddress,
+  setDefaultAddress,
+} from "../services/userApi"; // Your API helpers
 
 import AddressModal from "./AddressModal"; // We'll create this next
 
@@ -17,7 +23,9 @@ export default function Addresses() {
   const fetchAddresses = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("/users/getaddresses", { withCredentials: true });
+      const { data } = await axios.get("/users/getaddresses", {
+        withCredentials: true,
+      });
       setAddresses(data.data || []); // Ensure correct response structure
     } catch (err) {
       toast.error("Failed to load addresses");
@@ -42,7 +50,8 @@ export default function Addresses() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this address?")) return;
+    if (!window.confirm("Are you sure you want to delete this address?"))
+      return;
 
     try {
       await deleteAddress(id);
@@ -72,7 +81,9 @@ export default function Addresses() {
   if (loading) {
     return (
       <div className="animate-pulse">
-        <h1 className="text-3xl font-black text-slate-900 mb-6 italic tracking-tighter uppercase">My Addresses</h1>
+        <h1 className="text-3xl font-black text-slate-900 mb-6 italic tracking-tighter uppercase">
+          My Addresses
+        </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[1, 2].map((i) => (
             <div key={i} className="p-6 border rounded-xl bg-gray-50">
@@ -90,14 +101,21 @@ export default function Addresses() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-6">
         <div>
-          <h1 className="text-3xl md:text-5xl font-black text-slate-900 italic tracking-tighter uppercase">Vault Addresses</h1>
-          <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mt-2">Manage your secure dispatch locations</p>
+          <h1 className="text-3xl md:text-5xl font-black text-slate-900 italic tracking-tighter uppercase">
+            Vault Addresses
+          </h1>
+          <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mt-2">
+            Manage your secure dispatch locations
+          </p>
         </div>
         <button
           onClick={handleAdd}
           className="flex items-center gap-3 bg-blue-600 hover:bg-black text-white px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-blue-500/20 group active:scale-95 italic text-center w-full sm:w-auto justify-center"
         >
-          <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+          <Plus
+            size={20}
+            className="group-hover:rotate-90 transition-transform duration-300"
+          />
           Establish New Node
         </button>
       </div>
@@ -106,7 +124,9 @@ export default function Addresses() {
       {addresses.length === 0 ? (
         <div className="text-center py-16 bg-gray-50 rounded-xl">
           <MapPin size={64} className="mx-auto text-gray-300 mb-4" />
-          <p className="text-slate-400 font-bold italic">No secure address nodes established in current branch.</p>
+          <p className="text-slate-400 font-bold italic">
+            No secure address nodes established in current branch.
+          </p>
           <button
             onClick={handleAdd}
             className="mt-6 text-blue-600 font-black text-xs uppercase tracking-[0.2em] hover:text-black transition-colors"
@@ -119,10 +139,11 @@ export default function Addresses() {
           {addresses.map((addr) => (
             <div
               key={addr._id || addr.id}
-              className={`relative p-8 border-2 rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 group ${addr.isDefault
+              className={`relative p-8 border-2 rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 group ${
+                addr.isDefault
                   ? "border-blue-600 bg-white"
                   : "border-slate-100 bg-white"
-                }`}
+              }`}
             >
               {/* Default Badge */}
               {addr.isDefault && (
@@ -134,7 +155,9 @@ export default function Addresses() {
 
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-6">
-                  <div className={`p-4 rounded-2xl ${addr.isDefault ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-50 text-blue-600'}`}>
+                  <div
+                    className={`p-4 rounded-2xl ${addr.isDefault ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" : "bg-slate-50 text-blue-600"}`}
+                  >
                     <MapPin size={28} strokeWidth={2.5} />
                   </div>
                   <div>
@@ -145,12 +168,15 @@ export default function Addresses() {
                       {addr.flat && `${addr.flat}, `}
                       {addr.street || addr.flat},<br />
                       {addr.landmark && `${addr.landmark}, `}
-                      {addr.city}, {addr.state} - {addr.pincode || addr.postalCode}
+                      {addr.city}, {addr.state} -{" "}
+                      {addr.pincode || addr.postalCode}
                       <br />
                       {addr.country}
                     </p>
                     {(addr.phone || addr.phoneNumber) && (
-                      <p className="text-gray-500 text-sm mt-2">📞 {addr.phone || addr.phoneNumber}</p>
+                      <p className="text-gray-500 text-sm mt-2">
+                        📞 {addr.phone || addr.phoneNumber}
+                      </p>
                     )}
                   </div>
                 </div>

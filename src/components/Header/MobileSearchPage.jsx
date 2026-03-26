@@ -1,13 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Search, X, Clock, TrendingUp, Sparkles, ShoppingBag } from "lucide-react";
+import {
+  Search,
+  X,
+  Clock,
+  TrendingUp,
+  Sparkles,
+  ShoppingBag,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getMenuCategories, getSearchSuggestions } from "../../services/categoryApi";
+import {
+  getMenuCategories,
+  getSearchSuggestions,
+} from "../../services/categoryApi";
 
 export default function MobileSearchPage() {
   const [query, setQuery] = useState("");
   const [recentSearches, setRecentSearches] = useState(() => {
-    const saved = localStorage.getItem('recentSearches');
+    const saved = localStorage.getItem("recentSearches");
     return saved ? JSON.parse(saved) : [];
   });
   const navigate = useNavigate();
@@ -18,7 +28,7 @@ export default function MobileSearchPage() {
     "Perfumes for Women",
     "Trending Fashion",
     "New Arrivals",
-    "Hot Deals"
+    "Hot Deals",
   ];
 
   useEffect(() => {
@@ -26,15 +36,23 @@ export default function MobileSearchPage() {
   }, []);
 
   // Fetch categories
-  const { data: menuItems, isLoading: isCategoriesLoading, isError: isCategoriesError } = useQuery({
+  const {
+    data: menuItems,
+    isLoading: isCategoriesLoading,
+    isError: isCategoriesError,
+  } = useQuery({
     queryKey: ["categories"],
     queryFn: getMenuCategories,
     onError: (err) => console.error("Error fetching categories:", err),
   });
 
   // Fetch search suggestions
-  const { data: suggestions, isLoading, isError } = useQuery({
-    queryKey: ['searchSuggestions', query],
+  const {
+    data: suggestions,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["searchSuggestions", query],
     queryFn: () => getSearchSuggestions(query),
     enabled: query.length > 1,
     onError: (err) => console.error("Error fetching search suggestions:", err),
@@ -45,29 +63,31 @@ export default function MobileSearchPage() {
 
     // Add to recent searches
     if (searchTerm && !recentSearches.includes(searchTerm)) {
-      const updated = [searchTerm, ...recentSearches.filter(s => s !== searchTerm)].slice(0, 5);
+      const updated = [
+        searchTerm,
+        ...recentSearches.filter((s) => s !== searchTerm),
+      ].slice(0, 5);
       setRecentSearches(updated);
-      localStorage.setItem('recentSearches', JSON.stringify(updated));
+      localStorage.setItem("recentSearches", JSON.stringify(updated));
     }
   };
 
   const handleClearRecent = () => {
     setRecentSearches([]);
-    localStorage.removeItem('recentSearches');
+    localStorage.removeItem("recentSearches");
   };
 
   const handleProductClick = (slug) => {
     if (query && !recentSearches.includes(query)) {
       const updated = [query, ...recentSearches].slice(0, 5);
       setRecentSearches(updated);
-      localStorage.setItem('recentSearches', JSON.stringify(updated));
+      localStorage.setItem("recentSearches", JSON.stringify(updated));
     }
     navigate(`/product/${slug}`);
   };
 
   return (
     <div className="w-full min-h-screen bg-slate-50 mt-[65px] sm:mt-0">
-
       {/* 🎨 Sticky Search Header with Glass Effect */}
       <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-100 shadow-sm">
         <div className="px-8 py-8 md:py-12">
@@ -114,7 +134,11 @@ export default function MobileSearchPage() {
               <div className="flex justify-center items-center py-32">
                 <div className="relative">
                   <div className="w-20 h-20 border-4 border-slate-100 border-t-blue-600 rounded-full animate-spin"></div>
-                  <ShoppingBag className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-blue-600" size={28} strokeWidth={2.5} />
+                  <ShoppingBag
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-blue-600"
+                    size={28}
+                    strokeWidth={2.5}
+                  />
                 </div>
               </div>
             )}
@@ -124,8 +148,12 @@ export default function MobileSearchPage() {
                 <div className="inline-block p-4 bg-red-50 rounded-2xl mb-4">
                   <X size={48} className="text-red-500" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Oops! Something went wrong</h3>
-                <p className="text-gray-600 text-sm">Error fetching results. Please try again.</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  Oops! Something went wrong
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Error fetching results. Please try again.
+                </p>
               </div>
             )}
 
@@ -133,7 +161,8 @@ export default function MobileSearchPage() {
               <div>
                 <div className="flex items-center justify-between mb-8 px-2">
                   <h2 className="text-xl font-black text-slate-900 italic uppercase tracking-tighter">
-                    Found {suggestions.length} <span className="text-blue-600">Artifacts</span>
+                    Found {suggestions.length}{" "}
+                    <span className="text-blue-600">Artifacts</span>
                   </h2>
                   <Sparkles size={24} className="text-blue-600" />
                 </div>
@@ -147,10 +176,10 @@ export default function MobileSearchPage() {
                       {/* Product Image */}
                       <div className="relative aspect-square overflow-hidden bg-slate-100">
                         <img
-                          src={item.pimages?.[0] || '/placeholder.jpg'}
+                          src={item.pimages?.[0] || "/placeholder.jpg"}
                           alt={item.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          onError={(e) => e.target.src = '/placeholder.jpg'}
+                          onError={(e) => (e.target.src = "/placeholder.jpg")}
                         />
                         {item.discount && (
                           <div className="absolute top-4 right-4 bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg italic">
@@ -191,8 +220,12 @@ export default function MobileSearchPage() {
                 <div className="inline-block p-6 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full mb-4">
                   <Search size={48} className="text-gray-400" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">No products found</h3>
-                <p className="text-gray-600 text-sm mb-6">Try different keywords or browse categories</p>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                  No products found
+                </h3>
+                <p className="text-gray-600 text-sm mb-6">
+                  Try different keywords or browse categories
+                </p>
               </div>
             )}
           </div>
@@ -250,8 +283,12 @@ export default function MobileSearchPage() {
                     <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
                       <Search size={18} strokeWidth={3} />
                     </div>
-                    <span className="flex-1 font-black text-xs uppercase tracking-widest italic">{item}</span>
-                    <span className="text-xs text-blue-600 font-black animate-pulse opacity-0 group-hover:opacity-100 transition-opacity">ACTIVE</span>
+                    <span className="flex-1 font-black text-xs uppercase tracking-widest italic">
+                      {item}
+                    </span>
+                    <span className="text-xs text-blue-600 font-black animate-pulse opacity-0 group-hover:opacity-100 transition-opacity">
+                      ACTIVE
+                    </span>
                   </div>
                 ))}
               </div>
@@ -259,34 +296,43 @@ export default function MobileSearchPage() {
 
             {/* 🛒 Original CategorySlider */}
             <div className="mt-12 pt-12 border-t border-slate-100">
-              <h2 className="text-3xl font-black text-slate-900 mb-8 italic uppercase tracking-tighter px-2">Sector <span className="text-blue-600 underline decoration-4 underline-offset-8">Browsing</span></h2>
+              <h2 className="text-3xl font-black text-slate-900 mb-8 italic uppercase tracking-tighter px-2">
+                Sector{" "}
+                <span className="text-blue-600 underline decoration-4 underline-offset-8">
+                  Browsing
+                </span>
+              </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {isCategoriesLoading && (
-                  <p className="w-full text-center text-pink-600 col-span-full">Loading categories...</p>
+                  <p className="w-full text-center text-pink-600 col-span-full">
+                    Loading categories...
+                  </p>
                 )}
                 {isCategoriesError && (
                   <div className="w-full text-center text-red-600 col-span-full">
                     Error fetching categories. Please try again later.
                   </div>
                 )}
-                {!isCategoriesLoading && !isCategoriesError && menuItems?.map((cat) => (
-                  <div
-                    key={cat._id}
-                    onClick={() => navigate(`/${cat.slug}`)}
-                    className="flex flex-col items-center justify-center cursor-pointer group relative"
-                  >
-                    <div className="rounded-lg overflow-hidden shadow-md border border-gray-100">
-                      <img
-                        src={cat.image[0]}
-                        alt={cat.name}
-                        className="w-full h-[150px] sm:h-[180px] object-cover"
-                      />
+                {!isCategoriesLoading &&
+                  !isCategoriesError &&
+                  menuItems?.map((cat) => (
+                    <div
+                      key={cat._id}
+                      onClick={() => navigate(`/${cat.slug}`)}
+                      className="flex flex-col items-center justify-center cursor-pointer group relative"
+                    >
+                      <div className="rounded-lg overflow-hidden shadow-md border border-gray-100">
+                        <img
+                          src={cat.image[0]}
+                          alt={cat.name}
+                          className="w-full h-[150px] sm:h-[180px] object-cover"
+                        />
+                      </div>
+                      <h3 className="text-center mt-3 font-semibold text-gray-700 text-sm sm:text-base">
+                        {cat.name}
+                      </h3>
                     </div>
-                    <h3 className="text-center mt-3 font-semibold text-gray-700 text-sm sm:text-base">
-                      {cat.name}
-                    </h3>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           </div>

@@ -4,9 +4,12 @@ import { Trash2 } from "lucide-react";
 export default function DeleteAccount() {
   return (
     <div className="p-8 md:p-12 bg-white rounded-[2.5rem] border border-slate-100 min-h-[50vh]">
-      <h1 className="text-4xl font-black text-slate-900 mb-4 italic tracking-tighter uppercase">Termination Protocol</h1>
+      <h1 className="text-4xl font-black text-slate-900 mb-4 italic tracking-tighter uppercase">
+        Termination Protocol
+      </h1>
       <p className="text-slate-500 font-medium uppercase tracking-widest text-xs mb-10 max-w-sm">
-        Permanently purge your account and all associated neural data. This action is irreversible.
+        Permanently purge your account and all associated neural data. This
+        action is irreversible.
       </p>
 
       <div className="p-12 border-2 border-blue-500/20 border-dashed rounded-[3rem] bg-blue-50/50 flex flex-col items-center">

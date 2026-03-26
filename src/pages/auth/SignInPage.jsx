@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebook, FaEnvelope, FaPhone, FaArrowRight, FaLock, FaUser } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaEnvelope,
+  FaPhone,
+  FaArrowRight,
+  FaLock,
+  FaUser,
+} from "react-icons/fa";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,20 +26,16 @@ const SignInPage = () => {
   const [timer, setTimer] = useState(30);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {
-    login,
-    googleLogin,
-    facebookLogin,
-    sendPhoneOTP,
-    verifyPhoneOTP,
-  } = useAuth();
+  const { login, googleLogin, facebookLogin, sendPhoneOTP, verifyPhoneOTP } =
+    useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const redirectTo = location.state?.from?.pathname ||
+  const redirectTo =
+    location.state?.from?.pathname ||
     location.state?.from ||
-    new URLSearchParams(location.search).get('redirect') ||
+    new URLSearchParams(location.search).get("redirect") ||
     "/";
 
   /* ---------------- LOGIC HANDLERS ---------------- */
@@ -100,8 +103,8 @@ const SignInPage = () => {
   const handleSocialLogin = async (provider) => {
     setIsSubmitting(true);
     try {
-      if (provider === 'google') await googleLogin();
-      if (provider === 'facebook') await facebookLogin();
+      if (provider === "google") await googleLogin();
+      if (provider === "facebook") await facebookLogin();
       toast.success("Synchronized successfully.");
       navigate(redirectTo, { replace: true });
     } catch (err) {
@@ -136,29 +139,35 @@ const SignInPage = () => {
           <motion.button
             whileHover={{ y: -4, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => handleSocialLogin('google')}
+            onClick={() => handleSocialLogin("google")}
             disabled={isSubmitting}
             className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-3.5 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
           >
             <FcGoogle size={20} />
-            <span className="text-white text-[10px] font-black uppercase tracking-widest">Google</span>
+            <span className="text-white text-[10px] font-black uppercase tracking-widest">
+              Google
+            </span>
           </motion.button>
           <motion.button
             whileHover={{ y: -4, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => handleSocialLogin('facebook')}
+            onClick={() => handleSocialLogin("facebook")}
             disabled={isSubmitting}
             className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-3.5 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
           >
             <FaFacebook size={20} className="text-[#1877F2]" />
-            <span className="text-white text-[10px] font-black uppercase tracking-widest">Facebook</span>
+            <span className="text-white text-[10px] font-black uppercase tracking-widest">
+              Facebook
+            </span>
           </motion.button>
         </div>
 
         {/* Divider Node */}
         <div className="flex items-center gap-4">
           <div className="flex-1 h-px bg-white/5"></div>
-          <span className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em]">Identity Matrix</span>
+          <span className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em]">
+            Identity Matrix
+          </span>
           <div className="flex-1 h-px bg-white/5"></div>
         </div>
 
@@ -167,11 +176,14 @@ const SignInPage = () => {
           <motion.div
             layoutId="active-toggle"
             className="absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-blue-600 rounded-xl"
-            animate={{ x: loginType === 'mobile' ? 0 : '100%' }}
+            animate={{ x: loginType === "mobile" ? 0 : "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           />
           <button
-            onClick={() => { setLoginType("mobile"); setOtpSent(false); }}
+            onClick={() => {
+              setLoginType("mobile");
+              setOtpSent(false);
+            }}
             className={`flex-1 py-2.5 rounded-xl z-10 text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${loginType === "mobile" ? "text-white" : "text-slate-500 hover:text-slate-300"}`}
           >
             Neural Phone
@@ -196,7 +208,10 @@ const SignInPage = () => {
                 className="space-y-4"
               >
                 <div className="relative group">
-                  <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={14} />
+                  <FaUser
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
+                    size={14}
+                  />
                   <input
                     placeholder="EMAIL OR NEURAL ID"
                     className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
@@ -205,7 +220,10 @@ const SignInPage = () => {
                   />
                 </div>
                 <div className="relative group">
-                  <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={14} />
+                  <FaLock
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
+                    size={14}
+                  />
                   <input
                     type="password"
                     placeholder="ACCESS PASSWORD"
@@ -220,7 +238,10 @@ const SignInPage = () => {
                   className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-blue-500 transition-all shadow-[0_15px_30px_rgba(37,99,235,0.2)] disabled:opacity-50 flex items-center justify-center gap-3 group"
                 >
                   {isSubmitting ? "Authenticating..." : "Initialize Access"}
-                  <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                  <FaArrowRight
+                    size={12}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
                 </button>
               </motion.div>
             ) : (
@@ -235,15 +256,22 @@ const SignInPage = () => {
                   <div className="space-y-4">
                     <div className="relative group">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 border-r border-white/10 pr-3">
-                        <FaPhone className="text-slate-500 group-focus-within:text-blue-500 transition-colors" size={12} />
-                        <span className="text-white text-[10px] font-black tracking-widest">+91</span>
+                        <FaPhone
+                          className="text-slate-500 group-focus-within:text-blue-500 transition-colors"
+                          size={12}
+                        />
+                        <span className="text-white text-[10px] font-black tracking-widest">
+                          +91
+                        </span>
                       </div>
                       <input
                         maxLength="10"
                         placeholder="ENTER NEURAL PHONE"
                         className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-20 pr-4 text-white text-xs font-bold focus:border-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest"
                         value={mobile}
-                        onChange={(e) => setMobile(e.target.value.replace(/\D/g, ""))}
+                        onChange={(e) =>
+                          setMobile(e.target.value.replace(/\D/g, ""))
+                        }
                       />
                     </div>
                     <button
@@ -252,7 +280,10 @@ const SignInPage = () => {
                       className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-blue-500 transition-all shadow-[0_15px_30px_rgba(37,99,235,0.2)] disabled:opacity-50 flex items-center justify-center gap-3 group"
                     >
                       {isSubmitting ? "Requesting..." : "Request Access Key"}
-                      <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                      <FaArrowRight
+                        size={12}
+                        className="group-hover:translate-x-1 transition-transform"
+                      />
                     </button>
                   </div>
                 ) : (
@@ -274,7 +305,10 @@ const SignInPage = () => {
                       className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-blue-500 transition-all shadow-[0_15px_30px_rgba(37,99,235,0.2)] disabled:opacity-50 flex items-center justify-center gap-3 group"
                     >
                       {isSubmitting ? "Verifying..." : "Verify Access Key"}
-                      <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                      <FaArrowRight
+                        size={12}
+                        className="group-hover:translate-x-1 transition-transform"
+                      />
                     </button>
 
                     <div className="flex flex-col items-center gap-4">
@@ -308,12 +342,18 @@ const SignInPage = () => {
         <div className="text-center">
           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
             New to the Matrix?{" "}
-            <Link to="/signup" className="text-blue-500 font-black hover:text-blue-400 underline decoration-2 underline-offset-4">
+            <Link
+              to="/signup"
+              className="text-blue-500 font-black hover:text-blue-400 underline decoration-2 underline-offset-4"
+            >
               Register Account
             </Link>
           </p>
           <div className="mt-4">
-            <Link to="/forgot-password" className="text-[9px] text-slate-600 font-bold uppercase tracking-widest hover:text-blue-500 transition-colors">
+            <Link
+              to="/forgot-password"
+              className="text-[9px] text-slate-600 font-bold uppercase tracking-widest hover:text-blue-500 transition-colors"
+            >
               Loss of Access Permission?
             </Link>
           </div>

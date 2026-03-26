@@ -1,5 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getUserCart, addToCart, updateCartItem, removeCartItem, clearCart as clearCartApi } from "../../services/cartApi";
+import {
+  getUserCart,
+  addToCart,
+  updateCartItem,
+  removeCartItem,
+  clearCart as clearCartApi,
+} from "../../services/cartApi";
 import { setCart, mergeCart, clearCart } from "./cartSlice";
 
 // Sync cart after login (Only push missing guest items to the backend)
@@ -24,7 +30,8 @@ export const syncCartOnLogin = createAsyncThunk(
         const { id: productId, size, color, quantity } = item;
 
         const exists = backendItems.find(
-          (i) => i.productId === productId && i.size === size && i.color === color
+          (i) =>
+            i.productId === productId && i.size === size && i.color === color,
         );
 
         if (!exists) {
@@ -34,7 +41,7 @@ export const syncCartOnLogin = createAsyncThunk(
               size,
               color,
               quantity: item.quantity,
-            })
+            }),
           );
         }
       }
@@ -47,7 +54,7 @@ export const syncCartOnLogin = createAsyncThunk(
     } catch (err) {
       console.error("❌ Failed to sync cart on login:", err);
     }
-  }
+  },
 );
 
 // Fetch backend cart (on refresh or token restore)
@@ -60,7 +67,7 @@ export const loadCartFromBackend = createAsyncThunk(
     } catch (err) {
       console.error("❌ Fetch backend cart error:", err);
     }
-  }
+  },
 );
 
 // Add item to cart (backend sync after local update)
@@ -77,7 +84,7 @@ export const addToCartThunk = createAsyncThunk(
       console.error("❌ Add to cart failed:", err);
       throw err;
     }
-  }
+  },
 );
 
 // Update item quantity in cart
@@ -96,7 +103,7 @@ export const updateCartItemThunk = createAsyncThunk(
       console.error("❌ Update cart item failed:", err);
       throw err;
     }
-  }
+  },
 );
 
 // Remove item from backend and update Redux
@@ -112,7 +119,7 @@ export const removeFromCartThunk = createAsyncThunk(
     } catch (err) {
       console.error("❌ Remove from cart failed:", err);
     }
-  }
+  },
 );
 
 // Clear the entire cart from both Redux and backend
@@ -125,7 +132,7 @@ export const clearCartThunk = createAsyncThunk(
     } catch (err) {
       console.error("❌ Clear cart failed:", err);
     }
-  }
+  },
 );
 
 export { loadCartFromBackend as fetchBackendCart };

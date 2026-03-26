@@ -25,12 +25,42 @@ export default function ProfilePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const profileOptions = [
-    { key: "orders", title: "My Orders", icon: <ShoppingBag size={24} />, component: <Orders /> },
-    { key: "support", title: "Customer Support", icon: <Smile size={24} />, component: <Support /> },
-    { key: "reviews", title: "My Reviews", icon: <Star size={24} />, component: <Reviews /> },
-    { key: "beauty", title: "My Beauty Profile", icon: <User size={24} />, component: <BeautyProfile /> },
-    { key: "addresses", title: "My Addresses", icon: <MapPin size={24} />, component: <Addresses /> },
-    { key: "delete", title: "Delete Account", icon: <Trash2 size={24} />, component: <DeleteAccount /> },
+    {
+      key: "orders",
+      title: "My Orders",
+      icon: <ShoppingBag size={24} />,
+      component: <Orders />,
+    },
+    {
+      key: "support",
+      title: "Customer Support",
+      icon: <Smile size={24} />,
+      component: <Support />,
+    },
+    {
+      key: "reviews",
+      title: "My Reviews",
+      icon: <Star size={24} />,
+      component: <Reviews />,
+    },
+    {
+      key: "beauty",
+      title: "My Beauty Profile",
+      icon: <User size={24} />,
+      component: <BeautyProfile />,
+    },
+    {
+      key: "addresses",
+      title: "My Addresses",
+      icon: <MapPin size={24} />,
+      component: <Addresses />,
+    },
+    {
+      key: "delete",
+      title: "Delete Account",
+      icon: <Trash2 size={24} />,
+      component: <DeleteAccount />,
+    },
   ];
 
   const activeOption = profileOptions.find((opt) => opt.key === activeKey);
@@ -40,7 +70,6 @@ export default function ProfilePage() {
   if (!user) {
     return <SignInPage />;
   }
-
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-white relative selection:bg-blue-600 selection:text-white">
@@ -52,19 +81,27 @@ export default function ProfilePage() {
             <User size={28} className="text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-black text-white italic tracking-tighter uppercase">{user.name || user.username}</h2>
-            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">{user.email}</p>
+            <h2 className="text-xl font-black text-white italic tracking-tighter uppercase">
+              {user.name || user.username}
+            </h2>
+            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">
+              {user.email}
+            </p>
           </div>
         </div>
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2.5 rounded-xl bg-white/5 text-white border border-white/10 hover:bg-white/10 transition-all">
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2.5 rounded-xl bg-white/5 text-white border border-white/10 hover:bg-white/10 transition-all"
+        >
           {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       {/* Corporate Elite Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full w-72 bg-slate-950 border-r border-slate-900 p-0 space-y-0 z-[120] transform transition-transform duration-500 md:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } md:relative md:block overflow-y-auto no-scrollbar`}
+        className={`fixed top-0 left-0 h-full w-72 bg-slate-950 border-r border-slate-900 p-0 space-y-0 z-[120] transform transition-transform duration-500 md:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:relative md:block overflow-y-auto no-scrollbar`}
       >
         {/* Profile Info Header in Sidebar */}
         <div className="p-8 border-b border-slate-900 bg-linear-to-b from-slate-900 to-slate-950">
@@ -72,9 +109,13 @@ export default function ProfilePage() {
             <div className="rounded-3xl bg-blue-600 p-5 mb-5 shadow-2xl shadow-blue-500/20 rotate-3 hover:rotate-0 transition-transform duration-500">
               <User size={48} className="text-white" strokeWidth={2.5} />
             </div>
-            <h2 className="text-xl font-black text-white italic tracking-tight text-center uppercase">{user.name || user?.userName}</h2>
+            <h2 className="text-xl font-black text-white italic tracking-tight text-center uppercase">
+              {user.name || user?.userName}
+            </h2>
             <div className="mt-2 px-3 py-1 bg-blue-600/10 border border-blue-500/20 rounded-full">
-              <span className="text-blue-400 font-black text-[9px] uppercase tracking-[0.3em]">Titan Member</span>
+              <span className="text-blue-400 font-black text-[9px] uppercase tracking-[0.3em]">
+                Titan Member
+              </span>
             </div>
           </div>
         </div>
@@ -88,15 +129,23 @@ export default function ProfilePage() {
                 setActiveKey(option.key);
                 setSidebarOpen(false); // Close sidebar on mobile after selection
               }}
-              className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all duration-300 group ${activeKey === option.key
-                ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20"
-                : "text-slate-400 hover:bg-slate-900 hover:text-white"
-                }`}
+              className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all duration-300 group ${
+                activeKey === option.key
+                  ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20"
+                  : "text-slate-400 hover:bg-slate-900 hover:text-white"
+              }`}
             >
-              <div className={`${activeKey === option.key ? "text-white" : "text-blue-500 group-hover:scale-110"} transition-transform`}>
-                {React.cloneElement(option.icon, { size: 20, strokeWidth: 2.5 })}
+              <div
+                className={`${activeKey === option.key ? "text-white" : "text-blue-500 group-hover:scale-110"} transition-transform`}
+              >
+                {React.cloneElement(option.icon, {
+                  size: 20,
+                  strokeWidth: 2.5,
+                })}
               </div>
-              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] italic">{option.title}</h3>
+              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] italic">
+                {option.title}
+              </h3>
             </div>
           ))}
         </div>

@@ -1,5 +1,8 @@
-import React from 'react';
-import { calculateCartShipping, runShippingTests } from '../utils/shippingCalculatorTest';
+import React from "react";
+import {
+  calculateCartShipping,
+  runShippingTests,
+} from "../utils/shippingCalculatorTest";
 
 /**
  * Example component showing how shipping calculator works
@@ -11,37 +14,44 @@ const ShippingExample = () => {
     {
       product: {
         name: "Face Cream",
-        size: "50ml"
+        size: "50ml",
       },
-      quantity: 2
+      quantity: 2,
     },
     {
       product: {
-        name: "Body Lotion", 
-        size: "200gm"
+        name: "Body Lotion",
+        size: "200gm",
       },
-      quantity: 1
+      quantity: 1,
     },
     {
       product: {
         name: "Shampoo",
-        size: "1kg"
+        size: "1kg",
       },
-      quantity: 1
-    }
+      quantity: 1,
+    },
   ];
 
   const shippingResult = calculateCartShipping(exampleCart);
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Shipping Calculator Example</h2>
-      
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">
+        Shipping Calculator Example
+      </h2>
+
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-3">Sample Cart Items:</h3>
         {exampleCart.map((item, index) => (
-          <div key={index} className="flex justify-between items-center py-2 border-b">
-            <span>{item.product.name} ({item.product.size})</span>
+          <div
+            key={index}
+            className="flex justify-between items-center py-2 border-b"
+          >
+            <span>
+              {item.product.name} ({item.product.size})
+            </span>
             <span>Qty: {item.quantity}</span>
           </div>
         ))}
@@ -75,12 +85,13 @@ const ShippingExample = () => {
         <h3 className="text-lg font-semibold mb-3">Weight Breakdown:</h3>
         {shippingResult.weightSources.map((item, index) => (
           <div key={index} className="text-sm text-gray-600 mb-1">
-            {item.productName}: {item.sizeString} → {item.calculatedWeight}g each × {item.quantity}
+            {item.productName}: {item.sizeString} → {item.calculatedWeight}g
+            each × {item.quantity}
           </div>
         ))}
       </div>
 
-      <button 
+      <button
         onClick={() => runShippingTests()}
         className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
       >

@@ -12,11 +12,16 @@ const normalizeItem = (item) => ({
   id: item.productId || item.id || item._id,
   backendId: item._id || item.backendId, // Preserve backend itemId if available
   name: item.name,
-  image: item.image || item.pimage || (item.product?.pimage) || (item.product?.image) || '/placeholder-premium.png',
+  image:
+    item.image ||
+    item.pimage ||
+    item.product?.pimage ||
+    item.product?.image ||
+    "/placeholder-premium.png",
   price: Number(item.price || item.product?.variants?.price || 0),
   quantity: Number(item.quantity || 1),
-  color: item.color || 'DFT',
-  size: item.size || 'STD',
+  color: item.color || "DFT",
+  size: item.size || "STD",
 });
 
 // Calculate totals for cart
@@ -33,7 +38,7 @@ const cartSlice = createSlice({
     // ✅ FINAL FIX: Add item - REPLACE quantity for both local and backend
     addItem(state, action) {
       const newItem = normalizeItem(action.payload);
-      
+
       // console.log("📦 CartSlice addItem:", {
       //   newItem,
       //   currentItems: state.items.map(i => ({
@@ -45,7 +50,10 @@ const cartSlice = createSlice({
       // });
 
       const existing = state.items.find(
-        (i) => i.id === newItem.id && i.size === newItem.size && i.color === newItem.color
+        (i) =>
+          i.id === newItem.id &&
+          i.size === newItem.size &&
+          i.color === newItem.color,
       );
 
       if (existing) {
@@ -63,13 +71,13 @@ const cartSlice = createSlice({
     // Update item quantity
     updateItemQuantity(state, action) {
       const { id, size, color, quantity } = action.payload;
-      
+
       // console.log("📝 CartSlice updateItemQuantity:", { id, size, color, quantity });
-      
+
       const item = state.items.find(
-        (i) => i.id === id && i.size === size && i.color === color
+        (i) => i.id === id && i.size === size && i.color === color,
       );
-      
+
       if (item) {
         item.quantity = quantity;
         // console.log(`✅ Updated quantity: ${color} - Qty: ${quantity}`);
@@ -85,11 +93,11 @@ const cartSlice = createSlice({
     // Remove item
     removeItem(state, action) {
       const { id, size, color } = action.payload;
-      
+
       // console.log("🗑️ CartSlice removeItem:", { id, size, color });
-      
+
       state.items = state.items.filter(
-        (i) => !(i.id === id && i.size === size && i.color === color)
+        (i) => !(i.id === id && i.size === size && i.color === color),
       );
 
       const totals = calculateTotals(state.items);
@@ -114,7 +122,10 @@ const cartSlice = createSlice({
 
       backendItems.forEach((backendItem) => {
         const existing = state.items.find(
-          (i) => i.id === backendItem.id && i.size === backendItem.size && i.color === backendItem.color
+          (i) =>
+            i.id === backendItem.id &&
+            i.size === backendItem.size &&
+            i.color === backendItem.color,
         );
 
         if (existing) {

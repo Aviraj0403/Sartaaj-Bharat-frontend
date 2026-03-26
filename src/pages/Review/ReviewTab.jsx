@@ -7,8 +7,10 @@ const ReviewTab = ({ productId, reviews, setReviews }) => {
   const { user } = useAuth();
 
   // Check if the user has already submitted a review
-  const userHasReviewed = reviews.some(review => review.user._id === user?.id);
-//  console.log("User Has Reviewed:", userHasReviewed);
+  const userHasReviewed = reviews.some(
+    (review) => review.user._id === user?.id,
+  );
+  //  console.log("User Has Reviewed:", userHasReviewed);
   return (
     <div className="py-6">
       {/* Review List */}

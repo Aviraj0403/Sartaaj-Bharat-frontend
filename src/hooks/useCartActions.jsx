@@ -30,10 +30,8 @@ export const useCartActions = () => {
   // 🔧 FIX: Include color parameter in findCartItem
   const findCartItem = (productId, size, color) =>
     cartItems.find(
-      (item) => 
-        item.id === productId && 
-        item.size === size && 
-        item.color === color
+      (item) =>
+        item.id === productId && item.size === size && item.color === color,
     );
 
   const handleAction = async (actionCallback) => {
@@ -70,6 +68,13 @@ export const useCartActions = () => {
 
     const addItemAction = async () => {
       // Optimistically update local cart
+      const selectedVariantInfo = Array.isArray(product.variants)
+        ? product.variants.find(
+            (v) =>
+              v.size === size && (v.color === color || v.color?.[0] === color),
+          ) || product.variants[0]
+        : product.variants;
+
       dispatch(
         addItem({
           id: product._id,
@@ -77,20 +82,20 @@ export const useCartActions = () => {
           image: product.pimage || product.image,
           size,
           color,
-          price: product.variants?.price || product.price || 0,
-          quantity, 
-        })
+          price: selectedVariantInfo?.price || product.price || 0,
+          quantity,
+        }),
       );
 
       // If authenticated, sync with backend
       if (isAuthenticated) {
         await dispatch(
-          addToCartThunk({ 
-            productId: product._id, 
-            size, 
-            color, 
-            quantity
-          })
+          addToCartThunk({
+            productId: product._id,
+            size,
+            color,
+            quantity,
+          }),
         ).unwrap();
       }
 
@@ -115,7 +120,7 @@ export const useCartActions = () => {
         const item = findCartItem(productId, size, color);
         if (item?.backendId) {
           await dispatch(
-            updateCartItemThunk({ backendId: item.backendId, quantity })
+            updateCartItemThunk({ backendId: item.backendId, quantity }),
           ).unwrap();
         }
       }
@@ -129,10 +134,11 @@ export const useCartActions = () => {
   // 🔧 FIX: Debounced version now includes color
   const updateQuantityDebounced = useCallback(
     debounce(
-      (productId, size, color, qty) => updateQuantity(productId, size, color, qty), 
-      500
+      (productId, size, color, qty) =>
+        updateQuantity(productId, size, color, qty),
+      500,
     ),
-    []
+    [],
   );
 
   // ⭐ Remove Item - FIXED
@@ -141,15 +147,13 @@ export const useCartActions = () => {
 
     const removeItemAction = async () => {
       const item = findCartItem(productId, size, color);
-      
+
       // Optimistically remove item from local cart
       dispatch(removeItem({ id: productId, size, color }));
 
       // If authenticated, remove from backend
       if (isAuthenticated && item?.backendId) {
-        await dispatch(
-          removeFromCartThunk(item.backendId)
-        ).unwrap();
+        await dispatch(removeFromCartThunk(item.backendId)).unwrap();
       }
 
       return { success: true };
@@ -162,8 +166,10 @@ export const useCartActions = () => {
   const clearCart = async () => {
     const clearAction = async () => {
       // Optimistically clear local cart with color
-      cartItems.forEach((item) => 
-        dispatch(removeItem({ id: item.id, size: item.size, color: item.color }))
+      cartItems.forEach((item) =>
+        dispatch(
+          removeItem({ id: item.id, size: item.size, color: item.color }),
+        ),
       );
 
       // If authenticated, clear from backend
@@ -180,12 +186,12 @@ export const useCartActions = () => {
   // Calculate totals
   const totalAmount = cartItems.reduce(
     (acc, item) => acc + (item.price || 0) * (item.quantity || 0),
-    0
+    0,
   );
 
   const totalItems = cartItems.reduce(
     (acc, item) => acc + (item.quantity || 0),
-    0
+    0,
   );
 
   return {

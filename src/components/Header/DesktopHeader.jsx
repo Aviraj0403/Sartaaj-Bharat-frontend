@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Smartphone, Info, Truck, ShoppingCart, User, LogOut, ChevronDown } from "lucide-react";
+import {
+  Smartphone,
+  Info,
+  Truck,
+  ShoppingCart,
+  User,
+  LogOut,
+  ChevronDown,
+} from "lucide-react";
 import { FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 import logo from "../../image/sb.png";
 import { useQuery } from "@tanstack/react-query";
@@ -16,9 +24,17 @@ export default function DesktopHeader() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const { user, logout } = useAuth();
   const { items: cartItems } = useSelector((state) => state.cart);
-  const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const totalQuantity = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0,
+  );
 
-  const { data: menuItems, isLoading, isError, error } = useQuery({
+  const {
+    data: menuItems,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["categories"],
     queryFn: getMenuCategories,
   });
@@ -57,7 +73,9 @@ export default function DesktopHeader() {
   if (isError) {
     return (
       <header className="w-full border-b border-slate-100">
-        <div className="bg-slate-50 text-center py-4 font-black text-[10px] uppercase tracking-[0.4em] text-slate-400 italic">Synchronizing Neural Interface...</div>
+        <div className="bg-slate-50 text-center py-4 font-black text-[10px] uppercase tracking-[0.4em] text-slate-400 italic">
+          Synchronizing Neural Interface...
+        </div>
       </header>
     );
   }
@@ -66,12 +84,16 @@ export default function DesktopHeader() {
     <header className="w-full z-[999]">
       {/* 🟣 TOP BAR */}
       <div
-        className={`fixed top-0 left-0 w-full bg-slate-950 text-white text-[10px] font-black uppercase tracking-[0.3em] flex justify-between items-center px-8 py-3 shadow-2xl transition-transform duration-500 z-[999] italic ${showTopBar ? "translate-y-0" : "-translate-y-full"
-          }`}
+        className={`fixed top-0 left-0 w-full bg-slate-950 text-white text-[10px] font-black uppercase tracking-[0.3em] flex justify-between items-center px-8 py-3 shadow-2xl transition-transform duration-500 z-[999] italic ${
+          showTopBar ? "translate-y-0" : "-translate-y-full"
+        }`}
       >
         <div className="flex items-center gap-3">
           <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
-          <span>LOGGED INTO <strong className="text-blue-500">ELITE ENTERPRISE</strong></span>
+          <span>
+            LOGGED INTO{" "}
+            <strong className="text-blue-500">ELITE ENTERPRISE</strong>
+          </span>
         </div>
         <div className="flex items-center gap-8">
           <span className="flex items-center gap-2 hover:text-blue-500 transition-colors cursor-pointer">
@@ -79,7 +101,8 @@ export default function DesktopHeader() {
             +91 9999398494
           </span>
           <span className="flex items-center gap-2 hover:text-blue-500 transition-colors cursor-pointer">
-            <FaMapMarkerAlt className="text-blue-500 text-sm" /> KAROL BAGH SECURE HUB
+            <FaMapMarkerAlt className="text-blue-500 text-sm" /> KAROL BAGH
+            SECURE HUB
           </span>
         </div>
       </div>
@@ -101,31 +124,57 @@ export default function DesktopHeader() {
               Initiate Product Scan...
             </div>
 
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60" size={18} strokeWidth={3} />
+            <Search
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60"
+              size={18}
+              strokeWidth={3}
+            />
           </div>
         </div>
 
         {/* Right Side */}
         <div className="absolute right-8 top-1/2 -translate-y-1/2 flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.3em] italic">
-          <Link to="/contact-us" className="flex items-center gap-2 hover:text-slate-900 transition-colors">
+          <Link
+            to="/contact-us"
+            className="flex items-center gap-2 hover:text-slate-900 transition-colors"
+          >
             <Info size={16} strokeWidth={3} /> SUPPORT
           </Link>
 
-          <Link to="/profile" className="flex items-center gap-2 hover:text-slate-900 transition-colors">
+          <Link
+            to="/profile"
+            className="flex items-center gap-2 hover:text-slate-900 transition-colors"
+          >
             <Truck size={16} strokeWidth={3} /> TRACKING
           </Link>
 
           {user ? (
             <div className="flex items-center gap-4 bg-slate-900 px-6 py-2 rounded-full border border-white/10">
-              <User size={16} className="cursor-pointer hover:text-blue-500 transition-colors" onClick={handleProfileClick} />
-              <span className="cursor-pointer hover:text-blue-500 transition-colors uppercase" onClick={handleProfileClick}>
+              <User
+                size={16}
+                className="cursor-pointer hover:text-blue-500 transition-colors"
+                onClick={handleProfileClick}
+              />
+              <span
+                className="cursor-pointer hover:text-blue-500 transition-colors uppercase"
+                onClick={handleProfileClick}
+              >
                 {user.userName}
               </span>
               <div className="w-[2px] h-3 bg-white/10 mx-1"></div>
-              <LogOut size={16} className="cursor-pointer hover:text-red-500 transition-colors" onClick={handleLogout} />
+              <LogOut
+                size={16}
+                className="cursor-pointer hover:text-red-500 transition-colors"
+                onClick={handleLogout}
+              />
             </div>
           ) : (
-            <Link to="/signin" className="bg-white text-blue-600 px-6 py-2 rounded-full hover:bg-slate-900 hover:text-white transition-all shadow-lg active:scale-95">AUTHORIZE ACCESS</Link>
+            <Link
+              to="/signin"
+              className="bg-white text-blue-600 px-6 py-2 rounded-full hover:bg-slate-900 hover:text-white transition-all shadow-lg active:scale-95"
+            >
+              AUTHORIZE ACCESS
+            </Link>
           )}
         </div>
       </div>
@@ -144,7 +193,6 @@ export default function DesktopHeader() {
         </Link>
 
         <ul className="flex items-center gap-4 text-gray-800 font-semibold whitespace-nowrap z-10">
-
           {/* ⭐ DYNAMIC MENU ITEMS FIRST */}
           {menuItems.map((item, index) => (
             <li
@@ -161,7 +209,13 @@ export default function DesktopHeader() {
           group-hover:after:w-full group-hover:text-blue-600 text-slate-900"
               >
                 {item.name}
-                {item.subcategories.length > 0 && <ChevronDown size={14} strokeWidth={3} className="mt-0.5 group-hover:rotate-180 transition-transform duration-500" />}
+                {item.subcategories.length > 0 && (
+                  <ChevronDown
+                    size={14}
+                    strokeWidth={3}
+                    className="mt-0.5 group-hover:rotate-180 transition-transform duration-500"
+                  />
+                )}
               </Link>
 
               {item.subcategories.length > 0 && activeMenu === index && (
@@ -206,16 +260,12 @@ export default function DesktopHeader() {
                   </ul>
                 </div>
               )}
-
             </li>
           ))}
 
           {/* ⭐ STATIC MENU ITEM 1 → NEW ARRIVALS */}
           <li>
-            <Link
-              to="/new-products"
-              className="hover:text-pink-600 transition"
-            >
+            <Link to="/new-products" className="hover:text-pink-600 transition">
               New Arrivals
             </Link>
           </li>
@@ -229,9 +279,7 @@ export default function DesktopHeader() {
       Cloths
     </Link> */}
           </li>
-
         </ul>
-
 
         {/* CART ICON */}
         <Link to="/cart" className="relative cursor-pointer group">

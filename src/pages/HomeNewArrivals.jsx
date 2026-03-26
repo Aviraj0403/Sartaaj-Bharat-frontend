@@ -1,19 +1,22 @@
 import React, { useEffect } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";  // Use React Query for fetching
-import { getMiniProducts } from "../services/productApi";  // Your dynamic API function
-import NewArrivalPC from "../components/Product/NewArrivalPC";  // Import the reusable product card
-
+import { useQuery } from "@tanstack/react-query"; // Use React Query for fetching
+import { getMiniProducts } from "../services/productApi"; // Your dynamic API function
+import NewArrivalPC from "../components/Product/NewArrivalPC"; // Import the reusable product card
 
 export default function HomeNewArrivals() {
   const navigate = useNavigate();
 
-  const { data: productsData, isLoading, isError, error } = useQuery({
+  const {
+    data: productsData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["miniProducts", "home"],
     queryFn: () => getMiniProducts(1, 10),
   });
-
 
   // Handle navigation to product details page
   const handleProductClick = (slug) => {
@@ -21,11 +24,17 @@ export default function HomeNewArrivals() {
   };
 
   if (isLoading) {
-    return <div className="text-center text-blue-600 font-black py-20 uppercase tracking-[0.5em] italic animate-pulse">Synchronizing...</div>;
+    return (
+      <div className="text-center text-blue-600 font-black py-20 uppercase tracking-[0.5em] italic animate-pulse">
+        Synchronizing...
+      </div>
+    );
   }
 
   if (isError) {
-    return <div className="text-center text-red-600">Error: {error.message}</div>;
+    return (
+      <div className="text-center text-red-600">Error: {error.message}</div>
+    );
   }
 
   const products = productsData?.products || [];
@@ -33,9 +42,9 @@ export default function HomeNewArrivals() {
   return (
     <section className="py-5 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-
-        <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block text-center italic">Newly Cataloged</span>
+        <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block text-center italic">
+          Newly Cataloged
+        </span>
         <h2 className="text-3xl md:text-5xl font-black text-slate-950 mb-12 text-center italic uppercase tracking-tighter">
           LATEST <span className="text-blue-600">ARCHIVES.</span>
         </h2>
@@ -46,7 +55,7 @@ export default function HomeNewArrivals() {
             <NewArrivalPC
               key={product._id}
               product={product}
-              onProductClick={handleProductClick}  // Pass custom click handler if needed
+              onProductClick={handleProductClick} // Pass custom click handler if needed
             />
           ))}
         </div>
@@ -75,7 +84,6 @@ export default function HomeNewArrivals() {
 }
 `}
           </style>
-
         </div>
       </div>
     </section>

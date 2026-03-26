@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
   const sendPhoneOTP = async (phoneNumber) => {
     try {
       const response = await Axios.post("/auth/phone/request-otp", {
-        phoneNumber
+        phoneNumber,
       });
       return response.data;
     } catch (error) {
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await Axios.post("/auth/phone/verify-otp", {
         phoneNumber,
-        otp
+        otp,
       });
 
       // Fetch updated user data
@@ -101,17 +101,17 @@ export const AuthProvider = ({ children }) => {
   // ✅ Google Login with proper error handling
   const googleLogin = async () => {
     try {
-      console.log('🔐 Starting Google login...');
+      console.log("🔐 Starting Google login...");
 
       // Dynamic import of Firebase
       const { auth, googleProvider, signInWithPopup } =
         await import("../pages/firebase/firebase");
       const { getIdToken } = await import("firebase/auth");
 
-      console.log('🔐 Opening Google sign-in popup...');
+      console.log("🔐 Opening Google sign-in popup...");
       const result = await signInWithPopup(auth, googleProvider);
 
-      console.log('✅ Google popup successful');
+      console.log("✅ Google popup successful");
       const firebaseUser = result.user;
       const idToken = await getIdToken(firebaseUser);
 
@@ -119,17 +119,17 @@ export const AuthProvider = ({ children }) => {
 
       // Send token to backend
       const response = await Axios.post("/auth/google", {
-        idToken
+        idToken,
       });
 
-      console.log('✅ Backend authentication successful');
+      console.log("✅ Backend authentication successful");
 
       // Fetch updated user data
       const userRes = await Axios.get("/auth/profile");
       setUser(userRes.data.data);
       dispatch(setUser(userRes.data.data)); // Sync with Redux
 
-      console.log('🛒 Syncing cart...');
+      console.log("🛒 Syncing cart...");
 
       // Sync cart
       setCartSyncing(true);
@@ -142,22 +142,22 @@ export const AuthProvider = ({ children }) => {
       }
       setCartSyncing(false);
 
-      console.log('✅ Google login complete');
+      console.log("✅ Google login complete");
 
       return userRes.data.data;
     } catch (error) {
-      console.error('❌ Google login error:', error);
+      console.error("❌ Google login error:", error);
 
       // Handle specific Firebase errors
-      if (error.code === 'auth/popup-closed-by-user') {
+      if (error.code === "auth/popup-closed-by-user") {
         throw { message: "Sign-in cancelled" };
       }
 
-      if (error.code === 'auth/popup-blocked') {
+      if (error.code === "auth/popup-blocked") {
         throw { message: "Popup blocked. Please allow popups for this site." };
       }
 
-      if (error.code === 'auth/network-request-failed') {
+      if (error.code === "auth/network-request-failed") {
         throw { message: "Network error. Please check your connection." };
       }
 
@@ -198,9 +198,12 @@ export const AuthProvider = ({ children }) => {
 
       return userRes.data.data;
     } catch (error) {
-      console.error('❌ Facebook login error:', error);
-      if (error.code === 'auth/popup-closed-by-user') throw { message: "Sign-in cancelled" };
-      throw { message: error.response?.data?.message || "Facebook login failed" };
+      console.error("❌ Facebook login error:", error);
+      if (error.code === "auth/popup-closed-by-user")
+        throw { message: "Sign-in cancelled" };
+      throw {
+        message: error.response?.data?.message || "Facebook login failed",
+      };
     }
   };
 

@@ -39,10 +39,7 @@ export default function PromoSection() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {products.map((product, idx) => (
-            <div
-              key={idx}
-              className="flex flex-col items-center text-center"
-            >
+            <div key={idx} className="flex flex-col items-center text-center">
               <img
                 src={product.image}
                 alt={product.brand}

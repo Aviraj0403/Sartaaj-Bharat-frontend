@@ -1,6 +1,16 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Youtube, MapPin, Phone, Mail, Heart, ArrowUpRight } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import {
+  Facebook,
+  Twitter,
+  Instagram,
+  Youtube,
+  MapPin,
+  Phone,
+  Mail,
+  Heart,
+  ArrowUpRight,
+} from "lucide-react";
 
 const Footer = () => {
   return (
@@ -16,11 +26,14 @@ const Footer = () => {
             <h1 className="text-2xl font-black text-white leading-none tracking-tight">
               SARTAAJ<span className="text-blue-500">BHARAT</span>
             </h1>
-            <span className="text-[10px] font-bold text-slate-500 tracking-[0.3em] uppercase block mt-1">Premium Excellence</span>
+            <span className="text-[10px] font-bold text-slate-500 tracking-[0.3em] uppercase block mt-1">
+              Premium Excellence
+            </span>
           </Link>
 
           <p className="text-sm leading-relaxed max-w-xs font-medium">
-            Redefining the digital shopping experience with premium technology and lifestyle essentials curated for the modern world.
+            Redefining the digital shopping experience with premium technology
+            and lifestyle essentials curated for the modern world.
           </p>
 
           <div className="flex gap-4">
@@ -38,12 +51,27 @@ const Footer = () => {
 
         {/* Column 2: Experience */}
         <div>
-          <h3 className="text-white text-xs font-black uppercase tracking-[0.3em] mb-8">Experience</h3>
+          <h3 className="text-white text-xs font-black uppercase tracking-[0.3em] mb-8">
+            Experience
+          </h3>
           <ul className="space-y-4 text-sm font-semibold">
-            {['Latest Drops', 'Exclusive Collections', 'Hot Deals', 'Store Locator', 'Elite Membership'].map((item) => (
+            {[
+              "Latest Drops",
+              "Exclusive Collections",
+              "Hot Deals",
+              "Store Locator",
+              "Elite Membership",
+            ].map((item) => (
               <li key={item}>
-                <a href="#" className="hover:text-blue-400 transition-colors flex items-center gap-2 group">
-                  {item} <ArrowUpRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                <a
+                  href="#"
+                  className="hover:text-blue-400 transition-colors flex items-center gap-2 group"
+                >
+                  {item}{" "}
+                  <ArrowUpRight
+                    size={14}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  />
                 </a>
               </li>
             ))}
@@ -52,12 +80,27 @@ const Footer = () => {
 
         {/* Column 3: Corporate */}
         <div>
-          <h3 className="text-white text-xs font-black uppercase tracking-[0.3em] mb-8">Corporate</h3>
+          <h3 className="text-white text-xs font-black uppercase tracking-[0.3em] mb-8">
+            Corporate
+          </h3>
           <ul className="space-y-4 text-sm font-semibold">
-            {['Our Story', 'Careers at Sartaaj', 'Sustainability', 'Investors', 'Wholesale'].map((item) => (
+            {[
+              "Our Story",
+              "Careers at Sartaaj",
+              "Sustainability",
+              "Investors",
+              "Wholesale",
+            ].map((item) => (
               <li key={item}>
-                <a href="#" className="hover:text-blue-400 transition-colors flex items-center gap-2 group">
-                  {item} <ArrowUpRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                <a
+                  href="#"
+                  className="hover:text-blue-400 transition-colors flex items-center gap-2 group"
+                >
+                  {item}{" "}
+                  <ArrowUpRight
+                    size={14}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  />
                 </a>
               </li>
             ))}
@@ -67,15 +110,21 @@ const Footer = () => {
         {/* Column 4: Concierge */}
         <div className="space-y-8">
           <div>
-            <h3 className="text-white text-xs font-black uppercase tracking-[0.3em] mb-8">Concierge</h3>
+            <h3 className="text-white text-xs font-black uppercase tracking-[0.3em] mb-8">
+              Concierge
+            </h3>
             <ul className="space-y-4">
               <li className="flex items-center gap-4 group">
                 <div className="w-10 h-10 rounded-xl bg-slate-800/50 flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-smooth border border-slate-700/50">
                   <Phone size={18} />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Call Center</p>
-                  <p className="text-white text-sm font-bold">+91 98765 43210</p>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    Call Center
+                  </p>
+                  <p className="text-white text-sm font-bold">
+                    +91 98765 43210
+                  </p>
                 </div>
               </li>
               <li className="flex items-center gap-4 group">
@@ -83,8 +132,12 @@ const Footer = () => {
                   <Mail size={18} />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Email Support</p>
-                  <p className="text-white text-sm font-bold">concierge@sartaaj.com</p>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    Email Support
+                  </p>
+                  <p className="text-white text-sm font-bold">
+                    concierge@sartaaj.com
+                  </p>
                 </div>
               </li>
             </ul>
@@ -96,7 +149,9 @@ const Footer = () => {
       <div className="container-custom mb-16">
         <div className="bg-blue-600 rounded-[2rem] p-6 sm:p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8">
           <div className="w-full text-center md:text-left">
-            <h3 className="text-white text-2xl md:text-3xl font-black mb-2">JOIN THE ELITE</h3>
+            <h3 className="text-white text-2xl md:text-3xl font-black mb-2">
+              JOIN THE ELITE
+            </h3>
             <p className="text-blue-100 font-medium">
               Get exclusive access to the latest drops and private deals.
             </p>
@@ -118,12 +173,29 @@ const Footer = () => {
         <div className="container-custom flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold uppercase tracking-[0.2em]">
           <p>&copy; 2026 SARTAAJ BHARAT. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-8">
-            <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link to="/terms-conditions" className="hover:text-white transition-colors">Terms of Service</Link>
-            <Link to="/cookie-policy" className="hover:text-white transition-colors">Cookies</Link>
+            <Link
+              to="/privacy-policy"
+              className="hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              to="/terms-conditions"
+              className="hover:text-white transition-colors"
+            >
+              Terms of Service
+            </Link>
+            <Link
+              to="/cookie-policy"
+              className="hover:text-white transition-colors"
+            >
+              Cookies
+            </Link>
           </div>
           <p className="flex items-center gap-1">
-            Engineered with <Heart size={10} className="text-blue-600 fill-current" /> by Sartaaj Prime
+            Engineered with{" "}
+            <Heart size={10} className="text-blue-600 fill-current" /> by
+            Sartaaj Prime
           </p>
         </div>
       </div>

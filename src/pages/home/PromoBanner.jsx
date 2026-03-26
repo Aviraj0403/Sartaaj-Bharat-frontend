@@ -1,56 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { getPromoBanners } from "../../services/promoBannerApi";
 import banner1 from "../../image/banner/bk1.png";
 
 export default function PromoBanner() {
-  const [promoBanners, setPromoBanners] = useState([]);
   const [current, setCurrent] = useState(0);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchPromoBanners = async () => {
-      try {
-        setLoading(true);
-        const data = await getPromoBanners();
-        
-        // Extract banners array from response
-        const banners = data?.promoBanners || data || [];
-        
-        // If no banners from backend, use default banner
-        if (!banners || banners.length === 0) {
-          setPromoBanners([{
-            _id: 'default-banner',
-            bannerImage: banner1,
-            title: 'Special Offers',
-            description: 'Discover amazing deals on beauty products'
-          }]);
-        } else {
-          // Use banners directly - API already returns only active banners with images
-          setPromoBanners(banners);
-        }
-      } catch (error) {
-        console.error('Error fetching promo banners:', error);
-        // On error, show default banner
-        setPromoBanners([{
-          _id: 'default-banner',
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ["promoBanners"],
+    queryFn: getPromoBanners,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const getBanners = () => {
+    const banners = data?.promoBanners || data || [];
+    if (!banners || banners.length === 0) {
+      return [
+        {
+          _id: "default-banner",
           bannerImage: banner1,
-          title: 'Special Offers',
-          description: 'Discover amazing deals on beauty products'
-        }]);
-      } finally {
-        setLoading(false);
-      }
-    };
+          title: "Special Offers",
+          description: "Discover amazing deals on beauty products",
+        },
+      ];
+    }
+    return banners;
+  };
 
-    fetchPromoBanners();
-  }, []);
+  const promoBanners = getBanners();
 
   useEffect(() => {
     if (promoBanners.length > 1) {
       const interval = setInterval(() => {
         setCurrent((prev) => (prev + 1) % promoBanners.length);
-      }, 5000); // Change slide every 5 seconds
+      }, 5000);
       return () => clearInterval(interval);
     }
   }, [promoBanners.length]);
@@ -71,35 +55,34 @@ export default function PromoBanner() {
     );
   }
 
-return (
-  <div className="relative w-full overflow-hidden">
-    {/* Slider Container with Responsive Height */}
-    <div
-      className="flex transition-transform duration-700 ease-in-out"
-      style={{ transform: `translateX(-${current * 100}%)` }}
-    >
-      {promoBanners.map((banner, index) => (
-        <div
-          key={banner._id || index}
-          className="
+  return (
+    <div className="relative w-full overflow-hidden">
+      {/* Slider Container with Responsive Height */}
+      <div
+        className="flex transition-transform duration-700 ease-in-out"
+        style={{ transform: `translateX(-${current * 100}%)` }}
+      >
+        {promoBanners.map((banner, index) => (
+          <div
+            key={banner._id || index}
+            className="
             relative w-full flex-shrink-0
          h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px] xl:h-[340px]
 
           "
-        >
-          {/* Banner Image */}
-          <img
-            src={banner.bannerImage}
-            alt={banner.title || `Promo Banner ${index + 1}`}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-
-          Overlay
-          {(banner.title || banner.description) &&
-            banner._id !== "default-banner" && (
-              <div className="absolute inset-0  flex items-end">
-                {/* <div className="p-4 md:p-8 text-white max-w-2xl">
+          >
+            {/* Banner Image */}
+            <img
+              src={banner.bannerImage}
+              alt={banner.title || `Promo Banner ${index + 1}`}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            Overlay
+            {(banner.title || banner.description) &&
+              banner._id !== "default-banner" && (
+                <div className="absolute inset-0  flex items-end">
+                  {/* <div className="p-4 md:p-8 text-white max-w-2xl">
                   {banner.title && (
                     <h3 className="text-xl md:text-3xl lg:text-4xl font-bold mb-2">
                       {banner.title}
@@ -111,44 +94,43 @@ return (
                     </p>
                   )}
                 </div> */}
-              </div>
-            )}
-        </div>
-      ))}
+                </div>
+              )}
+          </div>
+        ))}
+      </div>
+
+      {/* Navigation Arrows */}
+      {promoBanners.length > 1 && (
+        <>
+          <button
+            onClick={prevSlide}
+            className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full"
+          >
+            <ChevronLeft />
+          </button>
+
+          <button
+            onClick={nextSlide}
+            className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full"
+          >
+            <ChevronRight />
+          </button>
+
+          {/* Dots */}
+          <div className="absolute bottom-4 w-full flex justify-center gap-2">
+            {promoBanners.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`w-3 h-3 rounded-full transition ${
+                  i === current ? "bg-white scale-110" : "bg-white/50"
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
-
-    {/* Navigation Arrows */}
-    {promoBanners.length > 1 && (
-      <>
-        <button
-          onClick={prevSlide}
-          className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full"
-        >
-          <ChevronLeft />
-        </button>
-
-        <button
-          onClick={nextSlide}
-          className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full"
-        >
-          <ChevronRight />
-        </button>
-
-        {/* Dots */}
-        <div className="absolute bottom-4 w-full flex justify-center gap-2">
-          {promoBanners.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`w-3 h-3 rounded-full transition ${
-                i === current ? "bg-white scale-110" : "bg-white/50"
-              }`}
-            />
-          ))}
-        </div>
-      </>
-    )}
-  </div>
-);
-
+  );
 }

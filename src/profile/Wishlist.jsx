@@ -1,7 +1,16 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Trash2, ShoppingCart, Sparkles, ArrowLeft, Loader2, Search, ArrowRight } from "lucide-react";
+import {
+  Heart,
+  Trash2,
+  ShoppingCart,
+  Sparkles,
+  ArrowLeft,
+  Loader2,
+  Search,
+  ArrowRight,
+} from "lucide-react";
 import { useWishlist } from "../hooks";
 import ProductCard from "../components/Product/ProductCard";
 
@@ -17,7 +26,9 @@ export default function Wishlist() {
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           className="w-16 h-16 border-4 border-slate-100 border-t-blue-600 rounded-full mb-6"
         />
-        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 italic">Updating Favorites...</span>
+        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 italic">
+          Updating Favorites...
+        </span>
       </div>
     );
   }
@@ -25,7 +36,6 @@ export default function Wishlist() {
   return (
     <div className="min-h-screen bg-slate-50/50 py-12 md:py-24 font-sans selection:bg-blue-600 selection:text-white">
       <div className="container-custom px-4">
-
         {/* Header - Elite Gallery Essence */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 px-4">
           <div>
@@ -33,7 +43,10 @@ export default function Wishlist() {
               <Sparkles size={14} /> Desired Items
             </div>
             <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter italic leading-none uppercase">
-              Your <span className="text-blue-600 underline underline-offset-[16px] decoration-8">Wishlist</span>
+              Your{" "}
+              <span className="text-blue-600 underline underline-offset-[16px] decoration-8">
+                Wishlist
+              </span>
             </h1>
           </div>
 
@@ -44,7 +57,11 @@ export default function Wishlist() {
               onClick={clearWishlist}
               className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 hover:text-red-500 transition-colors group italic"
             >
-              <Trash2 size={18} className="group-hover:rotate-12 transition-transform" /> Clear Wishlist
+              <Trash2
+                size={18}
+                className="group-hover:rotate-12 transition-transform"
+              />{" "}
+              Clear Wishlist
             </motion.button>
           )}
         </header>
@@ -62,7 +79,11 @@ export default function Wishlist() {
                   key={item._id}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.08, ease: [0.16, 1, 0.3, 1], duration: 0.8 }}
+                  transition={{
+                    delay: idx * 0.08,
+                    ease: [0.16, 1, 0.3, 1],
+                    duration: 0.8,
+                  }}
                   className="group relative"
                 >
                   <ProductCard product={item.productId} />
@@ -84,11 +105,22 @@ export default function Wishlist() {
             >
               <div className="relative z-10">
                 <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-10 shadow-2xl border border-slate-50 group">
-                  <Heart size={36} className="text-slate-200 group-hover:text-red-400 transition-colors" strokeWidth={3} />
+                  <Heart
+                    size={36}
+                    className="text-slate-200 group-hover:text-red-400 transition-colors"
+                    strokeWidth={3}
+                  />
                 </div>
-                <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tighter italic uppercase">Your Wishlist is Empty</h3>
-                <p className="text-slate-400 font-medium text-lg mb-10 max-w-sm mx-auto italic leading-relaxed">No premium pieces have been saved to your collection yet.</p>
-                <Link to="/" className="btn-premium px-12 py-5 inline-flex items-center gap-4">
+                <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tighter italic uppercase">
+                  Your Wishlist is Empty
+                </h3>
+                <p className="text-slate-400 font-medium text-lg mb-10 max-w-sm mx-auto italic leading-relaxed">
+                  No premium pieces have been saved to your collection yet.
+                </p>
+                <Link
+                  to="/"
+                  className="btn-premium px-12 py-5 inline-flex items-center gap-4"
+                >
                   <Search size={20} /> Explore Products
                 </Link>
               </div>
@@ -102,13 +134,21 @@ export default function Wishlist() {
         {/* Wishlist Recommendation Strip */}
         {wishlist?.length > 0 && (
           <div className="mt-40 pt-24 border-t border-slate-100 text-center">
-            <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.6em] mb-4 block italic">Next Step</span>
-            <h2 className="text-3xl md:text-5xl font-black text-slate-900 italic tracking-tighter mb-10">Add All to Bag?</h2>
+            <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.6em] mb-4 block italic">
+              Next Step
+            </span>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 italic tracking-tighter mb-10">
+              Add All to Bag?
+            </h2>
             <button
-              onClick={() => navigate('/cart')}
+              onClick={() => navigate("/cart")}
               className="btn-premium px-16 py-6 text-sm flex items-center gap-4 mx-auto group"
             >
-              Go to Cart <ArrowRight size={20} className="group-hover:translate-x-3 transition-transform" />
+              Go to Cart{" "}
+              <ArrowRight
+                size={20}
+                className="group-hover:translate-x-3 transition-transform"
+              />
             </button>
           </div>
         )}

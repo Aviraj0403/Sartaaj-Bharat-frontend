@@ -22,15 +22,30 @@ export default function Invoice() {
     return <div>Loading...</div>; // Display loading state while data is being fetched
   }
 
-  const { customer, shippingAddress, items, appliedCoupon, finalAmount, subtotal, gst, shipping, paymentMethod, paymentStatus, id: orderIdFromData } = orderData;
-  
+  const {
+    customer,
+    shippingAddress,
+    items,
+    appliedCoupon,
+    finalAmount,
+    subtotal,
+    gst,
+    shipping,
+    paymentMethod,
+    paymentStatus,
+    id: orderIdFromData,
+  } = orderData;
+
   // Use dynamic shipping if available, otherwise fallback to static ₹80
   const shippingComputed = shipping || 80;
-  
+
   // Display the checkout's finalAmount as-is when available; otherwise compute a sensible fallback
-  const displayFinal = finalAmount !== undefined
-    ? Number(finalAmount)
-    : (Number(subtotal || 0) + shippingComputed - (appliedCoupon?.discountAmount || 0));
+  const displayFinal =
+    finalAmount !== undefined
+      ? Number(finalAmount)
+      : Number(subtotal || 0) +
+        shippingComputed -
+        (appliedCoupon?.discountAmount || 0);
 
   // PDF DOWNLOAD FUNCTION
   const handleDownload = async () => {
@@ -123,25 +138,45 @@ export default function Invoice() {
         {/* INVOICE INFO */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 text-xs md:text-sm text-gray-700 border-b border-pink-200 pb-4">
           <div className="space-y-2">
-            <p><strong>Invoice #: </strong>{id}</p>
-            <p><strong>Date: </strong>{new Date().toLocaleDateString()}</p>
-            <p><strong>Payment Method: </strong>{paymentMethod}</p>
+            <p>
+              <strong>Invoice #: </strong>
+              {id}
+            </p>
+            <p>
+              <strong>Date: </strong>
+              {new Date().toLocaleDateString()}
+            </p>
+            <p>
+              <strong>Payment Method: </strong>
+              {paymentMethod}
+            </p>
             <p>
               <strong>Order Status: </strong>
-              <span className={`font-semibold ${paymentStatus === "Pending" ? "text-yellow-500" : "text-green-500"}`}>
+              <span
+                className={`font-semibold ${paymentStatus === "Pending" ? "text-yellow-500" : "text-green-500"}`}
+              >
                 {paymentStatus}
               </span>
             </p>
-            <p><strong>Shipping Method: </strong>Standard Delivery</p>
-            <p><strong>Coupon Applied: </strong>{appliedCoupon ? appliedCoupon.code : "None"}</p>
+            <p>
+              <strong>Shipping Method: </strong>Standard Delivery
+            </p>
+            <p>
+              <strong>Coupon Applied: </strong>
+              {appliedCoupon ? appliedCoupon.code : "None"}
+            </p>
           </div>
 
           <div className="space-y-2">
-            <p><strong>Billed To:</strong> {shippingAddress?.name || "N/A"}</p>
+            <p>
+              <strong>Billed To:</strong> {shippingAddress?.name || "N/A"}
+            </p>
             <p>{shippingAddress?.email || "N/A"}</p>
             <p>{shippingAddress?.phoneNumber || "N/A"}</p>
             <p>{shippingAddress?.street || "N/A"}</p>
-            <p><strong>Shipping To:</strong> {shippingAddress?.street || "N/A"}</p>
+            <p>
+              <strong>Shipping To:</strong> {shippingAddress?.street || "N/A"}
+            </p>
             <p>{shippingAddress?.phoneNumber || "N/A"}</p>
           </div>
         </div>
@@ -157,22 +192,30 @@ export default function Invoice() {
                 <th className="py-2 px-3 text-right">Total</th>
               </tr>
             </thead>
-           <tbody>
-  {items?.map((item, index) => (
-    <tr key={index} className="border-b border-pink-100">
-      <td className="py-2 px-3">
-        {/* Display name, size, and color with fallback for missing values */}
-        {item?.selectedVariant?.name 
-          ? `${item.selectedVariant.name} : (${item.selectedVariant.size || "N/A"} / ${item.selectedVariant.color || "N/A"})`
-          : "N/A"} 
-      </td>
-      <td className="py-2 px-3 text-center">{item?.quantity || "N/A"}</td>
-      <td className="py-2 px-3 text-right">₹{item?.selectedVariant?.price?.toFixed(2) || "0.00"}</td>
-      <td className="py-2 px-3 text-right">₹{(item?.selectedVariant?.price * item?.quantity)?.toFixed(2) || "0.00"}</td>
-    </tr>
-  ))}
-</tbody>
-
+            <tbody>
+              {items?.map((item, index) => (
+                <tr key={index} className="border-b border-pink-100">
+                  <td className="py-2 px-3">
+                    {/* Display name, size, and color with fallback for missing values */}
+                    {item?.selectedVariant?.name
+                      ? `${item.selectedVariant.name} : (${item.selectedVariant.size || "N/A"} / ${item.selectedVariant.color || "N/A"})`
+                      : "N/A"}
+                  </td>
+                  <td className="py-2 px-3 text-center">
+                    {item?.quantity || "N/A"}
+                  </td>
+                  <td className="py-2 px-3 text-right">
+                    ₹{item?.selectedVariant?.price?.toFixed(2) || "0.00"}
+                  </td>
+                  <td className="py-2 px-3 text-right">
+                    ₹
+                    {(item?.selectedVariant?.price * item?.quantity)?.toFixed(
+                      2,
+                    ) || "0.00"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
 
@@ -180,7 +223,7 @@ export default function Invoice() {
         <div className="mt-6 flex flex-col items-end text-gray-800 font-semibold text-xs md:text-sm space-y-1">
           <p>Subtotal: ₹{subtotal?.toFixed(2) || "0.00"}</p>
           {appliedCoupon && appliedCoupon.discountAmount ? (
-            <p>Coupon Discount: -₹{(appliedCoupon.discountAmount).toFixed(2)}</p>
+            <p>Coupon Discount: -₹{appliedCoupon.discountAmount.toFixed(2)}</p>
           ) : appliedCoupon ? (
             <p>Coupon: {appliedCoupon.code}</p>
           ) : null}
@@ -188,7 +231,9 @@ export default function Invoice() {
           <div className="self-start md:self-center">
             <div className="inline-flex items-center gap-2 bg-pink-50 border border-pink-100 text-pink-700 px-4 py-2 rounded-lg">
               <Truck size={16} />
-              <span className="text-sm font-medium">Your order will be delivered within 3-5 business days.</span>
+              <span className="text-sm font-medium">
+                Your order will be delivered within 3-5 business days.
+              </span>
             </div>
           </div>
 
@@ -199,7 +244,10 @@ export default function Invoice() {
 
         {/* FOOTER */}
         <div className="mt-6 border-t border-pink-200 pt-3 text-xs md:text-sm text-gray-500 space-y-1">
-          <p><strong>Note:</strong> Thank you for shopping with Gurmeet Kaur Store.</p>
+          <p>
+            <strong>Note:</strong> Thank you for shopping with Gurmeet Kaur
+            Store.
+          </p>
           <p>
             For any queries, contact{" "}
             <span className="text-pink-600 font-semibold">

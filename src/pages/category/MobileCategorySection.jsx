@@ -54,16 +54,21 @@
 // _________________DYNAMIC CATEGORY SECTION USING API FETCH_________________
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";  // Import React Query hook
-import { getMenuCategories } from "../../services/categoryApi";  // API function for fetching categories
+import { useQuery } from "@tanstack/react-query"; // Import React Query hook
+import { getMenuCategories } from "../../services/categoryApi"; // API function for fetching categories
 
 export default function MobileCategorySection() {
   const navigate = useNavigate();
 
   // Fetch categories using React Query
-  const { data: menuItems, isLoading, isError, error } = useQuery({
-    queryKey: ["categories"],  // Query key
-    queryFn: getMenuCategories,  // Fetch function
+  const {
+    data: menuItems,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["categories"], // Query key
+    queryFn: getMenuCategories, // Fetch function
     onError: (err) => {
       console.error("Error fetching categories:", err);
     },
@@ -76,34 +81,44 @@ export default function MobileCategorySection() {
     <div className="block md:hidden bg-white py-4 border-t border-b border-slate-100 shadow-sm">
       <div className="flex items-center justify-start gap-4 overflow-x-auto px-4 scrollbar-hide">
         {/* Loading State */}
-        {isLoading && <div className="w-full text-center text-blue-600 font-black text-[10px] uppercase tracking-[0.3em] italic animate-pulse">Syncing...</div>}
+        {isLoading && (
+          <div className="w-full text-center text-blue-600 font-black text-[10px] uppercase tracking-[0.3em] italic animate-pulse">
+            Syncing...
+          </div>
+        )}
 
         {/* Error State */}
-        {isError && <div className="w-full text-center text-red-600">Error fetching categories. Please try again later.</div>}
+        {isError && (
+          <div className="w-full text-center text-red-600">
+            Error fetching categories. Please try again later.
+          </div>
+        )}
 
         {/* Display Categories */}
-        {!isLoading && !isError && menuItems?.map((cat) => (
-          <div
-            key={cat._id}
-            onClick={() => handleCategoryClick(cat.slug)}  // Handle category click
-            className="flex flex-col items-center justify-center min-w-[70px] text-center cursor-pointer group active:scale-95 transition-all"
-          >
-            {/* Category Image */}
-            <div className="relative mb-2 group-hover:scale-105 transition-transform">
-              <div className="absolute inset-0 rounded-2xl bg-blue-600/10 group-hover:bg-blue-600/0 transition-colors"></div>
-              <img
-                src={cat.image[1]} // Use the second image from the image array
-                alt={cat.name}
-                className="w-20 h-24 object-cover rounded-2xl grayscale group-hover:grayscale-0 transition-all duration-500 shadow-sm"
-              />
-            </div>
+        {!isLoading &&
+          !isError &&
+          menuItems?.map((cat) => (
+            <div
+              key={cat._id}
+              onClick={() => handleCategoryClick(cat.slug)} // Handle category click
+              className="flex flex-col items-center justify-center min-w-[70px] text-center cursor-pointer group active:scale-95 transition-all"
+            >
+              {/* Category Image */}
+              <div className="relative mb-2 group-hover:scale-105 transition-transform">
+                <div className="absolute inset-0 rounded-2xl bg-blue-600/10 group-hover:bg-blue-600/0 transition-colors"></div>
+                <img
+                  src={cat.image[1]} // Use the second image from the image array
+                  alt={cat.name}
+                  className="w-20 h-24 object-cover rounded-2xl grayscale group-hover:grayscale-0 transition-all duration-500 shadow-sm"
+                />
+              </div>
 
-            {/* Category Title */}
-            <span className="text-[10px] font-black text-slate-500 whitespace-nowrap group-hover:text-blue-600 uppercase tracking-widest italic transition-colors">
-              {cat.name}
-            </span>
-          </div>
-        ))}
+              {/* Category Title */}
+              <span className="text-[10px] font-black text-slate-500 whitespace-nowrap group-hover:text-blue-600 uppercase tracking-widest italic transition-colors">
+                {cat.name}
+              </span>
+            </div>
+          ))}
       </div>
     </div>
   );

@@ -36,15 +36,17 @@ export default function Testimonials() {
   return (
     <section className="py-5 bg-white">
       <div className="container mx-auto px-5">
-
         {/* Heading */}
         <div className="text-center mb-16">
-          <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block italic">User Validation</span>
+          <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block italic">
+            User Validation
+          </span>
           <h2 className="text-3xl md:text-5xl font-black text-slate-950 mb-6 italic uppercase tracking-tighter">
             VALIDATION <span className="text-blue-600">LOGS.</span>
           </h2>
           <p className="text-slate-500 font-medium max-w-2xl mx-auto text-sm uppercase tracking-widest leading-relaxed italic">
-            ELITE OPERATIVES FROM ACROSS THE SUB-CONTINENT VERIFY OUR ARTIFACT CALIBRATION AND NEURAL RESULTS.
+            ELITE OPERATIVES FROM ACROSS THE SUB-CONTINENT VERIFY OUR ARTIFACT
+            CALIBRATION AND NEURAL RESULTS.
           </p>
         </div>
 
@@ -74,8 +76,12 @@ export default function Testimonials() {
                     className="w-12 h-12 rounded-full mr-4"
                   />
                   <div>
-                    <h4 className="font-black text-slate-950 italic uppercase tracking-tighter">{testimonial.name}</h4>
-                    <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest italic">{testimonial.role}</p>
+                    <h4 className="font-black text-slate-950 italic uppercase tracking-tighter">
+                      {testimonial.name}
+                    </h4>
+                    <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest italic">
+                      {testimonial.role}
+                    </p>
                   </div>
                 </div>
 
@@ -93,11 +99,14 @@ export default function Testimonials() {
           <div className="custom-pagination flex space-x-2"></div>
 
           <div className="flex space-x-4">
-            <button className="custom-prev px-6 py-3 bg-slate-900 text-white rounded-xl hover:bg-blue-600 transition-all font-black text-xs italic">BACK</button>
-            <button className="custom-next px-6 py-3 bg-slate-900 text-white rounded-xl hover:bg-blue-600 transition-all font-black text-xs italic">NEXT</button>
+            <button className="custom-prev px-6 py-3 bg-slate-900 text-white rounded-xl hover:bg-blue-600 transition-all font-black text-xs italic">
+              BACK
+            </button>
+            <button className="custom-next px-6 py-3 bg-slate-900 text-white rounded-xl hover:bg-blue-600 transition-all font-black text-xs italic">
+              NEXT
+            </button>
           </div>
         </div>
-
       </div>
     </section>
   );

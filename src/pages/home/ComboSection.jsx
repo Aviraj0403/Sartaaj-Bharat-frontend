@@ -33,8 +33,7 @@ export default function ComboSection({ categorySlug }) {
     const interval = setInterval(() => {
       if (carouselRef.current) {
         if (
-          carouselRef.current.scrollLeft +
-          carouselRef.current.offsetWidth >=
+          carouselRef.current.scrollLeft + carouselRef.current.offsetWidth >=
           carouselRef.current.scrollWidth
         ) {
           carouselRef.current.scrollTo({ left: 0, behavior: "smooth" });
@@ -56,7 +55,9 @@ export default function ComboSection({ categorySlug }) {
   return (
     <section className="bg-white relative">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-        <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block text-center italic">Optimized Packages</span>
+        <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block text-center italic">
+          Optimized Packages
+        </span>
         <h2 className="text-3xl md:text-5xl font-black text-slate-950 mb-12 text-center italic uppercase tracking-tighter">
           ARTIFACT <span className="text-blue-600">CLUSTERS.</span>
         </h2>

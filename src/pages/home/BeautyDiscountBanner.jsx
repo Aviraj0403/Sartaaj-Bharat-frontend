@@ -17,8 +17,15 @@ export default function BeautyDiscountBanner() {
           YIELD <span className="text-blue-600">20% GAIN.</span>
         </h2>
         <p className="text-sm sm:text-base md:text-lg text-slate-400 max-w-md mx-auto lg:mx-0 leading-relaxed font-medium uppercase tracking-wide">
-          AUTHORIZE A FLAT <span className="text-white font-black underline decoration-blue-600 decoration-2 underline-offset-4 italic">20% LOGISTICAL OFFSET</span> ON
-          YOUR {isMobile ? "APP INTERFACE DEPLOYMENT" : "INITIAL ARTIFACT ACQUISITION VIA OUR EXCLUSIVE ECOSYSTEM"}.
+          AUTHORIZE A FLAT{" "}
+          <span className="text-white font-black underline decoration-blue-600 decoration-2 underline-offset-4 italic">
+            20% LOGISTICAL OFFSET
+          </span>{" "}
+          ON YOUR{" "}
+          {isMobile
+            ? "APP INTERFACE DEPLOYMENT"
+            : "INITIAL ARTIFACT ACQUISITION VIA OUR EXCLUSIVE ECOSYSTEM"}
+          .
         </p>
 
         {/* Fancy Gradient Buttons */}

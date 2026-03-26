@@ -2,7 +2,7 @@ import axios from "axios";
 
 // const baseURL = 'http://localhost:6005/v1/api';
 
-const baseURL = 'https://sartaaj-bharat-backend.onrender.com/v1/api';
+const baseURL = "https://sartaaj-bharat-backend.onrender.com/v1/api";
 
 const Axios = axios.create({
   baseURL,
@@ -15,7 +15,7 @@ let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
-  failedQueue.forEach(prom => {
+  failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
     } else {
@@ -32,7 +32,7 @@ Axios.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response interceptor
@@ -43,20 +43,23 @@ Axios.interceptors.response.use(
 
     // Don't retry on these endpoints
     const skipRefreshRoutes = [
-      '/auth/me',
-      '/auth/phoneV2/send-otp',
-      '/auth/phoneV2/verify-otp',
-      '/auth/phoneV2/refresh-token',
-      '/auth/user/logout'
+      "/auth/me",
+      "/auth/phoneV2/send-otp",
+      "/auth/phoneV2/verify-otp",
+      "/auth/phoneV2/refresh-token",
+      "/auth/user/logout",
     ];
 
-    const shouldSkipRefresh = skipRefreshRoutes.some(route =>
-      originalRequest.url?.includes(route)
+    const shouldSkipRefresh = skipRefreshRoutes.some((route) =>
+      originalRequest.url?.includes(route),
     );
 
     // Handle 401 errors
-    if (error.response?.status === 401 && !originalRequest._retry && !shouldSkipRefresh) {
-
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !shouldSkipRefresh
+    ) {
       if (isRefreshing) {
         // If already refreshing, queue this request
         return new Promise((resolve, reject) => {
@@ -73,7 +76,7 @@ Axios.interceptors.response.use(
         await axios.post(
           `${baseURL}/auth/refresh-token`,
           {},
-          { withCredentials: true }
+          { withCredentials: true },
         );
 
         processQueue(null);
@@ -85,7 +88,9 @@ Axios.interceptors.response.use(
         isRefreshing = false;
 
         // Clear local data
-        console.error("❌ Refresh token failed. Session expired or unauthenticated.");
+        console.error(
+          "❌ Refresh token failed. Session expired or unauthenticated.",
+        );
 
         // Clear all auth-related storage
         localStorage.removeItem("user");
@@ -100,12 +105,12 @@ Axios.interceptors.response.use(
       console.error("Network error:", error.message);
       return Promise.reject({
         message: "Network error. Please check your connection.",
-        isNetworkError: true
+        isNetworkError: true,
       });
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default Axios;

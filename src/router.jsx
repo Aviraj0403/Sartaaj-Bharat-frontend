@@ -28,76 +28,82 @@ const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <Suspense fallback={<div className="h-screen flex items-center justify-center">Loading...</div>}>
+          <Suspense
+            fallback={
+              <div className="h-screen flex items-center justify-center">
+                Loading...
+              </div>
+            }
+          >
             <Home />
           </Suspense>
         ),
       },
       {
         path: "product/:slug",
-        element: <ProductDetails />
+        element: <ProductDetails />,
       },
       {
         path: "category/:categorySlug",
-        element: <CategoryDetails />
+        element: <CategoryDetails />,
       },
       {
         path: "search",
-        element: <SearchPage />
+        element: <SearchPage />,
       },
       {
         path: "cart",
-        element: <CartPage />
+        element: <CartPage />,
       },
       {
         path: "checkout",
-        element: <CheckoutPage />
+        element: <CheckoutPage />,
       },
       {
         path: "signin",
-        element: <SignInPage />
+        element: <SignInPage />,
       },
       {
         path: "signup",
-        element: <SignupPage />
+        element: <SignupPage />,
       },
       {
         path: "profile",
-        element: <ProfilePage />
+        element: <ProfilePage />,
       },
       {
         path: "forgot-password",
-        element: <ForgotPasswordPage />
+        element: <ForgotPasswordPage />,
       },
       {
         path: "reset-password",
-        element: <ResetPasswordPage />
+        element: <ResetPasswordPage />,
       },
       {
         path: "auth", // Legacy support
-        element: <SignInPage />
+        element: <SignInPage />,
       },
       {
         path: "privacy-policy",
-        element: <PrivacyPolicy />
+        element: <PrivacyPolicy />,
       },
       {
         path: "terms-conditions",
-        element: <TermsAndConditions />
+        element: <TermsAndConditions />,
       },
       {
         path: "cookie-policy",
-        element: <CookiePolicy />
+        element: <CookiePolicy />,
       },
       {
         path: "shipping-policy",
-        element: <ShippingPolicy />
+        element: <ShippingPolicy />,
       },
       {
         path: "refund-policy",
-        element: <RefundPolicy />
+        element: <RefundPolicy />,
       },
-    ]
+    ],
   },
   {
     path: "*",

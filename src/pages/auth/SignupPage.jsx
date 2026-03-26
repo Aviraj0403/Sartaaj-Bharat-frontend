@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaArrowRight, FaFacebook } from "react-icons/fa";
+import {
+  FaUser,
+  FaEnvelope,
+  FaLock,
+  FaPhone,
+  FaArrowRight,
+  FaFacebook,
+} from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
@@ -28,7 +35,9 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.email || !form.password || !form.userName) {
-      toast.error("Username, Email, and Password are required for registration.");
+      toast.error(
+        "Username, Email, and Password are required for registration.",
+      );
       return;
     }
 
@@ -38,7 +47,9 @@ const SignupPage = () => {
       toast.success("Account created. Welcome to the elite tier.");
       navigate("/", { replace: true });
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Registration sequence failed.");
+      toast.error(
+        err?.response?.data?.message || "Registration sequence failed.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -47,8 +58,8 @@ const SignupPage = () => {
   const handleSocialRegister = async (provider) => {
     setIsSubmitting(true);
     try {
-      if (provider === 'google') await googleLogin();
-      if (provider === 'facebook') await facebookLogin();
+      if (provider === "google") await googleLogin();
+      if (provider === "facebook") await facebookLogin();
       toast.success("Identity Synchronized.");
       navigate("/", { replace: true });
     } catch (err) {
@@ -69,29 +80,35 @@ const SignupPage = () => {
           <motion.button
             whileHover={{ y: -4, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => handleSocialRegister('google')}
+            onClick={() => handleSocialRegister("google")}
             disabled={isSubmitting}
             className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-3.5 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
           >
             <FcGoogle size={20} />
-            <span className="text-white text-[10px] font-black uppercase tracking-widest">Google Sync</span>
+            <span className="text-white text-[10px] font-black uppercase tracking-widest">
+              Google Sync
+            </span>
           </motion.button>
           <motion.button
             whileHover={{ y: -4, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => handleSocialRegister('facebook')}
+            onClick={() => handleSocialRegister("facebook")}
             disabled={isSubmitting}
             className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-3.5 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
           >
             <FaFacebook size={20} className="text-[#1877F2]" />
-            <span className="text-white text-[10px] font-black uppercase tracking-widest">Facebook Sync</span>
+            <span className="text-white text-[10px] font-black uppercase tracking-widest">
+              Facebook Sync
+            </span>
           </motion.button>
         </div>
 
         {/* Divider Node */}
         <div className="flex items-center gap-4">
           <div className="flex-1 h-px bg-white/5"></div>
-          <span className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em]">Direct Protocol</span>
+          <span className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em]">
+            Direct Protocol
+          </span>
           <div className="flex-1 h-px bg-white/5"></div>
         </div>
 
@@ -100,7 +117,10 @@ const SignupPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Username */}
             <div className="relative group col-span-1 md:col-span-2">
-              <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={14} />
+              <FaUser
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
+                size={14}
+              />
               <input
                 name="userName"
                 placeholder="UNIQUE USERNAME"
@@ -135,7 +155,10 @@ const SignupPage = () => {
 
             {/* Email */}
             <div className="relative group col-span-1 md:col-span-2">
-              <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={14} />
+              <FaEnvelope
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
+                size={14}
+              />
               <input
                 name="email"
                 type="email"
@@ -149,7 +172,10 @@ const SignupPage = () => {
 
             {/* Password */}
             <div className="relative group">
-              <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={14} />
+              <FaLock
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
+                size={14}
+              />
               <input
                 name="password"
                 type="password"
@@ -163,7 +189,10 @@ const SignupPage = () => {
 
             {/* Phone */}
             <div className="relative group">
-              <FaPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={14} />
+              <FaPhone
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"
+                size={14}
+              />
               <input
                 name="phoneNumber"
                 placeholder="MOBILE"
@@ -180,14 +209,20 @@ const SignupPage = () => {
             className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-blue-500 transition-all shadow-[0_15px_30px_rgba(37,99,235,0.2)] disabled:opacity-50 flex items-center justify-center gap-3 group"
           >
             {isSubmitting ? "Processing..." : "Establish Identity"}
-            <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+            <FaArrowRight
+              size={12}
+              className="group-hover:translate-x-1 transition-transform"
+            />
           </button>
         </form>
 
         {/* Redirect */}
         <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">
           Already established?{" "}
-          <Link to="/signin" className="text-blue-500 font-black hover:text-blue-400 underline decoration-2 underline-offset-4">
+          <Link
+            to="/signin"
+            className="text-blue-500 font-black hover:text-blue-400 underline decoration-2 underline-offset-4"
+          >
             Initialize Login
           </Link>
         </p>

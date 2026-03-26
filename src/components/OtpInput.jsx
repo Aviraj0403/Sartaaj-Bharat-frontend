@@ -38,7 +38,10 @@ const OtpInput = ({ length = 6, value, onChange }) => {
 
   const handlePaste = (e) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, length);
+    const pasted = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, length);
     if (pasted) {
       onChange(pasted);
       const focusIndex = Math.min(pasted.length, length - 1);

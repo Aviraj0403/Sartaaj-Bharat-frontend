@@ -32,7 +32,9 @@ export default function FAQPage() {
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent"></div>
       {/* Header */}
       <div className="text-center mb-24 px-4">
-        <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block italic">Neural Knowledge Base</span>
+        <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block italic">
+          Neural Knowledge Base
+        </span>
         <h1 className="text-5xl md:text-7xl font-black text-slate-950 mb-6 italic uppercase tracking-tighter flex justify-center items-center gap-6">
           TECHNICAL <span className="text-blue-600">FAQ.</span>
         </h1>

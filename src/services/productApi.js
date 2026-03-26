@@ -1,12 +1,16 @@
-import Axios from '../utils/Axios';
+import Axios from "../utils/Axios";
 
 /**
  * Fetch products by category slug
  * Backend: GET /v1/api/products?category=:slug
  */
-export const getProductsByCategorySlug = async (slug, page = 1, limit = 100) => {
+export const getProductsByCategorySlug = async (
+  slug,
+  page = 1,
+  limit = 100,
+) => {
   try {
-    const response = await Axios.get('/products', {
+    const response = await Axios.get("/products", {
       params: { category: slug, page, limit },
     });
 
@@ -14,13 +18,13 @@ export const getProductsByCategorySlug = async (slug, page = 1, limit = 100) => 
       return {
         ...response.data,
         products: response.data.data || [],
-        pagination: response.data.meta || {}
+        pagination: response.data.meta || {},
       };
     } else {
-      throw new Error('Failed to fetch products');
+      throw new Error("Failed to fetch products");
     }
   } catch (error) {
-    console.error('Error fetching products by category slug:', error);
+    console.error("Error fetching products by category slug:", error);
     return { success: false, products: [], pagination: {} };
   }
 };
@@ -29,22 +33,35 @@ export const getProductsByCategorySlug = async (slug, page = 1, limit = 100) => 
  * Fetch products by category and sub-category slug
  * Backend: GET /v1/api/products?category=:categorySlug&subCategory=:subCategorySlug
  */
-export const getProductsByCategoryAndSubCategorySlug = async (categorySlug, subCategorySlug, page = 1, limit = 20) => {
+export const getProductsByCategoryAndSubCategorySlug = async (
+  categorySlug,
+  subCategorySlug,
+  page = 1,
+  limit = 20,
+) => {
   try {
-    const response = await Axios.get('/products', {
-      params: { category: categorySlug, subCategory: subCategorySlug, page, limit },
+    const response = await Axios.get("/products", {
+      params: {
+        category: categorySlug,
+        subCategory: subCategorySlug,
+        page,
+        limit,
+      },
     });
     if (response.data && response.data.success) {
       return {
         ...response.data,
         products: response.data.data || [],
-        pagination: response.data.meta || {}
+        pagination: response.data.meta || {},
       };
     } else {
-      throw new Error('Failed to fetch products');
+      throw new Error("Failed to fetch products");
     }
   } catch (error) {
-    console.error('Error fetching products by category and sub-category slug:', error);
+    console.error(
+      "Error fetching products by category and sub-category slug:",
+      error,
+    );
     return { success: false, products: [], pagination: {} };
   }
 };
@@ -56,25 +73,34 @@ export const getProductsByCategoryAndSubCategorySlug = async (categorySlug, subC
 export const getMiniProducts = async (
   page = 1,
   limit = 100,
-  search = '',
-  category = '',
-  isHotProduct = '',
-  isBestseller = '',
-  isFeatured = '',
-  isCombo = '',
-  extraParams = {}
+  search = "",
+  category = "",
+  isHotProduct = "",
+  isBestseller = "",
+  isFeatured = "",
+  isCombo = "",
+  extraParams = {},
 ) => {
   try {
     const params = { page, limit, search, category };
-    if (isHotProduct !== '') params.isHotProduct = isHotProduct;
-    if (isBestseller !== '') params.isBestseller = isBestseller;
-    if (isFeatured !== '') params.isFeatured = isFeatured;
-    if (isCombo !== '') params.isCombo = isCombo;
-    if (search !== '') params.search = search;
-    if (category !== '') params.category = category;
+    if (isHotProduct !== "") params.isHotProduct = isHotProduct;
+    if (isBestseller !== "") params.isBestseller = isBestseller;
+    if (isFeatured !== "") params.isFeatured = isFeatured;
+    if (isCombo !== "") params.isCombo = isCombo;
+    if (search !== "") params.search = search;
+    if (category !== "") params.category = category;
 
     // Advanced filters
-    const { brand, ram, storage, minPrice, maxPrice, sortBy, sortOrder, ...dynamicFilters } = extraParams;
+    const {
+      brand,
+      ram,
+      storage,
+      minPrice,
+      maxPrice,
+      sortBy,
+      sortOrder,
+      ...dynamicFilters
+    } = extraParams;
     if (brand) params.brand = brand;
     if (ram) params.ram = ram;
     if (storage) params.storage = storage;
@@ -86,19 +112,19 @@ export const getMiniProducts = async (
     // Attach dynamic filters (e.g. filter_Fabric: "Cotton")
     Object.assign(params, dynamicFilters);
 
-    const response = await Axios.get('/products', { params });
+    const response = await Axios.get("/products", { params });
 
     if (response.data && response.data.success) {
       return {
         ...response.data,
         products: response.data.data || [],
-        pagination: response.data.meta || {}
+        pagination: response.data.meta || {},
       };
     } else {
-      throw new Error('Failed to fetch mini products');
+      throw new Error("Failed to fetch mini products");
     }
   } catch (error) {
-    console.error('Error fetching mini products:', error);
+    console.error("Error fetching mini products:", error);
     return { success: false, products: [], pagination: {} };
   }
 };
@@ -114,10 +140,10 @@ export const getProductBySlug = async (slug) => {
     if (response.data && response.data.success) {
       return response.data.data || response.data.product || response.data;
     } else {
-      throw new Error('Failed to fetch product');
+      throw new Error("Failed to fetch product");
     }
   } catch (error) {
-    console.error('Error fetching product by slug:', error);
+    console.error("Error fetching product by slug:", error);
     return { success: false, product: null };
   }
 };
@@ -129,21 +155,19 @@ export const getProductBySlug = async (slug) => {
 export const getRecommendations = async (productId, limit = 4) => {
   try {
     const response = await Axios.get(`/products/${productId}/recommendations`, {
-      params: { limit }
+      params: { limit },
     });
 
     if (response.data && response.data.success) {
       return {
         success: true,
-        products: response.data.data || []
+        products: response.data.data || [],
       };
     } else {
-      throw new Error('Failed to fetch recommendations');
+      throw new Error("Failed to fetch recommendations");
     }
   } catch (error) {
-    console.error('Error fetching recommendations:', error);
+    console.error("Error fetching recommendations:", error);
     return { success: false, products: [] };
   }
 };
-
-

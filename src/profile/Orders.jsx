@@ -31,7 +31,7 @@ export default function Orders() {
   }, [user]); // Only fetch orders if user is logged in
 
   const statusColors = {
-    Pending: "bg-yellow-400",  // Adjusting status colors to match API response
+    Pending: "bg-yellow-400", // Adjusting status colors to match API response
     Shipped: "bg-green-400",
     Processing: "bg-yellow-400",
     Cancelled: "bg-red-400",
@@ -48,7 +48,9 @@ export default function Orders() {
 
   return (
     <div className="p-5 min-h-screen bg-slate-50/30">
-      <h1 className="text-3xl font-black text-slate-900 mb-2 italic tracking-tighter uppercase">My Orders</h1>
+      <h1 className="text-3xl font-black text-slate-900 mb-2 italic tracking-tighter uppercase">
+        My Orders
+      </h1>
       <p className="text-slate-500 mb-6 text-sm font-medium uppercase tracking-widest">
         Manage and track your recent orders below.
       </p>
@@ -60,10 +62,15 @@ export default function Orders() {
           const remainingCount = order.items.length - 1;
 
           // Compute subtotal and fallback shipping when backend doesn't provide it
-          const subtotal = order.items.reduce((acc, it) => acc + (it.selectedVariant?.price || 0) * (it.quantity || 0), 0);
+          const subtotal = order.items.reduce(
+            (acc, it) =>
+              acc + (it.selectedVariant?.price || 0) * (it.quantity || 0),
+            0,
+          );
           const couponDiscount = order.discountAmount || 0;
           const finalAmount = subtotal - couponDiscount;
-          const shippingAmount = order.shipping !== undefined ? order.shipping : 80;
+          const shippingAmount =
+            order.shipping !== undefined ? order.shipping : 80;
 
           return (
             <div
@@ -88,7 +95,6 @@ export default function Orders() {
                 </span>
               </div>
 
-
               {/* Item */}
               <div className="p-5 flex items-center gap-6 cursor-pointer">
                 <div className="relative flex-shrink-0">
@@ -108,28 +114,42 @@ export default function Orders() {
                   <h3 className="text-gray-800 font-semibold text-sm sm:text-base">
                     {mainItem.product?.name}
                   </h3>
-                  <p className="text-gray-500 text-sm">{mainItem.product?.seller}</p>
+                  <p className="text-gray-500 text-sm">
+                    {mainItem.product?.seller}
+                  </p>
 
                   {/* Display selected color and size */}
                   <div className="text-sm text-gray-600 mt-1">
-                    <p><strong>Color:</strong> {mainItem.selectedVariant?.color}</p>
-                    <p><strong>Size:</strong> {mainItem.selectedVariant?.size}</p>
+                    <p>
+                      <strong>Color:</strong> {mainItem.selectedVariant?.color}
+                    </p>
+                    <p>
+                      <strong>Size:</strong> {mainItem.selectedVariant?.size}
+                    </p>
                   </div>
 
                   <div className="text-slate-900 mt-2 text-sm sm:text-base">
                     {couponDiscount > 0 && (
-                      <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">Coupon: -₹{couponDiscount}</p>
+                      <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">
+                        Coupon: -₹{couponDiscount}
+                      </p>
                     )}
-                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Shipping: ₹{shippingAmount}</p>
+                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">
+                      Shipping: ₹{shippingAmount}
+                    </p>
                     <p className="text-slate-900 font-bold mt-2 italic">
-                      ARCHIVE TOTAL: <span className="text-blue-600 font-black">₹{order.totalAmount}</span>
+                      ARCHIVE TOTAL:{" "}
+                      <span className="text-blue-600 font-black">
+                        ₹{order.totalAmount}
+                      </span>
                     </p>
                   </div>
 
-                  <p className="text-blue-600 font-black text-[9px] uppercase tracking-[0.3em] mt-3">{order.paymentStatus}</p>
+                  <p className="text-blue-600 font-black text-[9px] uppercase tracking-[0.3em] mt-3">
+                    {order.paymentStatus}
+                  </p>
                 </div>
               </div>
-
 
               {/* Footer */}
               <div className="px-5 py-4 border-t border-slate-100 flex justify-between items-center bg-slate-50/50">

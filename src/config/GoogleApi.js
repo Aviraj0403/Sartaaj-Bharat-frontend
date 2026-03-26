@@ -1,5 +1,5 @@
 // API configuration
-const API_URL = 'https://api.the9to9restaurant.com'; // Replace with your actual API URL if needed
+const API_URL = "https://api.the9to9restaurant.com"; // Replace with your actual API URL if needed
 export const API_ENDPOINTS = {
   googleSignIn: `${API_URL}/v1/api/auth/register/google`,
   googleLogin: `${API_URL}/v1/api/auth/googleSignIn`,
