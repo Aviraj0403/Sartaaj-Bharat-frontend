@@ -44,7 +44,6 @@ Axios.interceptors.response.use(
 
     // Routes where we should NOT attempt a token refresh
     const skipRefreshRoutes = [
-      "/auth/profile",
       "/auth/login",
       "/auth/logout",
       "/auth/register",
@@ -79,10 +78,14 @@ Axios.interceptors.response.use(
 
       try {
         // Attempt to get a new access token using the refresh token cookie
+        const currentToken = Cookies.get("userToken");
         const refreshResponse = await axios.post(
           `${baseURL}/auth/refresh-token`,
           {},
-          { withCredentials: true },
+          {
+            withCredentials: true,
+            headers: currentToken ? { Authorization: `Bearer ${currentToken}` } : {},
+          },
         );
 
         const newToken =

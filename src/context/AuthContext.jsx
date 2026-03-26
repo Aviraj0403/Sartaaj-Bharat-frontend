@@ -96,7 +96,10 @@ export const AuthProvider = ({ children }) => {
         response.data?.data?.accessToken;
       if (token) Cookies.set("userToken", token, { expires: 7 });
 
-      const userRes = await Axios.get("/auth/profile");
+      // Call profile with the new token explicitly in header to avoid race conditions
+      const userRes = await Axios.get("/auth/profile", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       setUser(userRes.data.data);
       dispatch(setReduxUser(userRes.data.data));
 
@@ -124,7 +127,9 @@ export const AuthProvider = ({ children }) => {
         response.data?.data?.accessToken;
       if (token) Cookies.set("userToken", token, { expires: 7 });
 
-      const res = await Axios.get("/auth/profile");
+      const res = await Axios.get("/auth/profile", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       setUser(res.data.data);
       dispatch(setReduxUser(res.data.data));
 
@@ -159,7 +164,9 @@ export const AuthProvider = ({ children }) => {
         response.data?.data?.accessToken;
       if (token) Cookies.set("userToken", token, { expires: 7 });
 
-      const userRes = await Axios.get("/auth/profile");
+      const userRes = await Axios.get("/auth/profile", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       setUser(userRes.data.data);
       dispatch(setReduxUser(userRes.data.data));
 
@@ -202,7 +209,9 @@ export const AuthProvider = ({ children }) => {
         response.data?.data?.accessToken;
       if (token) Cookies.set("userToken", token, { expires: 7 });
 
-      const userRes = await Axios.get("/auth/profile");
+      const userRes = await Axios.get("/auth/profile", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       setUser(userRes.data.data);
       dispatch(setReduxUser(userRes.data.data));
 
