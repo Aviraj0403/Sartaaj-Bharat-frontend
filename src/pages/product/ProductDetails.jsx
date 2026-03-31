@@ -20,13 +20,15 @@ const ProductDetails = () => {
   const { addToCart } = useCartActions();
 
   const { data: product, isLoading, error } = useProduct(slug);
+  const productData = product?.product || product?.data || product;
+
   const { data: recommendationsData, isLoading: isRecLoading } =
-    useRecommendations(product?._id || product?.id, 4);
+    useRecommendations(productData?._id || productData?.id, 4);
   const { isAuthenticated } = window.store?.getState()?.auth || {
     isAuthenticated: false,
   }; // fallback
   const { isWishlisted, addToWishlist, removeFromWishlist } = useWishlist();
-  const inWishlist = isWishlisted(product?._id || product?.id);
+  const inWishlist = isWishlisted(productData?._id || productData?.id);
 
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -35,8 +37,9 @@ const ProductDetails = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
-    if (product) {
-      setSelectedVariant(product.variants?.[0] || null);
+    const data = product?.product || product?.data || product;
+    if (data && data._id) {
+      setSelectedVariant(data.variants?.[0] || null);
       setActiveImage(0);
       window.scrollTo(0, 0);
     }
@@ -69,17 +72,17 @@ const ProductDetails = () => {
     );
   }
 
-  const images = product.images?.length > 0 ? product.images : [product.image];
-  const currentPrice = selectedVariant?.price || product.price || 0;
-  const oldPrice = selectedVariant?.compareAtPrice || product.oldPrice;
-  const discount = oldPrice
+  const images = productData?.images?.length > 0 ? productData.images : [productData?.image || productData?.pimage];
+  const currentPrice = selectedVariant?.price || productData?.price || 0;
+  const oldPrice = selectedVariant?.compareAtPrice || productData?.oldPrice || 0;
+  const discount = productData?.discount || (oldPrice
     ? Math.round(((oldPrice - currentPrice) / oldPrice) * 100)
-    : 0;
+    : 0);
 
   const handleAddToCart = async () => {
     try {
       await addToCart(
-        product,
+        productData,
         selectedVariant?.size || "Standard",
         selectedVariant?.color || "Default",
         quantity,
@@ -113,10 +116,10 @@ const ProductDetails = () => {
             </Link>
             <ChevronRight size={14} />
             <Link
-              to={`/category/${product.categoryId?.slug || ""}`}
+              to={`/category/${productData?.category?.slug || productData?.categoryId?.slug || ""}`}
               className="hover:text-blue-600 transition-colors"
             >
-              {product.categoryId?.name || "Category"}
+              {productData?.category?.name || productData?.categoryId?.name || "Category"}
             </Link>
             <ChevronRight size={14} />
             <span className="text-slate-900 font-medium truncate">
@@ -139,7 +142,7 @@ const ProductDetails = () => {
           />
 
           <ProductInfo
-            product={product}
+            product={productData}
             selectedVariant={selectedVariant}
             setSelectedVariant={setSelectedVariant}
             currentPrice={currentPrice}
@@ -152,7 +155,7 @@ const ProductDetails = () => {
         </div>
 
         <ProductTabs
-          product={product}
+          product={productData}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           showFullDesc={showFullDesc}
@@ -234,7 +237,7 @@ const ProductDetails = () => {
               {product.name}
             </span>
             <span className="text-blue-600 font-bold text-xs italic">
-              ₹{(selectedVariant?.price || product.price || 0).toLocaleString()}
+              ₹{(selectedVariant?.price || productData?.price || 0).toLocaleString()}
             </span>
           </div>
           <button

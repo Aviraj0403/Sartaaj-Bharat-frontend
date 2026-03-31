@@ -7,6 +7,9 @@ export const useProduct = (slug) => {
     queryFn: () => getProductBySlug(slug),
     staleTime: 10 * 60 * 1000, // 10 minutes
     enabled: !!slug,
-    select: (data) => data?.product || data || null,
+    select: (data) => {
+      const productData = data?.data || data?.product || data;
+      return productData || null;
+    },
   });
 };
