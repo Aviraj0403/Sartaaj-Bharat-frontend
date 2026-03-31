@@ -18,7 +18,7 @@ const normalizeItem = (item) => ({
     item.product?.pimage ||
     item.product?.image ||
     "/placeholder-premium.png",
-  price: Number(item.price || item.product?.variants?.price || 0),
+  price: Number(item.price || item.product?.variants?.[0]?.price || 0),
   quantity: Number(item.quantity || 1),
   color: item.color || "DFT",
   size: item.size || "STD",

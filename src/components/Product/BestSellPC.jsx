@@ -112,10 +112,10 @@ export default function BestSellPC({ product, onProductClick }) {
       <div className="flex justify-between items-center mb-2 px-1 text-sm">
         <div className="flex items-center gap-1">
           <p className="text-pink-500 font-medium text-sm">
-            ₹{product?.variants?.price}
+            ₹{product?.price}
           </p>
           <p className="text-gray-400 line-through text-xs">
-            ₹{product?.variants?.realPrice?.toFixed(2)}
+            ₹{product?.oldPrice}
           </p>
         </div>
         <div className="flex items-center">
