@@ -61,8 +61,8 @@ const SignupPage = () => {
     setIsSubmitting(true);
     try {
       await register(form);
-      toast.success("Account created! Welcome to Sartaaj Bharat 🎉");
-      navigate("/", { replace: true });
+      toast.success("Account established! Accessing portal... 🚀");
+      setTimeout(() => navigate("/signin?registered=true", { replace: true }), 1500);
     } catch (err) {
       toast.error(
         err?.message || "Registration failed. Please try again.",

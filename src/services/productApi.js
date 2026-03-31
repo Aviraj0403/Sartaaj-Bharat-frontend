@@ -130,6 +130,31 @@ export const getMiniProducts = async (
 };
 
 /**
+ * Enhanced Search Functionality
+ * Backend: GET /v1/api/products/search?q=:query
+ */
+export const searchProducts = async (query, page = 1, limit = 20) => {
+  try {
+    const response = await Axios.get("/products/search", {
+      params: { q: query, page, limit },
+    });
+
+    if (response.data && response.data.success) {
+      return {
+        success: true,
+        products: response.data.data || response.data.products || [],
+        pagination: response.data.meta || response.data.pagination || {},
+      };
+    } else {
+      throw new Error("Search failed");
+    }
+  } catch (error) {
+    console.error("Error in searchProducts:", error);
+    return { success: false, products: [], pagination: {} };
+  }
+};
+
+/**
  * Fetch single product by slug
  * Backend: GET /v1/api/products/slug/:slug
  */

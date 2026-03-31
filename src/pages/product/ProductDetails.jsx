@@ -73,9 +73,28 @@ const ProductDetails = () => {
   }
 
   const images = productData?.images?.length > 0 ? productData.images : [productData?.image || productData?.pimage];
-  const currentPrice = selectedVariant?.price || productData?.price || 0;
-  const oldPrice = selectedVariant?.compareAtPrice || productData?.oldPrice || 0;
-  const discount = productData?.discount || (oldPrice
+
+  const parsePrice = (val) => {
+    const num = Number(val);
+    return !isNaN(num) && num > 0 ? num : null;
+  };
+
+  const currentPrice = 
+    parsePrice(selectedVariant?.price) || 
+    parsePrice(selectedVariant?.realPrice) || 
+    parsePrice(productData?.price) || 
+    parsePrice(productData?.realPrice) || 
+    parsePrice(productData?.variants?.[0]?.price) || 
+    0;
+
+  const oldPrice = 
+    parsePrice(selectedVariant?.compareAtPrice) || 
+    parsePrice(selectedVariant?.oldPrice) || 
+    parsePrice(productData?.oldPrice) || 
+    parsePrice(productData?.compareAtPrice) || 
+    0;
+
+  const discount = productData?.discount || (oldPrice && currentPrice
     ? Math.round(((oldPrice - currentPrice) / oldPrice) * 100)
     : 0);
 

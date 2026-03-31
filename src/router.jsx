@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/home/home.jsx";
 import ProductDetails from "./pages/product/ProductDetails.jsx";
 import CategoryDetails from "./pages/category/CategoryDetails.jsx";
+import CategorySubCategoryDetails from "./pages/category/CategorySubCategoryDetails.jsx";
 import SearchPage from "./pages/search/SearchPage.jsx";
 import SignInPage from "./pages/auth/SignInPage.jsx";
 import SignupPage from "./pages/auth/SignupPage.jsx";
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "category/:categorySlug",
         element: <CategoryDetails />,
+      },
+      {
+        path: "category/:categorySlug/:subCategorySlug",
+        element: <CategorySubCategoryDetails />,
       },
       {
         path: "search",

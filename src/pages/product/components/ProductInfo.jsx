@@ -26,6 +26,28 @@ export default function ProductInfo({
   setQuantity,
   handleAddToCart,
 }) {
+  const [pincode, setPincode] = React.useState("");
+  const [checking, setChecking] = React.useState(false);
+  const [deliveryInfo, setDeliveryInfo] = React.useState(null);
+
+  const checkPincode = () => {
+    if (pincode.length !== 6) {
+      setDeliveryInfo({ success: false, message: "Please enter a valid 6-digit pincode" });
+      return;
+    }
+    setChecking(true);
+    setDeliveryInfo(null);
+    // Mock API delay
+    setTimeout(() => {
+      setChecking(false);
+      setDeliveryInfo({
+        success: true,
+        date: "Tomorrow, Oct 25",
+        mode: "Express Delivery Available",
+      });
+    }, 800);
+  };
+
   return (
     <div className="space-y-6">
       {/* Brand */}
@@ -86,16 +108,21 @@ export default function ProductInfo({
               <button
                 key={idx}
                 onClick={() => setSelectedVariant(v)}
-                className={`px-6 py-3 rounded-xl border-2 font-black text-xs uppercase tracking-wider transition-all ${
+                className={`px-6 py-3 rounded-xl border-2 font-black text-[10px] uppercase tracking-wider transition-all flex flex-col items-center gap-1 min-w-[100px] ${
                   selectedVariant === v
                     ? "border-blue-600 bg-blue-50 text-blue-600 shadow-lg"
-                    : "border-slate-200 hover:border-slate-300 text-slate-700 bg-white"
+                    : "border-slate-100 hover:border-slate-200 text-slate-500 bg-white"
                 }`}
               >
-                {v.size}{" "}
-                {v.color !== "Default" && v.color !== null
-                  ? `- ${v.color}`
-                  : ""}
+                <span className="font-black">
+                  {v.ram && `${v.ram}GB`} {v.storage && (v.ram ? `+ ${v.storage}GB` : `${v.storage}GB`)}
+                  {!v.ram && !v.storage && (v.size || v.name || `Option ${idx + 1}`)}
+                </span>
+                {v.color && v.color !== "Default" && (
+                  <span className="text-[8px] opacity-60 font-bold uppercase tracking-widest leading-none">
+                    {v.color}
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -183,31 +210,51 @@ export default function ProductInfo({
       </div>
 
       {/* Delivery Info */}
-      <div className="border border-slate-200 rounded-xl p-6 space-y-4">
-        <h3 className="font-bold text-slate-900 flex items-center gap-2">
-          <MapPin size={20} className="text-blue-600" />
-          Delivery Options
+      <div className="border border-slate-200 rounded-2xl p-6 space-y-5 bg-white shadow-sm">
+        <h3 className="font-black text-[10px] uppercase tracking-[0.4em] text-slate-900 flex items-center gap-3 italic">
+          <MapPin size={16} className="text-blue-600" />
+          Logistics Availability
         </h3>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <input
             type="text"
-            placeholder="Enter pincode"
-            className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            value={pincode}
+            onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+            placeholder="Enter destination pincode"
+            className="flex-1 px-5 py-3 border-2 border-slate-100 rounded-xl focus:outline-none focus:border-blue-600 font-black text-xs italic transition-all bg-slate-50/50"
           />
-          <button className="px-6 py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-colors">
-            Check
+          <button 
+            onClick={checkPincode}
+            disabled={checking}
+            className="px-8 py-3 bg-slate-950 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all disabled:opacity-50 active:scale-95"
+          >
+            {checking ? "Scanning..." : "Sync"}
           </button>
         </div>
-        <div className="space-y-2 text-sm text-slate-600">
-          <div className="flex items-center gap-2">
-            <Clock size={16} className="text-green-600" />
-            <span>
-              Get it by <strong className="text-slate-900">Tomorrow</strong>
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Package size={16} className="text-blue-600" />
-            <span>Free delivery on orders above ₹499</span>
+
+        {deliveryInfo && (
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`p-4 rounded-xl text-[10px] font-black uppercase tracking-widest italic ${
+              deliveryInfo.success ? "bg-blue-50 text-blue-600 border border-blue-100" : "bg-red-50 text-red-600 border border-red-100"
+            }`}
+          >
+            {deliveryInfo.success ? (
+              <div className="flex items-center gap-3">
+                <Clock size={14} />
+                <span>Estimated Arrival: {deliveryInfo.date} // {deliveryInfo.mode}</span>
+              </div>
+            ) : (
+              <span>{deliveryInfo.message}</span>
+            )}
+          </motion.div>
+        )}
+
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center gap-3">
+            <Package size={14} className="text-blue-400" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 italic">Global Logistics Infrastructure enabled</span>
           </div>
         </div>
       </div>

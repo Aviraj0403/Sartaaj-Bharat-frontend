@@ -149,7 +149,7 @@ export default function MobileHeader() {
       </div>
 
       {/* Spacer for sticky header */}
-      {!hideSearch && <div className="pt-[130px]"></div>}
+      <div className={hideSearch ? "pt-[65px]" : "pt-[130px]"}></div>
 
       {/* 📱 Bottom Navigation */}
       <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-2 z-50">
@@ -321,7 +321,7 @@ export default function MobileHeader() {
                   <div
                     className={`flex justify-between items-center px-4 py-4 rounded-2xl transition-all cursor-pointer ${openSubMenu === index ? "bg-slate-50 text-blue-600 shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
                     onClick={() => {
-                      if (item.subcategories.length > 0) toggleSubMenu(index);
+                      if (item.subcategories?.length > 0) toggleSubMenu(index);
                       else {
                         navigate(`/${item.slug}`);
                         setIsMenuOpen(false);
@@ -329,7 +329,7 @@ export default function MobileHeader() {
                     }}
                   >
                     <span className="font-black text-[10px] uppercase tracking-[0.15em] italic">{item.name}</span>
-                    {item.subcategories.length > 0 &&
+                    {item.subcategories?.length > 0 &&
                       (openSubMenu === index ? (
                         <ChevronUp size={16} strokeWidth={3} />
                       ) : (
@@ -338,7 +338,7 @@ export default function MobileHeader() {
                   </div>
 
                   <AnimatePresence>
-                    {openSubMenu === index && item.subcategories.length > 0 && (
+                    {openSubMenu === index && item.subcategories?.length > 0 && (
                       <motion.ul
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}

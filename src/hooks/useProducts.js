@@ -3,6 +3,7 @@ import {
   getMiniProducts,
   getProductBySlug,
   getRecommendations,
+  searchProducts,
 } from "../services/productApi";
 
 // ─── Stable serializer ──────────────────────────────────────────────────────
@@ -56,5 +57,14 @@ export const useRecommendations = (productId, limit = 4) => {
     enabled: !!productId,
     staleTime: 1 * 60 * 1000,
     gcTime: 2 * 60 * 1000,
+  });
+};
+// ─── Search ──────────────────────────────────────────────────────────────────
+export const useSearch = (query, page = 1, limit = 20) => {
+  return useQuery({
+    queryKey: ["search", query, page, limit],
+    queryFn: () => searchProducts(query, page, limit),
+    enabled: !!query && query.length > 0,
+    staleTime: 5 * 60 * 1000,
   });
 };
