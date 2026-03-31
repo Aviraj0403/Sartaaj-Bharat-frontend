@@ -46,7 +46,7 @@ export default function TechProfile() {
                   Verified Member
                 </span>
                 <h2 className="text-3xl md:text-5xl font-black text-white italic tracking-tighter uppercase leading-tight">
-                  {user?.name || user?.username}
+                  {user?.name || user?.userName}
                 </h2>
                 <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px] mt-1">
                   {user?.email}

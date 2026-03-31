@@ -119,6 +119,36 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // ────────────── REGISTER ──────────────
+  const register = async (formData) => {
+    try {
+      const response = await Axios.post("/auth/register", formData);
+
+      const token =
+        response.data?.token ||
+        response.data?.data?.token ||
+        response.data?.data?.accessToken;
+      if (token) Cookies.set("userToken", token, { expires: 7 });
+
+      const userRes = await Axios.get("/auth/profile", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      setUser(userRes.data.data);
+      dispatch(setReduxUser(userRes.data.data));
+
+      setCartSyncing(true);
+      try {
+        await dispatch(syncCartOnLogin()).unwrap();
+        await dispatch(fetchBackendCart()).unwrap();
+      } catch (_) {}
+      setCartSyncing(false);
+
+      return userRes.data.data;
+    } catch (error) {
+      throw error.response?.data || { message: "Registration failed" };
+    }
+  };
+
   // ────────────── EMAIL / USERNAME LOGIN ──────────────
   const login = async (credentials) => {
     try {
@@ -246,6 +276,7 @@ export const AuthProvider = ({ children }) => {
         cartSyncing,
         sendPhoneOTP,
         verifyPhoneOTP,
+        register,
         login,
         googleLogin,
         facebookLogin,

@@ -22,7 +22,7 @@ const SignupPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { googleLogin, facebookLogin } = useAuth();
+  const { register, googleLogin, facebookLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -41,10 +41,14 @@ const SignupPage = () => {
       toast.error("Username, Email and Password are required.");
       return;
     }
-    if (form.password.length < 6) {
-      toast.error("Password must be at least 6 characters.");
+
+    // Align with backend PasswordService.isValidPassword rules
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(form.password)) {
+      toast.error("Password must be at least 8 characters with uppercase, lowercase, and a number.");
       return;
     }
+
     if (form.phoneNumber && form.phoneNumber.length !== 10) {
       toast.error("Please enter a valid 10-digit mobile number.");
       return;
@@ -56,12 +60,12 @@ const SignupPage = () => {
 
     setIsSubmitting(true);
     try {
-      await Axios.post("/auth/register", form);
+      await register(form);
       toast.success("Account created! Welcome to Sartaaj Bharat 🎉");
       navigate("/", { replace: true });
     } catch (err) {
       toast.error(
-        err?.response?.data?.message || "Registration failed. Please try again.",
+        err?.message || "Registration failed. Please try again.",
       );
     } finally {
       setIsSubmitting(false);

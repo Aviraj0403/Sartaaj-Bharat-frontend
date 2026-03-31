@@ -83,7 +83,7 @@ export default function ProfilePage() {
           </div>
           <div>
             <h2 className="text-xl font-black text-white italic tracking-tighter uppercase">
-              {user.name || user.username}
+              {user.name || user.userName}
             </h2>
             <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">
               {user.email}
