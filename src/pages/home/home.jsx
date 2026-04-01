@@ -7,6 +7,8 @@ import ProductCard from "../../components/Product/ProductCard.jsx";
 import AccessoriesShowcase from "../../components/home/AccessoriesShowcase.jsx";
 import { ArrowRight, Sparkles, TrendingUp, Zap, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
+import {   Headphones, Award, Shield, Truck, Clock } from "lucide-react";
+import { Star } from "lucide-react";
 
 // Animation Variants
 const containerVariants = {
@@ -229,59 +231,97 @@ const Home = () => {
         </div>
 
         {/* Global Stats Strip - Full Width */}
-        <section className="mb-12 md:mb-16">
-          <div className="bg-slate-900 rounded-[2rem] md:rounded-[2rem] p-8 md:p-14 relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#2563eb33_0%,transparent_50%)]"></div>
-            <div className="absolute bottom-0 right-0 w-1/2 h-full bg-blue-600/5 blur-[150px] rounded-full translate-x-1/2"></div>
-
-            <div className="container-custom relative z-10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-                {[
-                  {
-                    label: "Global Reach",
-                    value: "45+",
-                    sub: "Countries Served",
-                    icon: Globe,
-                  },
-                  {
-                    label: "Market Trust",
-                    value: "99.9%",
-                    sub: "Customer Satisfaction",
-                    icon: Sparkles,
-                  },
-                  {
-                    label: "Elite Speed",
-                    value: "24h",
-                    sub: "Average Dispatch",
-                    icon: Zap,
-                  },
-                ].map((stat, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    className="flex flex-col items-center"
-                  >
+      <section className="mb-12 md:mb-16 px-4 sm:px-6 md:px-8">
+  <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 rounded-2xl sm:rounded-3xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-slate-800/50">
+    {/* Decorative Elements */}
+    <div className="relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#2563eb20_0%,transparent_70%)]"></div>
+      <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl"></div>
+      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl"></div>
+      
+      {/* Content */}
+      <div className="relative z-10 py-10 sm:py-12 md:py-10 lg:py-10 px-5 sm:px-8 md:px-12 lg:px-16">
+        <div className="container-custom mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 text-center">
+            {[
+              {
+                label: "Global Reach",
+                value: "45+",
+                sub: "Countries Served",
+                icon: Globe,
+              },
+              {
+                label: "Market Trust",
+                value: "99.9%",
+                sub: "Customer Satisfaction",
+                icon: Sparkles,
+              },
+              {
+                label: "Elite Speed",
+                value: "24h",
+                sub: "Average Dispatch",
+                icon: Zap,
+              },
+              {
+                label: "Premium Support",
+                value: "24/7",
+                sub: "Concierge Service",
+                icon: Headphones,
+              },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.6 }}
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="group relative flex flex-col items-center p-3 sm:p-4 md:p-5 rounded-2xl transition-all duration-300"
+              >
+                {/* Hover Background */}
+                <div className="absolute inset-0 bg-white/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
+                
+                {/* Icon Container - White Icon */}
+                <div className="relative mb-2 sm:mb-3 md:mb-4">
+                  <div className="absolute inset-0 bg-blue-600/20 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="relative bg-slate-800/80 p-2 sm:p-2.5 md:p-3 rounded-full border border-slate-700 group-hover:border-blue-500/50 transition-all duration-300">
                     <stat.icon
-                      className="text-blue-500 mb-2 md:mb-3"
-                      size={isMobile ? 24 : 28}
+                      className="text-white"
+                      size={20}
+                      strokeWidth={1.8}
                     />
-                    <span className="text-2xl sm:text-3xl md:text-5xl font-bold text-white tracking-tight mb-1">
-                      {stat.value}
-                    </span>
-                    <span className="text-blue-400 font-semibold uppercase tracking-[0.2em] text-[10px] mb-1">
-                      {stat.label}
-                    </span>
-                    <p className="text-slate-500 text-xs md:text-sm font-medium">
-                      {stat.sub}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+                  </div>
+                </div>
+
+                {/* Value */}
+                <motion.span 
+                  className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter mb-1 sm:mb-1.5 md:mb-2"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  {stat.value}
+                </motion.span>
+                
+                {/* Label */}
+                <span className="text-blue-400 font-black uppercase tracking-[0.2em] text-[8px] sm:text-[9px] md:text-[10px] mb-0.5 sm:mb-1">
+                  {stat.label}
+                </span>
+                
+                {/* Description */}
+                <p className="text-slate-400 text-[8px] sm:text-[9px] md:text-[10px] font-medium">
+                  {stat.sub}
+                </p>
+
+                {/* Decorative Line */}
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 sm:w-10 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              </motion.div>
+            ))}
           </div>
-        </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
         <ProductSection
           title="NEW ARRIVALS"
@@ -292,48 +332,109 @@ const Home = () => {
         />
 
         {/* Cinematic Promo Banner */}
-        <section className="mb-12 md:mb-16">
-          <div className="bg-slate-900 rounded-[2rem] md:rounded-[2rem] relative overflow-hidden shadow-2xl h-[350px] md:h-[450px]">
-            <div className="absolute inset-0 bg-dark-elite"></div>
-            <img
-              src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=2000&auto=format&fit=crop"
-              alt="Elite Promo"
-              className="w-full h-full object-cover opacity-60 transition-transform duration-[15s] hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-linear-to-r from-slate-950 via-slate-900/40 to-transparent flex items-center">
-              <div className="container-custom">
-                <div className="max-w-2xl space-y-6 md:space-y-10">
-                  <motion.div
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    className="inline-flex items-center gap-3 bg-blue-600/10 backdrop-blur-xl border border-blue-500/20 text-blue-400 text-[9px] md:text-[10px] font-black px-5 md:px-6 py-2.5 md:py-3 rounded-full uppercase tracking-[0.4em]"
-                  >
-                    <TrendingUp size={16} /> Seasonal Milestone
-                  </motion.div>
-                  <h3 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-[0.9] tracking-tight">
-                    SARTAAJ
-                    <br />
-                    <span className="text-blue-400">BHARAT</span>
-                  </h3>
-                  <p className="text-slate-400 text-sm sm:text-xl md:text-2xl font-medium max-w-md leading-relaxed line-clamp-2 md:line-clamp-none">
-                    Leading the future of Indian e-commerce with premium
-                    quality.
-                  </p>
-                  <Link
-                    to="/products"
-                    className="btn-premium px-8 md:px-12 py-3.5 md:py-5 text-sm md:text-lg group w-fit flex items-center gap-3"
-                  >
-                    Shop Collection{" "}
-                    <ArrowRight
-                      size={20}
-                      className="group-hover:translate-x-2 transition-transform duration-500"
-                    />
-                  </Link>
-                </div>
-              </div>
+     <section className="mb-12 md:mb-16 px-4 sm:px-6 md:px-8">
+  <div className="bg-slate-900 rounded-2xl sm:rounded-3xl md:rounded-[2rem] relative overflow-hidden shadow-2xl h-[380px] sm:h-[420px] md:h-[440px] lg:h-[460px] group">
+    {/* Background Image with Parallax Effect */}
+    <div className="absolute inset-0 overflow-hidden">
+      <img
+        src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=2000&auto=format&fit=crop"
+        alt="Elite Promo"
+        className="w-full h-full object-cover transition-all duration-[15s] group-hover:scale-110 opacity-60"
+      />
+    </div>
+    
+    {/* Gradient Overlays */}
+    <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent"></div>
+    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent"></div>
+    
+    {/* Content Container */}
+    <div className="absolute inset-0 flex items-center">
+      <div className="w-full px-5 sm:px-8 md:px-12 lg:px-16">
+        <div className="max-w-2xl space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
+          {/* Premium Badge */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 sm:gap-3 bg-blue-600/20 backdrop-blur-xl border border-blue-500/30 text-blue-400 text-[9px] sm:text-[10px] md:text-[11px] font-black px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-full uppercase tracking-[0.3em] w-fit"
+          >
+            <TrendingUp size={12} className="sm:w-3 sm:h-3 md:w-4 md:h-4" />
+            <span>Seasonal Milestone 2026</span>
+          </motion.div>
+
+          {/* Main Title */}
+          <motion.h3
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-black text-white leading-[1.1] sm:leading-[1.1] md:leading-[1.05] tracking-tighter"
+          >
+            SARTAAJ
+            <br />
+            <span className="text-transparent bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text">
+              BHARAT
+            </span>
+          </motion.h3>
+
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="text-slate-300 text-sm sm:text-base md:text-lg lg:text-lg font-medium max-w-md leading-relaxed"
+          >
+            Leading the future of Indian e-commerce with premium quality and unparalleled excellence.
+          </motion.p>
+
+          {/* CTA Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          >
+            <Link
+              to="/products"
+              className="group inline-flex items-center gap-2 sm:gap-3 bg-blue-600 hover:bg-blue-700 text-white px-5 sm:px-7 md:px-9 py-2 sm:py-2.5 md:py-3 rounded-full font-bold text-sm sm:text-base md:text-base transition-all duration-300 shadow-lg hover:shadow-blue-600/30 hover:scale-105 active:scale-95"
+            >
+              <span>Shop Collection</span>
+              <ArrowRight
+                size={16}
+                className="sm:w-4 sm:h-4 md:w-4 md:h-4 group-hover:translate-x-2 transition-transform duration-300"
+              />
+            </Link>
+          </motion.div>
+
+          {/* Optional: Stats Badge */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="hidden sm:flex items-center gap-4 pt-1"
+          >
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-[9px] text-slate-400 uppercase tracking-wider">Live Inventory</span>
             </div>
-          </div>
-        </section>
+            <div className="w-px h-3 bg-slate-700"></div>
+            <div className="flex items-center gap-2">
+              <Star size={10} className="text-yellow-500 fill-yellow-500" />
+              <span className="text-[9px] text-slate-400 uppercase tracking-wider">4.9/5 Rating</span>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </div>
+
+    {/* Decorative Elements */}
+    <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl"></div>
+    <div className="absolute top-0 left-0 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl"></div>
+  </div>
+</section>
 
         <ProductSection
           title="FEATURED SELECTION"

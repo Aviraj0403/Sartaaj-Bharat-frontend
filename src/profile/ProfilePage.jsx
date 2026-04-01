@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useAuth } from "../context/AuthContext"; // Import useAuth hook
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingBag,
@@ -18,12 +18,24 @@ import Reviews from "./Reviews";
 import TechProfile from "./TechProfile";
 import Addresses from "./Addresses";
 import DeleteAccount from "./DeleteAccount";
-import SignInPage from "../pages/auth/SignInPage"; // Import SignInPage component
+import SignInPage from "../pages/auth/SignInPage";
 
 export default function ProfilePage() {
-  const { user, logout, loading } = useAuth(); // Get user and logout function from AuthContext
+  const { user, logout, loading } = useAuth();
   const [activeKey, setActiveKey] = useState("orders");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Prevent body scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [sidebarOpen]);
 
   const profileOptions = [
     {
@@ -66,18 +78,17 @@ export default function ProfilePage() {
 
   const activeOption = profileOptions.find((opt) => opt.key === activeKey);
 
-  // Loading state or user not logged in
   if (loading) return <div>Loading...</div>;
   if (!user) {
     return <SignInPage />;
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-white relative selection:bg-blue-600 selection:text-white">
-      {/* Top Menu Toggle for Mobile */}
-      <div className="md:hidden w-full p-6 bg-slate-900 border-b border-slate-800 flex justify-between items-center relative overflow-hidden">
+    <div className="min-h-screen  py-16 md:py-0 flex flex-col md:flex-row bg-white relative selection:bg-blue-600 selection:text-white">
+      {/* Top Menu Toggle for Mobile - Fixed at top with proper z-index */}
+      <div className="md:hidden w-full bg-slate-900 border-b border-slate-800 flex justify-between items-center relative overflow-hidden sticky top-0 z-30">
         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 blur-3xl rounded-full"></div>
-        <div className="flex items-center gap-4 relative z-10">
+        <div className="flex items-center gap-4 relative z-10 p-4">
           <div className="rounded-2xl bg-blue-600 p-2.5 shadow-lg shadow-blue-500/30">
             <User size={28} className="text-white" />
           </div>
@@ -92,20 +103,20 @@ export default function ProfilePage() {
         </div>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2.5 rounded-xl bg-white/5 text-white border border-white/10 hover:bg-white/10 transition-all"
+          className="p-2.5 rounded-xl bg-white/5 text-white border border-white/10 hover:bg-white/10 transition-all mr-4 z-10"
         >
           {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* Corporate Elite Sidebar */}
+      {/* Corporate Elite Sidebar - Fixed with higher z-index and proper positioning */}
       <div
-        className={`fixed top-0 left-0 h-full w-72 bg-slate-950 border-r border-slate-900 p-0 space-y-0 z-[120] transform transition-transform duration-500 md:translate-x-0 ${
+        className={`fixed top-0 left-0 h-full w-72 bg-slate-950 border-r border-slate-900 p-0 space-y-0 z-[100] transform transition-transform duration-300 ease-in-out overflow-y-auto no-scrollbar ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:relative md:block overflow-y-auto no-scrollbar`}
+        } md:relative md:translate-x-0 md:block md:z-0 shadow-2xl`}
       >
         {/* Profile Info Header in Sidebar */}
-        <div className="p-8 border-b border-slate-900 bg-linear-to-b from-slate-900 to-slate-950">
+        <div className="p-8 border-b border-slate-900 bg-gradient-to-b from-slate-900 to-slate-950">
           <div className="flex flex-col items-center">
             <div className="rounded-3xl bg-blue-600 p-5 mb-5 shadow-2xl shadow-blue-500/20 rotate-3 hover:rotate-0 transition-transform duration-500">
               <User size={48} className="text-white" strokeWidth={2.5} />
@@ -128,7 +139,7 @@ export default function ProfilePage() {
               key={option.key}
               onClick={() => {
                 setActiveKey(option.key);
-                setSidebarOpen(false); // Close sidebar on mobile after selection
+                setSidebarOpen(false);
               }}
               className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all duration-300 group ${
                 activeKey === option.key
@@ -137,7 +148,11 @@ export default function ProfilePage() {
               }`}
             >
               <div
-                className={`${activeKey === option.key ? "text-white" : "text-blue-500 group-hover:scale-110"} transition-transform`}
+                className={`${
+                  activeKey === option.key
+                    ? "text-white"
+                    : "text-blue-500 group-hover:scale-110"
+                } transition-transform`}
               >
                 {React.cloneElement(option.icon, {
                   size: 20,
@@ -162,21 +177,25 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Void Overlay for Mobile */}
+      {/* Void Overlay for Mobile - Improved click handling */}
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[110] md:hidden bg-slate-950/40 backdrop-blur-sm"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[95] md:hidden bg-black/60 backdrop-blur-sm"
             onClick={() => setSidebarOpen(false)}
           />
         )}
       </AnimatePresence>
 
-      <div className="flex-1 p-6 md:p-12 lg:p-16 mt-0 md:mt-0 z-10 relative max-w-7xl mx-auto w-full">
-        {activeOption.component}
+      {/* Main Content Area - Proper padding for mobile */}
+      <div className="flex-1 w-full md:mt-0 z-10 relative">
+        <div className="p-6 md:p-12 lg:p-16 max-w-7xl mx-auto">
+          {activeOption.component}
+        </div>
       </div>
     </div>
   );
