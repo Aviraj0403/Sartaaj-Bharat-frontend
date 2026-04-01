@@ -6,6 +6,9 @@ export const useBanners = () => {
     queryKey: ["banners"],
     queryFn: getBanners,
     staleTime: 60 * 60 * 1000, // 1 hour
+    gcTime: 24 * 60 * 60 * 1000, // 24 hours
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 };
 
@@ -14,5 +17,8 @@ export const useSections = () => {
     queryKey: ["sections"],
     queryFn: getSections,
     staleTime: 60 * 60 * 1000,
+    gcTime: 24 * 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 };

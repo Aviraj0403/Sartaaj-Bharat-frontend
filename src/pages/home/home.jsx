@@ -37,19 +37,19 @@ const ProductSection = ({
   color = "blue",
 }) => (
   <section className="container-custom mb-10 md:mb-14">
-    <div className="flex flex-col md:flex-row md:justify-between md:items-end items-start mb-8 gap-6">
-      <div className="max-w-xl w-full">
+    <div className="flex items-end justify-between mb-6 md:mb-8 gap-4">
+      <div className="max-w-[70%] md:max-w-xl">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="flex items-center gap-2 mb-3"
+          className="flex items-center gap-2 mb-2 md:mb-3"
         >
           <div
-            className={`h-1 w-8 rounded-full ${color === "blue" ? "bg-blue-600" : "bg-orange-500"}`}
+            className={`h-0.5 sm:h-1 w-6 sm:w-8 rounded-full ${color === "blue" ? "bg-blue-600" : "bg-orange-500"}`}
           ></div>
           <span
-            className={`${color === "blue" ? "text-blue-600" : "text-orange-500"} font-bold text-[10px] uppercase tracking-[0.2em]`}
+            className={`${color === "blue" ? "text-blue-600" : "text-orange-500"} font-black text-[8px] sm:text-[10px] uppercase tracking-[0.2em]`}
           >
             {subtitle}
           </span>
@@ -58,19 +58,19 @@ const ProductSection = ({
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-2xl sm:text-3xl md:text-5xl font-bold text-slate-900 tracking-tight leading-tight"
+          className="text-xl sm:text-3xl md:text-5xl font-black text-slate-900 tracking-tighter leading-none"
         >
           {title}
         </motion.h2>
       </div>
       <Link
         to={linkTo}
-        className="btn-premium-outline group min-w-[180px] md:ml-auto"
+        className="group flex items-center gap-1 text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors whitespace-nowrap pb-0.5 sm:pb-1"
       >
-        Explore All{" "}
+        Explore All
         <ArrowRight
-          size={18}
-          className="group-hover:translate-x-2 transition-transform duration-500"
+          size={14}
+          className="group-hover:translate-x-1 transition-transform duration-300"
         />
       </Link>
     </div>
@@ -109,16 +109,16 @@ const DepartmentScroll = ({ categories, loading }) => {
   };
 
   return (
-    <section className="container-custom mb-12 md:mb-16 relative">
-      <div className="absolute top-[-100px] left-0 w-64 h-64 bg-blue-100/20 blur-[100px] rounded-full -z-10"></div>
+    <section className="container-custom mb-10 md:mb-16 relative">
+      <div className="hidden md:block absolute top-[-100px] left-0 w-64 h-64 bg-blue-100/20 blur-[100px] rounded-full -z-10"></div>
 
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6 px-2">
-        <div>
+      <div className="flex items-end justify-between mb-6 px-2 gap-4">
+        <div className="max-w-[70%]">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-blue-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-3 block"
+            className="text-blue-600 font-black text-[8px] sm:text-[10px] uppercase tracking-[0.3em] mb-2 block"
           >
             Elite curation
           </motion.span>
@@ -126,7 +126,7 @@ const DepartmentScroll = ({ categories, loading }) => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-2xl md:text-4xl font-bold text-slate-900 tracking-tight"
+            className="text-xl sm:text-2xl md:text-4xl font-black text-slate-900 tracking-tighter leading-none"
           >
             SHOP BY <span className="text-blue-600">CATEGORY</span>
           </motion.h2>
@@ -135,9 +135,10 @@ const DepartmentScroll = ({ categories, loading }) => {
         <div className="flex items-center gap-4">
           <Link
             to="/categories"
-            className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors mr-4"
+            className="group flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors whitespace-nowrap pb-0.5"
           >
             View All
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
           <div className="hidden md:flex gap-3">
             <button
@@ -191,10 +192,12 @@ const DepartmentScroll = ({ categories, loading }) => {
                       className="w-full h-full object-contain relative z-10 transition-transform duration-700 group-hover:scale-110"
                     />
                   </div>
-                  <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-slate-800 group-hover:text-blue-600 text-center transition-colors line-clamp-1">
-                    {cat.name}
-                  </span>
-                  <div className="h-0.5 w-0 bg-blue-600 group-hover:w-full transition-all duration-500 mt-2"></div>
+                  <div className="w-[140%] -ml-[20%]">
+                    <span className="block text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-[0.1em] text-slate-800 group-hover:text-blue-600 text-center transition-colors truncate px-1">
+                      {cat.name}
+                    </span>
+                  </div>
+                  <div className="h-0.5 w-0 bg-blue-600 group-hover:w-full transition-all duration-500 mt-1 sm:mt-2"></div>
                 </Link>
               </motion.div>
             ))}
@@ -236,8 +239,8 @@ const Home = () => {
     {/* Decorative Elements */}
     <div className="relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#2563eb20_0%,transparent_70%)]"></div>
-      <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl"></div>
-      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl"></div>
+      <div className="hidden md:block absolute -top-40 -right-40 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl"></div>
+      <div className="hidden md:block absolute -bottom-40 -left-40 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl"></div>
       
       {/* Content */}
       <div className="relative z-10 py-10 sm:py-12 md:py-10 lg:py-10 px-5 sm:px-8 md:px-12 lg:px-16">
@@ -279,11 +282,11 @@ const Home = () => {
                 className="group relative flex flex-col items-center p-3 sm:p-4 md:p-5 rounded-2xl transition-all duration-300"
               >
                 {/* Hover Background */}
-                <div className="absolute inset-0 bg-white/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
+                <div className="hidden md:block absolute inset-0 bg-white/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
                 
                 {/* Icon Container - White Icon */}
                 <div className="relative mb-2 sm:mb-3 md:mb-4">
-                  <div className="absolute inset-0 bg-blue-600/20 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="hidden md:block absolute inset-0 bg-blue-600/20 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity"></div>
                   <div className="relative bg-slate-800/80 p-2 sm:p-2.5 md:p-3 rounded-full border border-slate-700 group-hover:border-blue-500/50 transition-all duration-300">
                     <stat.icon
                       className="text-white"
@@ -431,8 +434,8 @@ const Home = () => {
     </div>
 
     {/* Decorative Elements */}
-    <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl"></div>
-    <div className="absolute top-0 left-0 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl"></div>
+    <div className="hidden md:block absolute bottom-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl"></div>
+    <div className="hidden md:block absolute top-0 left-0 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl"></div>
   </div>
 </section>
 
@@ -445,73 +448,13 @@ const Home = () => {
           color="orange"
         />
 
-        {/* Best Sellers Section */}
-        <section className="bg-slate-950 py-12 md:py-16 overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600/5 blur-[150px] rounded-full translate-x-1/2"></div>
-          <div className="absolute bottom-0 left-0 w-1/2 h-full bg-indigo-600/5 blur-[150px] rounded-full -translate-x-1/2"></div>
-
-          <div className="container-custom relative z-10">
-            <div className="flex flex-col items-center text-center mb-10 md:mb-16">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="flex items-center gap-3 mb-6"
-              >
-                <div className="h-px w-8 bg-blue-600"></div>
-                <span className="text-blue-500 font-black text-[10px] uppercase tracking-[0.5em]">
-                  Global Favorites
-                </span>
-                <div className="h-px w-8 bg-blue-600"></div>
-              </motion.div>
-              <motion.h2
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="text-white text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-none mb-8"
-              >
-                BEST <span className="text-blue-500">SELLERS</span>
-              </motion.h2>
-              <p className="text-slate-400 text-sm sm:text-lg font-medium max-w-lg mb-8 leading-relaxed">
-                Our most sought-after products, loved by customers worldwide.
-              </p>
-              <Link
-                to="/products?filter=bestsellers"
-                className="btn-premium px-10 py-4 text-xs group flex items-center gap-3"
-              >
-                Explore Collection{" "}
-                <ArrowRight
-                  size={18}
-                  className="group-hover:translate-x-2 transition-transform duration-500"
-                />
-              </Link>
-            </div>
-
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-              className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 md:gap-10"
-            >
-              {bestLoading
-                ? [...Array(4)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="aspect-3/4 bg-slate-900/50 animate-pulse rounded-[2.5rem] border border-slate-800"
-                    ></div>
-                  ))
-                : bestData?.products?.map((product) => (
-                    <motion.div
-                      key={product.id || product._id}
-                      variants={itemVariants}
-                    >
-                      <ProductCard product={product} />
-                    </motion.div>
-                  ))}
-            </motion.div>
-          </div>
-        </section>
+        <ProductSection
+          title="BEST SELLERS"
+          subtitle="GLOBAL FAVORITES"
+          products={bestData?.products}
+          loading={bestLoading}
+          linkTo="/products?filter=bestsellers"
+        />
 
         <AccessoriesShowcase />
       </main>

@@ -32,9 +32,10 @@ export const useProducts = (params = {}) => {
         params.isCombo || "",
         params,
       ),
-    staleTime: 1 * 60 * 1000, // 1 min — sync faster with admin updates
-    gcTime: 2 * 60 * 1000, // 2 min before GC
-    placeholderData: (prev) => prev, // replaces deprecated keepPreviousData
+    staleTime: 5 * 60 * 1000, // 5 mins to prevent unnecessary redundant calls across the app
+    gcTime: 10 * 60 * 1000, // 10 mins
+    refetchOnWindowFocus: false, // Prevents 4 massive parallel API calls every time the user switches tabs
+    placeholderData: (prev) => prev, 
   });
 };
 
@@ -44,8 +45,9 @@ export const useProductDetail = (slug) => {
     queryKey: ["product", slug],
     queryFn: () => getProductBySlug(slug),
     enabled: !!slug,
-    staleTime: 1 * 60 * 1000,
-    gcTime: 2 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -55,8 +57,9 @@ export const useRecommendations = (productId, limit = 4) => {
     queryKey: ["recommendations", productId, limit],
     queryFn: () => getRecommendations(productId, limit),
     enabled: !!productId,
-    staleTime: 1 * 60 * 1000,
-    gcTime: 2 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 };
 // ─── Search ──────────────────────────────────────────────────────────────────
@@ -66,5 +69,7 @@ export const useSearch = (query, page = 1, limit = 20) => {
     queryFn: () => searchProducts(query, page, limit),
     enabled: !!query && query.length > 0,
     staleTime: 5 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 };

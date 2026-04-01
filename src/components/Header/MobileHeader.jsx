@@ -101,6 +101,20 @@ export default function MobileHeader() {
 
           {/* Profile + Cart */}
           <div className="flex items-center gap-4 text-gray-700">
+            {/* Search */}
+            <button
+               onClick={() => {
+                 setActiveTab("search");
+                 navigate("/search");
+               }}
+               className={`relative flex flex-col items-center gap-1 transition-colors ${activeTab === "search" ? "text-blue-600" : "text-slate-400"}`}
+            >
+               <Search size={22} strokeWidth={2.5} />
+               <span className="text-[8px] font-black uppercase tracking-widest italic leading-none">
+                 SCAN
+               </span>
+            </button>
+
             {/* Profile */}
             <button
               onClick={handleProfileClick}
@@ -132,24 +146,10 @@ export default function MobileHeader() {
           </div>
         </div>
 
-        {/* Search Bar */}
-        {!hideSearch && (
-          <div className="px-4 py-4 border-b border-slate-50 bg-white">
-            <div className="flex items-center gap-3 bg-slate-50 rounded-2xl px-5 py-3 border border-slate-100 group">
-              <Search className="text-slate-400" size={18} strokeWidth={3} />
-              <div
-                className="w-full bg-transparent outline-none text-[11px] font-black uppercase tracking-[0.2em] italic text-slate-400 cursor-pointer"
-                onClick={() => navigate("/search")}
-              >
-                <span>Initialize Archive Search...</span>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Spacer for sticky header */}
-      <div className={hideSearch ? "pt-[65px]" : "pt-[130px]"}></div>
+      <div className="pt-[65px]"></div>
 
       {/* 📱 Bottom Navigation */}
       <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-2 z-50">
@@ -161,6 +161,17 @@ export default function MobileHeader() {
           <Home size={22} strokeWidth={activeTab === "home" ? 3 : 2} />
           <span className="text-[9px] font-black uppercase tracking-widest italic">Core</span>
         </Link>
+
+        <button
+          onClick={() => {
+            setActiveTab("search");
+            navigate("/search");
+          }}
+          className={`flex flex-col items-center gap-1 transition-all duration-300 ${activeTab === "search" ? "text-blue-600 scale-110" : "text-slate-400"}`}
+        >
+          <Search size={22} strokeWidth={activeTab === "search" ? 3 : 2} />
+          <span className="text-[9px] font-black uppercase tracking-widest italic">Scan</span>
+        </button>
 
         <button
           onClick={() => {

@@ -278,11 +278,11 @@ const EliteHeroSlider = () => {
   const currentSlide = slides[currentIndex];
 
   return (
-   <section className="w-full py-15 md:py-0 bg-slate-50">
+    <section className="w-full  bg-slate-50">
       <div className="w-full px-4 sm:px-6 md:px-8 pt-4 sm:pt-6 md:pt-8 pb-6 sm:pb-8 md:pb-10">
         {/* Hero Banner Container */}
         <div className="relative w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[70vh] overflow-hidden rounded-2xl sm:rounded-3xl md:rounded-[2rem] shadow-xl bg-slate-950">
-          
+
           {/* Background Image with Overlay */}
           <AnimatePresence mode="wait">
             <motion.div
@@ -366,9 +366,9 @@ const EliteHeroSlider = () => {
                   >
                     <button className="group relative px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-bold text-sm sm:text-base transition-all duration-300 shadow-lg hover:shadow-blue-600/30 hover:scale-105 active:scale-95 flex items-center gap-2 sm:gap-3">
                       <span>Shop Collection</span>
-                      <ArrowRight 
-                        size={16} 
-                        className="sm:w-4 sm:h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" 
+                      <ArrowRight
+                        size={16}
+                        className="sm:w-4 sm:h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform"
                       />
                     </button>
 
@@ -399,11 +399,10 @@ const EliteHeroSlider = () => {
                 className="group relative"
               >
                 <div
-                  className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
-                    i === currentIndex
-                      ? "w-8 sm:w-10 md:w-12 bg-blue-500 shadow-lg shadow-blue-500/50"
-                      : "w-4 sm:w-5 md:w-6 bg-white/40 hover:bg-white/60"
-                  }`}
+                  className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${i === currentIndex
+                    ? "w-8 sm:w-10 md:w-12 bg-blue-500 shadow-lg shadow-blue-500/50"
+                    : "w-4 sm:w-5 md:w-6 bg-white/40 hover:bg-white/60"
+                    }`}
                 ></div>
               </button>
             ))}
@@ -456,11 +455,10 @@ const EliteHeroSlider = () => {
                 className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group"
               >
                 <div
-                  className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center mb-2 sm:mb-3 transition-all duration-300 ${
-                    item.color === "blue"
-                      ? "bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white"
-                      : "bg-orange-50 text-orange-600 group-hover:bg-orange-600 group-hover:text-white"
-                  }`}
+                  className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center mb-2 sm:mb-3 transition-all duration-300 ${item.color === "blue"
+                    ? "bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white"
+                    : "bg-orange-50 text-orange-600 group-hover:bg-orange-600 group-hover:text-white"
+                    }`}
                 >
                   <item.icon size={16} className="sm:w-4 sm:h-4 md:w-5 md:h-5" />
                 </div>

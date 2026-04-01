@@ -461,9 +461,9 @@ const MobileHeaderElite = () => {
     <div className="lg:hidden">
       {/* Top Sticky Header */}
       <header
-        className={`fixed top-0 left-0 w-full z-70 transition-all duration-500 ${isScrolled ? "bg-white/80 backdrop-blur-2xl shadow-xl shadow-slate-200/20 py-2" : "bg-white py-4"}`}
+        className={`fixed top-0 left-0 w-full z-70 transition-all duration-500 ${isScrolled ? "bg-white/95 backdrop-blur-md shadow-xl shadow-slate-200/20 py-2" : "bg-white py-3"}`}
       >
-        <div className="container-custom px-4 space-y-4">
+        <div className="container-custom px-4 py-1">
           <div className="flex justify-between items-center">
             {/* Menu Trigger */}
             <button
@@ -485,6 +485,12 @@ const MobileHeaderElite = () => {
   
             {/* Quick Actions */}
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="p-2 rounded-2xl bg-slate-50 text-slate-900 active:scale-90 transition-all border border-slate-100"
+              >
+                <Search size={20} strokeWidth={2.5} />
+              </button>
               <Link
                 to="/cart"
                 className="relative p-2.5 rounded-2xl bg-slate-950 text-white shadow-2xl shadow-slate-900/20 active:scale-90 transition-all"
@@ -498,32 +504,26 @@ const MobileHeaderElite = () => {
               </Link>
             </div>
           </div>
-
-          {/* Premium Inline Search Trigger */}
-          <motion.div 
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            className="relative group"
-          >
-            <div 
-              onClick={() => setIsSearchOpen(true)}
-              className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-slate-400 font-bold text-[10px] uppercase tracking-widest italic flex items-center gap-3 active:bg-slate-100 transition-all cursor-pointer"
-            >
-              <Search className="absolute left-4 text-blue-600" size={16} strokeWidth={3} />
-              Discover the Archive...
-            </div>
-          </motion.div>
         </div>
       </header>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl border-t border-slate-100 px-6 py-3 z-60 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+      <nav className="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-3 z-60 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
         <Link to="/" className="flex flex-col items-center gap-1 text-blue-600">
           <Home size={20} />
           <span className="text-[10px] font-black uppercase tracking-widest">
             Home
           </span>
         </Link>
+        <button
+          onClick={() => setIsSearchOpen(true)}
+          className="flex flex-col items-center gap-1 text-slate-400 hover:text-blue-600 transition-colors"
+        >
+          <Search size={20} />
+          <span className="text-[10px] font-black uppercase tracking-widest">
+            Search
+          </span>
+        </button>
         <Link
           to="/exclusive"
           className="flex flex-col items-center gap-1 text-slate-400 hover:text-blue-600 transition-colors"
@@ -571,42 +571,45 @@ const MobileHeaderElite = () => {
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed left-0 top-0 h-screen w-[85%] max-w-sm bg-white z-90 shadow-2xl flex flex-col"
             >
-              {/* Header with Profile - Removed Sartaaj Bharat */}
-<div className="bg-black p-2 pb-1">           
-    <div className="flex items-center justify-between mb-1">
-                  {/* Close Button Only */}
+              {/* Header with Profile */}
+              <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950 pt-8 px-5 pb-6 relative overflow-hidden border-b border-white/5">
+                {/* Decorative Glow */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/20 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+                
+                <div className="flex items-center justify-end mb-6 relative z-10">
+                  {/* Close Button Only - Moved to Right */}
                   <button
                     onClick={() => setIsMenuOpen(false)}
-                    className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md text-white hover:bg-white/20 transition-all"
+                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all focus:outline-none"
                   >
-                    <X size={20} />
+                    <X size={18} />
                   </button>
-                  {/* Empty div for balance */}
-                  <div className="w-10"></div>
                 </div>
 
-                {/* Enhanced Profile Card - Full Width */}
+                {/* Enhanced Premium Profile Card */}
                 <Link
                   to={isAuthenticated ? "/profile" : "/signin"}
                   onClick={() => setIsMenuOpen(false)}
-                  className="bg-white/10 backdrop-blur-md rounded-2xl p-5 hover:bg-white/20 transition-all group"
+                  className="relative bg-white/5 border border-white/10 backdrop-blur-md rounded-[1.5rem] p-5 hover:bg-white/10 transition-all group block shadow-xl"
                 >
-                  <div className="flex items-center gap-4">
-                    {/* Profile Avatar */}
-                    <div className="relative">
-                      <div className="w-16 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/5 to-blue-600/0 opacity-0 group-hover:opacity-100 transition-opacity rounded-[1.5rem]"></div>
+                  
+                  <div className="flex items-center gap-4 relative z-10">
+                    {/* Premium Circular Avatar */}
+                    <div className="relative shrink-0">
+                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.4)] border-2 border-white/10 group-hover:border-white/20 transition-all">
                         {isAuthenticated ? (
                           <img 
                             src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.userName || "U")}&background=2563eb&color=fff&size=64`} 
                             alt="user" 
-                            className="w-full h-full object-cover rounded-2xl"
+                            className="w-full h-full object-cover rounded-full"
                           />
                         ) : (
-                          <User size={32} className="text-white" />
+                          <User size={26} className="text-white" />
                         )}
                       </div>
                       {isAuthenticated && (
-                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+                        <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-slate-900 rounded-full shadow-sm"></div>
                       )}
                     </div>
                     
@@ -898,7 +901,7 @@ const MobileHeaderElite = () => {
       </AnimatePresence>
 
       {/* Spacer for sticky header */}
-      <div className="h-16"></div>
+      <div className="h-[65px]"></div>
     </div>
   );
 };
