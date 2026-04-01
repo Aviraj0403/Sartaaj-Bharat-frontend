@@ -1,20 +1,17 @@
 import React, { useRef, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { Sparkles } from "lucide-react";
-import ProductCard from "../../components/Product/ProductCard";
-import { getMiniProducts } from "../../services/productApi";
+import BestSellPC from "../../components/Product/BestSellPC";
+import { useProducts } from "../../hooks";
 
 export default function BestsellerSection({ categorySlug }) {
   const navigate = useNavigate();
   const carouselRef = useRef(null);
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["bestsellers", categorySlug],
-    queryFn: () =>
-      getMiniProducts(1, 20, "", categorySlug, "", "true", "", "", ""),
-    staleTime: 10 * 60 * 1000,
+  const { data, isLoading, isError } = useProducts({ 
+    limit: 10, 
+    isBestseller: "true" 
   });
 
   const products = data?.products || [];
@@ -50,16 +47,16 @@ export default function BestsellerSection({ categorySlug }) {
         {/* Header */}
         <div className="flex items-end justify-between mb-6">
           <div>
-            <div className="flex items-center gap-2 text-blue-600 text-[9px] font-black uppercase tracking-[0.3em] mb-2">
+            <div className="flex items-center gap-2 text-pink-600 text-[9px] font-black uppercase tracking-[0.3em] mb-2">
               <Sparkles size={11} className="animate-pulse" /> Top Rated
             </div>
             <h2 className="text-2xl md:text-3xl font-black text-slate-900 italic tracking-tighter leading-none">
-              Best<span className="text-blue-600">sellers</span>
+              Best<span className="text-pink-600">sellers</span>
             </h2>
           </div>
           <Link
             to="/category/bestsellers"
-            className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-800 transition-colors border-b-2 border-blue-200 hover:border-blue-600 pb-0.5"
+            className="text-[10px] font-black uppercase tracking-widest text-pink-600 hover:text-pink-800 transition-colors border-b-2 border-pink-200 hover:border-pink-600 pb-0.5"
           >
             View All →
           </Link>
@@ -113,7 +110,7 @@ export default function BestsellerSection({ categorySlug }) {
                   key={product._id}
                   className="flex-shrink-0 w-[48%] sm:w-56 md:w-60 lg:w-64 snap-start"
                 >
-                  <ProductCard product={product} />
+                  <BestSellPC product={product} />
                 </div>
               ))}
             </div>

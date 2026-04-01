@@ -4,6 +4,7 @@ import { useProducts, useCategories } from "../../hooks";
 import { useViewport } from "../../hooks/useViewport";
 import EliteHeroSlider from "../../components/home/EliteHeroSlider.jsx";
 import ProductCard from "../../components/Product/ProductCard.jsx";
+import BestsellerSection from "./BestsellerSection.jsx";
 import AccessoriesShowcase from "../../components/home/AccessoriesShowcase.jsx";
 import { ArrowRight, Sparkles, TrendingUp, Zap, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -218,7 +219,6 @@ const Home = () => {
   // across the entire app. After 10 min staleTime, cached data is served instantly.
   const { data: latestData, isLoading: latestLoading } = useProducts(LATEST_PARAMS);
   const { data: featuredData, isLoading: featuredLoading } = useProducts(FEATURED_PARAMS);
-  const { data: bestData, isLoading: bestLoading } = useProducts(BESTSELLER_PARAMS);
   const { data: categories, isLoading: catsLoading } = useCategories();
 
   return (
@@ -445,13 +445,7 @@ const Home = () => {
           color="orange"
         />
 
-        <ProductSection
-          title="BEST SELLERS"
-          subtitle="GLOBAL FAVORITES"
-          products={bestData?.products}
-          loading={bestLoading}
-          linkTo="/products?filter=bestsellers"
-        />
+        <BestsellerSection />
 
         <AccessoriesShowcase />
       </main>
