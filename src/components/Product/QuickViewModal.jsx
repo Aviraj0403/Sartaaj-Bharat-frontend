@@ -107,6 +107,12 @@ const QuickViewModal = ({ product, onClose }) => {
               src={images[activeImage]}
               alt={product.name}
               className="max-h-[280px] lg:max-h-[360px] object-contain mix-blend-multiply drop-shadow-2xl"
+              onError={(e) => {
+                const fallback = "https://via.placeholder.com/400?text=Premium+Collection";
+                if (e.target.src !== fallback) {
+                  e.target.src = fallback;
+                }
+              }}
             />
 
             {/* Image Navigation Nodes */}

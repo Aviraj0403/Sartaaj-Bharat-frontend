@@ -12,8 +12,7 @@ import {
 } from "lucide-react";
 import { FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 import logo from "../../image/sb.png";
-import { useQuery } from "@tanstack/react-query";
-import { getMenuCategories } from "../../services/categoryApi";
+import { useCategories } from "../../hooks";
 import { useAuth } from "../../context/AuthContext";
 import { useSelector } from "react-redux";
 import { HiOutlinePhone } from "react-icons/hi";
@@ -31,14 +30,10 @@ export default function DesktopHeader() {
   );
 
   const {
-    data: menuItems,
+    data: menuItems = [],
     isLoading,
     isError,
-    error,
-  } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getMenuCategories,
-  });
+  } = useCategories();
 
   const handleLogout = async () => {
     await logout();

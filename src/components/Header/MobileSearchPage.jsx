@@ -8,11 +8,8 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import {
-  getMenuCategories,
-  getSearchSuggestions,
-} from "../../services/categoryApi";
+import { useCategories } from "../../hooks";
+import { getSearchSuggestions } from "../../services/categoryApi";
 
 export default function MobileSearchPage() {
   const [query, setQuery] = useState("");
@@ -35,16 +32,11 @@ export default function MobileSearchPage() {
     inputRef.current?.focus();
   }, []);
 
-  // Fetch categories
   const {
-    data: menuItems,
+    data: menuItems = [],
     isLoading: isCategoriesLoading,
     isError: isCategoriesError,
-  } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getMenuCategories,
-    onError: (err) => console.error("Error fetching categories:", err),
-  });
+  } = useCategories();
 
   // Fetch search suggestions
   const {
@@ -176,10 +168,15 @@ export default function MobileSearchPage() {
                       {/* Product Image */}
                       <div className="relative aspect-square overflow-hidden bg-slate-100">
                         <img
-                          src={item.pimages?.[0] || "/placeholder.jpg"}
+                          src={(Array.isArray(item.pimages) ? item.pimages[0] : item.pimages) || "/placeholder.jpg"}
                           alt={item.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          onError={(e) => (e.target.src = "/placeholder.jpg")}
+                          onError={(e) => {
+                            const fallback = "/placeholder.jpg";
+                            if (e.target.src !== fallback) {
+                              e.target.src = fallback;
+                            }
+                          }}
                         />
                         {item.discount && (
                           <div className="absolute top-4 right-4 bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg italic">
@@ -323,7 +320,7 @@ export default function MobileSearchPage() {
                     >
                       <div className="rounded-lg overflow-hidden shadow-md border border-gray-100">
                         <img
-                          src={cat.image[0]}
+                          src={Array.isArray(cat.image) ? cat.image[0] : cat.image}
                           alt={cat.name}
                           className="w-full h-[150px] sm:h-[180px] object-cover"
                         />

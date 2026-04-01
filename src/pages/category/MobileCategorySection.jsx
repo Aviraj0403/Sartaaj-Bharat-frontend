@@ -54,25 +54,16 @@
 // _________________DYNAMIC CATEGORY SECTION USING API FETCH_________________
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query"; // Import React Query hook
-import { getMenuCategories } from "../../services/categoryApi"; // API function for fetching categories
+import { useCategories } from "../../hooks";
 
 export default function MobileCategorySection() {
   const navigate = useNavigate();
 
-  // Fetch categories using React Query
   const {
-    data: menuItems,
+    data: menuItems = [],
     isLoading,
     isError,
-    error,
-  } = useQuery({
-    queryKey: ["categories"], // Query key
-    queryFn: getMenuCategories, // Fetch function
-    onError: (err) => {
-      console.error("Error fetching categories:", err);
-    },
-  });
+  } = useCategories();
   const handleCategoryClick = (slug) => {
     navigate(`/${slug}`); // Navigate to dynamic category page using slug
   };
@@ -107,9 +98,15 @@ export default function MobileCategorySection() {
               <div className="relative mb-2 group-hover:scale-105 transition-transform">
                 <div className="absolute inset-0 rounded-2xl bg-blue-600/10 group-hover:bg-blue-600/0 transition-colors"></div>
                 <img
-                  src={cat.image[1]} // Use the second image from the image array
+                  src={(Array.isArray(cat.image) ? cat.image[0] : cat.image) || "https://via.placeholder.com/200?text=Category"}
                   alt={cat.name}
                   className="w-20 h-24 object-cover rounded-2xl grayscale group-hover:grayscale-0 transition-all duration-500 shadow-sm"
+                  onError={(e) => {
+                    const fallback = "https://via.placeholder.com/200?text=Category";
+                    if (e.target.src !== fallback) {
+                      e.target.src = fallback;
+                    }
+                  }}
                 />
               </div>
 

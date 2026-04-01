@@ -10,6 +10,11 @@ import { Link } from "react-router-dom";
 import {   Headphones, Award, Shield, Truck, Clock } from "lucide-react";
 import { Star } from "lucide-react";
 
+// Stable Query Parameters to prevent re-renders triggering new keys
+const LATEST_PARAMS = { limit: 4 };
+const FEATURED_PARAMS = { limit: 4, isFeatured: "true" };
+const BESTSELLER_PARAMS = { limit: 4, isBestseller: "true" };
+
 // Animation Variants
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -185,8 +190,8 @@ const DepartmentScroll = ({ categories, loading }) => {
                     <div className="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <img
                       src={
-                        cat.image ||
-                        "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/c/1-category_default.jpg"
+                        (Array.isArray(cat.image) ? cat.image[0] : cat.image) ||
+                        "https://via.placeholder.com/300?text=Category"
                       }
                       alt={cat.name}
                       className="w-full h-full object-contain relative z-10 transition-transform duration-700 group-hover:scale-110"
@@ -211,17 +216,9 @@ const Home = () => {
 
   // All 4 queries fire in parallel — React Query deduplicates identical query keys
   // across the entire app. After 10 min staleTime, cached data is served instantly.
-  const { data: latestData, isLoading: latestLoading } = useProducts({
-    limit: 4,
-  });
-  const { data: featuredData, isLoading: featuredLoading } = useProducts({
-    limit: 4,
-    isFeatured: "true",
-  });
-  const { data: bestData, isLoading: bestLoading } = useProducts({
-    limit: 4,
-    isBestseller: "true",
-  });
+  const { data: latestData, isLoading: latestLoading } = useProducts(LATEST_PARAMS);
+  const { data: featuredData, isLoading: featuredLoading } = useProducts(FEATURED_PARAMS);
+  const { data: bestData, isLoading: bestLoading } = useProducts(BESTSELLER_PARAMS);
   const { data: categories, isLoading: catsLoading } = useCategories();
 
   return (

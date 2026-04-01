@@ -12,7 +12,7 @@ export const sliders = [
   {
     id: 1,
     image:
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/modules/cz_imageslider/views/img/sample-1.jpg",
+      "https://images.unsplash.com/photo-1616348436168-de43ad0db179?q=80&w=2000&auto=format&fit=crop",
     title: "GALAXY S25 ULTRA",
     subtitle: "AI For All",
     description: "Experience the next level of mobile intelligence.",
@@ -21,8 +21,8 @@ export const sliders = [
   {
     id: 2,
     image:
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/modules/cz_imageslider/views/img/sample-2.jpg",
-    title: "IPHONE 15 PRO MAX",
+      "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?q=80&w=2000&auto=format&fit=crop",
+    title: "IPHONE 16 PRO MAX",
     subtitle: "Titanium. So Strong. So Light.",
     description: "The most advanced iPhone ever created.",
     btnText: "Buy Now",
@@ -42,10 +42,10 @@ export const products = [
     reference: "demo_1",
     availability: "In Stock",
     image:
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/5/8/58-home_default.jpg",
+      "https://via.placeholder.com/600?text=Premium+iPhone",
     images: [
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/5/8/58-large_default.jpg",
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/5/9/59-large_default.jpg",
+      "https://via.placeholder.com/1000?text=iPhone+Pro+View+1",
+      "https://via.placeholder.com/1000?text=iPhone+Pro+View+2",
     ],
     category: "modular-phones",
     description:
@@ -79,12 +79,10 @@ export const products = [
     reference: "demo_2",
     availability: "In Stock",
     image:
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/2/4/24-home_default.jpg",
+      "https://via.placeholder.com/600?text=Galaxy+S25",
     images: [
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/2/4/24-large_default.jpg",
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/2/5/25-large_default.jpg",
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/2/6/26-large_default.jpg",
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/2/7/27-large_default.jpg",
+      "https://via.placeholder.com/1000?text=Galaxy+Ultra+1",
+      "https://via.placeholder.com/1000?text=Galaxy+Ultra+2",
     ],
     category: "galaxy-s",
     description:
@@ -116,9 +114,9 @@ export const products = [
     brand: "Oppo",
     availability: "In Stock",
     image:
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/6/3/63-home_default.jpg",
+      "https://via.placeholder.com/600?text=Reno+10+Pro",
     images: [
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/6/3/63-large_default.jpg",
+      "https://via.placeholder.com/600?text=Reno+Pro+View",
     ],
     category: "pixel-power",
     description: "Portrait expert with 100W SUPERVOOC flash charge.",
@@ -135,9 +133,9 @@ export const products = [
     reviews: 12,
     availability: "In Stock",
     image:
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/6/2/62-home_default.jpg",
+      "https://via.placeholder.com/600?text=Vivo+V40",
     images: [
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/6/2/62-large_default.jpg",
+      "https://via.placeholder.com/600?text=Vivo+V40+View",
     ],
     category: "iphone-11-pro",
     isFeatured: true,
@@ -150,9 +148,9 @@ export const products = [
     rating: 5,
     availability: "In Stock",
     image:
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/7/1/71-home_default.jpg",
+      "https://via.placeholder.com/600?text=OnePlus+12R",
     images: [
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/7/1/71-large_default.jpg",
+      "https://via.placeholder.com/600?text=OnePlus+12R+View",
     ],
     category: "smart-phones",
     isSpecial: true,
@@ -166,9 +164,9 @@ export const products = [
     rating: 5,
     availability: "In Stock",
     image:
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/1/0/7/107-home_default.jpg",
+      "https://via.placeholder.com/600?text=Z+Fold+6",
     images: [
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/1/0/7/107-large_default.jpg",
+      "https://via.placeholder.com/600?text=Z+Fold+6+View",
     ],
     category: "fold-friendly-gear",
     isNew: true,
@@ -182,9 +180,9 @@ export const products = [
     rating: 3.5,
     availability: "Out of Stock",
     image:
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/1/3/4/134-home_default.jpg", // placeholder
+      "https://via.placeholder.com/600?text=Moto+Edge+50", 
     images: [
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/1/3/4/134-large_default.jpg",
+      "https://via.placeholder.com/600?text=Moto+Edge+View",
     ],
     category: "motorola",
   },
@@ -196,9 +194,9 @@ export const products = [
     rating: 4,
     availability: "In Stock",
     image:
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/1/4/2/142-home_default.jpg",
+      "https://via.placeholder.com/600?text=Redmi+13",
     images: [
-      "https://prestashop.codezeel.com/PRS23/PRS230560/default/img/p/1/4/2/142-large_default.jpg",
+      "https://via.placeholder.com/600?text=Redmi+13+View",
     ],
     category: "smart-phones",
   },

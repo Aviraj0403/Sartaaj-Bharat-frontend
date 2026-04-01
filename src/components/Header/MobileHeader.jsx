@@ -15,8 +15,7 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../image/sb.png";
-import { useQuery } from "@tanstack/react-query";
-import { getMenuCategories } from "../../services/categoryApi";
+import { useCategories } from "../../hooks";
 import { useAuth } from "../../context/AuthContext";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -38,10 +37,7 @@ export default function MobileHeader() {
   );
 
   // Categories
-  const { data: menuItems = [], isLoading } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getMenuCategories,
-  });
+  const { data: menuItems = [], isLoading } = useCategories();
 
   const handleLogout = async () => {
     await logout();

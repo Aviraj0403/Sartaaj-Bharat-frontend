@@ -10,19 +10,19 @@ export default function ValueProps() {
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 pb-12">
       {propsList.map((prop, idx) => (
         <div
           key={idx}
-          className="bg-white p-4 rounded-xl border border-gray-200 flex flex-col items-center text-center"
+          className="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-sm flex flex-col items-center text-center group hover:shadow-lg transition-all duration-500"
         >
-          <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-3">
-            <prop.icon size={20} />
+          <div className="w-12 h-12 bg-slate-50 text-blue-600 rounded-xl border border-slate-100 flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
+            <prop.icon size={22} strokeWidth={1.5} />
           </div>
-          <span className="text-sm font-semibold text-gray-900 mb-1">
+          <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-1 italic">
             {prop.title}
           </span>
-          <span className="text-xs text-gray-500">{prop.desc}</span>
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{prop.desc}</span>
         </div>
       ))}
     </div>

@@ -121,33 +121,47 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
-      {/* Page Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                <ShoppingBag size={20} className="text-blue-600" />
-              </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                  Shopping Cart
-                </h1>
-                <p className="text-sm text-slate-500">
-                  {totalItems} {totalItems === 1 ? "item" : "items"} in your
-                  cart
-                </p>
-              </div>
-            </div>
-            {cartItems.length > 0 && (
-              <button
-                onClick={handleClearCart}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors w-fit border border-red-100"
+      {/* Page Header - Elite Standard */}
+      <div className="bg-white border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="max-w-xl">
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-2 mb-4"
               >
-                <Trash2 size={15} />
-                Clear Cart
-              </button>
-            )}
+                <div className="h-1 w-8 bg-blue-600 rounded-full"></div>
+                <span className="text-blue-600 font-bold text-[10px] uppercase tracking-[0.3em]">
+                  Elite Shopping
+                </span>
+              </motion.div>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tighter leading-none mb-3"
+              >
+                SHOPPING <span className="text-blue-600">CART</span>
+              </motion.h1>
+              <p className="text-sm sm:text-base text-slate-400 font-medium tracking-tight">
+                You have {totalItems} {totalItems === 1 ? "item" : "items"} in your elite collection
+              </p>
+            </div>
+            
+            <AnimatePresence>
+              {cartItems.length > 0 && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  onClick={handleClearCart}
+                  className="group flex items-center gap-2 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-red-500 bg-red-50 hover:bg-red-500 hover:text-white rounded-2xl transition-all duration-300 w-fit border border-red-100 shadow-sm hover:shadow-red-500/20 active:scale-95"
+                >
+                  <Trash2 size={14} strokeWidth={2.5} className="group-hover:rotate-12 transition-transform" />
+                  Clear Entire Cart
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>

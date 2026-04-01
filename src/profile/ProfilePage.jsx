@@ -84,7 +84,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen  py-16 md:py-0 flex flex-col md:flex-row bg-white relative selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen  flex flex-col md:flex-row bg-white relative selection:bg-blue-600 selection:text-white">
       {/* Top Menu Toggle for Mobile - Fixed at top with proper z-index */}
       <div className="md:hidden w-full bg-slate-900 border-b border-slate-800 flex justify-between items-center relative overflow-hidden sticky top-0 z-30">
         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 blur-3xl rounded-full"></div>

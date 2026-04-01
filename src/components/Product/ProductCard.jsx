@@ -219,8 +219,9 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
             alt={product.name}
             loading="lazy"
             onError={(e) => {
-              e.target.src =
-                "https://via.placeholder.com/400?text=Premium+Collection";
+              if (e.target.src !== "https://via.placeholder.com/400?text=Premium+Collection") {
+                e.target.src = "https://via.placeholder.com/400?text=Premium+Collection";
+              }
             }}
             animate={{
               scale: isHovered ? 1.15 : 1,

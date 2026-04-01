@@ -1,8 +1,7 @@
 import React, { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query"; // Import React Query hook
-import { getMenuCategories } from "../../services/categoryApi"; // API function for fetching categories
+import { useCategories } from "../../hooks";
 
 export default function CategorySlider() {
   const scrollRef = useRef(null);
@@ -12,19 +11,11 @@ export default function CategorySlider() {
   let startX;
   let scrollLeft;
 
-  // Fetch categories using React Query -- new tech mutation
   const {
-    data: menuItems,
+    data: menuItems = [],
     isLoading,
     isError,
-    error,
-  } = useQuery({
-    queryKey: ["categories"], // Query key
-    queryFn: getMenuCategories, // Fetch function
-    onError: (err) => {
-      console.error("Error fetching categories:", err);
-    },
-  });
+  } = useCategories();
   console.log(menuItems); // Ensure the categories data is correct
 
   // Handle category click (navigate to category page)
@@ -105,10 +96,15 @@ export default function CategorySlider() {
               >
                 <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-white">
                   <img
-                    src={cat.image?.[0]}
+                    src={(Array.isArray(cat.image) ? cat.image[0] : cat.image) || "https://via.placeholder.com/300?text=Category"}
                     alt={cat.name}
                     className="w-full h-[90px] sm:h-[140px] object-fit"
-                    // ✅ image fit fix
+                    onError={(e) => {
+                      const fallback = "https://via.placeholder.com/300?text=Category";
+                      if (e.target.src !== fallback) {
+                        e.target.src = fallback;
+                      }
+                    }}
                   />
                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-all"></div>
                 </div>

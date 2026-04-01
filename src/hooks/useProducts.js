@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   getMiniProducts,
@@ -17,24 +18,32 @@ const stableKey = (params = {}) =>
 
 // ─── Products list ──────────────────────────────────────────────────────────
 export const useProducts = (params = {}) => {
-  const key = stableKey(params);
+  // Stabilize params to prevent infinite re-renders if params is an inline object
+  const memoParams = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(params).filter(
+        ([, v]) => v !== undefined && v !== "" && v !== null,
+      ),
+    );
+  }, [JSON.stringify(params)]);
+
   return useQuery({
-    queryKey: ["products", key],
+    queryKey: ["products", memoParams],
     queryFn: () =>
       getMiniProducts(
-        params.page || 1,
-        params.limit || 10,
-        params.search || "",
-        params.category || "",
-        params.isHotProduct || "",
-        params.isBestseller || "",
-        params.isFeatured || "",
-        params.isCombo || "",
-        params,
+        memoParams.page || 1,
+        memoParams.limit || 10,
+        memoParams.search || "",
+        memoParams.category || "",
+        memoParams.isHotProduct || "",
+        memoParams.isBestseller || "",
+        memoParams.isFeatured || "",
+        memoParams.isCombo || "",
+        memoParams,
       ),
-    staleTime: 5 * 60 * 1000, // 5 mins to prevent unnecessary redundant calls across the app
-    gcTime: 10 * 60 * 1000, // 10 mins
-    refetchOnWindowFocus: false, // Prevents 4 massive parallel API calls every time the user switches tabs
+    staleTime: 5 * 60 * 1000, 
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
     placeholderData: (prev) => prev, 
   });
 };

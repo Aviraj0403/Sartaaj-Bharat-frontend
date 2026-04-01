@@ -8,7 +8,7 @@ export const getBanners = async () => {
   try {
     const response = await Axios.get("/content/banners");
     if (response.data && response.data.success) {
-      return response.data.banners || [];
+      return response.data.data || [];
     }
     return [];
   } catch (error) {
@@ -25,7 +25,7 @@ export const getSections = async () => {
   try {
     const response = await Axios.get("/content/sections");
     if (response.data && response.data.success) {
-      return response.data.sections || [];
+      return response.data.data || [];
     }
     return [];
   } catch (error) {

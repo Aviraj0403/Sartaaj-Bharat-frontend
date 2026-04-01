@@ -243,27 +243,29 @@
 
 
 
-import React, { useState } from "react";
+import React, { useState, useMemo, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 const FM = motion;
 import { ArrowRight, Sparkles, Star, Zap, Shield } from "lucide-react";
 import { useBanners } from "../../hooks";
 import { sliders as mockSliders } from "../../data/mockData";
 
-const EliteHeroSlider = () => {
+const EliteHeroSlider = memo(() => {
   const { data: banners, isLoading } = useBanners();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const slides = banners && banners.length > 0 ? banners : mockSliders;
+  const slides = (banners && banners.length > 0) ? banners : mockSliders;
+  const currentSlide = slides[currentIndex];
+  const slideImg = currentSlide ? (currentSlide.imageUrl || (Array.isArray(currentSlide.image) ? currentSlide.image[0] : currentSlide.image)) : "";
 
   // Auto-advance
   React.useEffect(() => {
-    if (slides.length <= 1) return;
+    if (!slides || slides.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % slides.length);
     }, 8000);
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, [slides?.length]);
 
   if (isLoading) {
     return (
@@ -275,7 +277,7 @@ const EliteHeroSlider = () => {
     );
   }
 
-  const currentSlide = slides[currentIndex];
+
 
   return (
     <section className="w-full  bg-slate-50">
@@ -294,9 +296,15 @@ const EliteHeroSlider = () => {
               className="absolute inset-0"
             >
               <img
-                src={currentSlide.image}
+                src={slideImg}
                 alt={currentSlide.title}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  const fallback = "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2000&auto=format&fit=crop";
+                  if (e.target.src !== fallback) {
+                    e.target.src = fallback;
+                  }
+                }}
               />
               {/* Enhanced Gradient Overlay for Better Text Readability */}
               <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent"></div>
@@ -475,6 +483,6 @@ const EliteHeroSlider = () => {
       </div>
     </section>
   );
-};
+});
 
 export default EliteHeroSlider;
