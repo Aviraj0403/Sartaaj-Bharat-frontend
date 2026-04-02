@@ -1,7 +1,7 @@
 import React from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useCartActions } from "../hooks/useCartActions"; // Adjust path
+import { useCartActions } from "../../hooks/useCartActions";
 
 export default function BestSellPC({ product, onProductClick }) {
   const navigate = useNavigate();
