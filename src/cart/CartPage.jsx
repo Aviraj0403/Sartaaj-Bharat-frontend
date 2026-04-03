@@ -111,40 +111,37 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden font-sans">
-      {/* Technical Grid Overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000003_1px,transparent_1px),linear-gradient(to_bottom,#00000003_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-60"></div>
-      
-      {/* Background Deep Glows */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/5 blur-[120px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-900/5 blur-[120px] rounded-full -translate-x-1/2 translate-y-1/2"></div>
+    <div className="min-h-screen bg-[#fafafa] relative overflow-hidden font-sans">
+      {/* Refined Background Elements */}
+      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-blue-600/5 blur-[100px] rounded-full pointer-events-none"></div>
 
       <div className="relative z-10">
-        {/* Page Header - Elite Standard */}
-        <div className="bg-white/40 backdrop-blur-md border-b border-white/60">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 md:gap-8">
-              <div className="max-w-xl">
+        {/* Page Header - Premium Minimalist */}
+        <div className="bg-white/80 backdrop-blur-xl border-b border-gray-100/80 sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
                 <motion.div 
-                  initial={{ opacity: 0, x: -15 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center gap-3 mb-5"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-2 mb-1.5"
                 >
-                  <div className="h-0.5 w-10 bg-blue-600 rounded-full"></div>
-                  <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em] italic">
-                    SHOPPING CART
+                  <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">
+                    Your Selection
                   </span>
+                  <div className="h-px w-6 bg-blue-200"></div>
                 </motion.div>
                 <motion.h1 
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="text-[28px] sm:text-[40px] md:text-[48px] font-black text-slate-900 tracking-tighter leading-[0.9] mb-4 italic uppercase"
+                  className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight"
                 >
-                  YOUR <span className="text-blue-600">CART.</span>
+                  Shopping <span className="text-blue-600">Cart</span>
                 </motion.h1>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-black uppercase tracking-[0.3em] italic">
-                  YOU HAVE {totalItems} {totalItems === 1 ? "ITEM" : "ITEMS"} IN YOUR CART
+                <p className="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-widest mt-1">
+                  {totalItems} {totalItems === 1 ? "Item" : "Items"} • Total ₹{totalAmount.toLocaleString()}
                 </p>
               </div>
               
@@ -155,10 +152,10 @@ export default function CartPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     onClick={handleClearCart}
-                    className="group flex items-center gap-3 px-8 py-4 text-[10px] font-black uppercase tracking-widest text-red-500 bg-white/50 backdrop-blur-md hover:bg-red-500 hover:text-white rounded-2xl transition-all duration-300 w-fit border border-white/60 shadow-lg hover:shadow-red-500/20 active:scale-95 italic"
+                    className="group flex items-center gap-2 px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-red-500 bg-red-50/50 hover:bg-red-500 hover:text-white rounded-xl transition-all duration-300 w-fit border border-red-100/50 shadow-sm hover:shadow-red-500/20 active:scale-95"
                   >
-                    <Trash2 size={16} strokeWidth={2.5} className="group-hover:rotate-12 transition-transform" />
-                    CLEAR CART
+                    <Trash2 size={14} className="group-hover:rotate-12 transition-transform" />
+                    Clear Bag
                   </motion.button>
                 )}
               </AnimatePresence>
