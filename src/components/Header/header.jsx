@@ -14,6 +14,7 @@ import {
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCategories } from "../../hooks";
+import { getProductUrl } from "../../utils/navigation";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -208,7 +209,7 @@ const Header = () => {
                           {searchResults.products.map((p) => (
                             <Link
                               key={p._id}
-                              to={`/product/${p.slug}`}
+                              to={getProductUrl(p)}
                               className="flex items-center gap-5 p-3 rounded-2xl hover:bg-blue-50/50 transition-all group"
                             >
                               <div className="w-14 h-14 rounded-xl bg-slate-50 overflow-hidden flex-shrink-0 border border-slate-100 group-hover:border-blue-200 transition-colors">

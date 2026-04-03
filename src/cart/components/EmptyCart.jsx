@@ -8,7 +8,7 @@ export default function EmptyCart() {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-16 sm:p-24 text-center relative overflow-hidden"
+      className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-10 sm:p-20 text-center relative overflow-hidden"
     >
       <div className="absolute top-0 left-0 w-32 h-32 bg-blue-50/50 blur-3xl -ml-10 -mt-10 rounded-full"></div>
       <div className="w-24 h-24 bg-slate-50 border border-slate-100 rounded-[2rem] flex items-center justify-center mx-auto mb-8 relative z-10 shadow-sm">

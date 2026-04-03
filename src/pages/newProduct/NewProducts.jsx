@@ -2,7 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query"; // Using React Query for data fetching
 import { getMiniProducts } from "../../services/productApi"; // Assuming this is your API function
-import NewArrivalPC from "../../components/Product/NewArrivalPC"; // Import the reusable product card
+import NewArrivalPC from "../../components/Product/NewArrivalPC";
+import { getProductUrl } from "../../utils/navigation";
 
 const NewProducts = () => {
   const navigate = useNavigate();
@@ -19,8 +20,8 @@ const NewProducts = () => {
   });
 
   // Handle navigation to product details page
-  const handleProductClick = (slug) => {
-    navigate(`/product/${slug}`);
+  const handleProductClick = (product) => {
+    navigate(getProductUrl(product));
   };
 
   // Loading state
@@ -70,7 +71,7 @@ const NewProducts = () => {
             <NewArrivalPC
               key={product._id}
               product={product}
-              onProductClick={handleProductClick}
+              onProductClick={() => handleProductClick(product)}
             />
           ))}
         </div>

@@ -169,7 +169,27 @@ export const getProductBySlug = async (slug) => {
     }
   } catch (error) {
     console.error("Error fetching product by slug:", error);
-    return { success: false, product: null };
+    // Explicitly reject to let react-query know we failed, rather than masking it.
+    throw error;
+  }
+};
+
+/**
+ * Fetch single product by id
+ * Backend: GET /v1/api/products/:id
+ */
+export const getProductById = async (id) => {
+  try {
+    const response = await Axios.get(`/products/${id}`);
+
+    if (response.data && response.data.success) {
+      return response.data.data || response.data.product || response.data;
+    } else {
+      throw new Error("Failed to fetch product by ID");
+    }
+  } catch (error) {
+    console.error("Error fetching product by id:", error);
+    throw error;
   }
 };
 

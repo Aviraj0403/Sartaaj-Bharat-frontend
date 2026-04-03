@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useCartActions } from "../../hooks/useCartActions";
+import { getProductUrl } from "../../utils/navigation";
 
 export default function NewArrivalPC({ product, onProductClick }) {
   const navigate = useNavigate();
@@ -40,8 +41,8 @@ export default function NewArrivalPC({ product, onProductClick }) {
 
   // Handle product click
   const handleProductClick = () => {
-    if (onProductClick) onProductClick(product.slug);
-    else navigate(`/product/${product.slug}`);
+    if (onProductClick) onProductClick(product.slug || product._id);
+    else navigate(getProductUrl(product));
   };
 
   // Popup trigger function

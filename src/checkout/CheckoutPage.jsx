@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { clearCartThunk } from "../features/cart/cartThunk";
 import AddressSidebar from "./AddressSidebar";
 import { getShippingAmount } from "../utils/shippingCalculator";
+import { ShieldCheck, CreditCard, Lock, Plus, MapPin, ChevronRight } from "lucide-react";
 
 export default function CheckoutPage() {
   const { user } = useAuth();
@@ -176,7 +177,7 @@ export default function CheckoutPage() {
     }
   };
 
-  const placeOrder = async (paymentMethod = "COD") => {
+  const placeOrder = async (paymentMethod = "Razorpay") => {
     if (!isAuthenticated) {
       toast.warn("Please login first");
       return navigate("/signin");
@@ -490,7 +491,14 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white py-12 md:py-20 font-sans">
+    <div className="min-h-screen bg-white relative overflow-hidden font-sans pb-32 md:pb-12">
+      {/* Technical Grid Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000003_1px,transparent_1px),linear-gradient(to_bottom,#00000003_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-60"></div>
+      
+      {/* Background Deep Glows */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/5 blur-[120px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-900/5 blur-[120px] rounded-full -translate-x-1/2 translate-y-1/2"></div>
+
       <AddressSidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
@@ -499,31 +507,52 @@ export default function CheckoutPage() {
         email={user?.email || ""}
       />
 
-      <div className="container-custom px-4 sm:px-6">
-        {/* Header */}
-        <header className="mb-12">
-          <div className="flex items-center gap-4 text-orange-500 font-black text-[10px] uppercase tracking-[0.5em] mb-3 italic">
-            SECURED CHECKOUT
-          </div>
-          <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter italic leading-none uppercase">
-            Order <span className="text-orange-500">Review</span>
-          </h1>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 relative z-10">
+        {/* Header - Elite Protocol Standard */}
+        <header className="mb-8 sm:mb-10">
+          <motion.div 
+            initial={{ opacity: 0, x: -15 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-3 mb-5"
+          >
+            <div className="h-0.5 w-10 bg-blue-600 rounded-full shadow-[0_0_10px_rgba(37,99,235,0.4)]"></div>
+            <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em] italic">
+              SECURE CHECKOUT
+            </span>
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-[32px] sm:text-[48px] font-black text-slate-900 tracking-tighter leading-[0.8] mb-4 italic uppercase"
+          >
+            CHECK<span className="text-blue-600">OUT.</span>
+          </motion.h1>
+          <p className="text-[10px] sm:text-[11px] text-slate-500 font-black uppercase tracking-[0.3em] italic">
+            PLEASE REVIEW YOUR ORDER DETAILS
+          </p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left Column: Shipping & Payment */}
-          <div className="lg:col-span-7 space-y-10">
-            {/* Shipping Info */}
-            <section className="bg-slate-50/50 rounded-[2rem] p-6 md:p-10 border border-slate-100">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-black text-slate-900 tracking-tight italic uppercase">
-                  Shipping Destination
-                </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          {/* Left Column: Terminal Data */}
+          <div className="lg:col-span-7 space-y-6 sm:space-y-12">
+            
+            {/* Shipping Terminal */}
+            <section className="bg-white/40 backdrop-blur-md rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 border border-white/60 shadow-xl shadow-slate-200/20 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-[60px] rounded-full -mr-16 -mt-16"></div>
+              
+              <div className="flex items-center justify-between mb-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-1 h-5 bg-blue-600 rounded-full"></div>
+                  <h2 className="text-xl font-black text-slate-950 tracking-tight italic uppercase">
+                    SHIPPING ADDRESS
+                  </h2>
+                </div>
                 <button
                   onClick={() => setIsSidebarOpen(true)}
-                  className="text-[10px] font-black uppercase tracking-widest text-orange-500 hover:text-orange-600 transition-colors italic"
+                  className="text-[9px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-700 transition-all italic flex items-center gap-2 group"
                 >
-                  + Add New Address
+                  <Plus size={12} strokeWidth={3} className="group-hover:rotate-90 transition-transform" />
+                  ADD NEW ADDRESS
                 </button>
               </div>
 
@@ -532,19 +561,22 @@ export default function CheckoutPage() {
                   addresses.map((addr) => (
                     <motion.label
                       key={addr._id}
-                      whileHover={{ scale: 1.01 }}
-                      className={`block border-2 rounded-2xl p-5 cursor-pointer transition-all duration-300 relative overflow-hidden ${
+                      whileHover={{ scale: 1.01, x: 5 }}
+                      className={`block rounded-2xl p-6 cursor-pointer transition-all duration-500 border relative group ${
                         selectedAddress?._id === addr._id
-                          ? "border-orange-500 bg-white shadow-xl shadow-orange-900/5"
-                          : "border-slate-100 bg-white/50 hover:bg-white hover:border-slate-200"
+                          ? "bg-white border-blue-500 shadow-xl shadow-blue-900/5"
+                          : "bg-white/40 border-white hover:border-slate-200 hover:bg-white"
                       }`}
                     >
-                      <div className="flex items-start gap-4">
+                      <div className="flex items-start gap-5">
                         <div
-                          className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selectedAddress?._id === addr._id ? "border-orange-500" : "border-slate-200"}`}
+                          className={`mt-1.5 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selectedAddress?._id === addr._id ? "border-blue-500" : "border-slate-200"}`}
                         >
                           {selectedAddress?._id === addr._id && (
-                            <div className="w-2.5 h-2.5 bg-orange-500 rounded-full" />
+                            <motion.div 
+                              layoutId="activeDot"
+                              className="w-2.5 h-2.5 bg-blue-600 rounded-full shadow-[0_0_8px_rgba(37,99,235,0.6)]" 
+                            />
                           )}
                         </div>
                         <input
@@ -554,74 +586,94 @@ export default function CheckoutPage() {
                           checked={selectedAddress?._id === addr._id}
                           onChange={() => setSelectedAddress(addr)}
                         />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-1">
-                            <span className="font-black text-slate-900 uppercase tracking-tighter text-sm italic">
-                              {addr.label || addr.type}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 mb-2">
+                            <span className="font-black text-slate-950 uppercase tracking-widest text-[10px] italic">
+                              {addr.label || addr.type || "ADDRESS"}
                             </span>
                             {addr.isDefault && (
-                              <span className="text-[8px] font-bold bg-slate-900 text-white px-2 py-0.5 rounded-md uppercase tracking-widest">
-                                Default
+                              <span className="text-[7px] font-black bg-slate-950 text-white px-2 py-0.5 rounded-sm uppercase tracking-[0.2em] italic">
+                                DEFAULT
                               </span>
                             )}
                           </div>
-                          <p className="text-slate-900 font-bold text-xs mb-1">
+                          <p className="text-slate-900 font-black text-sm mb-1 uppercase tracking-tight">
                             {addr.name}
                           </p>
-                          <p className="text-slate-500 text-xs leading-relaxed max-w-md">
-                            {addr.street || addr.flat}, {addr.city},{" "}
-                            {addr.state} - {addr.pincode || addr.postalCode}
+                          <p className="text-slate-500 text-[11px] leading-relaxed max-w-md italic font-bold">
+                            {addr.street || addr.flat}, {addr.city}, {addr.state} - {addr.pincode || addr.postalCode}
                           </p>
-                          <p className="text-slate-400 font-black text-[10px] mt-2 uppercase tracking-widest italic">
-                            {addr.phoneNumber}
-                          </p>
+                          <div className="flex items-center gap-3 mt-3">
+                             <div className="h-[1px] flex-1 bg-slate-100"></div>
+                             <p className="text-blue-600 font-black text-[9px] uppercase tracking-[0.2em] italic">
+                               {addr.phoneNumber}
+                             </p>
+                          </div>
                         </div>
                       </div>
+                      
+                      {/* Active Scan Effect */}
+                      {selectedAddress?._id === addr._id && (
+                        <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-blue-400 to-transparent animate-scan" />
+                      )}
                     </motion.label>
                   ))
                 ) : (
-                  <div className="text-center py-10 bg-white rounded-2xl border border-dashed border-slate-200">
-                    <p className="text-slate-400 font-medium italic">
-                      No saved addresses found.
+                  <div className="flex flex-col items-center justify-center py-16 bg-white/20 rounded-3xl border border-dashed border-white/60">
+                    <MapPin size={24} className="text-slate-300 mb-4 opacity-50" />
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest italic">
+                      NO SAVED ADDRESSES FOUND
                     </p>
                   </div>
                 )}
               </div>
             </section>
 
-            {/* Payment Method */}
-            <section className="bg-slate-50/50 rounded-[2rem] p-6 md:p-10 border border-slate-100">
-              <h2 className="text-xl font-black text-slate-900 tracking-tight italic uppercase mb-8">
-                Secure Payment
-              </h2>
+            {/* Payment Terminal */}
+            <section className="bg-white/40 backdrop-blur-md rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 border border-white/60 shadow-xl shadow-slate-200/20 relative overflow-hidden">
+               <div className="flex items-center gap-3 mb-10">
+                  <div className="w-1 h-5 bg-blue-600 rounded-full"></div>
+                  <h2 className="text-xl font-black text-slate-950 tracking-tight italic uppercase">
+                    PAYMENT METHOD
+                  </h2>
+                </div>
 
-              <div className="bg-gradient-to-r from-orange-900 to-indigo-900 text-white rounded-[2rem] p-8 mb-8 relative overflow-hidden shadow-2xl shadow-orange-900/20 border border-blue-800">
-                <div className="absolute top-0 right-0 w-64 h-full bg-white/5 skew-x-12 translate-x-12 backdrop-blur-3xl"></div>
-                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl"></div>
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <div className="flex gap-5 items-center">
-                    <div className="w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl flex items-center justify-center shadow-inner">
-                      <span className="font-black italic text-2xl">₹</span>
+              <div className="bg-slate-950 text-white rounded-[2rem] p-8 mb-10 relative overflow-hidden shadow-2xl shadow-blue-900/20 group/card">
+                {/* Tech background elements */}
+                <div className="absolute top-0 right-0 w-full h-full bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:15px_15px] pointer-events-none"></div>
+                <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-blue-600/20 rounded-full blur-[80px]"></div>
+                
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="w-12 h-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl flex items-center justify-center">
+                      <CreditCard className="text-blue-400" size={24} />
                     </div>
-                    <div>
-                      <h3 className="font-black italic text-lg uppercase tracking-widest mb-1 flex items-center gap-2">
-                        Razorpay{" "}
-                        <span className="px-2 py-0.5 bg-blue-500/30 text-[8px] rounded uppercase tracking-[0.2em] border border-blue-400/30">
-                          Secured
-                        </span>
-                      </h3>
-                      <p className="text-xs text-blue-100/70 leading-relaxed max-w-sm">
-                        Pay seamlessly via UPI, Credit/Debit Card, or Net
-                        Banking. Encrypted with bank-grade security.
-                      </p>
+                    <div className="text-right">
+                      <p className="text-[7px] text-blue-400 font-black tracking-[0.4em] uppercase mb-1">SECURE CONNECTION</p>
+                      <div className="flex items-center gap-2 justify-end">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                        <span className="text-[10px] font-black uppercase italic tracking-widest">SECURE</span>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex gap-2">
-                    {["UPI", "Visa", "MasterCard"].map((badge) => (
+                  <div className="space-y-4">
+                    <h3 className="text-2xl font-black italic uppercase tracking-tighter flex items-center gap-3">
+                      RAZORPAY SECURE
+                      <span className="px-2 py-0.5 bg-blue-600/30 text-[8px] rounded-sm font-bold tracking-[0.2em] border border-blue-600/30">
+                        OFFICIAL PARTNER
+                      </span>
+                    </h3>
+                    <p className="text-xs text-slate-400 leading-relaxed max-w-sm italic font-medium">
+                      Seamless cross-transaction integration supporting UPI, Major Cards, and Digital Wallet protocols. Securely processed via Razorpay's enterprise network.
+                    </p>
+                  </div>
+
+                  <div className="flex gap-2 mt-8">
+                    {["UPI", "VISA", "MASTERCARD", "AMEX"].map((badge) => (
                       <div
                         key={badge}
-                        className="px-3 py-1 bg-white/5 border border-white/10 rounded-md text-[8px] font-black uppercase tracking-widest text-white/60 italic"
+                        className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[8px] font-black uppercase tracking-widest text-slate-500 italic hover:text-white hover:border-white/30 transition-colors"
                       >
                         {badge}
                       </div>
@@ -630,143 +682,148 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm">
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-1 italic">
-                    Total Amount
+              {/* Action Secondary Panel */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8 bg-white p-6 sm:p-8 rounded-[2rem] border border-white shadow-lg overflow-hidden relative">
+                <div className="relative z-10 text-center sm:text-left">
+                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-2 italic">
+                    ORDER TOTAL
                   </p>
                   {isPlacingOrder ? (
-                    <div className="flex flex-col items-center justify-center py-4">
-                      <div className="relative">
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{
-                            duration: 1.5,
-                            repeat: Infinity,
-                            ease: "linear",
-                          }}
-                          className="w-20 h-20 border-[3px] border-slate-100 border-t-orange-500 rounded-full"
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <ShieldCheck className="text-orange-500/20 w-8 h-8" />
-                        </div>
-                      </div>
-                      <span className="mt-8 text-[11px] font-black uppercase tracking-[0.6em] text-slate-400 italic animate-pulse">
-                        Initializing Protocol...
-                      </span>
+                    <div className="flex items-center gap-4 py-2">
+                       <div className="w-6 h-6 border-2 border-slate-100 border-t-blue-600 rounded-full animate-spin"></div>
+                       <span className="text-[11px] font-black uppercase tracking-[0.4em] text-blue-600 animate-pulse">
+                         PROCESSING...
+                       </span>
                     </div>
                   ) : (
-                    <p className="text-3xl font-black text-slate-900 italic tracking-tighter">
+                    <p className="text-4xl font-black text-slate-950 italic tracking-tighter leading-none">
                       ₹{Math.round(grandTotal).toLocaleString()}
                     </p>
                   )}
                 </div>
-                <div className="text-center sm:text-right w-full sm:w-auto">
+                
+                <div className="relative z-10 w-full sm:w-auto">
                   <motion.button
-                    whileHover={{ scale: 1.02, translateY: -2 }}
+                    whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => placeOrder("Razorpay")}
                     disabled={isPlacingOrder}
-                    className="w-full sm:w-auto bg-orange-500 text-white px-10 py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-orange-500/20 hover:bg-blue-500 hover:shadow-orange-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed italic border border-blue-500 flex items-center justify-center gap-3"
+                    className="w-full sm:w-auto bg-blue-600 text-white px-12 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] shadow-xl shadow-blue-600/30 hover:bg-slate-950 transition-all disabled:opacity-50 disabled:cursor-not-allowed italic border border-blue-500/50 flex items-center justify-center gap-4"
                   >
-                    {isPlacingOrder ? (
-                      <span className="flex items-center gap-2">
-                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>{" "}
-                        Processing
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-2">
-                        Pay & Place Order
-                      </span>
-                    )}
+                    {isPlacingOrder ? "PROCESSING..." : "PLACE ORDER & PAY"}
+                    {!isPlacingOrder && <ChevronRight size={16} strokeWidth={3} />}
                   </motion.button>
-                  <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-3 italic flex items-center justify-center sm:justify-end gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>{" "}
-                    AES-256 Encrypted
-                  </p>
                 </div>
               </div>
             </section>
           </div>
 
-          {/* Right Column: Order Summary */}
+          {/* Right Column: Encrypted Summary */}
           <aside className="lg:col-span-5 w-full sticky top-32">
-            <div className="bg-slate-900 text-white p-8 md:p-12 rounded-[2.5rem] shadow-[0_40px_80px_-20px_rgba(15,23,42,0.3)] relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/10 blur-[100px] rounded-full -mr-24 -mt-24"></div>
+            <div className="bg-slate-950 text-white p-8 md:p-12 rounded-[2.5rem] md:rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] relative overflow-hidden ring-1 ring-white/10 mt-6 lg:mt-0">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 blur-[100px] rounded-full -mr-32 -mt-32"></div>
 
-              <h2 className="text-2xl font-black tracking-tighter italic uppercase mb-10 flex items-center gap-4">
-                Summary <div className="h-0.5 flex-1 bg-white/10"></div>
-              </h2>
+              <div className="flex items-center justify-between mb-12">
+                <h2 className="text-2xl font-black tracking-tighter italic uppercase flex items-center gap-4">
+                  ORDER SUMMARY <div className="h-[2px] w-12 bg-blue-600 rounded-full shadow-[0_0_10px_rgba(37,99,235,0.8)]"></div>
+                </h2>
+                <div className="text-[9px] font-black uppercase tracking-widest text-slate-500 italic">
+                  REF: {Math.random().toString(36).substring(7).toUpperCase()}
+                </div>
+              </div>
 
-              <div className="space-y-6 mb-10">
+              <div className="space-y-7 mb-12 max-h-[300px] overflow-y-auto pr-4 custom-scrollbar">
                 {cartItems.map((item) => (
                   <div
                     key={item.id + item.size + item.color}
                     className="flex justify-between items-start group"
                   >
-                    <div className="flex-1 pr-6">
-                      <p className="text-xs font-black italic uppercase tracking-tighter leading-tight mb-1 group-hover:text-blue-400 transition-colors">
+                    <div className="flex-1 pr-8">
+                       <span className="text-[8px] font-black text-blue-500 uppercase tracking-widest mb-1 block italic opacity-60">ITEM DETAILS</span>
+                      <p className="text-xs font-black italic uppercase tracking-tighter leading-tight mb-2 group-hover:text-blue-400 transition-colors">
                         {item.name}
                       </p>
-                      <p className="text-[9px] text-white/40 font-bold uppercase tracking-widest">
-                        {item.size} {item.color ? `· ${item.color}` : ""} ×{" "}
-                        {item.quantity}
-                      </p>
+                      <div className="flex items-center gap-3 text-[9px] text-white/30 font-bold uppercase tracking-widest">
+                        <span>{item.size}</span>
+                        <span>·</span>
+                        <span>{item.quantity} UNIT{item.quantity > 1 ? "S" : ""}</span>
+                      </div>
                     </div>
-                    <span className="font-black italic text-sm tracking-tighter whitespace-nowrap">
-                      ₹{(item.price * item.quantity).toLocaleString()}
-                    </span>
+                    <div className="text-right">
+                      <span className="font-black italic text-sm tracking-tighter whitespace-nowrap">
+                        ₹{(item.price * item.quantity).toLocaleString()}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
 
-              <div className="space-y-4 pt-10 border-t border-white/10 mb-10">
-                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] text-white/40 italic">
-                  <span>Subtotal</span>
-                  <span className="text-white">
+              <div className="space-y-5 pt-10 border-t border-white/5 mb-10">
+                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.4em] text-white/30 italic">
+                  <span>SUBTOTAL</span>
+                  <span className="text-white tab-nums">
                     ₹{totalAmount.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] text-white/40 italic">
-                  <span>Logistics</span>
-                  <span className="text-white">
+                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.4em] text-white/30 italic">
+                  <span>SHIPPING ESTIMATE</span>
+                  <span className="text-white tab-nums">
                     ₹{displayShipping.toLocaleString()}
                   </span>
                 </div>
                 {appliedCoupon && (
-                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 italic">
-                    <span>Savings ({appliedCoupon.code})</span>
-                    <span>
-                      -₹
-                      {(
-                        (totalAmount * appliedCoupon.discountPercentage) /
-                        100
-                      ).toLocaleString()}
+                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.4em] text-blue-500 italic">
+                    <span>COUPON DISCOUNT</span>
+                    <span className="tab-nums">
+                      -₹{((totalAmount * appliedCoupon.discountPercentage) / 100).toLocaleString()}
                     </span>
                   </div>
                 )}
               </div>
 
-              <div className="pt-6">
-                <p className="text-white/30 text-[9px] font-black uppercase tracking-[0.5em] mb-3 italic">
-                  Total Amount Payable
+              <div className="pt-8 border-t border-white/10">
+                <p className="text-white/20 text-[9px] font-black uppercase tracking-[0.5em] mb-4 italic">
+                  TOTAL AMOUNT
                 </p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-black text-white italic tracking-tighter">
+                <div className="flex items-baseline gap-3">
+                  <span className="text-6xl font-black text-white italic tracking-tighter leading-none">
                     ₹{Math.round(grandTotal).toLocaleString()}
                   </span>
-                  <span className="text-white/40 text-[10px] font-bold uppercase tracking-widest">
+                  <span className="text-blue-600 text-[11px] font-black uppercase tracking-[0.3em] italic">
                     INR
                   </span>
                 </div>
               </div>
 
-              <p className="mt-12 text-[9px] font-black uppercase tracking-[0.4em] text-white/20 italic text-center border-t border-white/5 pt-8">
-                Securerd by Sartaaj Bharat
-              </p>
+              <div className="mt-12 flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+                 <ShieldCheck size={16} className="text-blue-500" />
+                 <p className="text-[8px] font-black uppercase tracking-[0.4em] text-slate-500 italic">
+                   ENCRYPTED_SESSION_STABLE
+                 </p>
+                 <Lock size={12} className="text-slate-700" />
+              </div>
             </div>
           </aside>
         </div>
+      </div>
+
+      {/* Sticky Mobile Checkout Bar */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-100 p-6 z-50 shadow-[0_-20px_40px_rgba(0,0,0,0.08)]">
+         <div className="flex items-center justify-between gap-4 max-w-lg mx-auto">
+            <div>
+               <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic mb-0.5">EST. PAYABLE</p>
+               <p className="text-xl font-black text-slate-950 italic tracking-tighter leading-none">₹{Math.round(grandTotal).toLocaleString()}</p>
+            </div>
+            <motion.button
+               whileTap={{ scale: 0.95 }}
+               onClick={() => placeOrder("Razorpay")}
+               disabled={isPlacingOrder}
+               className="flex-1 bg-blue-600 text-white h-14 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] italic shadow-lg shadow-blue-600/20 active:bg-slate-950 transition-all flex items-center justify-center gap-2"
+            >
+               {isPlacingOrder ? "SYNCING..." : "PAY & PLACE ORDER"}
+               {!isPlacingOrder && <ChevronRight size={14} strokeWidth={3} />}
+            </motion.button>
+         </div>
       </div>
     </div>
   );

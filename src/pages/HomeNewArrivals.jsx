@@ -3,7 +3,8 @@ import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query"; // Use React Query for fetching
 import { getMiniProducts } from "../services/productApi"; // Your dynamic API function
-import NewArrivalPC from "../components/Product/NewArrivalPC"; // Import the reusable product card
+import NewArrivalPC from "../components/Product/NewArrivalPC";
+import { getProductUrl } from "../utils/navigation";
 
 export default function HomeNewArrivals() {
   const navigate = useNavigate();
@@ -19,8 +20,8 @@ export default function HomeNewArrivals() {
   });
 
   // Handle navigation to product details page
-  const handleProductClick = (slug) => {
-    navigate(`/product/${slug}`);
+  const handleProductClick = (product) => {
+    navigate(getProductUrl(product));
   };
 
   if (isLoading) {
@@ -55,7 +56,7 @@ export default function HomeNewArrivals() {
             <NewArrivalPC
               key={product._id}
               product={product}
-              onProductClick={handleProductClick} // Pass custom click handler if needed
+              onProductClick={() => handleProductClick(product)}
             />
           ))}
         </div>

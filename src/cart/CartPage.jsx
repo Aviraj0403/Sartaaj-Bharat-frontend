@@ -13,15 +13,6 @@ import OrderSummary from "./components/OrderSummary";
 import ValueProps from "./components/ValueProps";
 import ApplyCouponPanel from "./ApplyCouponPanel";
 
-const transformToSlug = (name) => {
-  if (!name) return "";
-  return name
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-};
-
 export default function CartPage() {
   const [couponOpen, setCouponOpen] = useState(false);
   const [coupon, setCoupon] = useState({
@@ -120,102 +111,111 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
-      {/* Page Header - Elite Standard */}
-      <div className="bg-white border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="max-w-xl">
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-2 mb-4"
-              >
-                <div className="h-1 w-8 bg-blue-600 rounded-full"></div>
-                <span className="text-blue-600 font-bold text-[10px] uppercase tracking-[0.3em]">
-                  Elite Shopping
-                </span>
-              </motion.div>
-              <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tighter leading-none mb-3"
-              >
-                SHOPPING <span className="text-blue-600">CART</span>
-              </motion.h1>
-              <p className="text-sm sm:text-base text-slate-400 font-medium tracking-tight">
-                You have {totalItems} {totalItems === 1 ? "item" : "items"} in your elite collection
-              </p>
-            </div>
-            
-            <AnimatePresence>
-              {cartItems.length > 0 && (
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  onClick={handleClearCart}
-                  className="group flex items-center gap-2 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-red-500 bg-red-50 hover:bg-red-500 hover:text-white rounded-2xl transition-all duration-300 w-fit border border-red-100 shadow-sm hover:shadow-red-500/20 active:scale-95"
+    <div className="min-h-screen bg-white relative overflow-hidden font-sans">
+      {/* Technical Grid Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000003_1px,transparent_1px),linear-gradient(to_bottom,#00000003_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-60"></div>
+      
+      {/* Background Deep Glows */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/5 blur-[120px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-900/5 blur-[120px] rounded-full -translate-x-1/2 translate-y-1/2"></div>
+
+      <div className="relative z-10">
+        {/* Page Header - Elite Standard */}
+        <div className="bg-white/40 backdrop-blur-md border-b border-white/60">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 md:gap-8">
+              <div className="max-w-xl">
+                <motion.div 
+                  initial={{ opacity: 0, x: -15 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="flex items-center gap-3 mb-5"
                 >
-                  <Trash2 size={14} strokeWidth={2.5} className="group-hover:rotate-12 transition-transform" />
-                  Clear Entire Cart
-                </motion.button>
-              )}
-            </AnimatePresence>
+                  <div className="h-0.5 w-10 bg-blue-600 rounded-full"></div>
+                  <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em] italic">
+                    SHOPPING CART
+                  </span>
+                </motion.div>
+                <motion.h1 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="text-[28px] sm:text-[40px] md:text-[48px] font-black text-slate-900 tracking-tighter leading-[0.9] mb-4 italic uppercase"
+                >
+                  YOUR <span className="text-blue-600">CART.</span>
+                </motion.h1>
+                <p className="text-[11px] sm:text-xs text-slate-500 font-black uppercase tracking-[0.3em] italic">
+                  YOU HAVE {totalItems} {totalItems === 1 ? "ITEM" : "ITEMS"} IN YOUR CART
+                </p>
+              </div>
+              
+              <AnimatePresence>
+                {cartItems.length > 0 && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    onClick={handleClearCart}
+                    className="group flex items-center gap-3 px-8 py-4 text-[10px] font-black uppercase tracking-widest text-red-500 bg-white/50 backdrop-blur-md hover:bg-red-500 hover:text-white rounded-2xl transition-all duration-300 w-fit border border-white/60 shadow-lg hover:shadow-red-500/20 active:scale-95 italic"
+                  >
+                    <Trash2 size={16} strokeWidth={2.5} className="group-hover:rotate-12 transition-transform" />
+                    CLEAR CART
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Cart Items */}
-          <div className="lg:col-span-8">
-            <AnimatePresence mode="popLayout">
-              {cartItems.length === 0 ? (
-                <EmptyCart />
-              ) : (
-                <motion.div className="space-y-3">
-                  {cartItems.map((item, idx) => (
-                    <CartItem
-                      key={`${item.id || idx}-${item.size}-${item.color}`}
-                      item={item}
-                      idx={idx}
-                      navigate={navigate}
-                      transformToSlug={transformToSlug}
-                      handleDecrement={handleDecrement}
-                      handleIncrement={handleIncrement}
-                      handleRemoveItem={handleRemoveItem}
-                    />
-                  ))}
-                </motion.div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+            {/* Cart Items */}
+            <div className="lg:col-span-8">
+              <AnimatePresence mode="popLayout">
+                {cartItems.length === 0 ? (
+                  <EmptyCart />
+                ) : (
+                  <motion.div className="space-y-4">
+                    {cartItems.map((item, idx) => (
+                      <CartItem
+                        key={`${item.id || idx}-${item.size}-${item.color}`}
+                        item={item}
+                        idx={idx}
+                        navigate={navigate}
+                        handleDecrement={handleDecrement}
+                        handleIncrement={handleIncrement}
+                        handleRemoveItem={handleRemoveItem}
+                      />
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {cartItems.length > 0 && (
+                <div className="mt-8 lg:mt-12">
+                  <ValueProps />
+                </div>
               )}
-            </AnimatePresence>
+            </div>
 
+            {/* Order Summary */}
             {cartItems.length > 0 && (
-              <div className="mt-8">
-                <ValueProps />
+              <div className="lg:col-span-4">
+                <OrderSummary
+                  totalItems={totalItems}
+                  totalAmount={totalAmount}
+                  coupon={coupon}
+                  calculateDiscount={calculateDiscount}
+                  shippingCharges={shippingCharges}
+                  finalAmount={finalAmount}
+                  handleCouponRemove={handleCouponRemove}
+                  setCouponOpen={setCouponOpen}
+                  user={user}
+                  navigate={navigate}
+                  cartItems={cartItems}
+                />
               </div>
             )}
           </div>
-
-          {/* Order Summary */}
-          {cartItems.length > 0 && (
-            <div className="lg:col-span-4">
-              <OrderSummary
-                totalItems={totalItems}
-                totalAmount={totalAmount}
-                coupon={coupon}
-                calculateDiscount={calculateDiscount}
-                shippingCharges={shippingCharges}
-                finalAmount={finalAmount}
-                handleCouponRemove={handleCouponRemove}
-                setCouponOpen={setCouponOpen}
-                user={user}
-                navigate={navigate}
-                cartItems={cartItems}
-              />
-            </div>
-          )}
         </div>
       </div>
 

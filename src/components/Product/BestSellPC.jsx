@@ -2,6 +2,7 @@ import React from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useCartActions } from "../../hooks/useCartActions";
+import { getProductUrl } from "../../utils/navigation";
 
 export default function BestSellPC({ product, onProductClick }) {
   const navigate = useNavigate();
@@ -10,9 +11,9 @@ export default function BestSellPC({ product, onProductClick }) {
   // Handle product click (navigate to product page or call the onProductClick callback)
   const handleProductClick = () => {
     if (onProductClick) {
-      onProductClick(product.slug);
+      onProductClick(product.slug || product._id);
     } else {
-      navigate(`/product/${product.slug}`);
+      navigate(getProductUrl(product));
     }
   };
 

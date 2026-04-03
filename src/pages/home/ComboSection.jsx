@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import BestSellPC from "../../components/Product/ProductCard";
 import { getMiniProducts } from "../../services/productApi";
+import { getProductUrl } from "../../utils/navigation";
 
 export default function ComboSection({ categorySlug }) {
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ export default function ComboSection({ categorySlug }) {
               >
                 <BestSellPC
                   product={product}
-                  onProductClick={(id) => navigate(`/product/${id}`)}
+                  onProductClick={() => navigate(getProductUrl(product))}
                 />
               </div>
             ))}

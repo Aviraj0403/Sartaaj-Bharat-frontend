@@ -10,6 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useCategories } from "../../hooks";
 import { getSearchSuggestions } from "../../services/categoryApi";
+import { getProductUrl } from "../../utils/navigation";
 
 export default function MobileSearchPage() {
   const [query, setQuery] = useState("");
@@ -69,13 +70,13 @@ export default function MobileSearchPage() {
     localStorage.removeItem("recentSearches");
   };
 
-  const handleProductClick = (slug) => {
+  const handleProductClick = (product) => {
     if (query && !recentSearches.includes(query)) {
       const updated = [query, ...recentSearches].slice(0, 5);
       setRecentSearches(updated);
       localStorage.setItem("recentSearches", JSON.stringify(updated));
     }
-    navigate(`/product/${slug}`);
+    navigate(getProductUrl(product));
   };
 
   return (
@@ -162,7 +163,7 @@ export default function MobileSearchPage() {
                   {suggestions.map((item) => (
                     <div
                       key={item._id}
-                      onClick={() => handleProductClick(item.slug)}
+                    onClick={() => handleProductClick(item)}
                       className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
                     >
                       {/* Product Image */}

@@ -10,12 +10,12 @@ import {
   Cpu,
   HardDrive,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import QuickViewModal from "./QuickViewModal";
 import { useWishlist } from "../../hooks";
 import { useCartActions } from "../../hooks/useCartActions";
+import { getProductUrl } from "../../utils/navigation";
 
 const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
   const [showQuickView, setShowQuickView] = useState(false);
@@ -29,7 +29,7 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
 
   const inWishlist = isWishlisted(product._id || product.id);
 
-  // High-End Price Extraction
+  // Price Extraction
   const defaultVariant = product.variants?.[0];
   const displayPrice = product.price || defaultVariant?.price || 0;
   const displayOldPrice = product.oldPrice || defaultVariant?.compareAtPrice;
@@ -69,270 +69,164 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
 
   if (layout === "list") {
     return (
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        className="bg-white rounded-[1.2rem] border border-slate-100 p-4 flex gap-5 hover:shadow-xl transition-all duration-700 relative group overflow-hidden"
-      >
-        <div className="w-48 h-48 bg-slate-50 rounded-xl overflow-hidden p-4 shrink-0 relative">
-          <Link to={`/product/${product.slug || product._id || product.id}`}>
-            <motion.img
+      <div className="bg-white rounded-xl border border-slate-100 p-4 flex gap-5 hover:shadow-lg transition-all duration-300 relative group overflow-hidden">
+        <div className="w-40 h-40 bg-slate-50 rounded-lg overflow-hidden p-3 shrink-0 relative">
+          <Link to={getProductUrl(product)}>
+            <img
               src={product.images?.[0] || product.pimage}
-              whileHover={{ scale: 1.1 }}
-              className={`w-full h-full ${imageFit === "cover" ? "object-cover" : "object-contain"} mix-blend-multiply`}
+              alt={product.name}
+              className={`w-full h-full ${imageFit === "cover" ? "object-cover" : "object-contain"} transition-transform duration-500 group-hover:scale-105`}
             />
           </Link>
           {product.discount > 0 && (
-            <div className="absolute top-4 left-4 bg-blue-600 text-white text-[9px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-[0.2em]">
+            <div className="absolute top-2 left-2 bg-blue-600 text-white text-[8px] font-bold px-2 py-1 rounded-md uppercase tracking-widest">
               {product.discount}% OFF
             </div>
           )}
         </div>
 
-        <div className="flex-1 flex flex-col py-2">
-          <div className="flex justify-between items-start mb-2">
+        <div className="flex-1 flex flex-col py-1">
+          <div className="flex justify-between items-start mb-1">
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1 block">
-                {product.brand || "Official Collection"}
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 block">
+                {product.brand || "Official"}
               </span>
-              <h3 className="text-xl font-bold text-slate-900 tracking-tight">
-                <Link
-                  to={`/product/${product.slug || product._id || product.id}`}
-                >
-                  {product.name}
-                </Link>
+              <h3 className="text-lg font-bold text-slate-900 tracking-tight leading-tight">
+                <Link to={getProductUrl(product)}>{product.name}</Link>
               </h3>
             </div>
-            <div className="flex items-center gap-1.5 bg-slate-50 px-4 py-2 rounded-full border border-slate-100">
-              <Star size={12} className="fill-blue-500 text-blue-500" />
-              <span className="text-xs font-black text-slate-900 italic">
+            <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+              <Star size={10} className="fill-blue-600 text-blue-600" />
+              <span className="text-[10px] font-bold text-slate-900">
                 {product.rating || "4.9"}
               </span>
             </div>
           </div>
 
-          <p className="text-slate-500 text-xs font-medium leading-relaxed mb-4 line-clamp-2 max-w-lg">
-            {product.description ||
-              "Premium quality product designed for excellence and performance."}
+          <p className="text-slate-500 text-xs font-medium leading-relaxed mb-3 line-clamp-2">
+            {product.description || "Premium quality product designed for excellence."}
           </p>
-
-          <div className="flex items-center gap-4 mb-4 text-[9px] font-black uppercase tracking-widest text-slate-400">
-            {product.variants?.[0]?.ram && (
-              <span className="flex items-center gap-2">
-                <Cpu size={14} /> {product.variants[0].ram} Memory
-              </span>
-            )}
-            {product.variants?.[0]?.storage && (
-              <span className="flex items-center gap-2">
-                <HardDrive size={14} /> {product.variants[0].storage} Vault
-              </span>
-            )}
-          </div>
 
           <div className="mt-auto flex items-center justify-between">
             <div className="flex flex-col">
               {displayOldPrice && (
-                <span className="text-slate-300 text-xs line-through font-medium tracking-wide">
+                <span className="text-slate-300 text-xs line-through font-medium">
                   ₹{displayOldPrice.toLocaleString()}
                 </span>
               )}
-              <span className="text-3xl font-bold text-slate-900 tracking-tight leading-none">
+              <span className="text-2xl font-bold text-slate-900 tracking-tight">
                 ₹{displayPrice.toLocaleString()}
               </span>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               <button
                 onClick={toggleWishlist}
-                className={`p-4 rounded-2xl transition-all shadow-xl ${inWishlist ? "bg-red-50 text-red-500" : "bg-slate-50 text-slate-400 hover:text-slate-900"}`}
+                className={`p-3 rounded-lg transition-all ${inWishlist ? "bg-red-50 text-red-500" : "bg-slate-50 text-slate-400 hover:text-slate-900"}`}
               >
-                <Heart
-                  size={20}
-                  fill={inWishlist ? "currentColor" : "none"}
-                  strokeWidth={2.5}
-                />
+                <Heart size={18} fill={inWishlist ? "currentColor" : "none"} />
               </button>
               <button
                 onClick={handleAddToCart}
-                className="bg-slate-900 text-white px-8 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-2xl flex items-center gap-3 italic"
+                className="bg-slate-900 text-white px-6 py-2.5 rounded-lg font-bold text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-md flex items-center gap-2"
               >
-                <ShoppingCart size={16} strokeWidth={2.5} /> Add to Cart
+                <ShoppingCart size={14} /> Buy Now
               </button>
             </div>
           </div>
         </div>
-
-        {showQuickView && (
-          <QuickViewModal
-            product={product}
-            onClose={() => setShowQuickView(false)}
-          />
-        )}
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
+    <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`flex flex-col h-full bg-white rounded-xl md:rounded-[1.5rem] overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-700 border relative ${product.isBestSeller ? "border-amber-100/50 outline outline-4 outline-amber-500/5" : "border-slate-100/50"}`}
+      className="flex flex-col h-full bg-white rounded-xl border border-slate-100 overflow-hidden group hover:shadow-xl transition-all duration-300 relative"
     >
-      {product.isBestSeller && (
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-amber-400/30 to-transparent z-10" />
-      )}
-      {/* Discovery Core (Image Area) */}
-      <div className="relative aspect-square overflow-hidden bg-slate-50 p-3 sm:p-4 md:p-5">
-        {/* Status Indicators */}
-        <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex flex-col gap-2">
-          {(product.isFeatured || product.isBestSeller) && (
-            <motion.span
-              initial={{ x: -10, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              className="bg-slate-900 text-white text-[8px] font-bold px-2.5 py-1.5 rounded-lg uppercase tracking-[0.2em] shadow-lg flex items-center gap-2 border border-slate-700/50"
-            >
-              <Sparkles size={10} className="text-blue-400" /> Best Seller
-            </motion.span>
+      {/* Image Area */}
+      <div className="relative aspect-[4/5] bg-slate-50 p-4 overflow-hidden">
+        {/* Badges */}
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+          {product.isBestSeller && (
+            <span className="bg-slate-900 text-white text-[8px] font-bold px-2 py-1 rounded-md uppercase tracking-widest flex items-center gap-1.5 shadow-md">
+              <Sparkles size={10} className="text-blue-400" /> Top Seller
+            </span>
           )}
           {product.discount > 0 && (
-            <span className="bg-blue-600 text-white text-[8px] sm:text-[9px] font-black px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl uppercase tracking-[0.2em] shadow-2xl">
+            <span className="bg-blue-600 text-white text-[8px] font-bold px-2 py-1 rounded-md uppercase tracking-widest shadow-md">
               {product.discount}% OFF
             </span>
           )}
         </div>
 
-        {/* Main Visual */}
-        <Link
-          to={`/product/${product.slug || product._id || product.id}`}
-          className="block w-full h-full relative cursor-pointer"
-        >
-          <motion.img
-            src={
-              product.images?.[0] ||
-              product.pimage ||
-              product.image ||
-              "https://via.placeholder.com/400"
-            }
+        {/* Product Image */}
+        <Link to={getProductUrl(product)} className="block w-full h-full cursor-pointer">
+          <img
+            src={product.images?.[0] || product.pimage || product.image || "https://via.placeholder.com/400"}
             alt={product.name}
-            loading="lazy"
-            onError={(e) => {
-              if (e.target.src !== "https://via.placeholder.com/400?text=Premium+Collection") {
-                e.target.src = "https://via.placeholder.com/400?text=Premium+Collection";
-              }
-            }}
-            animate={{
-              scale: isHovered ? 1.15 : 1,
-              rotate: isHovered ? 2 : 0,
-            }}
-            transition={{ duration: 0.8, ease: "circOut" }}
-            className={`w-full h-full ${imageFit === "cover" ? "object-cover" : "object-contain"} mix-blend-multiply`}
+            className={`w-full h-full ${imageFit === "cover" ? "object-cover" : "object-contain"} transition-transform duration-700 group-hover:scale-105`}
+            onError={(e) => { e.target.src = "https://via.placeholder.com/400?text=Premium+Collection"; }}
           />
         </Link>
 
-        {/* Interaction Matrix (Overlay) */}
-        <AnimatePresence>
-          {isHovered && (
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 40 }}
-              className="absolute inset-x-6 bottom-6 z-30 flex gap-2.5"
-            >
-              <button
-                onClick={handleAddToCart}
-                className="flex-[3] bg-slate-900 text-white py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-2xl shadow-slate-900/40 flex items-center justify-center gap-2.5 active:scale-95"
-              >
-                <ShoppingCart size={16} strokeWidth={2.5} /> Add to Cart
-              </button>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowQuickView(true);
-                }}
-                className="flex-1 bg-white/80 backdrop-blur-xl text-slate-900 border border-white p-4 rounded-2xl flex items-center justify-center hover:bg-white transition-all shadow-xl active:scale-90"
-              >
-                <Eye size={18} strokeWidth={2.5} />
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Wishlist Portal */}
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={toggleWishlist}
-          className={`absolute top-4 right-4 sm:top-6 sm:right-6 z-20 p-2.5 sm:p-3 rounded-2xl transition-all duration-500 shadow-xl ${inWishlist ? "bg-red-50 text-red-500" : "bg-white/80 backdrop-blur-md text-slate-400 hover:text-slate-900"}`}
-        >
-          <Heart
-            className="w-[18px] h-[18px] sm:w-5 sm:h-5"
-            strokeWidth={2.5}
-            fill={inWishlist ? "currentColor" : "none"}
-          />
-        </motion.button>
-      </div>
-
-      {/* Insight Area (Content) */}
-      <div className="px-3 sm:px-4 pb-4 sm:pb-5 pt-1 flex flex-col flex-1">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-            {product.brand || "Official Collection"}
-          </span>
-          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 px-3 py-1 rounded-full">
-            <Star size={10} className="fill-blue-500 text-blue-500" />
-            <span className="text-[10px] font-bold text-slate-700">
-              {product.rating || "4.9"}
-            </span>
-          </div>
-        </div>
-
-        <h3 className="text-slate-900 font-bold text-xs sm:text-sm mb-1 sm:mb-2 leading-tight tracking-tight hover:text-blue-600 transition-colors duration-300">
-          <Link
-            to={`/product/${product.slug || product._id || product.id}`}
-            className="line-clamp-2 italic"
-          >
-            {product.name}
-          </Link>
-        </h3>
-
-        {/* Always-visible Quick View trigger */}
-        <div className="mb-2 flex justify-between items-center">
+        {/* Floating Quick Actions */}
+        <div className={`absolute inset-x-4 bottom-4 z-20 flex gap-2 transition-all duration-300 transform ${isHovered ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}>
           <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setShowQuickView(true);
-            }}
-            className="inline-flex items-center gap-2 text-slate-400 hover:text-blue-600 font-bold uppercase tracking-[0.2em] text-[10px] transition-all duration-300 py-1"
+            onClick={handleAddToCart}
+            className="flex-1 bg-slate-900 text-white py-2.5 rounded-lg font-bold text-[9px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-lg flex items-center justify-center gap-2"
           >
-            <div className="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-white transition-colors">
-              <Eye size={12} strokeWidth={2.5} />
-            </div>
-            Quick View
+            <ShoppingCart size={14} /> Add
+          </button>
+          <button
+            onClick={(e) => { e.preventDefault(); setShowQuickView(true); }}
+            className="w-10 bg-white text-slate-900 p-2.5 rounded-lg flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-lg border border-slate-100"
+          >
+            <Eye size={16} />
           </button>
         </div>
 
-        <div className="mt-auto flex items-end justify-between pt-2 border-t border-slate-100/50">
+        {/* Wishlist Button */}
+        <button
+          onClick={toggleWishlist}
+          className={`absolute top-3 right-3 z-10 p-2 rounded-lg transition-all duration-300 shadow-sm ${inWishlist ? "bg-red-50 text-red-500" : "bg-white/80 backdrop-blur-sm text-slate-400 hover:text-blue-600 hover:bg-white"}`}
+        >
+          <Heart size={16} fill={inWishlist ? "currentColor" : "none"} strokeWidth={2.5} />
+        </button>
+      </div>
+
+      {/* Content Area */}
+      <div className="p-3 sm:p-4 flex flex-col flex-1">
+        <div className="flex justify-between items-center mb-1.5">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            {product.brand || "Official"}
+          </span>
+          <div className="flex items-center gap-1 text-blue-600">
+            <Star size={10} className="fill-blue-600" />
+            <span className="text-[10px] font-bold">{product.rating || "4.9"}</span>
+          </div>
+        </div>
+
+        <h3 className="text-slate-900 font-bold text-xs sm:text-sm mb-2 leading-tight tracking-tight line-clamp-2 h-8 sm:h-10 group-hover:text-blue-600 transition-colors">
+          <Link to={getProductUrl(product)}>{product.name}</Link>
+        </h3>
+
+        <div className="mt-auto flex items-end justify-between pt-3 border-t border-slate-50">
           <div className="flex flex-col">
             {displayOldPrice && (
-              <span className="text-slate-300 text-xs line-through font-medium mb-1 tracking-wide uppercase">
+              <span className="text-slate-300 text-[10px] line-through font-medium mb-0.5">
                 ₹{displayOldPrice.toLocaleString()}
               </span>
             )}
-            <span className="text-slate-900 font-bold text-sm sm:text-lg tracking-tight">
+            <span className="text-slate-900 font-bold text-sm sm:text-base tracking-tight">
               ₹{displayPrice.toLocaleString()}
             </span>
           </div>
 
-          <motion.div
-            whileHover={{ x: 5 }}
-            className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 text-slate-300 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-500 transition-all duration-500 shadow-sm"
-          >
-            <ArrowRight size={16} strokeWidth={3} />
-          </motion.div>
+          <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 border border-slate-100">
+            <ArrowRight size={14} />
+          </div>
         </div>
       </div>
 
@@ -342,7 +236,7 @@ const ProductCard = ({ product, layout = "grid", imageFit = "contain" }) => {
           onClose={() => setShowQuickView(false)}
         />
       )}
-    </motion.div>
+    </div>
   );
 };
 

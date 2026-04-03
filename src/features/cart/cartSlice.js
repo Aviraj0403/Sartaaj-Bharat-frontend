@@ -11,14 +11,16 @@ const initialState = {
 const normalizeItem = (item) => ({
   id: item.productId || item.id || item._id,
   backendId: item._id || item.backendId, // Preserve backend itemId if available
-  name: item.name,
+  slug: item.slug || item.productSlug || item.product?.slug,
+  name: item.name || item.productName || item.product?.name,
   image:
     item.image ||
     item.pimage ||
     item.product?.pimage ||
     item.product?.image ||
+    item.product?.images?.[0] ||
     "/placeholder-premium.png",
-  price: Number(item.price || item.product?.variants?.[0]?.price || 0),
+  price: Number(item.price || item.product?.price || item.product?.variants?.[0]?.price || 0),
   quantity: Number(item.quantity || 1),
   color: item.color || "DFT",
   size: item.size || "STD",

@@ -1,6 +1,7 @@
 import React from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { getProductUrl } from "../utils/navigation";
 
 const newArrivals = [
   {
@@ -188,7 +189,7 @@ export default function NewProductsPage() {
 
                 <div
                   className="w-full h-24 md:h-36 flex justify-center items-center mb-2 cursor-pointer relative z-10"
-                  onClick={() => navigate(`/product/${product.id}`)}
+                  onClick={() => navigate(getProductUrl(product))}
                 >
                   <img
                     src={product.image}
@@ -226,7 +227,7 @@ export default function NewProductsPage() {
                     Add to Cart
                   </button>
                   <button
-                    onClick={() => navigate(`/product/${product.id}`)}
+                    onClick={() => navigate(getProductUrl(product))}
                     className="flex-1 border border-pink-500 text-pink-500 font-semibold py-1 rounded-lg hover:bg-pink-50 transition text-sm"
                   >
                     Buy Now

@@ -80,6 +80,7 @@ export const useCartActions = () => {
           id: product._id,
           name: product.name,
           image: product.pimage || product.image,
+          slug: product.slug,
           size,
           color,
           variantId,
